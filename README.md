@@ -17,7 +17,7 @@ Wallflower is currently under active development.
 
 ## Technology
 
-- Next.js
+- Next.js 16.2
 - TypeScript
 - Tailwind CSS
 - Prisma

@@ -2,9 +2,9 @@
 
 **Last Updated:** 2026-07-18  
 **Current Branch:** `001-wallflower-mvp`  
-**Current Phase:** Phase 1 — Setup  
-**Last Completed Task:** None  
-**Next Recommended Task:** T001  
+**Current Phase:** Phase 2 — Foundation  
+**Last Completed Task:** T009  
+**Next Recommended Task:** T010  
 
 ## Status Legend
 
@@ -31,7 +31,7 @@ Business baseline
 
 Current implementation state:
 
-- Project initialization: Not started
+- Project initialization: Completed
 - Database: Not started
 - Authentication: Not started
 - Design system: Not started
@@ -44,15 +44,15 @@ Current implementation state:
 
 ## Phase 1 — Setup
 
-- [ ] T001 Create Next.js project structure
-- [ ] T002 Install runtime dependencies
-- [ ] T003 Configure testing tools
-- [ ] T004 Configure TypeScript
-- [ ] T005 Configure ESLint and Prettier
-- [ ] T006 Initialize shadcn/ui
-- [ ] T007 Create `.env.example`
-- [ ] T008 Add CI workflow
-- [ ] T009 Create quickstart documentation
+- [x] T001 Create Next.js project structure
+- [x] T002 Install runtime dependencies
+- [x] T003 Configure testing tools
+- [x] T004 Configure TypeScript
+- [x] T005 Configure ESLint and Prettier
+- [x] T006 Initialize shadcn/ui
+- [x] T007 Create `.env.example`
+- [x] T008 Add CI workflow
+- [x] T009 Create quickstart documentation
 
 ## Phase 2 — Foundation
 
@@ -71,13 +71,13 @@ Continue remaining task IDs from `tasks.md`.
 
 ## Completed Work
 
-No completed work yet.
+* **Phase 1 (Setup):** Initialized Next.js 16.2 App Router with React 19.2, Tailwind CSS v4, TypeScript, Prettier, flat ESLint configuration, Vitest (JSDOM/jest-dom) tests, and Playwright Chromium configuration.
 
 ## Verification Record
 
 | Task | Verification | Result | Date |
 |---|---|---|---|
-| — | — | — | — |
+| T001–T009 | `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` | Pass | 2026-07-18 |
 
 Verification examples:
 

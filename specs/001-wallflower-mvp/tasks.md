@@ -22,15 +22,15 @@ description: "Task list for Wallflower MVP implementation"
 
 **Purpose**: Initialize the application, tooling, and shared project conventions.
 
-- [ ] T001 Create the Next.js App Router project and base directory structure from `plan.md` (Next.js 15 App Router)
-- [ ] T002 Install runtime dependencies in `package.json`: Prisma, Better Auth, Zod, React Hook Form, Recharts, Motion, next-intl, next-themes, Lucide React, @google/genai
-- [ ] T003 [P] Install and configure Vitest, React Testing Library, Playwright, axe-core, and test scripts
-- [ ] T004 [P] Configure TypeScript strict mode and import aliases in `tsconfig.json`
-- [ ] T005 [P] Configure ESLint, Prettier, and import sorting
-- [ ] T006 [P] Initialize shadcn/ui and define component conventions in `components.json`
-- [ ] T007 Create `.env.example` with database, auth, Google OAuth, Gemini, and application URL variables
-- [ ] T008 [P] Add CI workflow for lint, typecheck, unit tests, build, and Playwright smoke tests in `.github/workflows/ci.yml`
-- [ ] T009 Create `specs/001-wallflower-mvp/quickstart.md` with local setup and command instructions
+- [x] T001 Create the Next.js App Router project and base directory structure from `plan.md` (Next.js 16.2 App Router)
+- [x] T002 Install runtime dependencies in `package.json`: Prisma, Better Auth, Zod, React Hook Form, Recharts, Motion, next-intl, next-themes, Lucide React, @google/genai
+- [x] T003 [P] Install and configure Vitest, React Testing Library, Playwright, axe-core, and test scripts
+- [x] T004 [P] Configure TypeScript strict mode and import aliases in `tsconfig.json`
+- [x] T005 [P] Configure ESLint and Prettier
+- [x] T006 [P] Initialize shadcn/ui and define component conventions in `components.json`
+- [x] T007 Create `.env.example` with database, auth, Google OAuth, Gemini, and application URL variables
+- [x] T008 [P] Add CI workflow for lint, typecheck, unit tests, build, and Playwright smoke tests in `.github/workflows/ci.yml`
+- [x] T009 Create `specs/001-wallflower-mvp/quickstart.md` with local setup and command instructions
 
 **Checkpoint**: The empty application builds, tests run, and CI can execute.
 

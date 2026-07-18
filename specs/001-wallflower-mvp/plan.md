@@ -22,12 +22,12 @@ Business profile
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, Node.js 22 LTS
+**Language/Version**: TypeScript 5.x, Node.js 22 LTS (Minimum supported: Node.js 20.9)
 
 **Primary Dependencies**:
 
-- Next.js 15 App Router
-- React 19
+- Next.js 16.2 App Router
+- React 19.2
 - Tailwind CSS 4
 - shadcn/ui and Radix UI
 - Motion for React
