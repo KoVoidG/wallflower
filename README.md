@@ -28,7 +28,7 @@ Wallflower is currently under active development.
 ## Contributors
 
 - Void
-- Project contributor
+- Thiha
 
 ## License
 
