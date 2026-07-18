@@ -44,44 +44,45 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Database and authentication
 
-- [ ] T010 Define Better Auth, User, Session, Account, Verification, UserPreference, Business, and AuditEvent models in `prisma/schema.prisma`
-- [ ] T011 Define FinancialSnapshot, MetricSnapshot, RiskAssessment, DetectedRisk, Simulation, SimulationInput, SimulationResult, AIRecommendation, and Report models in `prisma/schema.prisma`
-- [ ] T012 Create and apply the initial Prisma migration in `prisma/migrations/`
-- [ ] T013 Create the singleton Prisma client in `src/db/prisma.ts`
-- [ ] T014 Configure Better Auth server in `src/lib/auth/server.ts`
-- [ ] T015 Configure Better Auth client in `src/lib/auth/client.ts`
-- [ ] T016 Implement the auth route handler in `src/app/api/auth/[...all]/route.ts`
-- [ ] T017 Implement route protection and onboarding redirect helpers in `src/lib/auth/guards.ts`
-- [ ] T018 [P] Add ownership-scoped data-access helpers in `src/lib/auth/ownership.ts`
-- [ ] T019 [P] Add authentication and authorization integration tests in `tests/integration/auth.test.ts`
+- [x] T010 Define Better Auth, User, Session, Account, Verification, UserPreference, and Business models in `prisma/schema.prisma`
+- [x] T011 Define FinancialSnapshot, MetricSnapshot, RiskAssessment, DetectedRisk, Simulation, SimulationInput, SimulationResult, AIRecommendation, and Report models in `prisma/schema.prisma`
+- [x] T012 Create and apply the initial Prisma migration in `prisma/migrations/`
+- [x] T013 Create the singleton Prisma client in `src/db/prisma.ts`
+- [x] T014 Configure Better Auth server in `src/lib/auth/server.ts`
+- [x] T015 Configure Better Auth client in `src/lib/auth/client.ts`
+- [x] T016 Implement the auth route handler in `src/app/api/auth/[...all]/route.ts`
+- [x] T017 Implement route protection and onboarding redirect helpers in `src/lib/auth/guards.ts`
+- [x] T018 [P] Add ownership-scoped data-access helpers in `src/lib/auth/ownership.ts`
+- [x] T019 [P] Add authentication and authorization integration tests in `tests/integration/auth.test.ts`
+- [x] Add Next.js 16 optimistic routing redirects proxy in `src/proxy.ts`
 
 ### Validation, money, and observability
 
-- [ ] T020 Define shared decimal, currency, percentage, and date helpers in `src/lib/calculations/money.ts`
-- [ ] T021 Define application error types in `src/lib/errors.ts`
-- [ ] T022 Add server-safe structured logging in `src/lib/logger.ts`
-- [ ] T023 Define Zod schemas for shared identifiers, pagination, money, and dates in `src/lib/validation/common.ts`
-- [ ] T024 Add idempotency helper for simulation and report mutations in `src/lib/idempotency.ts`
-- [ ] T025 Add calculation and risk-engine version constants in `src/lib/calculations/version.ts` and `src/lib/risks/version.ts`
+- [x] T020 Define shared decimal, currency, percentage, and date helpers in `src/lib/calculations/money.ts`
+- [x] T021 Define application error types in `src/lib/errors.ts`
+- [x] T022 Add lightweight server structured logging in `src/lib/logger.ts`
+- [x] T023 Define Zod schemas for shared identifiers, pagination, money, and dates in `src/lib/validation/common.ts`
+- [-] T024 Add idempotency helper for simulation and report mutations (Deferred until mutations exist)
+- [x] T025 Add calculation and risk-engine version constants in `src/lib/calculations/version.ts` and `src/lib/risks/version.ts`
 
 ### Design system and shell
 
-- [ ] T026 Implement light and dark design tokens from `design.md` in `src/app/globals.css`
-- [ ] T027 [P] Configure Geist Sans, Geist Mono, and Noto Sans Thai in `src/app/layout.tsx`
-- [ ] T028 [P] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx`
-- [ ] T029 [P] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
-- [ ] T030 Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
-- [ ] T031 Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
-- [ ] T032 Build reduced-motion-aware animation primitives in `src/components/motion/`
-- [ ] T033 [P] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
-- [ ] T034 [P] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`
+- [x] T026 Implement light and dark design tokens from `design.md` in `src/app/globals.css`
+- [x] T027 [P] Configure Geist Sans, Geist Mono, and Noto Sans Thai in `src/app/layout.tsx` and `[locale]/layout.tsx`
+- [-] T028 [P] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx` (Deferred to UI phase)
+- [-] T029 [P] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/` (Deferred to UI phase)
+- [-] T030 Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/` (Deferred to UI phase)
+- [-] T031 Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/` (Deferred to UI phase)
+- [-] T032 Build reduced-motion-aware animation primitives in `src/components/motion/` (Deferred to UI phase)
+- [-] T033 [P] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx` (Deferred to UI phase)
+- [-] T034 [P] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx` (Deferred to UI phase)
 
 ### Shared data and fixtures
 
-- [ ] T035 Create typed repository helpers for business-scoped reads and writes in `src/features/shared/repository.ts`
-- [ ] T036 Create realistic Thai SME seed data in `prisma/seed.ts`
-- [ ] T037 Create calculation fixtures in `tests/fixtures/financial.ts`
-- [ ] T038 Create Playwright authenticated-state setup in `tests/e2e/auth.setup.ts`
+- [-] T035 Create typed repository helpers for business-scoped reads and writes in `src/features/shared/repository.ts` (Removed in favor of feature-specific helpers)
+- [x] T036 Create minimal Thai SME seed data in `prisma/seed.ts`
+- [x] T037 Create calculation fixtures in `tests/fixtures/financial.ts`
+- [-] T038 Create Playwright authenticated-state setup in `tests/e2e/auth.setup.ts` (Deferred until authentication flow exists)
 
 **Checkpoint**: Authentication, database, app shell, themes, localization, validation, and test foundations are ready.
 

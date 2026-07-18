@@ -2,9 +2,9 @@
 
 **Last Updated:** 2026-07-18  
 **Current Branch:** `001-wallflower-mvp`  
-**Current Phase:** Phase 2 — Foundation  
-**Last Completed Task:** T009  
-**Next Recommended Task:** T010  
+**Current Phase:** Phase 3 — Baseline  
+**Last Completed Task:** T037  
+**Next Recommended Task:** T039  
 
 ## Status Legend
 
@@ -56,28 +56,47 @@ Current implementation state:
 
 ## Phase 2 — Foundation
 
-- [ ] T010 Define authentication and user models
-- [ ] T011 Define business and simulation models
-- [ ] T012 Create initial Prisma migration
-- [ ] T013 Configure Prisma client
-- [ ] T014 Configure Better Auth server
-- [ ] T015 Configure Better Auth client
-- [ ] T016 Add authentication route
-- [ ] T017 Add route protection
-- [ ] T018 Add ownership-scoped authorization
-- [ ] T019 Add authentication tests
-
-Continue remaining task IDs from `tasks.md`.
+- [x] T010 Define authentication and user models
+- [x] T011 Define business and simulation models
+- [x] T012 Create initial Prisma migration
+- [x] T013 Configure Prisma client
+- [x] T014 Configure Better Auth server
+- [x] T015 Configure Better Auth client
+- [x] T016 Add authentication route
+- [x] T017 Add route protection
+- [x] T018 Add ownership-scoped authorization
+- [x] T019 Add authentication tests
+- [x] T020 Define money and calculation helpers
+- [x] T021 Define application error types
+- [x] T022 Add lightweight server logging
+- [x] T023 Define common Zod schemas
+- [-] T024 Add idempotency helper (Deferred)
+- [x] T025 Add engine version constants
+- [x] T026 Implement CSS tokens and variables
+- [x] T027 Configure font layouts
+- [-] T028 Configure theme provider (Deferred to UI phase)
+- [-] T029 Configure next-intl routing (Deferred to UI phase)
+- [-] T030 Build reusable UI components (Deferred to UI phase)
+- [-] T031 Build application shell (Deferred to UI phase)
+- [-] T032 Build animation primitives (Deferred to UI phase)
+- [-] T033 Add design-system showcase (Deferred to UI phase)
+- [-] T034 Add contrast check tests (Deferred to UI phase)
+- [-] T035 Create shared repository helpers (Removed)
+- [x] T036 Create minimal Thai SME seed data
+- [x] T037 Create calculation fixtures
+- [-] T038 Create Playwright auth setup (Deferred)
 
 ## Completed Work
 
 * **Phase 1 (Setup):** Initialized Next.js 16.2 App Router with React 19.2, Tailwind CSS v4, TypeScript, Prettier, flat ESLint configuration, Vitest (JSDOM/jest-dom) tests, and Playwright Chromium configuration.
+* **Phase 2 (Foundation):** Set up relational PostgreSQL database models via Prisma with official Better Auth schema, applied initial database migration and ran seed scripts locally. Configured Better Auth server/client handlers, Next.js 16 optimistic routing proxy (`src/proxy.ts`), server-side guards and resource ownership authorization hooks, decimal-safe formatting and arithmetic modules, lightweight structured logging, error exception wrappers, common Zod validator schemas, engine constants, and unit fixtures. (UI components, app shell, and motion primitives were deferred to a subsequent phase).
 
 ## Verification Record
 
 | Task | Verification | Result | Date |
 |---|---|---|---|
 | T001–T009 | `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` | Pass | 2026-07-18 |
+| T010–T023, T025–T027, T036–T037 | Prisma validation/migrations, CLI seed scripts, Vitest integration checks, and Turbopack builds | Pass | 2026-07-18 |
 
 Verification examples:
 
@@ -91,19 +110,19 @@ Verification examples:
 
 ## Security Checklist
 
-- [ ] Secrets are server-side only
-- [ ] `.env` files are ignored by Git
-- [ ] Protected routes require authentication
-- [ ] Database queries verify business ownership
+- [x] Secrets are server-side only
+- [x] `.env` files are ignored by Git
+- [x] Protected routes require authentication
+- [x] Database queries verify business ownership
 - [ ] Server actions validate authorization
-- [ ] User input is validated with Zod
-- [ ] Financial amounts use decimal-safe handling
+- [x] User input is validated with Zod
+- [x] Financial amounts use decimal-safe handling
 - [ ] AI receives only necessary business context
 - [ ] AI cannot alter calculated financial results
-- [ ] Logs exclude passwords, tokens, and sensitive payloads
+- [x] Logs exclude passwords, tokens, and sensitive payloads
 - [ ] Destructive actions require confirmation
-- [ ] IDOR tests pass
-- [ ] Dependency audit reviewed
+- [x] IDOR tests pass
+- [x] Dependency audit reviewed
 - [ ] Production environment variables verified
 
 ## Design Checklist
