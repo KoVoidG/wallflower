@@ -1,5 +1,5 @@
 ---
-description: "Task list for Wallflower MVP implementation"
+description: 'Task list for Wallflower MVP implementation with frontend/backend owner mapping'
 ---
 
 # Tasks: Wallflower MVP
@@ -12,11 +12,74 @@ description: "Task list for Wallflower MVP implementation"
 
 **Organization**: Tasks are grouped by user story so each story can be implemented and tested as an independently valuable increment.
 
-## Format: `[ID] [P?] [Story] Description`
+---
+
+## Developer Ownership Roles
+
+### Frontend — Void
+
+Responsible for:
+
+- Theme and appearance UI
+- next-intl frontend integration and messages
+- Reusable UI components
+- Responsive application shell
+- Authentication screens
+- Onboarding forms and client state
+- Dashboard interface
+- Charts and metric presentation
+- Risk-center interface
+- Simulation forms and result presentation
+- Comparison interface
+- AI-advisor interface
+- Reports interface and print styling
+- Settings interface
+- Responsive behavior
+- Accessibility and reduced motion
+- Loading, empty, partial-data, and error states
+
+### Backend — Thiha
+
+Responsible for:
+
+- Prisma schema and migrations
+- Database queries and persistence
+- Better Auth server integration
+- Server-side authentication and authorization
+- Ownership checks
+- Zod server validation
+- Server actions
+- Feature-specific services
+- Financial calculation engine
+- Health calculation rules
+- Risk engine
+- Simulation engine
+- AI integration and structured responses
+- Report-generation data
+- Idempotency
+- Backend integration tests
+- Security and data-access tests
+
+### Shared Responsibilities
+
+- Contracts and shared types
+- End-to-end integration
+- Pull-request review
+- Conflict resolution
+- Final acceptance testing
+- Documentation accuracy
+- Lint, typecheck, tests, and build before merge
+
+---
+
+## Format: `[ID] [P?] [Story] [Owner] Description`
 
 - **[P]**: Can run in parallel because it affects different files and has no unmet dependency.
 - **[Story]**: Maps the task to a user story from `spec.md`.
+- **[Owner]**: Specifies either `Void` (Frontend), `Thiha` (Backend), or `Shared`.
 - Every implementation task names the expected file or directory.
+
+---
 
 ## Phase 1: Setup (Shared Infrastructure)
 
@@ -38,9 +101,7 @@ description: "Task list for Wallflower MVP implementation"
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Implement infrastructure required by all user stories.
-
-**⚠️ CRITICAL**: No user-story implementation begins until this phase is complete.
+**Purpose**: Implement database, core validation, error exception rules, and lightweight logging.
 
 ### Database and authentication
 
@@ -65,18 +126,6 @@ description: "Task list for Wallflower MVP implementation"
 - [-] T024 Add idempotency helper for simulation and report mutations (Deferred until mutations exist)
 - [x] T025 Add calculation and risk-engine version constants in `src/lib/calculations/version.ts` and `src/lib/risks/version.ts`
 
-### Design system and shell
-
-- [x] T026 Implement light and dark design tokens from `design.md` in `src/app/globals.css`
-- [x] T027 [P] Configure Geist Sans, Geist Mono, and Noto Sans Thai in `src/app/layout.tsx` and `[locale]/layout.tsx`
-- [-] T028 [P] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx` (Deferred to UI phase)
-- [-] T029 [P] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/` (Deferred to UI phase)
-- [-] T030 Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/` (Deferred to UI phase)
-- [-] T031 Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/` (Deferred to UI phase)
-- [-] T032 Build reduced-motion-aware animation primitives in `src/components/motion/` (Deferred to UI phase)
-- [-] T033 [P] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx` (Deferred to UI phase)
-- [-] T034 [P] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx` (Deferred to UI phase)
-
 ### Shared data and fixtures
 
 - [-] T035 Create typed repository helpers for business-scoped reads and writes in `src/features/shared/repository.ts` (Removed in favor of feature-specific helpers)
@@ -84,7 +133,25 @@ description: "Task list for Wallflower MVP implementation"
 - [x] T037 Create calculation fixtures in `tests/fixtures/financial.ts`
 - [-] T038 Create Playwright authenticated-state setup in `tests/e2e/auth.setup.ts` (Deferred until authentication flow exists)
 
-**Checkpoint**: Authentication, database, app shell, themes, localization, validation, and test foundations are ready.
+**Checkpoint**: Core database migrations applied, backend validations and test integration setup pass cleanly.
+
+---
+
+## Phase 2.5: Frontend Foundation
+
+**Owner**: Void  
+**Recommended Branch**: `feature/ui-foundation`  
+**Purpose**: Set up theme contexts, routing locales, layout grids, motion primitives, and accessibility checks.
+
+- [ ] T028 [P] [Owner: Void] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx`
+- [ ] T029 [P] [Owner: Void] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
+- [ ] T030 [Owner: Void] Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
+- [ ] T031 [Owner: Void] Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
+- [ ] T032 [Owner: Void] Build reduced-motion-aware animation primitives in `src/components/motion/`
+- [ ] T033 [P] [Owner: Void] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
+- [ ] T034 [P] [Owner: Void] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`
+
+**Checkpoint**: Theme, localization routing, layout shells, and core design elements are ready for integration.
 
 ---
 
@@ -94,24 +161,27 @@ description: "Task list for Wallflower MVP implementation"
 
 **Independent Test**: Complete registration and onboarding, reload, and confirm persisted profile and financial snapshot.
 
+**Recommended Branch for Void**: `feature/onboarding-ui`  
+**Recommended Branch for Thiha**: `feature/onboarding-backend`
+
 ### Tests for User Story 1
 
-- [ ] T039 [P] [US1] Write business-profile Zod schema tests in `tests/unit/business-profile.schema.test.ts`
-- [ ] T040 [P] [US1] Write onboarding server-action integration tests in `tests/integration/onboarding.test.ts`
-- [ ] T041 [P] [US1] Write onboarding end-to-end test in `tests/e2e/onboarding.spec.ts`
+- [ ] T039 [P] [US1] [Owner: Thiha] Write business-profile Zod schema tests in `tests/unit/business-profile.schema.test.ts`
+- [ ] T040 [P] [US1] [Owner: Thiha] Write onboarding server-action integration tests in `tests/integration/onboarding.test.ts`
+- [ ] T041 [P] [US1] [Owner: Shared] Write onboarding end-to-end test in `tests/e2e/onboarding.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T042 [P] [US1] Define business and financial onboarding schemas in `src/features/business-profile/schemas.ts`
-- [ ] T043 [P] [US1] Build account registration, login, and password-reset pages in `src/app/[locale]/(auth)/`
-- [ ] T044 [US1] Implement business onboarding server action in `src/actions/business.actions.ts`
-- [ ] T045 [US1] Implement financial snapshot creation action in `src/actions/financial.actions.ts`
-- [ ] T046 [US1] Build multi-step onboarding form in `src/features/business-profile/components/onboarding-form.tsx`
-- [ ] T047 [US1] Add autosave-safe client state and validation summary to onboarding
-- [ ] T048 [US1] Build data-privacy and "why we ask" guidance panels
-- [ ] T049 [US1] Implement `src/app/[locale]/onboarding/page.tsx` with redirect behavior
-- [ ] T050 [US1] Add partial, empty, loading, server-error, and duplicate-submission states
-- [ ] T051 [US1] Add English and Thai onboarding messages in `src/messages/en.json` and `src/messages/th.json`
+- [ ] T042 [P] [US1] [Owner: Thiha] Define business and financial onboarding schemas in `src/features/business-profile/schemas.ts`
+- [ ] T043 [P] [US1] [Owner: Void] Build account registration, login, and password-reset pages in `src/app/[locale]/(auth)/`
+- [ ] T044 [US1] [Owner: Thiha] Implement business onboarding server action in `src/actions/business.actions.ts`
+- [ ] T045 [US1] [Owner: Thiha] Implement financial snapshot creation action in `src/actions/financial.actions.ts`
+- [ ] T046 [US1] [Owner: Void] Build multi-step onboarding form in `src/features/business-profile/components/onboarding-form.tsx`
+- [ ] T047 [US1] [Owner: Void] Add autosave-safe client state and validation summary to onboarding
+- [ ] T048 [US1] [Owner: Void] Build data-privacy and "why we ask" guidance panels
+- [ ] T049 [US1] [Owner: Void] Implement `src/app/[locale]/onboarding/page.tsx` with redirect behavior
+- [ ] T050 [US1] [Owner: Void] Add partial, empty, loading, server-error, and duplicate-submission states
+- [ ] T051 [US1] [Owner: Void] Add English and Thai onboarding messages in `src/messages/en.json` and `src/messages/th.json`
 
 **Checkpoint**: A new account can create a durable baseline and reach the application.
 
@@ -125,26 +195,26 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 2
 
-- [ ] T052 [P] [US2] Write money and rounding tests in `tests/unit/money.test.ts`
-- [ ] T053 [P] [US2] Write financial metric fixture tests in `tests/unit/metrics.test.ts`
-- [ ] T054 [P] [US2] Write health-status rule tests in `tests/unit/health.test.ts`
-- [ ] T055 [P] [US2] Write dashboard integration test in `tests/integration/dashboard.test.ts`
-- [ ] T056 [P] [US2] Write dashboard accessibility and responsive test in `tests/e2e/dashboard.spec.ts`
+- [ ] T052 [P] [US2] [Owner: Thiha] Write money and rounding tests in `tests/unit/money.test.ts`
+- [ ] T053 [P] [US2] [Owner: Thiha] Write financial metric fixture tests in `tests/unit/metrics.test.ts`
+- [ ] T054 [P] [US2] [Owner: Thiha] Write health-status rule tests in `tests/unit/health.test.ts`
+- [ ] T055 [P] [US2] [Owner: Thiha] Write dashboard integration test in `tests/integration/dashboard.test.ts`
+- [ ] T056 [P] [US2] [Owner: Void] Write dashboard accessibility and responsive test in `tests/e2e/dashboard.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T057 [P] [US2] Implement shared financial metrics in `src/lib/calculations/metrics.ts`
-- [ ] T058 [P] [US2] Implement health score and status rules in `src/lib/calculations/health.ts`
-- [ ] T059 [US2] Implement metric-snapshot persistence in `src/features/dashboard/services/metric-snapshot.service.ts`
-- [ ] T060 [P] [US2] Build KPI card and tooltip components in `src/components/metrics/`
-- [ ] T061 [P] [US2] Build accessible line and comparison charts in `src/components/charts/`
-- [ ] T062 [US2] Build Business Pulse and Today's Insights components in `src/features/dashboard/components/`
-- [ ] T063 [US2] Implement dashboard query service in `src/features/dashboard/services/dashboard.service.ts`
-- [ ] T064 [US2] Build `src/app/[locale]/(app)/dashboard/page.tsx`
-- [ ] T065 Build business-health detail tabs in `src/app/[locale]/(app)/business-health/page.tsx`
-- [ ] T066 Add data completeness, stale-data, and missing-history states
-- [ ] T067 Add print-safe data table alternatives for charts
-- [ ] T067a [US2] Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
+- [ ] T057 [P] [US2] [Owner: Thiha] Implement shared financial metrics in `src/lib/calculations/metrics.ts`
+- [ ] T058 [P] [US2] [Owner: Thiha] Implement health score and status rules in `src/lib/calculations/health.ts`
+- [ ] T059 [US2] [Owner: Thiha] Implement metric-snapshot persistence in `src/features/dashboard/services/metric-snapshot.service.ts`
+- [ ] T060 [P] [US2] [Owner: Void] Build KPI card and tooltip components in `src/components/metrics/`
+- [ ] T061 [P] [US2] [Owner: Void] Build accessible line and comparison charts in `src/components/charts/`
+- [ ] T062 [US2] [Owner: Void] Build Business Pulse and Today's Insights components in `src/features/dashboard/components/`
+- [ ] T063 [US2] [Owner: Thiha] Implement dashboard query service in `src/features/dashboard/services/dashboard.service.ts`
+- [ ] T064 [US2] [Owner: Void] Build `src/app/[locale]/(app)/dashboard/page.tsx`
+- [ ] T065 [Owner: Void] Build business-health detail tabs in `src/app/[locale]/(app)/business-health/page.tsx`
+- [ ] T066 [Owner: Void] Add data completeness, stale-data, and missing-history states
+- [ ] T067 [Owner: Void] Add print-safe data table alternatives for charts
+- [ ] T067a [US2] [Owner: Void] Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
 
 **Checkpoint**: The dashboard independently communicates current business health and the next important action.
 
@@ -158,22 +228,22 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 3
 
-- [ ] T068 [P] [US3] Write a failing test for every initial risk rule in `tests/unit/risk-rules.test.ts`
-- [ ] T069 [P] [US3] Write risk-engine ordering and missing-data tests in `tests/unit/risk-engine.test.ts`
-- [ ] T070 [P] [US3] Write risk-center integration test in `tests/integration/risks.test.ts`
-- [ ] T071 [P] [US3] Write risk-center keyboard and screen-reader test in `tests/e2e/risks.spec.ts`
+- [ ] T068 [P] [US3] [Owner: Thiha] Write a failing test for every initial risk rule in `tests/unit/risk-rules.test.ts`
+- [ ] T069 [P] [US3] [Owner: Thiha] Write risk-engine ordering and missing-data tests in `tests/unit/risk-engine.test.ts`
+- [ ] T070 [P] [US3] [Owner: Thiha] Write risk-center integration test in `tests/integration/risks.test.ts`
+- [ ] T071 [P] [US3] [Owner: Void] Write risk-center keyboard and screen-reader test in `tests/e2e/risks.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T072 [P] [US3] Define risk context and output types in `src/lib/risks/types.ts`
-- [ ] T073 [P] [US3] Implement cash-flow, runway, expense-growth, payroll, receivable, liquidity, and data-completeness rules in `src/lib/risks/rules.ts`
-- [ ] T074 [US3] Implement deterministic risk engine in `src/lib/risks/engine.ts`
-- [ ] T075 [US3] Implement risk-assessment persistence in `src/features/risks/services/risk-assessment.service.ts`
-- [ ] T076 [P] [US3] Build risk summary, category card, evidence, and mitigation components in `src/features/risks/components/`
-- [ ] T077 [US3] Build filtering, sorting, and status management for risks
-- [ ] T078 [US3] Build `src/app/[locale]/(app)/risks/page.tsx`
-- [ ] T079 [US3] Add incomplete-assessment and stale-assessment warnings
-- [ ] T080 [US3] Link dashboard risk insights to the relevant risk detail
+- [ ] T072 [P] [US3] [Owner: Thiha] Define risk context and output types in `src/lib/risks/types.ts`
+- [ ] T073 [P] [US3] [Owner: Thiha] Implement cash-flow, runway, expense-growth, payroll, receivable, liquidity, and data-completeness rules in `src/lib/risks/rules.ts`
+- [ ] T074 [US3] [Owner: Thiha] Implement deterministic risk engine in `src/lib/risks/engine.ts`
+- [ ] T075 [US3] [Owner: Thiha] Implement risk-assessment persistence in `src/features/risks/services/risk-assessment.service.ts`
+- [ ] T076 [P] [US3] [Owner: Void] Build risk summary, category card, evidence, and mitigation components in `src/features/risks/components/`
+- [ ] T077 [US3] [Owner: Void] Build filtering, sorting, and status management for risks
+- [ ] T078 [US3] [Owner: Void] Build `src/app/[locale]/(app)/risks/page.tsx`
+- [ ] T079 [US3] [Owner: Void] Add incomplete-assessment and stale-assessment warnings
+- [ ] T080 [US3] [Owner: Void] Link dashboard risk insights to the relevant risk detail
 
 **Checkpoint**: The risk center independently identifies and explains business risks without AI.
 
@@ -187,32 +257,32 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 4
 
-- [ ] T081 [P] [US4] Write hire-employees calculator tests in `tests/unit/scenarios/hire-employees.test.ts`
-- [ ] T082 [P] [US4] Write price-change calculator tests in `tests/unit/scenarios/change-price.test.ts`
-- [ ] T083 [P] [US4] Write marketing-investment calculator tests in `tests/unit/scenarios/marketing-investment.test.ts`
-- [ ] T084 [P] [US4] Write equipment-purchase calculator tests in `tests/unit/scenarios/equipment-purchase.test.ts`
-- [ ] T085 [P] [US4] Write payment-delay calculator tests in `tests/unit/scenarios/payment-delay.test.ts`
-- [ ] T086 [P] [US4] Write simulation persistence and ownership tests in `tests/integration/simulations.test.ts`
-- [ ] T087 [P] [US4] Write complete simulation journey test in `tests/e2e/simulation.spec.ts`
+- [ ] T081 [P] [US4] [Owner: Thiha] Write hire-employees calculator tests in `tests/unit/scenarios/hire-employees.test.ts`
+- [ ] T082 [P] [US4] [Owner: Thiha] Write price-change calculator tests in `tests/unit/scenarios/change-price.test.ts`
+- [ ] T083 [P] [US4] [Owner: Thiha] Write marketing-investment calculator tests in `tests/unit/scenarios/marketing-investment.test.ts`
+- [ ] T084 [P] [US4] [Owner: Thiha] Write equipment-purchase calculator tests in `tests/unit/scenarios/equipment-purchase.test.ts`
+- [ ] T085 [P] [US4] [Owner: Thiha] Write payment-delay calculator tests in `tests/unit/scenarios/payment-delay.test.ts`
+- [ ] T086 [P] [US4] [Owner: Thiha] Write simulation persistence and ownership tests in `tests/integration/simulations.test.ts`
+- [ ] T087 [P] [US4] [Owner: Shared] Write complete simulation journey test in `tests/e2e/simulation.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T088 [P] [US4] Define normalized baseline, scenario input, outcome, case, warning, and result types in `src/lib/calculations/scenarios/types.ts`
-- [ ] T089 [P] [US4] Implement hire-employees calculator in `src/lib/calculations/scenarios/hire-employees.ts`
-- [ ] T090 [P] [US4] Implement price-change calculator in `src/lib/calculations/scenarios/change-price.ts`
-- [ ] T091 [P] [US4] Implement marketing-investment calculator in `src/lib/calculations/scenarios/marketing-investment.ts`
-- [ ] T092 [P] [US4] Implement equipment-purchase calculator in `src/lib/calculations/scenarios/equipment-purchase.ts`
-- [ ] T093 [P] [US4] Implement payment-delay calculator in `src/lib/calculations/scenarios/payment-delay.ts`
-- [ ] T094 [US4] Implement scenario registry and dispatcher in `src/lib/calculations/scenarios/index.ts`
-- [ ] T095 [US4] Implement simulation create, save, rename, duplicate, and delete actions in `src/actions/simulation.actions.ts`
-- [ ] T096 [P] [US4] Build scenario selector cards in `src/components/simulations/scenario-selector.tsx`
-- [ ] T097 [P] [US4] Build scenario-specific dynamic forms in `src/components/simulations/forms/`
-- [ ] T098 [US4] Build simulator wizard in `src/app/[locale]/(app)/simulations/new/page.tsx`
-- [ ] T099 [P] [US4] Build result KPI row, case selector, timeline, assumption panel, and detailed table in `src/components/simulations/results/`
-- [ ] T100 [US4] Build simulation result page in `src/app/[locale]/(app)/simulations/[simulationId]/page.tsx`
-- [ ] T101 [US4] Build simulation history page in `src/app/[locale]/(app)/simulations/page.tsx`
-- [ ] T102 [US4] Add run-progress, idempotency, invalid-value, stale-baseline, empty, and calculation-error states
-- [ ] T103 [US4] Add reduced-motion result transitions and accessible completion announcement
+- [ ] T088 [P] [US4] [Owner: Thiha] Define normalized baseline, scenario input, outcome, case, warning, and result types in `src/lib/calculations/scenarios/types.ts`
+- [ ] T089 [P] [US4] [Owner: Thiha] Implement hire-employees calculator in `src/lib/calculations/scenarios/hire-employees.ts`
+- [ ] T090 [P] [US4] [Owner: Thiha] Implement price-change calculator in `src/lib/calculations/scenarios/change-price.ts`
+- [ ] T091 [P] [US4] [Owner: Thiha] Implement marketing-investment calculator in `src/lib/calculations/scenarios/marketing-investment.ts`
+- [ ] T092 [P] [US4] [Owner: Thiha] Implement equipment-purchase calculator in `src/lib/calculations/scenarios/equipment-purchase.ts`
+- [ ] T093 [P] [US4] [Owner: Thiha] Implement payment-delay calculator in `src/lib/calculations/scenarios/payment-delay.ts`
+- [ ] T094 [US4] [Owner: Thiha] Implement scenario registry and dispatcher in `src/lib/calculations/scenarios/index.ts`
+- [ ] T095 [US4] [Owner: Thiha] Implement simulation create, save, rename, duplicate, and delete actions in `src/actions/simulation.actions.ts`
+- [ ] T096 [P] [US4] [Owner: Void] Build scenario selector cards in `src/components/simulations/scenario-selector.tsx`
+- [ ] T097 [P] [US4] [Owner: Void] Build scenario-specific dynamic forms in `src/components/simulations/forms/`
+- [ ] T098 [US4] [Owner: Void] Build simulator wizard in `src/app/[locale]/(app)/simulations/new/page.tsx`
+- [ ] T099 [P] [US4] [Owner: Void] Build result KPI row, case selector, timeline, assumption panel, and detailed table in `src/components/simulations/results/`
+- [ ] T100 [US4] [Owner: Void] Build simulation result page in `src/app/[locale]/(app)/simulations/[simulationId]/page.tsx`
+- [ ] T101 [US4] [Owner: Void] Build simulation history page in `src/app/[locale]/(app)/simulations/page.tsx`
+- [ ] T102 [US4] [Owner: Void] Add run-progress, idempotency, invalid-value, stale-baseline, empty, and calculation-error states
+- [ ] T103 [US4] [Owner: Void] Add reduced-motion result transitions and accessible completion announcement
 
 **Checkpoint**: The flagship simulator works end-to-end without requiring AI.
 
@@ -226,26 +296,26 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 5
 
-- [ ] T104 [P] [US5] Write AI output-schema tests in `tests/unit/ai-schema.test.ts`
-- [ ] T105 [P] [US5] Write prompt context-redaction tests in `tests/unit/ai-context.test.ts`
-- [ ] T106 [P] [US5] Write comparison service tests in `tests/unit/comparison.test.ts`
-- [ ] T107 [P] [US5] Write AI fallback integration tests in `tests/integration/advisor.test.ts`
-- [ ] T108 [P] [US5] Write comparison and advisor e2e test in `tests/e2e/advisor.spec.ts`
+- [ ] T104 [P] [US5] [Owner: Thiha] Write AI output-schema tests in `tests/unit/ai-schema.test.ts`
+- [ ] T105 [P] [US5] [Owner: Thiha] Write prompt context-redaction tests in `tests/unit/ai-context.test.ts`
+- [ ] T106 [P] [US5] [Owner: Thiha] Write comparison service tests in `tests/unit/comparison.test.ts`
+- [ ] T107 [P] [US5] [Owner: Thiha] Write AI fallback integration tests in `tests/integration/advisor.test.ts`
+- [ ] T108 [P] [US5] [Owner: Shared] Write comparison and advisor e2e test in `tests/e2e/advisor.spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T109 [P] [US5] Define AI recommendation schemas in `src/lib/ai/schemas.ts`
-- [ ] T110 [P] [US5] Define Wallflower system prompt and scenario templates in `src/lib/ai/prompts.ts`
-- [ ] T111 [US5] Implement Gemini server client using the official `@google/genai` SDK with native Zod `responseSchema` validation, timeout, and retry in `src/lib/ai/client.ts`
-- [ ] T112 [US5] Implement context selector that sends only relevant business values in `src/features/advisor/services/context.service.ts`
-- [ ] T113 [US5] Implement AI recommendation route in `src/app/api/ai/recommendation/route.ts`
-- [ ] T114 [US5] Persist AI recommendations separately from deterministic results
-- [ ] T115 [P] [US5] Build calculated-fact, assumption, AI-interpretation, uncertainty, and disclaimer components in `src/features/advisor/components/`
-- [ ] T116 [US5] Build contextual advisor page in `src/app/[locale]/(app)/advisor/page.tsx`
-- [ ] T117 [P] [US5] Implement scenario comparison service in `src/features/simulations/services/comparison.service.ts`
-- [ ] T118 [US5] Build comparison table and chart view in `src/app/[locale]/(app)/simulations/compare/page.tsx`
-- [ ] T119 [US5] Add insufficient-data, malformed-output, timeout, retry, and provider-unavailable states
-- [ ] T120 [US5] Ensure AI confidence label derives from data completeness and sensitivity, not fabricated probability
+- [ ] T109 [P] [US5] [Owner: Thiha] Define AI recommendation schemas in `src/lib/ai/schemas.ts`
+- [ ] T110 [P] [US5] [Owner: Thiha] Define Wallflower system prompt and scenario templates in `src/lib/ai/prompts.ts`
+- [ ] T111 [US5] [Owner: Thiha] Implement Gemini server client using the official `@google/genai` SDK with native Zod `responseSchema` validation, timeout, and retry in `src/lib/ai/client.ts`
+- [ ] T112 [US5] [Owner: Thiha] Implement context selector that sends only relevant business values in `src/features/advisor/services/context.service.ts`
+- [ ] T113 [US5] [Owner: Thiha] Implement AI recommendation route in `src/app/api/ai/recommendation/route.ts`
+- [ ] T114 [US5] [Owner: Thiha] Persist AI recommendations separately from deterministic results
+- [ ] T115 [P] [US5] [Owner: Void] Build calculated-fact, assumption, AI-interpretation, uncertainty, and disclaimer components in `src/features/advisor/components/`
+- [ ] T116 [US5] [Owner: Void] Build contextual advisor page in `src/app/[locale]/(app)/advisor/page.tsx`
+- [ ] T117 [P] [US5] [Owner: Thiha] Implement scenario comparison service in `src/features/simulations/services/comparison.service.ts`
+- [ ] T118 [US5] [Owner: Void] Build comparison table and chart view in `src/app/[locale]/(app)/simulations/compare/page.tsx`
+- [ ] T119 [US5] [Owner: Void] Add insufficient-data, malformed-output, timeout, retry, and provider-unavailable states
+- [ ] T120 [US5] [Owner: Thiha] Ensure AI confidence label derives from data completeness and sensitivity, not fabricated probability
 
 **Checkpoint**: Users can compare options and receive grounded advice without losing access to calculations when AI fails.
 
@@ -259,21 +329,21 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 6
 
-- [ ] T121 [P] [US6] Write report composition tests in `tests/unit/report.service.test.ts`
-- [ ] T122 [P] [US6] Write report authorization tests in `tests/integration/reports.test.ts`
-- [ ] T123 [P] [US6] Write print-layout and PDF smoke test in `tests/e2e/report.spec.ts`
+- [ ] T121 [P] [US6] [Owner: Thiha] Write report composition tests in `tests/unit/report.service.test.ts`
+- [ ] T122 [P] [US6] [Owner: Thiha] Write report authorization tests in `tests/integration/reports.test.ts`
+- [ ] T123 [P] [US6] [Owner: Shared] Write print-layout and PDF smoke test in `tests/e2e/report.spec.ts`
 
 ### Implementation for User Story 6
 
-- [ ] T124 [US6] Implement report composition service in `src/features/reports/services/report.service.ts`
-- [ ] T125 [US6] Implement report create and delete actions in `src/actions/report.actions.ts`
-- [ ] T126 [P] [US6] Build report cover, executive summary, metric table, risk section, simulation section, recommendation section, and action-plan components in `src/components/reports/`
-- [ ] T127 [US6] Build report detail page in `src/app/[locale]/(app)/reports/[reportId]/page.tsx`
-- [ ] T128 [US6] Build report history page in `src/app/[locale]/(app)/reports/page.tsx`
-- [ ] T129 [US6] Implement print stylesheet in `src/app/print.css`
-- [ ] T130 [US6] Add data-through date, calculation version, report version, assumptions, and disclaimer
-- [ ] T131 [US6] Add browser print/PDF action and print-preview mode
-- [ ] T132 [US6] Add incomplete-section and stale-source indicators
+- [ ] T124 [US6] [Owner: Thiha] Implement report composition service in `src/features/reports/services/report.service.ts`
+- [ ] T125 [US6] [Owner: Thiha] Implement report create and delete actions in `src/actions/report.actions.ts`
+- [ ] T126 [P] [US6] [Owner: Void] Build report cover, executive summary, metric table, risk section, simulation section, recommendation section, and action-plan components in `src/components/reports/`
+- [ ] T127 [US6] [Owner: Void] Build report detail page in `src/app/[locale]/(app)/reports/[reportId]/page.tsx`
+- [ ] T128 [US6] [Owner: Void] Build report history page in `src/app/[locale]/(app)/reports/page.tsx`
+- [ ] T129 [US6] [Owner: Void] Implement print stylesheet in `src/app/print.css`
+- [ ] T130 [US6] [Owner: Void] Add data-through date, calculation version, report version, assumptions, and disclaimer
+- [ ] T131 [US6] [Owner: Void] Add browser print/PDF action and print-preview mode
+- [ ] T132 [US6] [Owner: Void] Add incomplete-section and stale-source indicators
 
 **Checkpoint**: Reports are useful in a demo and reproducible from their source records.
 
@@ -287,19 +357,19 @@ description: "Task list for Wallflower MVP implementation"
 
 ### Tests for User Story 7
 
-- [ ] T133 [P] [US7] Write preference persistence tests in `tests/integration/preferences.test.ts`
-- [ ] T134 [P] [US7] Write settings keyboard and responsive test in `tests/e2e/settings.spec.ts`
+- [ ] T133 [P] [US7] [Owner: Thiha] Write preference persistence tests in `tests/integration/preferences.test.ts`
+- [ ] T134 [P] [US7] [Owner: Void] Write settings keyboard and responsive test in `tests/e2e/settings.spec.ts`
 
 ### Implementation for User Story 7
 
-- [ ] T135 [P] [US7] Build profile and preference schemas in `src/features/settings/schemas.ts`
-- [ ] T136 [US7] Implement preference update actions in `src/features/settings/actions.ts`
-- [ ] T137 [US7] Build appearance, language, date, currency, and accessibility settings
-- [ ] T138 [US7] Build profile and business-information settings
-- [ ] T139 [US7] Build password and session-management controls supported by Better Auth
-- [ ] T140 [US7] Build account-deletion confirmation flow
-- [ ] T141 [US7] Build `src/app/[locale]/(app)/settings/page.tsx`
-- [ ] T142 [US7] Add destructive-action and reauthentication error states
+- [ ] T135 [P] [US7] [Owner: Thiha] Build profile and preference schemas in `src/features/settings/schemas.ts`
+- [ ] T136 [US7] [Owner: Thiha] Implement preference update actions in `src/features/settings/actions.ts`
+- [ ] T137 [US7] [Owner: Void] Build appearance, language, date, currency, and accessibility settings
+- [ ] T138 [US7] [Owner: Void] Build profile and business-information settings
+- [ ] T139 [US7] [Owner: Void] Build password and session-management controls supported by Better Auth
+- [ ] T140 [US7] [Owner: Void] Build account-deletion confirmation flow
+- [ ] T141 [US7] [Owner: Void] Build `src/app/[locale]/(app)/settings/page.tsx`
+- [ ] T142 [US7] [Owner: Void] Add destructive-action and reauthentication error states
 
 **Checkpoint**: Preferences and security controls work without affecting core business data.
 
@@ -309,17 +379,17 @@ description: "Task list for Wallflower MVP implementation"
 
 **Purpose**: Present Wallflower clearly without fabricated traction or unsupported claims.
 
-- [ ] T143 Build marketing navigation and responsive header in `src/app/[locale]/(marketing)/`
-- [ ] T144 Build landing hero using approved copy and a real product-preview composition
-- [ ] T145 Build three-step workflow section: Diagnose, Simulate, Act
-- [ ] T146 Build supported scenario examples section
-- [ ] T147 Build explainability and trust section distinguishing calculations from AI
-- [ ] T148 Build Thai SME context and challenge-alignment section
-- [ ] T149 Build final CTA and footer
-- [ ] T150 Add restrained Motion interactions and reduced-motion alternatives
-- [ ] T151 Remove fabricated customer logos, user counts, ratings, and improvement statistics
-- [ ] T152 Add SEO metadata, Open Graph image, sitemap, and robots configuration
-- [ ] T153 Add landing-page performance and accessibility test in `tests/e2e/landing.spec.ts`
+- [ ] T143 [Owner: Void] Build marketing navigation and responsive header in `src/app/[locale]/(marketing)/`
+- [ ] T144 [Owner: Void] Build landing hero using approved copy and a real product-preview composition
+- [ ] T145 [Owner: Void] Build three-step workflow section: Diagnose, Simulate, Act
+- [ ] T146 [Owner: Void] Build supported scenario examples section
+- [ ] T147 [Owner: Void] Build explainability and trust section distinguishing calculations from AI
+- [ ] T148 [Owner: Void] Build Thai SME context and challenge-alignment section
+- [ ] T149 [Owner: Void] Build final CTA and footer
+- [ ] T150 [Owner: Void] Add restrained Motion interactions and reduced-motion alternatives
+- [ ] T151 [Owner: Void] Remove fabricated customer logos, user counts, ratings, and improvement statistics
+- [ ] T152 [Owner: Void] Add SEO metadata, Open Graph image, sitemap, and robots configuration
+- [ ] T153 [Owner: Void] Add landing-page performance and accessibility test in `tests/e2e/landing.spec.ts`
 
 **Checkpoint**: The public site communicates the product accurately and leads into onboarding or a sample simulation.
 
@@ -329,25 +399,25 @@ description: "Task list for Wallflower MVP implementation"
 
 **Purpose**: Prepare the prototype for judging, user testing, and deployment.
 
-- [ ] T154 [P] Review every page against `design.md` Design QA Checklist
-- [ ] T155 [P] Complete English copy and Thai-ready translation keys
-- [ ] T156 [P] Verify light, dark, and system themes across all core routes
-- [ ] T157 [P] Verify reduced-motion behavior across marketing and application routes
-- [ ] T158 [P] Add loading, empty, error, partial-data, and offline-message states to all core screens
-- [ ] T159 Perform ownership and insecure-direct-object-reference security review
-- [ ] T160 Verify secrets and financial payloads are absent from client bundles and logs
-- [ ] T161 Run Prisma migration from a clean database and validate seed process
-- [ ] T162 Run unit coverage and reach at least 90% statement coverage in calculations and risk rules
-- [ ] T163 Run complete Playwright suite in desktop, tablet, and mobile projects
-- [ ] T164 Run WCAG checks and manually verify keyboard navigation
-- [ ] T165 Profile dashboard and simulation performance and remove avoidable client JavaScript
-- [ ] T166 Verify THB formatting, rounding, date handling, and timezone behavior
-- [ ] T167 Validate all report print page breaks in Chrome and Edge
-- [ ] T168 Create a polished GreenCafe demo dataset and scripted demo journey
-- [ ] T169 Update README with architecture, setup, screenshots, limitations, and demo account instructions
-- [ ] T170 Deploy preview to Vercel and connect production Neon branch
-- [ ] T171 Run production smoke test for register → onboard → diagnose → simulate → advise → report
-- [ ] T172 Tag prototype release and record known limitations
+- [ ] T154 [P] [Owner: Void] Review every page against `design.md` Design QA Checklist
+- [ ] T155 [P] [Owner: Void] Complete English copy and Thai-ready translation keys
+- [ ] T156 [P] [Owner: Void] Verify light, dark, and system themes across all core routes
+- [ ] T157 [P] [Owner: Void] Verify reduced-motion behavior across marketing and application routes
+- [ ] T158 [P] [Owner: Void] Add loading, empty, error, partial-data, and offline-message states to all core screens
+- [ ] T159 [Owner: Shared] Perform ownership and insecure-direct-object-reference security review
+- [ ] T160 [Owner: Shared] Verify secrets and financial payloads are absent from client bundles and logs
+- [ ] T161 [Owner: Thiha] Run Prisma migration from a clean database and validate seed process
+- [ ] T162 [Owner: Thiha] Run unit coverage and reach at least 90% statement coverage in calculations and risk rules
+- [ ] T163 [Owner: Shared] Run complete Playwright suite in desktop, tablet, and mobile projects
+- [ ] T164 [Owner: Void] Run WCAG checks and manually verify keyboard navigation
+- [ ] T165 [Owner: Void] Profile dashboard and simulation performance and remove avoidable client JavaScript
+- [ ] T166 [Owner: Thiha] Verify THB formatting, rounding, date handling, and timezone behavior
+- [ ] T167 [Owner: Void] Validate all report print page breaks in Chrome and Edge
+- [ ] T168 [Owner: Thiha] Create a polished GreenCafe demo dataset and scripted demo journey
+- [ ] T169 [Owner: Shared] Update README with architecture, setup, screenshots, limitations, and demo account instructions
+- [ ] T170 [Owner: Shared] Deploy preview to Vercel and connect production Neon branch
+- [ ] T171 [Owner: Shared] Run production smoke test for register → onboard → diagnose → simulate → advise → report
+- [ ] T172 [Owner: Shared] Tag prototype release and record known limitations
 
 ---
 
@@ -375,7 +445,7 @@ description: "Task list for Wallflower MVP implementation"
 - Report components and AI UI components can proceed in parallel after result contracts are stable.
 - Settings and marketing work can run alongside later application stories.
 
-## Implementation Strategy
+### Implementation Strategy
 
 ### MVP First
 
@@ -389,13 +459,45 @@ The smallest strong demo increment is:
 
 Then add the remaining four scenarios, risk center, comparison, AI explanation, and report.
 
-### Recommended Team Split
+### Recommended Two-Person Team Split
 
-- **Developer A**: authentication, onboarding, database, settings
-- **Developer B**: metrics, risk engine, dashboard
-- **Developer C**: scenario engine, results, comparison
-- **Developer D or shared responsibility**: AI, reports, QA, deployment
-- **Designer**: design system, responsive screens, usability testing, content QA
+**Void — Frontend**
+Responsible for:
+- Design system
+- Theme
+- Layout
+- Components
+- Responsive UI
+- Authentication pages
+- Dashboard UI
+- Risk UI
+- Simulation UI
+- Reports UI
+- Accessibility
+- Frontend tests
+
+**Thiha — Backend**
+Responsible for:
+- Prisma
+- Better Auth
+- Server Actions
+- Calculations
+- Risk Engine
+- Simulation Engine
+- AI Integration
+- Persistence
+- Backend tests
+
+**Shared**
+Responsible for:
+- Shared contracts
+- Pull requests
+- Integration
+- Security review
+- Deployment
+- Final QA
+- Documentation
+
 
 ## Notes
 

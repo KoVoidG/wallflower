@@ -1,95 +1,102 @@
 # Wallflower Implementation Progress
 
-**Last Updated:** 2026-07-18  
-**Current Branch:** `001-wallflower-mvp`  
-**Current Phase:** Phase 3 — Baseline  
-**Last Completed Task:** T037  
-**Next Recommended Task:** T039  
+## Project Status
 
-## Status Legend
+* **Current Milestone:** Phase 2.5 — Frontend Foundation & Phase 3 — Baseline Backend Onboarding
+* **Last Completed Task:** T037 (Financial calculation fixtures)
+* **Next Recommended Task:** T028 (Configure theme provider - Void) & T039 (Write business Zod schema tests - Thiha)
+* **Last Updated Date:** 2026-07-18
 
-- [ ] Not started
-- [~] In progress
-- [x] Completed and verified
-- [!] Blocked
-- [-] Deferred
-- [?] Implemented but not verified
+---
 
-## Session Resume Summary
+## Shared Foundation
 
-Wallflower is an AI-powered decision-intelligence platform for Thai SMEs.
+* **Project Setup:** Completed and verified (T001–T009). Next.js 16.2 App Router, Tailwind CSS v4, TypeScript strict compile checks, ESLint Flat Config, and Prettier configurations.
+* **Prisma & Neon Database:** Completed and verified (T010–T013). Schema defined, relational UUID models mapped, database migrations applied to Neon, and minimal seed script generated.
+* **Better Auth Foundation:** Completed and verified (T014–T016). Server/client configurations, API auth route hooks, and local credentials/OAuth client hooks.
+* **Authorization & Ownership:** Completed and verified (T017–T019). Session resolution guards, requireAuth/requireOnboarded redirect controls, resource ownership validators, and integration checks.
+* **Shared Validation:** Completed and verified (T023). Common Zod validation rules (UUIDs, pagination parameters, dates, positive money amounts).
+* **Money Helpers:** Completed and verified (T020). Decimal-safe arithmetic wrappers (add, subtract, multiply, divide) and currency/percentage formatters.
+* **Logging:** Completed and verified (T022). Lightweight Console JSON structured logger with sensitive credential parameter sanitization.
+* **Design Tokens:** Completed and verified (T026). Semantic colors (Teal brand, Cyan AI, Green success, Amber warning, Red danger) mapped to CSS variables in globals.css for light/dark themes.
+* **Fonts:** Completed and verified (T027). Geist and Noto Sans Thai fonts loaded via App Router layout structure.
+* **CI & Testing Foundation:** Completed and verified (T008). GitHub Actions run linting, typescript checking, unit tests, and production compilation on pushes/PRs.
 
-Core workflow:
+---
 
-Business baseline
-→ health diagnostics
-→ risk detection
-→ scenario simulation
-→ comparison
-→ AI explanation
-→ report
+## Frontend — Void
 
-Current implementation state:
+* **Current Branch:** `feature/ui-foundation`
+* **Current Milestone:** Phase 2.5 — Frontend Foundation
+* **Next Task:** T028 (Configure theme provider)
+* **Completed Tasks:**
+  * T026 Implement light and dark design tokens from `design.md` in `src/app/globals.css`
+  * T027 Configure Geist Sans, Geist Mono, and Noto Sans Thai fonts in App layouts
+* **In-Progress Tasks:**
+  * None
+* **Next Tasks (Phase 2.5 UI Foundation):**
+  * T028 Configure theme provider and system/light/dark persistence
+  * T029 Configure next-intl localization routing and English/Thai message files
+  * T030 Build reusable typography, status badges, empty/error panels, and skeleton UI components
+  * T031 Build responsive application shell, sidebar navigation, and header topbar
+  * T032 Build reduced-motion-aware transition animation primitives
+  * T033 Add local design-system showcase route
+  * T034 Run automated accessibility and color contrast tests
+* **Blockers:**
+  * None
+* **Waiting on Thiha:**
+  * Onboarding UI forms (Phase 3 T046) will depend on the final onboarding schemas and server actions (T042, T044, T045) being finalized.
 
-- Project initialization: Completed
-- Database: Not started
-- Authentication: Not started
-- Design system: Not started
-- Dashboard: Not started
-- Risk engine: Not started
-- Simulation engine: Not started
-- AI integration: Not started
-- Reports: Not started
-- Deployment: Not started
+---
 
-## Phase 1 — Setup
+## Backend — Thiha
 
-- [x] T001 Create Next.js project structure
-- [x] T002 Install runtime dependencies
-- [x] T003 Configure testing tools
-- [x] T004 Configure TypeScript
-- [x] T005 Configure ESLint and Prettier
-- [x] T006 Initialize shadcn/ui
-- [x] T007 Create `.env.example`
-- [x] T008 Add CI workflow
-- [x] T009 Create quickstart documentation
+* **Current Branch:** `feature/onboarding-backend`
+* **Current Milestone:** Phase 3 — Create a Trusted Business Baseline (Backend)
+* **Next Task:** T039 (Write business-profile Zod schema tests)
+* **Completed Tasks (Phase 2 Backend Foundation):**
+  * T010 Define authentication and user models in database schema
+  * T011 Define business, snapshots, risks, and simulations models
+  * T012 Apply initial Prisma schema migrations
+  * T013 Setup singleton Prisma client
+  * T014 Configure Better Auth server adaptors
+  * T015 Configure Better Auth client exports
+  * T016 Hook auth API route handlers
+  * T017 Write server route guards and redirection rules
+  * T018 Write ownership authorization rules
+  * T019 Write auth integration test checks
+  * T020 Implement money and decimal-safe arithmetic helpers
+  * T021 Implement custom application errors
+  * T022 Implement structured logging sanitizers
+  * T023 Define Zod common schemas
+  * T025 Define engine version constants
+  * T036 Create minimal seed file (seeds user, business, snapshots)
+  * T037 Create mock financial fixtures
+* **In-Progress Tasks:**
+  * None
+* **Next Tasks (Phase 3 Backend Onboarding):**
+  * T039 Write business-profile Zod schema tests
+  * T040 Write onboarding server-action integration tests
+  * T042 Define business and financial onboarding schemas
+  * T044 Implement business onboarding server action
+  * T045 Implement financial snapshot creation action
+* **Blockers:**
+  * None
+* **Waiting on Void:**
+  * Registration/login/reset UI forms (T043) and onboarding UI form components (T046) to integrate backend actions.
 
-## Phase 2 — Foundation
+---
 
-- [x] T010 Define authentication and user models
-- [x] T011 Define business and simulation models
-- [x] T012 Create initial Prisma migration
-- [x] T013 Configure Prisma client
-- [x] T014 Configure Better Auth server
-- [x] T015 Configure Better Auth client
-- [x] T016 Add authentication route
-- [x] T017 Add route protection
-- [x] T018 Add ownership-scoped authorization
-- [x] T019 Add authentication tests
-- [x] T020 Define money and calculation helpers
-- [x] T021 Define application error types
-- [x] T022 Add lightweight server logging
-- [x] T023 Define common Zod schemas
-- [-] T024 Add idempotency helper (Deferred)
-- [x] T025 Add engine version constants
-- [x] T026 Implement CSS tokens and variables
-- [x] T027 Configure font layouts
-- [-] T028 Configure theme provider (Deferred to UI phase)
-- [-] T029 Configure next-intl routing (Deferred to UI phase)
-- [-] T030 Build reusable UI components (Deferred to UI phase)
-- [-] T031 Build application shell (Deferred to UI phase)
-- [-] T032 Build animation primitives (Deferred to UI phase)
-- [-] T033 Add design-system showcase (Deferred to UI phase)
-- [-] T034 Add contrast check tests (Deferred to UI phase)
-- [-] T035 Create shared repository helpers (Removed)
-- [x] T036 Create minimal Thai SME seed data
-- [x] T037 Create calculation fixtures
-- [-] T038 Create Playwright auth setup (Deferred)
+## Integration Status
 
-## Completed Work
+* **Current User Story:** US1 — Create a Trusted Business Baseline
+* **Frontend Onboarding UI Readiness:** Not started (Pending Phase 2.5 UI Foundation setup by Void)
+* **Backend Onboarding Service Readiness:** Not started (Pending Phase 3 Backend setup by Thiha)
+* **Integration Status:** Waiting (Awaiting baseline UI components and backend actions to connect)
+* **E2E Test Readiness:** Waiting (Awaiting implementation of sign-in, signup, and onboarding pages)
+* **Next Merge Point:** Complete registration, sign-in pages, and onboarding wizard actions.
 
-* **Phase 1 (Setup):** Initialized Next.js 16.2 App Router with React 19.2, Tailwind CSS v4, TypeScript, Prettier, flat ESLint configuration, Vitest (JSDOM/jest-dom) tests, and Playwright Chromium configuration.
-* **Phase 2 (Foundation):** Set up relational PostgreSQL database models via Prisma with official Better Auth schema, applied initial database migration and ran seed scripts locally. Configured Better Auth server/client handlers, Next.js 16 optimistic routing proxy (`src/proxy.ts`), server-side guards and resource ownership authorization hooks, decimal-safe formatting and arithmetic modules, lightweight structured logging, error exception wrappers, common Zod validator schemas, engine constants, and unit fixtures. (UI components, app shell, and motion primitives were deferred to a subsequent phase).
+---
 
 ## Verification Record
 
@@ -98,34 +105,30 @@ Current implementation state:
 | T001–T009 | `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` | Pass | 2026-07-18 |
 | T010–T023, T025–T027, T036–T037 | Prisma validation/migrations, CLI seed scripts, Vitest integration checks, and Turbopack builds | Pass | 2026-07-18 |
 
-Verification examples:
-
-- `npm run lint`
-- `npm run typecheck`
-- `npm run test`
-- `npm run build`
-- `npx playwright test`
-- Prisma migration from clean database
-- Manual user-flow test
+---
 
 ## Security Checklist
 
-- [x] Secrets are server-side only
-- [x] `.env` files are ignored by Git
-- [x] Protected routes require authentication
-- [x] Database queries verify business ownership
-- [ ] Server actions validate authorization
-- [x] User input is validated with Zod
-- [x] Financial amounts use decimal-safe handling
-- [ ] AI receives only necessary business context
-- [ ] AI cannot alter calculated financial results
-- [x] Logs exclude passwords, tokens, and sensitive payloads
-- [ ] Destructive actions require confirmation
-- [x] IDOR tests pass
-- [x] Dependency audit reviewed
-- [ ] Production environment variables verified
+* **Shared Foundation Checkpoints:**
+  - [x] Secrets are server-side only
+  - [x] `.env` files are ignored by Git
+  - [x] Protected routes require authentication
+  - [x] Database queries verify business ownership
+  - [x] User input is validated with Zod
+  - [x] Financial amounts use decimal-safe handling
+  - [x] Logs exclude passwords, tokens, and sensitive payloads
+  - [x] IDOR tests pass
+  - [x] Dependency audit reviewed
+* **Pending Feature Checkpoints:**
+  - [ ] Server actions validate authorization (Thiha)
+  - [ ] AI receives only necessary business context (Thiha)
+  - [ ] AI cannot alter calculated financial results (Thiha)
+  - [ ] Destructive actions require confirmation (Void)
+  - [ ] Production environment variables verified (Shared)
 
-## Design Checklist
+---
+
+## Design Checklist (Void)
 
 - [ ] Uses Wallflower design tokens
 - [ ] Teal remains the main brand color
@@ -143,13 +146,7 @@ Verification examples:
 - [ ] Thai text layout checked
 - [ ] Status is not communicated through color alone
 
-## Known Issues
-
-None recorded.
-
-## Blockers
-
-None recorded.
+---
 
 ## Deferred Items
 
@@ -159,17 +156,29 @@ None recorded.
 - Subscription billing
 - Native mobile application
 - Custom machine-learning models
+- Audit logging (AuditEvent and log triggers postponed)
+- T024 Idempotency helper (Deferred until mutations exist)
+- T035 Generic repository helpers (Removed)
+- T038 Playwright auth setup (Deferred until authentication flow exists)
+
+---
 
 ## Last Session Notes
 
-No development session has been completed yet.
+Completed Phase 2 Foundational backend layers:
+1. Created unified PostgreSQL database schemas mapping official Better Auth credentials and custom client snapshots with `onDelete: Restrict` baseline rules.
+2. Ran migrations, created seed file, and verified database inserts.
+3. Created Better Auth server and client integrations, routes, and integration verification tests.
+4. Created Money, Errors, lightweight console structured Logger, Zod, and calculations version files.
+5. Configured Next.js 16 optimistic routing proxy redirects.
+6. Reorganized project tasks and progress tracking files to outline Frontend (Void) and Backend (Thiha) ownership boundaries.
+
+---
 
 ## Next Session Instructions
 
 1. Read `AGENTS.md`.
 2. Read this file.
-3. Inspect the repository and Git status.
-4. Verify completed tasks before trusting their status.
-5. Continue from the first incomplete, unblocked task.
-6. Do not repeat completed work.
-7. Update this file before ending the session.
+3. Void should checkout `feature/ui-foundation` and complete the UI Milestones (T028–T034).
+4. Thiha should checkout `feature/onboarding-backend` and complete the Backend Milestones (T039–T040, T042, T044–T045).
+5. Ensure to pull updated `main` before integrating, and run all checks before submitting pull requests.

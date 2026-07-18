@@ -110,3 +110,72 @@ To preview the compiled production server locally:
 ```bash
 npm run start
 ```
+
+---
+
+## 5. Team Development Workflow
+
+To ensure smooth collaboration, our team divides frontend and backend responsibilities:
+
+### Void — Frontend & Product Interface
+* **Branch Conventions:**
+  * `feature/ui-foundation`
+  * `feature/onboarding-ui`
+  * `feature/dashboard-ui`
+  * `feature/simulation-ui`
+
+### Thiha — Backend, Calculations, Persistence & AI
+* **Branch Conventions:**
+  * `feature/onboarding-backend`
+  * `feature/dashboard-backend`
+  * `feature/risk-engine`
+  * `feature/simulation-engine`
+
+### Shared Git Workflow
+1. **Start from updated `main`:** Always synchronize your local main branch with remote before starting work:
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+2. **Create a feature branch:** Create your scoped branch following conventions:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit only related work:** Keep commits small, atomic, and focused on the assigned task IDs.
+4. **Push branch:** Push your branch to remote and set it as upstream (only needed on first push):
+   ```bash
+   git push -u origin feature/your-feature-name
+   ```
+   *For subsequent pushes, you can simply run:*
+   ```bash
+   git push
+   ```
+5. **Open a pull request:** Fill out description templates detailing changes and tasks completed.
+6. **Execute local checks:** Before merging, verify that all quality gates pass locally and on GitHub CI:
+   ```bash
+   npm run lint
+   npm run typecheck
+   npm run test
+   npm run build
+   ```
+7. **Merge only after review:** PR merges require a reviewer's sign-off and passing CI runs.
+8. **Merge latest `main` into your feature branch:** Before beginning subsequent tasks or integrating work, pull main updates into your feature branch to handle conflicts:
+   *Update your local main first:*
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+   *Go back to your feature branch:*
+   ```bash
+   git checkout feature/your-feature-name
+   ```
+   *Merge latest main:*
+   ```bash
+   git merge main
+   ```
+   *(Alternatively, you can run `git fetch origin` followed by `git merge origin/main` to merge directly from the remote).*
+
+> [!IMPORTANT]
+> * **Do not commit directly to `main`:** Direct commits on `main` are strictly forbidden. All updates must go through feature branches and pull requests.
+> * **Discuss Contract Changes First:** Changes to shared interfaces—Prisma database models, shared Zod validator schemas, calculation type contracts, or API endpoints—must be aligned with the other developer before writing the code. Modifications to shared boundaries impact both frontend and backend configurations.
+
