@@ -123,15 +123,15 @@ Responsible for:
 - [x] T021 Define application error types in `src/lib/errors.ts`
 - [x] T022 Add lightweight server structured logging in `src/lib/logger.ts`
 - [x] T023 Define Zod schemas for shared identifiers, pagination, money, and dates in `src/lib/validation/common.ts`
-- [-] T024 Add idempotency helper for simulation and report mutations (Deferred until mutations exist)
+- [ ] T024 Add idempotency helper for simulation and report mutations (Deferred until mutations exist)
 - [x] T025 Add calculation and risk-engine version constants in `src/lib/calculations/version.ts` and `src/lib/risks/version.ts`
 
 ### Shared data and fixtures
 
-- [-] T035 Create typed repository helpers for business-scoped reads and writes in `src/features/shared/repository.ts` (Removed in favor of feature-specific helpers)
+- [ ] T035 Create typed repository helpers for business-scoped reads and writes in `src/features/shared/repository.ts` (Removed in favor of feature-specific helpers)
 - [x] T036 Create minimal Thai SME seed data in `prisma/seed.ts`
 - [x] T037 Create calculation fixtures in `tests/fixtures/financial.ts`
-- [-] T038 Create Playwright authenticated-state setup in `tests/e2e/auth.setup.ts` (Deferred until authentication flow exists)
+- [ ] T038 Create Playwright authenticated-state setup in `tests/e2e/auth.setup.ts` (Deferred until authentication flow exists)
 
 **Checkpoint**: Core database migrations applied, backend validations and test integration setup pass cleanly.
 
@@ -143,13 +143,13 @@ Responsible for:
 **Recommended Branch**: `feature/ui-foundation`  
 **Purpose**: Set up theme contexts, routing locales, layout grids, motion primitives, and accessibility checks.
 
-- [ ] T028 [P] [Owner: Void] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx`
-- [ ] T029 [P] [Owner: Void] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
-- [ ] T030 [Owner: Void] Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
-- [ ] T031 [Owner: Void] Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
-- [ ] T032 [Owner: Void] Build reduced-motion-aware animation primitives in `src/components/motion/`
-- [ ] T033 [P] [Owner: Void] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
-- [ ] T034 [P] [Owner: Void] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`
+- [x] T028 [P] [Owner: Void] Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx`
+- [x] T029 [P] [Owner: Void] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
+- [x] T030 [Owner: Void] Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
+- [x] T031 [Owner: Void] Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
+- [x] T032 [Owner: Void] Build reduced-motion-aware animation primitives in `src/components/motion/`
+- [x] T033 [P] [Owner: Void] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
+- [x] T034 [P] [Owner: Void] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`
 
 **Checkpoint**: Theme, localization routing, layout shells, and core design elements are ready for integration.
 
@@ -173,15 +173,15 @@ Responsible for:
 ### Implementation for User Story 1
 
 - [ ] T042 [P] [US1] [Owner: Thiha] Define business and financial onboarding schemas in `src/features/business-profile/schemas.ts`
-- [ ] T043 [P] [US1] [Owner: Void] Build account registration, login, and password-reset pages in `src/app/[locale]/(auth)/`
+- [x] T043 [P] [US1] [Owner: Void] Build account registration, login, and password-reset pages in `src/app/[locale]/(auth)/`
 - [ ] T044 [US1] [Owner: Thiha] Implement business onboarding server action in `src/actions/business.actions.ts`
 - [ ] T045 [US1] [Owner: Thiha] Implement financial snapshot creation action in `src/actions/financial.actions.ts`
-- [ ] T046 [US1] [Owner: Void] Build multi-step onboarding form in `src/features/business-profile/components/onboarding-form.tsx`
-- [ ] T047 [US1] [Owner: Void] Add autosave-safe client state and validation summary to onboarding
-- [ ] T048 [US1] [Owner: Void] Build data-privacy and "why we ask" guidance panels
-- [ ] T049 [US1] [Owner: Void] Implement `src/app/[locale]/onboarding/page.tsx` with redirect behavior
-- [ ] T050 [US1] [Owner: Void] Add partial, empty, loading, server-error, and duplicate-submission states
-- [ ] T051 [US1] [Owner: Void] Add English and Thai onboarding messages in `src/messages/en.json` and `src/messages/th.json`
+- [x] T046 [US1] [Owner: Void] Build multi-step onboarding form in `src/features/business-profile/components/onboarding-form.tsx`
+- [x] T047 [US1] [Owner: Void] Add autosave-safe client state and validation summary to onboarding
+- [x] T048 [US1] [Owner: Void] Build data-privacy and "why we ask" guidance panels
+- [x] T049 [US1] [Owner: Void] Implement `src/app/[locale]/onboarding/page.tsx` with redirect behavior
+- [x] T050 [US1] [Owner: Void] Add partial, empty, loading, server-error, and duplicate-submission states
+- [x] T051 [US1] [Owner: Void] Add English and Thai onboarding messages in `src/messages/en.json` and `src/messages/th.json`
 
 **Checkpoint**: A new account can create a durable baseline and reach the application.
 
@@ -206,15 +206,15 @@ Responsible for:
 - [ ] T057 [P] [US2] [Owner: Thiha] Implement shared financial metrics in `src/lib/calculations/metrics.ts`
 - [ ] T058 [P] [US2] [Owner: Thiha] Implement health score and status rules in `src/lib/calculations/health.ts`
 - [ ] T059 [US2] [Owner: Thiha] Implement metric-snapshot persistence in `src/features/dashboard/services/metric-snapshot.service.ts`
-- [ ] T060 [P] [US2] [Owner: Void] Build KPI card and tooltip components in `src/components/metrics/`
-- [ ] T061 [P] [US2] [Owner: Void] Build accessible line and comparison charts in `src/components/charts/`
-- [ ] T062 [US2] [Owner: Void] Build Business Pulse and Today's Insights components in `src/features/dashboard/components/`
+- [x] T060 [P] [US2] [Owner: Void] Build KPI card and tooltip components in `src/components/metrics/`
+- [x] T061 [P] [US2] [Owner: Void] Build accessible line and comparison charts in `src/components/charts/`
+- [x] T062 [US2] [Owner: Void] Build Business Pulse and Today's Insights components in `src/features/dashboard/components/`
 - [ ] T063 [US2] [Owner: Thiha] Implement dashboard query service in `src/features/dashboard/services/dashboard.service.ts`
-- [ ] T064 [US2] [Owner: Void] Build `src/app/[locale]/(app)/dashboard/page.tsx`
-- [ ] T065 [Owner: Void] Build business-health detail tabs in `src/app/[locale]/(app)/business-health/page.tsx`
-- [ ] T066 [Owner: Void] Add data completeness, stale-data, and missing-history states
-- [ ] T067 [Owner: Void] Add print-safe data table alternatives for charts
-- [ ] T067a [US2] [Owner: Void] Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
+- [x] T064 [US2] [Owner: Void] Build `src/app/[locale]/(app)/dashboard/page.tsx`
+- [x] T065 [Owner: Void] Build business-health detail tabs in `src/app/[locale]/(app)/business-health/page.tsx`
+- [x] T066 [Owner: Void] Add data completeness, stale-data, and missing-history states
+- [x] T067 [Owner: Void] Add print-safe data table alternatives for charts
+- [x] T067a [US2] [Owner: Void] Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
 
 **Checkpoint**: The dashboard independently communicates current business health and the next important action.
 
@@ -239,11 +239,11 @@ Responsible for:
 - [ ] T073 [P] [US3] [Owner: Thiha] Implement cash-flow, runway, expense-growth, payroll, receivable, liquidity, and data-completeness rules in `src/lib/risks/rules.ts`
 - [ ] T074 [US3] [Owner: Thiha] Implement deterministic risk engine in `src/lib/risks/engine.ts`
 - [ ] T075 [US3] [Owner: Thiha] Implement risk-assessment persistence in `src/features/risks/services/risk-assessment.service.ts`
-- [ ] T076 [P] [US3] [Owner: Void] Build risk summary, category card, evidence, and mitigation components in `src/features/risks/components/`
-- [ ] T077 [US3] [Owner: Void] Build filtering, sorting, and status management for risks
-- [ ] T078 [US3] [Owner: Void] Build `src/app/[locale]/(app)/risks/page.tsx`
-- [ ] T079 [US3] [Owner: Void] Add incomplete-assessment and stale-assessment warnings
-- [ ] T080 [US3] [Owner: Void] Link dashboard risk insights to the relevant risk detail
+- [x] T076 [P] [US3] [Owner: Void] Build risk summary, category card, evidence, and mitigation components in `src/features/risks/components/`
+- [x] T077 [US3] [Owner: Void] Build filtering, sorting, and status management for risks
+- [x] T078 [US3] [Owner: Void] Build `src/app/[locale]/(app)/risks/page.tsx`
+- [x] T079 [US3] [Owner: Void] Add incomplete-assessment and stale-assessment warnings
+- [x] T080 [US3] [Owner: Void] Link dashboard risk insights to the relevant risk detail
 
 **Checkpoint**: The risk center independently identifies and explains business risks without AI.
 
@@ -275,14 +275,14 @@ Responsible for:
 - [ ] T093 [P] [US4] [Owner: Thiha] Implement payment-delay calculator in `src/lib/calculations/scenarios/payment-delay.ts`
 - [ ] T094 [US4] [Owner: Thiha] Implement scenario registry and dispatcher in `src/lib/calculations/scenarios/index.ts`
 - [ ] T095 [US4] [Owner: Thiha] Implement simulation create, save, rename, duplicate, and delete actions in `src/actions/simulation.actions.ts`
-- [ ] T096 [P] [US4] [Owner: Void] Build scenario selector cards in `src/components/simulations/scenario-selector.tsx`
-- [ ] T097 [P] [US4] [Owner: Void] Build scenario-specific dynamic forms in `src/components/simulations/forms/`
-- [ ] T098 [US4] [Owner: Void] Build simulator wizard in `src/app/[locale]/(app)/simulations/new/page.tsx`
-- [ ] T099 [P] [US4] [Owner: Void] Build result KPI row, case selector, timeline, assumption panel, and detailed table in `src/components/simulations/results/`
-- [ ] T100 [US4] [Owner: Void] Build simulation result page in `src/app/[locale]/(app)/simulations/[simulationId]/page.tsx`
-- [ ] T101 [US4] [Owner: Void] Build simulation history page in `src/app/[locale]/(app)/simulations/page.tsx`
-- [ ] T102 [US4] [Owner: Void] Add run-progress, idempotency, invalid-value, stale-baseline, empty, and calculation-error states
-- [ ] T103 [US4] [Owner: Void] Add reduced-motion result transitions and accessible completion announcement
+- [x] T096 [P] [US4] [Owner: Void] Build scenario selector cards in `src/components/simulations/scenario-selector.tsx`
+- [x] T097 [P] [US4] [Owner: Void] Build scenario-specific dynamic forms in `src/components/simulations/forms/`
+- [x] T098 [US4] [Owner: Void] Build simulator wizard in `src/app/[locale]/(app)/simulations/new/page.tsx`
+- [x] T099 [P] [US4] [Owner: Void] Build result KPI row, case selector, timeline, assumption panel, and detailed table in `src/components/simulations/results/`
+- [x] T100 [US4] [Owner: Void] Build simulation result page in `src/app/[locale]/(app)/simulations/[simulationId]/page.tsx`
+- [x] T101 [US4] [Owner: Void] Build simulation history page in `src/app/[locale]/(app)/simulations/page.tsx`
+- [x] T102 [US4] [Owner: Void] Add run-progress, idempotency, invalid-value, stale-baseline, empty, and calculation-error states
+- [x] T103 [US4] [Owner: Void] Add reduced-motion result transitions and accessible completion announcement
 
 **Checkpoint**: The flagship simulator works end-to-end without requiring AI.
 
@@ -310,11 +310,11 @@ Responsible for:
 - [ ] T112 [US5] [Owner: Thiha] Implement context selector that sends only relevant business values in `src/features/advisor/services/context.service.ts`
 - [ ] T113 [US5] [Owner: Thiha] Implement AI recommendation route in `src/app/api/ai/recommendation/route.ts`
 - [ ] T114 [US5] [Owner: Thiha] Persist AI recommendations separately from deterministic results
-- [ ] T115 [P] [US5] [Owner: Void] Build calculated-fact, assumption, AI-interpretation, uncertainty, and disclaimer components in `src/features/advisor/components/`
-- [ ] T116 [US5] [Owner: Void] Build contextual advisor page in `src/app/[locale]/(app)/advisor/page.tsx`
+- [x] T115 [P] [US5] [Owner: Void] Build calculated-fact, assumption, AI-interpretation, uncertainty, and disclaimer components in `src/features/advisor/components/`
+- [x] T116 [US5] [Owner: Void] Build contextual advisor page in `src/app/[locale]/(app)/advisor/page.tsx`
 - [ ] T117 [P] [US5] [Owner: Thiha] Implement scenario comparison service in `src/features/simulations/services/comparison.service.ts`
-- [ ] T118 [US5] [Owner: Void] Build comparison table and chart view in `src/app/[locale]/(app)/simulations/compare/page.tsx`
-- [ ] T119 [US5] [Owner: Void] Add insufficient-data, malformed-output, timeout, retry, and provider-unavailable states
+- [x] T118 [US5] [Owner: Void] Build comparison table and chart view in `src/app/[locale]/(app)/simulations/compare/page.tsx`
+- [x] T119 [US5] [Owner: Void] Add insufficient-data, malformed-output, timeout, retry, and provider-unavailable states
 - [ ] T120 [US5] [Owner: Thiha] Ensure AI confidence label derives from data completeness and sensitivity, not fabricated probability
 
 **Checkpoint**: Users can compare options and receive grounded advice without losing access to calculations when AI fails.
@@ -337,13 +337,13 @@ Responsible for:
 
 - [ ] T124 [US6] [Owner: Thiha] Implement report composition service in `src/features/reports/services/report.service.ts`
 - [ ] T125 [US6] [Owner: Thiha] Implement report create and delete actions in `src/actions/report.actions.ts`
-- [ ] T126 [P] [US6] [Owner: Void] Build report cover, executive summary, metric table, risk section, simulation section, recommendation section, and action-plan components in `src/components/reports/`
-- [ ] T127 [US6] [Owner: Void] Build report detail page in `src/app/[locale]/(app)/reports/[reportId]/page.tsx`
-- [ ] T128 [US6] [Owner: Void] Build report history page in `src/app/[locale]/(app)/reports/page.tsx`
-- [ ] T129 [US6] [Owner: Void] Implement print stylesheet in `src/app/print.css`
-- [ ] T130 [US6] [Owner: Void] Add data-through date, calculation version, report version, assumptions, and disclaimer
-- [ ] T131 [US6] [Owner: Void] Add browser print/PDF action and print-preview mode
-- [ ] T132 [US6] [Owner: Void] Add incomplete-section and stale-source indicators
+- [x] T126 [P] [US6] [Owner: Void] Build report cover, executive summary, metric table, risk section, simulation section, recommendation section, and action-plan components in `src/components/reports/`
+- [x] T127 [US6] [Owner: Void] Build report detail page in `src/app/[locale]/(app)/reports/[reportId]/page.tsx`
+- [x] T128 [US6] [Owner: Void] Build report history page in `src/app/[locale]/(app)/reports/page.tsx`
+- [x] T129 [US6] [Owner: Void] Implement print stylesheet in `src/app/print.css`
+- [x] T130 [US6] [Owner: Void] Add data-through date, calculation version, report version, assumptions, and disclaimer
+- [x] T131 [US6] [Owner: Void] Add browser print/PDF action and print-preview mode
+- [x] T132 [US6] [Owner: Void] Add incomplete-section and stale-source indicators
 
 **Checkpoint**: Reports are useful in a demo and reproducible from their source records.
 
@@ -364,12 +364,12 @@ Responsible for:
 
 - [ ] T135 [P] [US7] [Owner: Thiha] Build profile and preference schemas in `src/features/settings/schemas.ts`
 - [ ] T136 [US7] [Owner: Thiha] Implement preference update actions in `src/features/settings/actions.ts`
-- [ ] T137 [US7] [Owner: Void] Build appearance, language, date, currency, and accessibility settings
-- [ ] T138 [US7] [Owner: Void] Build profile and business-information settings
-- [ ] T139 [US7] [Owner: Void] Build password and session-management controls supported by Better Auth
-- [ ] T140 [US7] [Owner: Void] Build account-deletion confirmation flow
-- [ ] T141 [US7] [Owner: Void] Build `src/app/[locale]/(app)/settings/page.tsx`
-- [ ] T142 [US7] [Owner: Void] Add destructive-action and reauthentication error states
+- [x] T137 [US7] [Owner: Void] Build appearance, language, date, currency, and accessibility settings
+- [x] T138 [US7] [Owner: Void] Build profile and business-information settings
+- [x] T139 [US7] [Owner: Void] Build password and session-management controls supported by Better Auth
+- [x] T140 [US7] [Owner: Void] Build account-deletion confirmation flow
+- [x] T141 [US7] [Owner: Void] Build `src/app/[locale]/(app)/settings/page.tsx`
+- [x] T142 [US7] [Owner: Void] Add destructive-action and reauthentication error states
 
 **Checkpoint**: Preferences and security controls work without affecting core business data.
 
@@ -379,16 +379,16 @@ Responsible for:
 
 **Purpose**: Present Wallflower clearly without fabricated traction or unsupported claims.
 
-- [ ] T143 [Owner: Void] Build marketing navigation and responsive header in `src/app/[locale]/(marketing)/`
-- [ ] T144 [Owner: Void] Build landing hero using approved copy and a real product-preview composition
-- [ ] T145 [Owner: Void] Build three-step workflow section: Diagnose, Simulate, Act
-- [ ] T146 [Owner: Void] Build supported scenario examples section
-- [ ] T147 [Owner: Void] Build explainability and trust section distinguishing calculations from AI
-- [ ] T148 [Owner: Void] Build Thai SME context and challenge-alignment section
-- [ ] T149 [Owner: Void] Build final CTA and footer
-- [ ] T150 [Owner: Void] Add restrained Motion interactions and reduced-motion alternatives
-- [ ] T151 [Owner: Void] Remove fabricated customer logos, user counts, ratings, and improvement statistics
-- [ ] T152 [Owner: Void] Add SEO metadata, Open Graph image, sitemap, and robots configuration
+- [x] T143 [Owner: Void] Build marketing navigation and responsive header in `src/app/[locale]/(marketing)/`
+- [x] T144 [Owner: Void] Build landing hero using approved copy and a real product-preview composition
+- [x] T145 [Owner: Void] Build three-step workflow section: Diagnose, Simulate, Act
+- [x] T146 [Owner: Void] Build supported scenario examples section
+- [x] T147 [Owner: Void] Build explainability and trust section distinguishing calculations from AI
+- [x] T148 [Owner: Void] Build Thai SME context and challenge-alignment section
+- [x] T149 [Owner: Void] Build final CTA and footer
+- [x] T150 [Owner: Void] Add restrained Motion interactions and reduced-motion alternatives
+- [x] T151 [Owner: Void] Remove fabricated customer logos, user counts, ratings, and improvement statistics
+- [x] T152 [Owner: Void] Add SEO metadata, Open Graph image, sitemap, and robots configuration
 - [ ] T153 [Owner: Void] Add landing-page performance and accessibility test in `tests/e2e/landing.spec.ts`
 
 **Checkpoint**: The public site communicates the product accurately and leads into onboarding or a sample simulation.
@@ -399,11 +399,11 @@ Responsible for:
 
 **Purpose**: Prepare the prototype for judging, user testing, and deployment.
 
-- [ ] T154 [P] [Owner: Void] Review every page against `design.md` Design QA Checklist
-- [ ] T155 [P] [Owner: Void] Complete English copy and Thai-ready translation keys
-- [ ] T156 [P] [Owner: Void] Verify light, dark, and system themes across all core routes
-- [ ] T157 [P] [Owner: Void] Verify reduced-motion behavior across marketing and application routes
-- [ ] T158 [P] [Owner: Void] Add loading, empty, error, partial-data, and offline-message states to all core screens
+- [x] T154 [P] [Owner: Void] Review every page against `design.md` Design QA Checklist
+- [x] T155 [P] [Owner: Void] Complete English copy and Thai-ready translation keys
+- [x] T156 [P] [Owner: Void] Verify light, dark, and system themes across all core routes
+- [x] T157 [P] [Owner: Void] Verify reduced-motion behavior across marketing and application routes
+- [x] T158 [P] [Owner: Void] Add loading, empty, error, partial-data, and offline-message states to all core screens
 - [ ] T159 [Owner: Shared] Perform ownership and insecure-direct-object-reference security review
 - [ ] T160 [Owner: Shared] Verify secrets and financial payloads are absent from client bundles and logs
 - [ ] T161 [Owner: Thiha] Run Prisma migration from a clean database and validate seed process

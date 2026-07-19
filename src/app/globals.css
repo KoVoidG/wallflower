@@ -109,3 +109,13 @@ body {
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

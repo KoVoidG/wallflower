@@ -1,0 +1,159 @@
+/* src/app/print.css — Print and PDF export styles */
+
+/* ========================================
+   Print-preview mode (in-browser toggle)
+   ======================================== */
+.print-preview {
+  /* Override dark mode colors in preview */
+  --background: #F7FAF9;
+  --surface: #FFFFFF;
+  --surface-subtle: #F0F6F4;
+  --surface-raised: #FFFFFF;
+  --border: #DCE7E3;
+  --border-strong: #B8CCC5;
+  --text-primary: #10201D;
+  --text-secondary: #4B625C;
+  --text-muted: #71857F;
+  --brand: #0F766E;
+  --brand-soft: #DDF3EF;
+  --success: #15803D;
+  --success-soft: #E7F6EC;
+  --warning: #D97706;
+  --warning-soft: #FFF3DD;
+  --danger: #DC2626;
+  --danger-soft: #FDECEC;
+  --info: #2563EB;
+  --info-soft: #E8F0FF;
+  --ai: #0891B2;
+  --ai-soft: #E5F7FB;
+}
+
+/* ========================================
+   @media print — actual print/PDF output
+   ======================================== */
+@media print {
+  /* Hide app shell, nav, interactive controls */
+  aside[class],
+  nav[aria-label="Main navigation"],
+  nav[aria-label="Mobile navigation"],
+  [class*="MobileBottomNav"],
+  [class*="mobile-nav"],
+  [class*="Topbar"],
+  header[class*="topbar"],
+  [data-print-hide],
+  button,
+  a[class*="back"] {
+    display: none !important;
+  }
+
+  /* Reset body for print */
+  html, body {
+    background: white !important;
+    color: #10201D !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Override CSS variables for light print */
+  :root, .dark {
+    --background: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-subtle: #F5F7F6;
+    --surface-raised: #FFFFFF;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --brand: #0F766E;
+    --brand-soft: #DDF3EF;
+    --success: #15803D;
+    --success-soft: #E7F6EC;
+    --warning: #92400E;
+    --warning-soft: #FFF3DD;
+    --danger: #B91C1C;
+    --danger-soft: #FEE2E2;
+    --info: #1D4ED8;
+    --info-soft: #E8F0FF;
+    --ai: #0E7490;
+    --ai-soft: #E5F7FB;
+  }
+
+  /* Remove layout offsets */
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  div[class*="ml-"] {
+    margin-left: 0 !important;
+  }
+
+  /* A4-friendly sizing */
+  @page {
+    size: A4;
+    margin: 20mm 15mm;
+  }
+
+  /* Page break rules */
+  section {
+    break-inside: avoid;
+  }
+
+  section[aria-labelledby] {
+    break-before: auto;
+  }
+
+  /* Force page break before major sections */
+  section[aria-labelledby="simulation-heading"],
+  section[aria-labelledby="action-plan-heading"],
+  footer[aria-labelledby="metadata-heading"] {
+    break-before: page;
+  }
+
+  /* Avoid breaking inside cards and rows */
+  div[class*="border"][class*="rounded"],
+  tr {
+    break-inside: avoid;
+  }
+
+  /* Remove shadows and decorative backgrounds */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure tabular numerals */
+  table, td, th {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Make borders visible in print */
+  table {
+    border-collapse: collapse;
+  }
+
+  /* Remove fixed/sticky positioning */
+  [class*="fixed"],
+  [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* Ensure links show text, not underlines */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  /* Hide scrollbar overflow artifacts */
+  [class*="overflow"] {
+    overflow: visible !important;
+  }
+
+  /* Full-width report article */
+  article {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}

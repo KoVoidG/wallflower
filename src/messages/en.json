@@ -1,0 +1,562 @@
+{
+  "welcome": "Welcome",
+  "login": "Login",
+  "register": "Register",
+  "dashboard": "Dashboard",
+  "settings": "Settings",
+  "risk": "Risk Center",
+  "simulation": "Simulation",
+  "advisor": "Advisor",
+  "reports": "Reports",
+  "onboarding": {
+    "pageTitle": "Set up your business",
+    "step1Title": "Business Information",
+    "step1Description": "Tell us about your business",
+    "step2Title": "Financial Snapshot",
+    "step2Description": "Your current financial overview",
+    "step3Title": "Review & Submit",
+    "step3Description": "Confirm and submit",
+    "businessName": "Business Name",
+    "industry": "Industry",
+    "businessType": "Business Type",
+    "businessStage": "Business Stage",
+    "businessSize": "Business Size",
+    "location": "Location",
+    "goals": "Business Goals",
+    "goalsHint": "Select 1-5 goals or add your own",
+    "month": "Reporting Month",
+    "revenue": "Monthly Revenue",
+    "expenses": "Expense Categories",
+    "cashReserve": "Cash Reserve",
+    "receivables": "Receivables",
+    "payables": "Payables",
+    "debt": "Total Debt",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "draftFound": "We found a saved draft of your onboarding data.",
+    "resumeDraft": "Resume where you left off",
+    "continue": "Continue",
+    "startFresh": "Start fresh",
+    "privacyNotice": "Your data is stored securely and never shared without your consent.",
+    "privacyLink": "Read our Privacy Policy",
+    "whyWeAsk": "Why do we ask this?",
+    "success": "Business profile created successfully!",
+    "error": "Something went wrong. Please try again.",
+    "duplicateGuard": "Your submission is being processed..."
+  },
+  "risks": {
+    "pageTitle": "Risk Center",
+    "summary": {
+      "title": "Risk Overview",
+      "overallScore": "Overall Risk Score",
+      "scoreExplanation": "This score reflects how many active risks your business currently has and how severe they are. A higher score means fewer and less serious risks. Below 40 needs urgent attention.",
+      "totalRisks": "Total Risks",
+      "criticalRisks": "Critical",
+      "warningRisks": "Warning",
+      "lastAssessment": "Last Assessment",
+      "staleBanner": "Your risk assessment is based on data older than 30 days. Update your financial snapshot for accurate results.",
+      "incompleteBanner": "Some risks cannot be fully assessed because there is not enough historical data yet. Add more monthly snapshots to improve accuracy."
+    },
+    "filters": {
+      "search": "Search risks…",
+      "severity": "Severity",
+      "category": "Category",
+      "status": "Status",
+      "all": "All",
+      "active": "Active",
+      "mitigated": "Mitigated",
+      "sortBy": "Sort by",
+      "sortSeverity": "Highest Severity",
+      "sortImpact": "Highest Impact",
+      "noResults": "No risks match your current filters.",
+      "clearFilters": "Clear Filters"
+    },
+    "empty": {
+      "title": "No Active Risks Detected",
+      "description": "Great news! Your business currently has no active risks. Keep your financial data current to stay ahead of potential issues.",
+      "actionHealth": "View Business Health",
+      "actionSnapshot": "Update Financial Data",
+      "actionSimulation": "Run a Simulation"
+    },
+    "card": {
+      "whatHappened": "What happened?",
+      "whyMatters": "Why does it matter?",
+      "howSerious": "How serious is it?",
+      "whatNext": "What can I do next?",
+      "severity": "Severity",
+      "probability": "Likelihood",
+      "impact": "Estimated Impact",
+      "status": "Status",
+      "mitigate": "Simulate Mitigation",
+      "expand": "Show details",
+      "collapse": "Hide details"
+    },
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning"
+    },
+    "probability": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "impact": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "status": {
+      "active": "Active",
+      "mitigated": "Mitigated"
+    },
+    "categories": {
+      "financial": "Financial",
+      "operational": "Operational",
+      "growth": "Growth",
+      "compliance": "Compliance"
+    },
+    "tooltips": {
+      "burnRate": "How much cash your business spends each month beyond what it earns.",
+      "runway": "How many months your business can continue operating with current cash reserves and spending.",
+      "liquidity": "Whether your business can cover its short-term bills with the cash and receivables it has now.",
+      "receivables": "Money owed to your business by customers that has not been collected yet.",
+      "currentRatio": "A measure of your ability to pay short-term obligations. Below 1.0 means your short-term debts exceed your available assets.",
+      "debtToRevenue": "How much total debt your business carries compared to what it earns. A higher ratio means heavier debt burden."
+    },
+    "rules": {
+      "NEGATIVE_CASH_FLOW": {
+        "title": "Negative Cash Flow",
+        "whatHappened": "Your business spent more than it earned last month.",
+        "whyMatters": "Sustained negative cash flow drains your reserves and can force you to take on debt or cut operations.",
+        "howSerious": "Your net loss was ฿{netProfit} on ฿{revenue} revenue. Total expenses reached ฿{totalExpenses}.",
+        "whatNext": "Review your largest expense categories and consider whether any costs can be reduced or deferred."
+      },
+      "LOW_RUNWAY": {
+        "title": "Low Cash Runway",
+        "whatHappened": "Your cash reserves can only sustain operations for {runwayMonths} months at the current spending rate.",
+        "whyMatters": "A runway below 3 months leaves almost no time to react to unexpected costs or revenue drops.",
+        "howSerious": "You have ฿{cashReserve} in reserves against a monthly burn of ฿{monthlyBurn}.",
+        "whatNext": "Consider reducing non-essential expenses or exploring ways to increase revenue to extend your runway."
+      },
+      "EXPENSE_GROWTH": {
+        "title": "Rapid Expense Growth",
+        "whatHappened": "Your total expenses grew by {growthRate}% compared to the previous month.",
+        "whyMatters": "Expenses rising faster than revenue squeeze your margins and may lead to cash flow problems.",
+        "howSerious": "Expenses increased from ฿{previousExpenses} to ฿{currentExpenses}.",
+        "whatNext": "Identify which expense categories grew the most and determine if the increase is temporary or structural."
+      },
+      "HIGH_PAYROLL": {
+        "title": "High Payroll Ratio",
+        "whatHappened": "Payroll costs represent {payrollRatio}% of your monthly revenue.",
+        "whyMatters": "When payroll exceeds 50% of revenue, it leaves little room for other operating costs and profit.",
+        "howSerious": "Payroll is ฿{payrollAmount} against ฿{revenue} in revenue.",
+        "whatNext": "Evaluate whether each role directly contributes to revenue growth or if some work can be automated."
+      },
+      "HIGH_RECEIVABLES": {
+        "title": "High Outstanding Receivables",
+        "whatHappened": "Uncollected customer payments represent {receivablesRatio}% of your revenue.",
+        "whyMatters": "High receivables tie up cash that could be used for operations, and some may never be collected.",
+        "howSerious": "You have ฿{receivables} in outstanding receivables against ฿{revenue} in monthly revenue.",
+        "whatNext": "Follow up on overdue invoices and consider tightening payment terms for future orders."
+      },
+      "LOW_LIQUIDITY": {
+        "title": "Low Liquidity",
+        "whatHappened": "Your current ratio is {currentRatio}, meaning short-term debts exceed available assets.",
+        "whyMatters": "A ratio below 1.0 means you may not be able to cover upcoming bills without borrowing.",
+        "howSerious": "Current assets are ฿{currentAssets} against ฿{currentLiabilities} in short-term liabilities.",
+        "whatNext": "Focus on collecting receivables faster and deferring non-urgent purchases to improve your liquidity position."
+      },
+      "INCOMPLETE_DATA": {
+        "title": "Insufficient Historical Data",
+        "whatHappened": "Only {snapshotCount} of the recommended {requiredCount} monthly snapshots have been recorded.",
+        "whyMatters": "Without enough history, trends cannot be detected and some risk rules cannot run properly.",
+        "howSerious": "Certain risk assessments are marked as incomplete rather than absent. More data improves accuracy.",
+        "whatNext": "Add more monthly financial snapshots to build a complete picture of your business trends."
+      },
+      "DECLINING_GROWTH": {
+        "title": "Declining Revenue Growth",
+        "whatHappened": "Revenue growth rate dropped to {revenueGrowthRate}%, down from {previousGrowthRate}%.",
+        "whyMatters": "Declining growth makes it harder to cover rising costs and may signal weakening demand.",
+        "howSerious": "Your business is growing slower than before, which can impact long-term sustainability.",
+        "whatNext": "Analyze which products or services are underperforming and explore new market opportunities."
+      },
+      "HIGH_DEBT_RATIO": {
+        "title": "High Debt-to-Revenue Ratio",
+        "whatHappened": "Your total debt is {debtToRevenueRatio}x your monthly revenue.",
+        "whyMatters": "A high debt ratio increases interest costs and limits your ability to borrow for growth opportunities.",
+        "howSerious": "Total debt of ฿{totalDebt} against monthly revenue of ฿{annualRevenue}.",
+        "whatNext": "Prioritize paying down high-interest debt and avoid taking on new loans unless absolutely necessary."
+      }
+    }
+  },
+  "simulations": {
+    "pageTitle": "Simulations",
+    "newSimulation": "New Simulation",
+    "runSimulation": "Run Simulation",
+    "running": "Running simulation...",
+    "runningDescription": "Calculating best, expected, and worst case scenarios.",
+    "chooseScenario": "Choose a Decision to Simulate",
+    "chooseDescription": "Select a business scenario to explore its potential impact.",
+    "configure": "Configure Scenario",
+    "configureDescription": "Enter your assumptions to run the simulation.",
+    "results": "Simulation Results",
+    "steps": {
+      "select": "Select Scenario",
+      "configure": "Configure",
+      "results": "Results"
+    },
+    "scenarios": {
+      "hire_employees": "Hire Employees",
+      "change_price": "Change Price",
+      "marketing_investment": "Marketing Investment",
+      "purchase_equipment": "Purchase Equipment",
+      "payment_delay": "Customer Payment Delay"
+    },
+    "posture": {
+      "bullish": "Bullish",
+      "cautious": "Cautious",
+      "neutral": "Neutral"
+    },
+    "confidence": {
+      "high": "High Confidence",
+      "medium": "Medium Confidence",
+      "low": "Low Confidence"
+    },
+    "summary": {
+      "expectedOutcome": "Expected Outcome",
+      "largestUpside": "Largest Upside",
+      "largestDownside": "Largest Downside",
+      "monthlyProfit": "monthly profit",
+      "bestCaseProfit": "best case profit",
+      "worstCaseProfit": "worst case profit"
+    },
+    "cases": {
+      "best": "Best Case",
+      "expected": "Expected",
+      "worst": "Worst Case"
+    },
+    "metrics": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "profit": "Profit",
+      "cashRunway": "Cash Runway",
+      "workingCapital": "Working Capital",
+      "roi": "ROI",
+      "paybackPeriod": "Payback Period"
+    },
+    "comparison": {
+      "title": "Baseline vs Projected",
+      "baseline": "Baseline",
+      "projected": "Projected",
+      "change": "Change"
+    },
+    "assumptions": {
+      "title": "Assumptions",
+      "fromBaseline": "From baseline",
+      "sensitivityTitle": "Sensitivity Notes",
+      "sensitivityNote": "Results are most sensitive to revenue assumptions. A ±10% change in projected revenue impacts profit by approximately ±฿15,000/month."
+    },
+    "timeline": {
+      "title": "Cash Runway Timeline",
+      "description": "Projected cash balance over 12 months"
+    },
+    "actions": {
+      "save": "Save Simulation",
+      "compare": "Compare",
+      "report": "Generate Report",
+      "duplicate": "Duplicate"
+    },
+    "history": {
+      "empty": {
+        "title": "No simulations yet",
+        "description": "Run your first scenario simulation to explore potential outcomes for business decisions."
+      }
+    },
+    "baseline": {
+      "title": "Current Baseline",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "profit": "Profit",
+      "cashRunway": "Cash Runway"
+    },
+    "errors": {
+      "loadFailed": "Failed to load simulation data",
+      "runFailed": "Simulation failed to run",
+      "retry": "Try Again"
+    },
+    "compare": {
+      "pageTitle": "Compare Simulations",
+      "selectDescription": "Select 2-3 simulations to compare side by side.",
+      "selected": "{count} of {max} selected",
+      "compareButton": "Compare",
+      "resultsTitle": "Comparison Results",
+      "resultsDescription": "Side-by-side comparison of {count} simulations against your current baseline.",
+      "changeSelection": "Change selection",
+      "chartTitle": "Revenue Projection Comparison",
+      "emptyTitle": "Not enough simulations to compare",
+      "emptyDescription": "Run at least 2 simulations to compare their outcomes side by side."
+    }
+  },
+  "reportsPage": {
+    "pageTitle": "Reports",
+    "subtitle": "Decision intelligence reports for your business.",
+    "generateNew": "Generate New Report",
+    "generateFirst": "Generate First Report",
+    "backToReports": "Back to Reports",
+    "printPreview": "Print Preview",
+    "exitPreview": "Exit Preview",
+    "printSavePdf": "Print / Save PDF",
+    "empty": {
+      "title": "No reports yet",
+      "description": "Generate your first decision intelligence report to get actionable insights about your business."
+    },
+    "sections": {
+      "executiveSummary": "Executive Summary",
+      "keyMetrics": "Key Metrics",
+      "riskAnalysis": "Health & Risk Analysis",
+      "simulation": "Simulation Outcome",
+      "recommendation": "Recommendation",
+      "actionPlan": "90-Day Action Plan",
+      "assumptions": "Assumptions & Limitations"
+    },
+    "posture": {
+      "healthy": "Healthy",
+      "cautious": "Cautious",
+      "critical": "Critical"
+    },
+    "metadata": {
+      "generated": "Generated",
+      "dataThrough": "Data Through",
+      "calcVersion": "Calculation Version",
+      "reportVersion": "Report Version",
+      "assumptions": "Assumptions",
+      "disclaimer": "Disclaimer"
+    },
+    "stale": {
+      "outdated": "Data may be outdated",
+      "outdatedDescription": "This report is based on data that is over 30 days old. Results may not reflect your current business state.",
+      "incomplete": "Section incomplete"
+    },
+    "risk": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "incompleteNote": "Some risk categories could not be fully assessed due to insufficient data."
+    },
+    "recommendation": {
+      "aiGenerated": "AI Generated",
+      "keyActions": "Key Actions",
+      "confidenceNote": "Confidence Note"
+    },
+    "actionPlan": {
+      "phase1": "0–30 days",
+      "phase2": "31–60 days",
+      "phase3": "61–90 days",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "metrics": {
+      "metric": "Metric",
+      "value": "Value",
+      "change": "Change"
+    },
+    "simulation": {
+      "scenario": "Scenario",
+      "baseline": "Baseline",
+      "best": "Best",
+      "expected": "Expected",
+      "worst": "Worst"
+    }
+  },
+  "settingsPage": {
+    "pageTitle": "Settings",
+    "appearance": {
+      "title": "Appearance & Language",
+      "theme": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "currentlyDark": "Currently using dark mode",
+      "currentlyLight": "Currently using light mode",
+      "language": "Language",
+      "dateFormat": "Date Format",
+      "currency": "Currency Display",
+      "reducedMotion": "Reduced Motion",
+      "reducedMotionDescription": "Animations follow your system preference. Change this in your operating system accessibility settings."
+    },
+    "profile": {
+      "title": "Profile & Business",
+      "displayName": "Display Name",
+      "email": "Email",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "avatarPlaceholder": "Avatar upload coming soon",
+      "businessInfo": "Business Information",
+      "businessName": "Business Name",
+      "industry": "Industry",
+      "location": "Location",
+      "editHint": "To edit business information, visit the onboarding flow.",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Profile updated successfully."
+    },
+    "security": {
+      "title": "Security",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "passwordRequirements": "At least 8 characters",
+      "changePassword": "Change Password",
+      "changing": "Changing...",
+      "passwordChanged": "Password changed successfully.",
+      "activeSessions": "Active Sessions",
+      "currentDevice": "Current Device",
+      "thisSession": "This session",
+      "active": "Active",
+      "signOutOther": "Sign out other sessions"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+      "deleteAccount": "Delete Account",
+      "warningTitle": "This action is irreversible",
+      "warningMessage": "Deleting your account will permanently remove:",
+      "warningItem1": "All business data and financial snapshots",
+      "warningItem2": "All simulations, reports, and recommendations",
+      "warningItem3": "Your account credentials and profile",
+      "iUnderstand": "I understand, continue",
+      "cancel": "Cancel",
+      "typeBusinessName": "Type your business name to confirm",
+      "typeHint": "Please type \"{name}\" exactly to proceed.",
+      "continue": "Continue",
+      "enterPassword": "Enter your password",
+      "passwordHint": "Enter your current password for reauthentication.",
+      "deletePermanently": "Delete permanently",
+      "deleting": "Deleting...",
+      "nameNoMatch": "Business name does not match. Please type it exactly."
+    },
+    "errors": {
+      "saveFailed": "Changes couldn't be saved. Please try again.",
+      "passwordIncorrect": "Current password is incorrect.",
+      "deleteFailed": "Account deletion failed. Please try again.",
+      "sessionExpired": "Your session has expired. Please sign in again."
+    }
+  },
+  "advisor": {
+    "pageTitle": "AI Advisor",
+    "subtitle": "Contextual recommendations based on your business data.",
+    "suggestedPrompts": "What would you like to know?",
+    "recommendation": "Recommendation",
+    "generatedAt": "Generated on {date}",
+    "aiSummary": "AI Summary",
+    "evidence": "Supporting Evidence",
+    "risks": "Identified Risks",
+    "actions": "Recommended Actions",
+    "assumptionsTitle": "Assumptions",
+    "retry": "Try Again",
+    "errors": {
+      "insufficientData": {
+        "title": "Insufficient Business Data",
+        "description": "We need at least 2 months of financial snapshots to generate meaningful advice. Please add more data to your business profile."
+      },
+      "malformedOutput": {
+        "title": "Couldn't Generate Advice",
+        "description": "The AI response was incomplete or malformed. Please try again — this is usually a temporary issue."
+      },
+      "timeout": {
+        "title": "Request Timed Out",
+        "description": "The AI service took too long to respond. Your calculations and risk data are still available. Try again in a moment."
+      },
+      "providerUnavailable": {
+        "title": "AI Service Unavailable",
+        "description": "The AI service is temporarily unavailable. Your deterministic calculations, risk detection, and simulations remain fully functional."
+      },
+      "preserveNote": "Your calculated business data and risk assessments are always available regardless of AI service status."
+    }
+  },
+  "marketing": {
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it Works",
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "badge": "Decision intelligence for Thai SMEs",
+      "headline1": "See the impact",
+      "headline2": "before you make",
+      "headline3": "the move.",
+      "description": "Wallflower turns your business data into clear diagnostics, risk warnings, and decision simulations—so you can act with evidence instead of guesswork.",
+      "cta": "Analyze my business",
+      "secondaryCta": "See a sample simulation"
+    },
+    "workflow": {
+      "title": "Three steps to a better decision",
+      "step01": "Diagnose",
+      "step01Desc": "Wallflower calculates your business health from real numbers — revenue trends, expense ratios, cash runway, and working capital.",
+      "step02": "Simulate",
+      "step02Desc": "Test decisions before committing. Run what-if scenarios for hiring, pricing, marketing spend, or equipment purchases.",
+      "step03": "Act",
+      "step03Desc": "Compare outcomes side-by-side, understand the risks, and move forward with evidence backing your decision."
+    },
+    "scenarios": {
+      "title": "Scenarios you can simulate",
+      "description": "Every business decision carries risk. Wallflower lets you test the numbers before committing real resources.",
+      "hire": "Hire a new employee",
+      "hireDesc": "See how additional salary costs impact cash flow, break-even timeline, and monthly burn rate.",
+      "price": "Adjust pricing",
+      "priceDesc": "Model the revenue and margin effect of raising or lowering prices across your product lines.",
+      "marketing": "Marketing investment",
+      "marketingDesc": "Estimate the ROI timeline and cash impact of allocating budget to a marketing campaign.",
+      "equipment": "Equipment purchase",
+      "equipmentDesc": "Compare buying vs leasing, understand depreciation effects, and plan around cash reserves.",
+      "payment": "Payment delay",
+      "paymentDesc": "Assess the working capital impact when a key customer delays payment by 30, 60, or 90 days.",
+      "tryCta": "Try a simulation →"
+    },
+    "explainability": {
+      "title": "Your numbers, calculated. Not predicted.",
+      "description": "Wallflower separates deterministic math from AI interpretation. You always know which is which.",
+      "calculatedTitle": "Calculated",
+      "calculatedDesc": "Deterministic formulas produce exact, reproducible results from your business data.",
+      "calculated1": "Revenue projections from your data",
+      "calculated2": "Cash runway and burn rate",
+      "calculated3": "Break-even analysis",
+      "calculated4": "Working capital ratios",
+      "calculated5": "ROI and payback period",
+      "aiTitle": "AI Explained",
+      "aiDesc": "AI reads the calculated results and explains them in context — it never calculates financial values.",
+      "ai1": "Summarizes what the numbers mean",
+      "ai2": "Explains risks in plain language",
+      "ai3": "Suggests things to consider",
+      "ai4": "Highlights assumptions made",
+      "ai5": "Never overrides calculations"
+    },
+    "thaiSme": {
+      "title": "Built for Thai small businesses",
+      "description": "We understand the challenges Thai SMEs face every day. Wallflower is designed to address them directly.",
+      "cashFlow": "Cash flow pressure",
+      "cashFlowSolution": "Real-time cash runway tracking with early warnings when reserves run thin.",
+      "noCfo": "Limited staff, no CFO",
+      "noCfoSolution": "Wallflower does the financial analysis so you can focus on running your business.",
+      "fatigue": "Decision fatigue",
+      "fatigueSolution": "Side-by-side scenario comparison takes the guesswork out of major decisions.",
+      "digital": "Traditional vs digital",
+      "digitalSolution": "Simple interface that works like a conversation, not a spreadsheet.",
+      "health": "Unclear business health",
+      "healthSolution": "Diagnostics and KPIs that show your business standing at a glance."
+    },
+    "cta": {
+      "title": "Start understanding your business",
+      "description": "Turn uncertainty into evidence. Make your next decision with clarity, not guesswork.",
+      "button": "Analyze my business"
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "copyright": "© {year} Wallflower. All rights reserved."
+    }
+  }
+}

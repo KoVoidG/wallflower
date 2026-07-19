@@ -2,10 +2,10 @@
 
 ## Project Status
 
-* **Current Milestone:** Phase 2.5 — Frontend Foundation & Phase 3 — Baseline Backend Onboarding
-* **Last Completed Task:** T037 (Financial calculation fixtures)
-* **Next Recommended Task:** T028 (Configure theme provider - Void) & T039 (Write business Zod schema tests - Thiha)
-* **Last Updated Date:** 2026-07-18
+* **Current Milestone:** Phase 4 — Understand Current Business Health (Frontend)
+* **Last Completed Task:** T065, T066, T067, T067a (Business Health page, print-safe tables, snapshot modal, and optimistic dashboard container)
+* **Next Recommended Task:** T039 (Write business Zod schema tests - Thiha) & T056 (Write dashboard accessibility and responsive test - Void)
+* **Last Updated Date:** 2026-07-19
 
 ---
 
@@ -16,7 +16,7 @@
 * **Better Auth Foundation:** Completed and verified (T014–T016). Server/client configurations, API auth route hooks, and local credentials/OAuth client hooks.
 * **Authorization & Ownership:** Completed and verified (T017–T019). Session resolution guards, requireAuth/requireOnboarded redirect controls, resource ownership validators, and integration checks.
 * **Shared Validation:** Completed and verified (T023). Common Zod validation rules (UUIDs, pagination parameters, dates, positive money amounts).
-* **Money Helpers:** Completed and verified (T020). Decimal-safe arithmetic wrappers (add, subtract, multiply, divide) and currency/percentage formatters.
+* **Money Helpers:** Completed and verified (T020). Decimal-safe arithmetic wrappers (add, subtract, multiply, divide) and currency/percentage formatters. Browser-safe dynamically resolved dependency checks prevent client bundling issues.
 * **Logging:** Completed and verified (T022). Lightweight Console JSON structured logger with sensitive credential parameter sanitization.
 * **Design Tokens:** Completed and verified (T026). Semantic colors (Teal brand, Cyan AI, Green success, Amber warning, Red danger) mapped to CSS variables in globals.css for light/dark themes.
 * **Fonts:** Completed and verified (T027). Geist and Noto Sans Thai fonts loaded via App Router layout structure.
@@ -26,26 +26,46 @@
 
 ## Frontend — Void
 
-* **Current Branch:** `feature/ui-foundation`
-* **Current Milestone:** Phase 2.5 — Frontend Foundation
-* **Next Task:** T028 (Configure theme provider)
+* **Current Branch:** `feature/dashboard-health`
+* **Current Milestone:** Phase 4 — Understand Current Business Health (Frontend)
+* **Next Task:** T056 (Write dashboard accessibility and responsive test)
 * **Completed Tasks:**
   * T026 Implement light and dark design tokens from `design.md` in `src/app/globals.css`
   * T027 Configure Geist Sans, Geist Mono, and Noto Sans Thai fonts in App layouts
+  * T028 Configure theme provider and system/light/dark persistence in `src/components/providers/theme-provider.tsx`
+  * T029 Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
+  * T030 Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
+  * T031 Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
+  * T032 Build reduced-motion-aware animation primitives in `src/components/motion/`
+  * T033 Add local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
+  * T034 Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`
+  * T043 Build account registration, login, and password-reset pages in `src/app/[locale]/(auth)/`
+  * T046 Build multi-step onboarding form in `src/features/business-profile/components/onboarding-form.tsx`
+  * T047 Add autosave-safe client state and validation summary to onboarding
+  * T048 Build data-privacy and "why we ask" guidance panels
+  * T049 Implement `src/app/[locale]/onboarding/page.tsx` with redirect behavior
+  * T050 Add partial, empty, loading, server-error, and duplicate-submission states
+  * T051 Add English and Thai onboarding messages in `src/messages/en.json` and `src/messages/th.json`
+  * T060 Build KPI card and tooltip components in `src/components/metrics/`
+  * T061 Build accessible line and comparison charts in `src/components/charts/`
+  * T062 Build Business Pulse and Today's Insights components in `src/features/dashboard/components/`
+  * T064 Build `src/app/[locale]/(app)/dashboard/page.tsx`
+  * T065 Build business-health detail tabs in `src/app/[locale]/(app)/business-health/page.tsx`
+  * T066 Add data completeness, stale-data, and missing-history states
+  * T067 Add print-safe data table alternatives for charts
+  * T067a Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
 * **In-Progress Tasks:**
   * None
-* **Next Tasks (Phase 2.5 UI Foundation):**
-  * T028 Configure theme provider and system/light/dark persistence
-  * T029 Configure next-intl localization routing and English/Thai message files
-  * T030 Build reusable typography, status badges, empty/error panels, and skeleton UI components
-  * T031 Build responsive application shell, sidebar navigation, and header topbar
-  * T032 Build reduced-motion-aware transition animation primitives
-  * T033 Add local design-system showcase route
-  * T034 Run automated accessibility and color contrast tests
+* **Next Tasks:**
+  * T056 Write dashboard accessibility and responsive test in `tests/e2e/dashboard.spec.ts`
+  * T071 Write risk-center keyboard and screen-reader test in `tests/e2e/risks.spec.ts`
+  * T076 Build risk summary, category card, evidence, and mitigation components in `src/features/risks/components/`
+  * T077 Build filtering, sorting, and status management for risks
+  * T078 Build `src/app/[locale]/(app)/risks/page.tsx`
 * **Blockers:**
   * None
 * **Waiting on Thiha:**
-  * Onboarding UI forms (Phase 3 T046) will depend on the final onboarding schemas and server actions (T042, T044, T045) being finalized.
+  * Onboarding server action integration and real backend state endpoints.
 
 ---
 
@@ -83,7 +103,7 @@
 * **Blockers:**
   * None
 * **Waiting on Void:**
-  * Registration/login/reset UI forms (T043) and onboarding UI form components (T046) to integrate backend actions.
+  * None. Frontend screens are prepared.
 
 ---
 
