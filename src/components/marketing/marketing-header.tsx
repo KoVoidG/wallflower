@@ -1,40 +1,76 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter, usePathname } from '@/lib/i18n/navigation';
 import { Menu, X } from 'lucide-react';
 import { Link } from '@/lib/i18n/navigation';
 import { cn } from '@/lib/utils';
 
-const scrollLinks = [
-  { href: '#how-it-works', label: 'How it Works' },
-  { href: '#scenarios', label: 'Features' },
-  { href: '#why-us', label: 'Why Us' },
+// ── Navigation config ───────────────────────────────────────────────────────
+
+type SectionNavItem = { label: string; type: 'section'; id: string };
+type PageNavItem = { label: string; type: 'page'; href: string };
+type NavItem = SectionNavItem | PageNavItem;
+
+const navigation: NavItem[] = [
+  { label: 'How it Works', type: 'section', id: 'how-it-works' },
+  { label: 'Features', type: 'section', id: 'scenarios' },
+  { label: 'Why Wallflower', type: 'section', id: 'why-us' },
+  { label: 'Pricing', type: 'page', href: '/pricing' },
 ];
 
-const pageLinks = [
-  { href: '/pricing', label: 'Pricing' },
-];
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Smooth-scroll to a section by ID if it exists on the current page. */
+function scrollToSection(id: string): boolean {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Clean up hash from URL after scroll completes (approx 600ms)
+    setTimeout(() => {
+      history.replaceState(null, '', window.location.pathname);
+    }, 600);
+    return true;
+  }
+  return false;
+}
+
+// ── Component ───────────────────────────────────────────────────────────────
 
 export function MarketingHeader() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isLandingPage = pathname === '/' || pathname === '';
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  function handleScrollClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    setMobileOpen(false);
-  }
+  const handleNavClick = useCallback(
+    (item: NavItem) => {
+      setMobileOpen(false);
+
+      if (item.type === 'page') {
+        router.push(item.href);
+        return;
+      }
+
+      // Section link
+      if (isLandingPage) {
+        // Already on landing page — just scroll
+        scrollToSection(item.id);
+      } else {
+        // On another page — navigate to landing with hash
+        router.push(`/#${item.id}`);
+      }
+    },
+    [router, isLandingPage]
+  );
 
   return (
     <header
@@ -54,24 +90,15 @@ export function MarketingHeader() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
-          {scrollLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleScrollClick(e, link.href)}
-              className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+          {navigation.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => handleNavClick(item)}
+              className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
             >
-              {link.label}
-            </a>
-          ))}
-          {pageLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {link.label}
-            </Link>
+              {item.label}
+            </button>
           ))}
         </nav>
 
@@ -107,25 +134,15 @@ export function MarketingHeader() {
       {mobileOpen && (
         <div className="md:hidden bg-background border-b border-border px-6 pb-4">
           <nav className="flex flex-col gap-3" aria-label="Mobile navigation">
-            {scrollLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleScrollClick(e, link.href)}
-                className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer"
+            {navigation.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => handleNavClick(item)}
+                className="text-left text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer bg-transparent border-none p-0"
               >
-                {link.label}
-              </a>
-            ))}
-            {pageLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary py-2"
-              >
-                {link.label}
-              </Link>
+                {item.label}
+              </button>
             ))}
             <hr className="border-border my-2" />
             <Link
@@ -147,7 +164,8 @@ export function MarketingHeader() {
   );
 }
 
-/** Simplified flower mark SVG */
+// ── Flower Mark SVG ─────────────────────────────────────────────────────────
+
 function FlowerMark({ className }: { className?: string }) {
   return (
     <svg

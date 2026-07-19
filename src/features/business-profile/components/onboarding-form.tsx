@@ -19,6 +19,8 @@ import { H2, H3, Body, Label, Caption } from '@/components/ui/typography';
 import { Surface } from '@/components/ui/surface';
 import { Badge } from '@/components/ui/badge';
 import { FadeIn } from '@/components/motion';
+import { Select } from '@/components/ui/select';
+import { MonthPicker } from '@/components/ui/month-picker';
 import {
   onboardingSchema,
   businessProfileSchema,
@@ -310,35 +312,29 @@ export function OnboardingForm({ onSubmit }: OnboardingFormProps) {
       return undefined;
     }, errors) as { message?: string } | undefined;
 
+    const selectOptions = options.map((opt) => ({
+      value: opt,
+      label: labels[opt] || opt,
+    }));
+
     return (
-      <div className="flex flex-col gap-1.5">
-        <Label as="label" className="block">
-          {label}
-        </Label>
-        <select
-          {...register(name)}
-          aria-invalid={!!fieldError}
-          aria-describedby={fieldError ? `${name}-error` : undefined}
-          className={cn(
-            'w-full px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-text-primary text-[15px]',
-            'outline-none transition-colors cursor-pointer',
-            'focus:ring-2 focus:ring-brand/20 focus:border-brand',
-            fieldError ? 'border-danger' : 'border-border'
-          )}
-        >
-          <option value="">Select...</option>
-          {options.map((opt) => (
-            <option key={opt} value={opt}>
-              {labels[opt] || opt}
-            </option>
-          ))}
-        </select>
-        {fieldError?.message && (
-          <span id={`${name}-error`} className="text-[12px] text-danger" role="alert">
-            {fieldError.message}
-          </span>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <Select
+            value={field.value || ''}
+            onChange={(val) => {
+              field.onChange(val);
+              field.onBlur();
+            }}
+            options={selectOptions}
+            label={label}
+            placeholder="Select..."
+            error={fieldError?.message}
+          />
         )}
-      </div>
+      />
     );
   };
 
@@ -526,44 +522,18 @@ export function OnboardingForm({ onSubmit }: OnboardingFormProps) {
         </div>
 
         {/* Month Period */}
-        <div className="flex flex-col gap-1.5">
-          <Label as="label" className="block">
-            Reporting Month
-          </Label>
-          <Controller
-            control={control}
-            name="financial.month"
-            render={({ field }) => (
-              <input
-                type="month"
-                value={field.value instanceof Date && !isNaN(field.value.getTime())
-                  ? `${field.value.getFullYear()}-${String(field.value.getMonth() + 1).padStart(2, '0')}`
-                  : ''
-                }
-                onChange={(e) => {
-                  const [year, month] = e.target.value.split('-').map(Number);
-                  if (year && month) {
-                    field.onChange(new Date(year, month - 1, 1));
-                  }
-                }}
-                onBlur={field.onBlur}
-                aria-invalid={!!errors.financial?.month}
-                aria-describedby={errors.financial?.month ? 'financial-month-error' : undefined}
-                className={cn(
-                  'w-full px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-text-primary text-[15px]',
-                  'outline-none transition-colors cursor-pointer',
-                  'focus:ring-2 focus:ring-brand/20 focus:border-brand',
-                  errors.financial?.month ? 'border-danger' : 'border-border'
-                )}
-              />
-            )}
-          />
-          {errors.financial?.month && (
-            <span id="financial-month-error" className="text-[12px] text-danger" role="alert">
-              {errors.financial.month.message}
-            </span>
+        <Controller
+          control={control}
+          name="financial.month"
+          render={({ field }) => (
+            <MonthPicker
+              value={field.value instanceof Date && !isNaN(field.value.getTime()) ? field.value : null}
+              onChange={(date) => field.onChange(date)}
+              label="Reporting Month"
+              error={errors.financial?.month?.message}
+            />
           )}
-        </div>
+        />
 
         {/* Revenue */}
         <Controller

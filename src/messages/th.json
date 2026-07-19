@@ -8,6 +8,23 @@
   "simulation": "จำลองสถานการณ์",
   "advisor": "ที่ปรึกษา",
   "reports": "รายงาน",
+  "nav": {
+    "dashboard": "แดชบอร์ด",
+    "businessHealth": "สุขภาพธุรกิจ",
+    "risk": "ศูนย์ความเสี่ยง",
+    "simulation": "จำลองสถานการณ์",
+    "advisor": "ที่ปรึกษา",
+    "reports": "รายงาน",
+    "settings": "ตั้งค่า",
+    "collapse": "ย่อ",
+    "expand": "ขยาย",
+    "openMenu": "เปิดเมนูนำทาง",
+    "switchToLight": "เปลี่ยนเป็นโหมดสว่าง",
+    "switchToDark": "เปลี่ยนเป็นโหมดมืด",
+    "switchTheme": "เปลี่ยนธีม",
+    "changeLanguage": "เปลี่ยนภาษา",
+    "userMenu": "เมนูผู้ใช้"
+  },
   "onboarding": {
     "pageTitle": "ตั้งค่าธุรกิจของคุณ",
     "step1Title": "ข้อมูลธุรกิจ",

@@ -2,7 +2,6 @@
 
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { Caption } from '@/components/ui/typography';
 
 interface Step {
   label: string;
@@ -16,33 +15,35 @@ interface StepIndicatorProps {
 }
 
 /**
- * Progress step indicator showing current position in a multi-step flow.
- * Displays completed, current, and upcoming steps with accessible labels.
+ * Premium step indicator for multi-step flows.
+ * Clean horizontal layout with circles, connecting lines, and labels.
  */
 export function StepIndicator({ steps, currentStep, className }: StepIndicatorProps) {
   return (
     <nav aria-label="Onboarding progress" className={cn('w-full', className)}>
-      <ol className="flex items-center gap-2">
+      <ol className="flex items-start">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
           const isCompleted = stepNumber < currentStep;
           const isCurrent = stepNumber === currentStep;
+          const isLast = index === steps.length - 1;
 
           return (
             <li
               key={step.label}
-              className="flex flex-1 items-center gap-2"
+              className={cn('flex items-start', isLast ? 'flex-shrink-0' : 'flex-1')}
               aria-current={isCurrent ? 'step' : undefined}
             >
-              <div className="flex flex-col items-center gap-1 flex-1">
-                <div className="flex items-center w-full gap-2">
-                  {/* Step circle */}
+              {/* Step circle + connector row */}
+              <div className="flex items-center w-full">
+                {/* Circle */}
+                <div className="flex flex-col items-center gap-2">
                   <div
                     className={cn(
-                      'flex items-center justify-center size-8 rounded-full shrink-0 text-[13px] font-[600] transition-colors',
-                      isCompleted && 'bg-brand text-white',
-                      isCurrent && 'bg-brand text-white ring-2 ring-brand-soft ring-offset-2 ring-offset-surface',
-                      !isCompleted && !isCurrent && 'bg-surface-subtle text-text-muted border border-border'
+                      'relative flex items-center justify-center size-9 rounded-full text-[13px] font-[600] transition-all duration-200',
+                      isCompleted && 'bg-brand text-white shadow-sm',
+                      isCurrent && 'bg-brand text-white shadow-md shadow-brand/25',
+                      !isCompleted && !isCurrent && 'bg-surface border-2 border-border text-text-muted'
                     )}
                     aria-hidden="true"
                   >
@@ -53,31 +54,34 @@ export function StepIndicator({ steps, currentStep, className }: StepIndicatorPr
                     )}
                   </div>
 
-                  {/* Connector line */}
-                  {index < steps.length - 1 && (
+                  {/* Label below circle */}
+                  <span
+                    className={cn(
+                      'text-[12px]/[16px] font-[500] whitespace-nowrap',
+                      isCurrent && 'text-brand font-[600]',
+                      isCompleted && 'text-text-secondary',
+                      !isCompleted && !isCurrent && 'text-text-muted'
+                    )}
+                  >
+                    <span className="sr-only">
+                      {isCompleted ? 'Completed: ' : isCurrent ? 'Current: ' : 'Upcoming: '}
+                    </span>
+                    {step.label}
+                  </span>
+                </div>
+
+                {/* Connector line */}
+                {!isLast && (
+                  <div className="flex-1 mx-3 mt-[18px] self-start">
                     <div
                       className={cn(
-                        'flex-1 h-0.5 rounded-full transition-colors',
+                        'h-[2px] w-full rounded-full transition-colors duration-300',
                         isCompleted ? 'bg-brand' : 'bg-border'
                       )}
                       aria-hidden="true"
                     />
-                  )}
-                </div>
-
-                {/* Label */}
-                <Caption
-                  className={cn(
-                    'text-center w-full',
-                    isCurrent && 'text-brand font-[550]',
-                    isCompleted && 'text-text-secondary'
-                  )}
-                >
-                  <span className="sr-only">
-                    {isCompleted ? 'Completed: ' : isCurrent ? 'Current: ' : 'Upcoming: '}
-                  </span>
-                  {step.label}
-                </Caption>
+                  </div>
+                )}
               </div>
             </li>
           );

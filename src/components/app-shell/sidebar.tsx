@@ -11,6 +11,7 @@ import {
   PanelLeftClose,
   PanelLeft,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 
@@ -29,18 +30,9 @@ const navItems = [
   { key: 'settings', href: '/settings', icon: Settings },
 ] as const;
 
-const navLabels: Record<string, string> = {
-  dashboard: 'Dashboard',
-  businessHealth: 'Business Health',
-  risk: 'Risk Center',
-  simulation: 'Simulation',
-  advisor: 'Advisor',
-  reports: 'Reports',
-  settings: 'Settings',
-};
-
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
+  const t = useTranslations('nav');
 
   return (
     <aside
@@ -70,6 +62,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             const isActive =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
+            const label = t(item.key);
 
             return (
               <li key={item.key}>
@@ -85,7 +78,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                       : 'text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
                   )}
                   aria-current={isActive ? 'page' : undefined}
-                  title={collapsed ? navLabels[item.key] : undefined}
+                  title={collapsed ? label : undefined}
                 >
                   <Icon
                     className={cn(
@@ -94,7 +87,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     )}
                     aria-hidden="true"
                   />
-                  {!collapsed && <span className="truncate">{navLabels[item.key]}</span>}
+                  {!collapsed && <span className="truncate">{label}</span>}
                 </Link>
               </li>
             );
@@ -115,14 +108,14 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
             'cursor-pointer'
           )}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? t('expand') : t('collapse')}
         >
           {collapsed ? (
             <PanelLeft className="size-5 shrink-0" aria-hidden="true" />
           ) : (
             <>
               <PanelLeftClose className="size-5 shrink-0" aria-hidden="true" />
-              <span className="truncate">Collapse</span>
+              <span className="truncate">{t('collapse')}</span>
             </>
           )}
         </button>

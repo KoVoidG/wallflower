@@ -5,6 +5,7 @@ import { ScenariosSection } from '@/components/marketing/scenarios-section';
 import { ExplainabilitySection } from '@/components/marketing/explainability-section';
 import { ThaiSmeSection } from '@/components/marketing/thai-sme-section';
 import { CtaSection } from '@/components/marketing/cta-section';
+import { HashScrollHandler } from '@/components/marketing/hash-scroll-handler';
 
 export const metadata: Metadata = {
   title: 'Wallflower — Decision Intelligence for Thai SMEs',
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 export default function MarketingPage() {
   return (
     <>
+      <HashScrollHandler />
       <HeroSection />
       <WorkflowSection />
       <ScenariosSection />

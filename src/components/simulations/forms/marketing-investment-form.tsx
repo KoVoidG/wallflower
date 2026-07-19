@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { cn } from '@/lib/utils';
 import { CurrencyInput } from '@/features/business-profile/components/currency-input';
 import { Label } from '@/components/ui/typography';
+import { Select } from '@/components/ui/select';
 
 const schema = z.object({
   budget: z.number().min(5000),
@@ -53,18 +54,16 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
       />
 
       <div className="flex flex-col gap-1.5">
-        <Label as="label" className="block">Channel</Label>
-        <select
-          {...register('channel')}
-          className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
-            'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors'
-          )}
-        >
-          <option value="social">Social Media</option>
-          <option value="search">Search Ads</option>
-          <option value="offline">Offline</option>
-        </select>
+        <Select
+          value={watch('channel')}
+          onChange={(val) => setValue('channel', val, { shouldValidate: true })}
+          options={[
+            { value: 'social', label: 'Social Media' },
+            { value: 'search', label: 'Search Ads' },
+            { value: 'offline', label: 'Offline' },
+          ]}
+          label="Channel"
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">

@@ -2,6 +2,7 @@
 
 import { Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Select } from '@/components/ui/select';
 import type { RiskCategory, RiskSeverity, RiskStatus } from '@/features/risks/adapters/risks.adapter';
 
 export type SortOption = 'severity' | 'impact';
@@ -159,22 +160,18 @@ export function RiskFilters({
 
         {/* Sort */}
         <div className="flex items-center gap-1.5 sm:ml-auto">
-          <label htmlFor="risk-sort" className="text-[12px]/[18px] font-[550] text-text-muted">
+          <span className="text-[12px]/[18px] font-[550] text-text-muted">
             {t.sortBy}:
-          </label>
-          <select
-            id="risk-sort"
+          </span>
+          <Select
             value={sortBy}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className={cn(
-              'px-2 py-1 text-[13px] border border-border rounded-[var(--radius-md)]',
-              'bg-transparent text-text-primary cursor-pointer',
-              'focus:outline-none focus:border-brand-strong'
-            )}
-          >
-            <option value="severity">{t.sortSeverity}</option>
-            <option value="impact">{t.sortImpact}</option>
-          </select>
+            onChange={(val) => onSortChange(val as SortOption)}
+            options={[
+              { value: 'severity', label: t.sortSeverity },
+              { value: 'impact', label: t.sortImpact },
+            ]}
+            className="w-[180px]"
+          />
         </div>
       </div>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, Moon, Sun, Globe, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface TopbarProps {
@@ -13,6 +14,7 @@ interface TopbarProps {
 export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations('nav');
 
   useEffect(() => {
     const handle = requestAnimationFrame(() => setMounted(true));
@@ -38,7 +40,7 @@ export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
           'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
           'cursor-pointer'
         )}
-        aria-label="Open navigation menu"
+        aria-label={t('openMenu')}
       >
         <Menu className="size-5" aria-hidden="true" />
       </button>
@@ -74,7 +76,7 @@ export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
             'cursor-pointer'
           )}
-          aria-label={mounted ? (theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode') : 'Switch theme'}
+          aria-label={mounted ? (theme === 'dark' ? t('switchToLight') : t('switchToDark')) : t('switchTheme')}
         >
           <Sun className="size-5 hidden dark:block" aria-hidden="true" />
           <Moon className="size-5 block dark:hidden" aria-hidden="true" />
@@ -90,7 +92,7 @@ export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
             'cursor-pointer'
           )}
-          aria-label="Change language"
+          aria-label={t('changeLanguage')}
         >
           <Globe className="size-5" aria-hidden="true" />
         </button>
@@ -105,7 +107,7 @@ export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
             'cursor-pointer'
           )}
-          aria-label="User menu"
+          aria-label={t('userMenu')}
         >
           <User className="size-5" aria-hidden="true" />
         </button>

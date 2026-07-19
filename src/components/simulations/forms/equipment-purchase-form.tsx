@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { cn } from '@/lib/utils';
 import { CurrencyInput } from '@/features/business-profile/components/currency-input';
 import { Label } from '@/components/ui/typography';
+import { Select } from '@/components/ui/select';
 
 const schema = z.object({
   cost: z.number().min(10000),
@@ -80,18 +81,16 @@ export function EquipmentPurchaseForm({ defaultValues, onSubmit, id }: Equipment
       />
 
       <div className="flex flex-col gap-1.5">
-        <Label as="label" className="block">Financing Method</Label>
-        <select
-          {...register('financing')}
-          className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
-            'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors'
-          )}
-        >
-          <option value="cash">Cash Purchase</option>
-          <option value="loan">Business Loan</option>
-          <option value="lease">Lease</option>
-        </select>
+        <Select
+          value={watch('financing')}
+          onChange={(val) => setValue('financing', val, { shouldValidate: true })}
+          options={[
+            { value: 'cash', label: 'Cash Purchase' },
+            { value: 'loan', label: 'Business Loan' },
+            { value: 'lease', label: 'Lease' },
+          ]}
+          label="Financing Method"
+        />
       </div>
     </form>
   );

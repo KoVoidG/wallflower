@@ -3,10 +3,10 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { cn } from '@/lib/utils';
 import { CurrencyInput } from '@/features/business-profile/components/currency-input';
 import { Label } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
+import { Select } from '@/components/ui/select';
 
 const schema = z.object({
   product: z.string().min(1),
@@ -47,17 +47,15 @@ export function ChangePriceForm({ defaultValues, onSubmit, id }: ChangePriceForm
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
-        <Label as="label" className="block">Product/Service</Label>
-        <select
-          {...register('product')}
-          className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
-            'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors'
-          )}
-        >
-          <option value="main">Main Product</option>
-          <option value="secondary">Secondary Service</option>
-        </select>
+        <Select
+          value={watch('product')}
+          onChange={(val) => setValue('product', val, { shouldValidate: true })}
+          options={[
+            { value: 'main', label: 'Main Product' },
+            { value: 'secondary', label: 'Secondary Service' },
+          ]}
+          label="Product/Service"
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">

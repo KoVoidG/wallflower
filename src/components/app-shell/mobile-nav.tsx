@@ -10,6 +10,7 @@ import {
   FileText,
   Settings,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 
@@ -19,18 +20,19 @@ interface MobileNavProps {
 }
 
 const navItems = [
-  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { key: 'businessHealth', href: '/business-health', icon: HeartPulse, label: 'Business Health' },
-  { key: 'risk', href: '/risk-center', icon: ShieldAlert, label: 'Risk Center' },
-  { key: 'simulation', href: '/simulation', icon: FlaskConical, label: 'Simulation' },
-  { key: 'advisor', href: '/advisor', icon: Bot, label: 'Advisor' },
-  { key: 'reports', href: '/reports', icon: FileText, label: 'Reports' },
-  { key: 'settings', href: '/settings', icon: Settings, label: 'Settings' },
+  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { key: 'businessHealth', href: '/business-health', icon: HeartPulse },
+  { key: 'risk', href: '/risks', icon: ShieldAlert },
+  { key: 'simulation', href: '/simulations', icon: FlaskConical },
+  { key: 'advisor', href: '/advisor', icon: Bot },
+  { key: 'reports', href: '/reports', icon: FileText },
+  { key: 'settings', href: '/settings', icon: Settings },
 ] as const;
 
 /** Bottom navigation bar for mobile (always visible on mobile) */
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const t = useTranslations('nav');
 
   // Show only the 5 most important items in the bottom nav
   const bottomItems = navItems.slice(0, 5);
@@ -60,7 +62,7 @@ export function MobileBottomNav() {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon className="size-5" aria-hidden="true" />
-                <span className="text-[10px] font-medium leading-tight">{item.label}</span>
+                <span className="text-[10px] font-medium leading-tight">{t(item.key)}</span>
               </Link>
             </li>
           );
@@ -73,6 +75,7 @@ export function MobileBottomNav() {
 /** Full-screen mobile navigation drawer (opened via hamburger) */
 export function MobileNavDrawer({ open, onClose }: MobileNavProps) {
   const pathname = usePathname();
+  const t = useTranslations('nav');
 
   return (
     <>
@@ -155,7 +158,7 @@ export function MobileNavDrawer({ open, onClose }: MobileNavProps) {
                       )}
                       aria-hidden="true"
                     />
-                    <span>{item.label}</span>
+                    <span>{t(item.key)}</span>
                   </Link>
                 </li>
               );

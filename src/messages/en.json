@@ -8,6 +8,23 @@
   "simulation": "Simulation",
   "advisor": "Advisor",
   "reports": "Reports",
+  "nav": {
+    "dashboard": "Dashboard",
+    "businessHealth": "Business Health",
+    "risk": "Risk Center",
+    "simulation": "Simulation",
+    "advisor": "Advisor",
+    "reports": "Reports",
+    "settings": "Settings",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "openMenu": "Open navigation menu",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "switchTheme": "Switch theme",
+    "changeLanguage": "Change language",
+    "userMenu": "User menu"
+  },
   "onboarding": {
     "pageTitle": "Set up your business",
     "step1Title": "Business Information",
