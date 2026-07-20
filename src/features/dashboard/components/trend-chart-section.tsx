@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Surface } from '@/components/ui/surface';
 import { H3, Caption } from '@/components/ui/typography';
 import { LineChart } from '@/components/charts';
 import { formatThbAxis } from '@/components/charts';
@@ -25,16 +24,36 @@ const lines = [
 export function TrendChartSection({ data, className }: TrendChartSectionProps) {
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
 
+  // Compute chart annotation: identify latest profit and trend
+  const latestPoint = data[data.length - 1];
+  const previousPoint = data.length > 1 ? data[data.length - 2] : null;
+  const profitDelta = previousPoint ? latestPoint.profit - previousPoint.profit : 0;
+  const profitTrending = profitDelta > 0 ? 'rising' : profitDelta < 0 ? 'declining' : 'flat';
+
+  // Data-through annotation
+  const dataThrough = latestPoint?.month || 'current';
+
   return (
-    <Surface border className={cn('flex flex-col gap-3 p-5', className)}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
-        <div className="flex items-baseline gap-2">
-          <H3 className="text-[18px]/[24px]">Financial Trends</H3>
-          <Caption>Last 6 months</Caption>
+    <section className={cn('flex flex-col gap-4', className)} aria-label="Financial trend analysis">
+      {/* Header - unboxed */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <H3 className="text-[18px]/[24px]">
+            Is profit growth sustainable at the current burn rate?
+          </H3>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Caption>Last 6 months · Through {dataThrough}</Caption>
+            <Caption className={cn(
+              'font-[550]',
+              profitTrending === 'rising' ? 'text-success' : profitTrending === 'declining' ? 'text-danger' : 'text-text-muted'
+            )}>
+              Profit {profitTrending} · {formatBaht(latestPoint.profit, true)} in {dataThrough}
+            </Caption>
+          </div>
         </div>
 
-        {/* Chart/Table segmented control */}
-        <div className="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg border border-border print:hidden" role="tablist" aria-label="View format">
+        {/* Chart/Table toggle */}
+        <div className="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg border border-border print:hidden shrink-0" role="tablist" aria-label="View format">
           <button
             type="button"
             role="tab"
@@ -66,51 +85,64 @@ export function TrendChartSection({ data, className }: TrendChartSectionProps) {
         </div>
       </div>
 
-      {/* Chart View */}
-      <div className={cn(viewMode === 'chart' ? 'block' : 'hidden', 'print:hidden w-full h-[280px]')}>
-        <LineChart
-          data={data as unknown as Record<string, unknown>[]}
-          lines={lines}
-          xKey="month"
-          height={280}
-          formatY={formatThbAxis}
-          showGrid
-          showLegend
-          ariaLabel="Financial trends over the last 6 months showing revenue, expenses, profit, and cash flow"
-        />
-      </div>
+      {/* Chart container */}
+      <div className="rounded-[var(--radius-md)] bg-surface border border-border p-5">
+        {/* Chart View */}
+        <div className={cn(viewMode === 'chart' ? 'block' : 'hidden', 'print:hidden w-full h-[280px]')}>
+          <LineChart
+            data={data as unknown as Record<string, unknown>[]}
+            lines={lines}
+            xKey="month"
+            height={280}
+            formatY={formatThbAxis}
+            showGrid
+            showLegend
+            ariaLabel="Financial trends over the last 6 months showing revenue, expenses, profit, and cash flow. Profit is rising."
+          />
+        </div>
 
-      {/* Table View (shown dynamically, and always visible on print) */}
-      <div className={cn(viewMode === 'table' ? 'block' : 'hidden', 'print:block w-full overflow-x-auto')}>
-        <table className="w-full text-left border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-border text-text-muted">
-              <th className="py-2 px-3 font-semibold">Month</th>
-              <th className="py-2 px-3 font-semibold text-right">Revenue</th>
-              <th className="py-2 px-3 font-semibold text-right">Expenses</th>
-              <th className="py-2 px-3 font-semibold text-right">Profit</th>
-              <th className="py-2 px-3 font-semibold text-right">Cash Flow</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row) => (
-              <tr key={row.month} className="border-b border-border/60 hover:bg-surface-subtle/50 text-text-primary">
-                <td className="py-2.5 px-3 font-medium">{row.month}</td>
-                <td className="py-2.5 px-3 text-right tabular-nums">{formatBaht(row.revenue, true)}</td>
-                <td className="py-2.5 px-3 text-right tabular-nums text-warning">{formatBaht(row.expenses, true)}</td>
-                <td className={cn(
-                  'py-2.5 px-3 text-right tabular-nums font-medium',
-                  row.profit >= 0 ? 'text-success' : 'text-danger'
-                )}>
-                  {formatBaht(row.profit, true)}
-                </td>
-                <td className="py-2.5 px-3 text-right tabular-nums text-info">{formatBaht(row.cashFlow, true)}</td>
+        {/* Table View (shown dynamically, and always visible on print) */}
+        <div className={cn(viewMode === 'table' ? 'block' : 'hidden', 'print:block w-full overflow-x-auto')}>
+          <table className="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-border text-text-muted">
+                <th className="py-2.5 px-3 font-semibold">Month</th>
+                <th className="py-2.5 px-3 font-semibold text-right">Revenue</th>
+                <th className="py-2.5 px-3 font-semibold text-right">Expenses</th>
+                <th className="py-2.5 px-3 font-semibold text-right">Profit</th>
+                <th className="py-2.5 px-3 font-semibold text-right">Cash Flow</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((row, idx) => (
+                <tr
+                  key={row.month}
+                  className={cn(
+                    'border-b border-border/60 hover:bg-surface-subtle/50 text-text-primary',
+                    idx === data.length - 1 && 'font-medium bg-surface-subtle/30'
+                  )}
+                >
+                  <td className="py-2.5 px-3 font-medium">
+                    {row.month}
+                    {idx === data.length - 1 && (
+                      <span className="ml-1.5 text-[11px] text-brand font-[550]">Latest</span>
+                    )}
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatBaht(row.revenue, true)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-warning">{formatBaht(row.expenses, true)}</td>
+                  <td className={cn(
+                    'py-2.5 px-3 text-right tabular-nums font-medium',
+                    row.profit >= 0 ? 'text-success' : 'text-danger'
+                  )}>
+                    {formatBaht(row.profit, true)}
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-info">{formatBaht(row.cashFlow, true)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </Surface>
+    </section>
   );
 }
-

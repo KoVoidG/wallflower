@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { FadeInView } from '@/components/motion';
 import { HeroSection } from '@/components/marketing/hero-section';
 import { WorkflowSection } from '@/components/marketing/workflow-section';
 import { ScenariosSection } from '@/components/marketing/scenarios-section';
@@ -24,11 +25,21 @@ export default function MarketingPage() {
     <>
       <HashScrollHandler />
       <HeroSection />
-      <WorkflowSection />
-      <ScenariosSection />
-      <ExplainabilitySection />
-      <ThaiSmeSection />
-      <CtaSection />
+      <FadeInView>
+        <WorkflowSection />
+      </FadeInView>
+      <FadeInView>
+        <ScenariosSection />
+      </FadeInView>
+      <FadeInView>
+        <ExplainabilitySection />
+      </FadeInView>
+      <FadeInView>
+        <ThaiSmeSection />
+      </FadeInView>
+      <FadeInView>
+        <CtaSection />
+      </FadeInView>
     </>
   );
 }

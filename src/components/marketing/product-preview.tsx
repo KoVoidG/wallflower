@@ -75,17 +75,25 @@ export function ProductPreview() {
       <Surface border className="p-4">
         <div className="flex items-center gap-2 mb-2">
           <Activity className="size-4 text-brand" aria-hidden="true" />
-          <span className="text-[13px]/[18px] font-[550] text-text-muted">Scenario Simulation</span>
+          <span className="text-[13px]/[18px] font-[550] text-text-muted">Decision Simulation</span>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-2 bg-surface-subtle rounded-full overflow-hidden">
-            <div className="h-full w-[68%] bg-brand rounded-full" />
+        <p className="text-[13px]/[20px] text-text-primary font-[500] mb-2">
+          What if you hire 2 employees?
+        </p>
+        <div className="flex flex-col gap-1.5 text-[12px]/[18px]">
+          <div className="flex justify-between">
+            <span className="text-text-muted">Runway</span>
+            <span className="tabular-nums text-text-primary">8.2 → <span className="text-warning font-[550]">5.1 months</span></span>
           </div>
-          <span className="text-[13px]/[20px] font-[550] text-text-primary tabular-nums">68%</span>
+          <div className="flex justify-between">
+            <span className="text-text-muted">Monthly profit</span>
+            <span className="tabular-nums text-text-primary">฿35,000 → <span className="text-danger font-[550]">-฿12,400</span></span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-text-muted">Recommendation</span>
+            <Badge variant="warning">Proceed cautiously</Badge>
+          </div>
         </div>
-        <span className="text-[12px]/[18px] text-text-muted mt-1 block">
-          Confidence score for &ldquo;Hire 2 staff&rdquo; scenario
-        </span>
       </Surface>
     </div>
   );

@@ -49,12 +49,12 @@ export default function RegisterPage() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
+      <div>
         <h2 className="text-[20px]/[28px] font-[600] text-text-primary">
-          Create your account
+          Create your Wallflower account
         </h2>
         <p className="mt-1 text-[13px]/[20px] text-text-secondary">
-          Get started with Wallflower
+          Create an account, then build the business baseline Wallflower uses for diagnostics and decision simulations.
         </p>
       </div>
 

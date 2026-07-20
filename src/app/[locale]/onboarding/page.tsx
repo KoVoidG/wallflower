@@ -158,7 +158,7 @@ export default function OnboardingPage() {
 
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-5xl">
         {/* Loading state */}
         {pageState.status === 'loading' && (
           <FadeIn>
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
         {/* Success state */}
         {pageState.status === 'success' && (
           <FadeIn>
-            <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex flex-col items-center justify-center py-16 text-center max-w-lg mx-auto">
               <div className="size-16 rounded-full bg-success-soft flex items-center justify-center mb-4">
                 <svg
                   className="size-8 text-success"
@@ -193,14 +193,20 @@ export default function OnboardingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold text-text-primary mb-2">
-                {t('success')}
+              <h2 className="text-[20px]/[28px] font-[600] text-text-primary mb-2">
+                Your business baseline is ready
               </h2>
+              <p className="text-[15px]/[24px] text-text-secondary mb-6">
+                Wallflower can now assess business health, identify initial risks, and run decision simulations using your current data.
+              </p>
+              <p className="text-[13px] text-text-muted mb-6">
+                Redirecting to your dashboard...
+              </p>
             </div>
           </FadeIn>
         )}
 
-        {/* Submitting state (duplicate guard message) */}
+        {/* Submitting state */}
         {pageState.status === 'submitting' && (
           <FadeIn>
             <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -212,11 +218,11 @@ export default function OnboardingPage() {
           </FadeIn>
         )}
 
-        {/* Ready state — form */}
+        {/* Ready state — form with context column */}
         {pageState.status === 'ready' && (
           <FadeIn>
-            <div className="space-y-6">
-              {/* Draft banner (partial state) */}
+            <div className="flex flex-col gap-6">
+              {/* Draft banner */}
               {hasDraft && (
                 <DraftBanner
                   onContinue={handleContinueDraft}
@@ -224,11 +230,60 @@ export default function OnboardingPage() {
                 />
               )}
 
-              {/* Onboarding form */}
-              <OnboardingForm onSubmit={handleSubmit} />
+              {/* Two-column layout: form + context */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Main form column */}
+                <div className="lg:col-span-8">
+                  <OnboardingForm onSubmit={handleSubmit} />
+                </div>
+
+                {/* Context column */}
+                <aside className="hidden lg:block lg:col-span-4" aria-label="Onboarding context">
+                  <div className="sticky top-8 rounded-[var(--radius-lg)] border border-border bg-surface-subtle/40 p-5 flex flex-col gap-5">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
+                        Why we ask
+                      </span>
+                      <p className="text-[14px]/[22px] text-text-secondary">
+                        Wallflower uses your business profile and financial snapshot to calculate health scores, detect risks, and power decision simulations.
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
+                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
+                        What you will receive
+                      </span>
+                      <ul className="flex flex-col gap-1.5 text-[13px]/[20px] text-text-secondary">
+                        <li>• Business health assessment</li>
+                        <li>• Risk detection and prioritization</li>
+                        <li>• Decision simulation capability</li>
+                        <li>• Evidence-based recommendations</li>
+                      </ul>
+                    </div>
+
+                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
+                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
+                        Setup time
+                      </span>
+                      <p className="text-[13px]/[20px] text-text-secondary">
+                        Approximately 3–5 minutes. You can skip optional fields and add information later.
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
+                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
+                        Data handling
+                      </span>
+                      <p className="text-[13px]/[20px] text-text-secondary">
+                        This is a prototype. Data is stored locally and used only for demonstrating Wallflower&apos;s capabilities.
+                      </p>
+                    </div>
+                  </div>
+                </aside>
+              </div>
 
               {/* Privacy notice footer */}
-              <PrivacyNotice className="mt-8" />
+              <PrivacyNotice className="mt-4" />
             </div>
           </FadeIn>
         )}

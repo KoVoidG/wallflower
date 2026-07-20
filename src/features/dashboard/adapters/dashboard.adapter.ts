@@ -152,14 +152,14 @@ export async function getDashboardData(): Promise<DashboardData> {
         category: 'risk',
         title: 'Rent increase upcoming',
         description: 'Your landlord notified a 5% rent increase starting March. This will reduce monthly profit by ~฿3,500.',
-        href: '/simulation',
+        href: '/simulations',
       },
       {
         id: 'insight-2',
         category: 'opportunity',
         title: 'Weekend revenue potential',
         description: 'Saturday sales are 40% higher than weekdays. Consider extending weekend hours or adding a brunch menu.',
-        href: '/simulation',
+        href: '/simulations',
       },
       {
         id: 'insight-3',

@@ -47,12 +47,12 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
+      <div>
         <h2 className="text-[20px]/[28px] font-[600] text-text-primary">
-          Sign in to your account
+          Welcome back
         </h2>
         <p className="mt-1 text-[13px]/[20px] text-text-secondary">
-          Enter your credentials to continue
+          Sign in to continue reviewing your business health, risks, and decisions.
         </p>
       </div>
 

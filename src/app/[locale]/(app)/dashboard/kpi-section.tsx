@@ -26,24 +26,26 @@ function getFormatter(kpi: KpiData): ((value: number) => string) | undefined {
  */
 export function KpiSection({ kpis }: KpiSectionProps) {
   return (
-    <StaggerChildren className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {kpis.map((kpi) => (
-        <StaggerChildren.Item key={kpi.label} className="h-full">
-          <KpiCard
-            label={kpi.label}
-            value={kpi.value}
-            unit={kpi.unit}
-            numericValue={kpi.numericValue}
-            formatter={getFormatter(kpi)}
-            decimals={kpi.unit === '%' || kpi.unit === 'months' ? 1 : 0}
-            change={kpi.change}
-            changePeriod={kpi.changePeriod}
-            status={kpi.status}
-            tooltip={kpi.tooltip}
-            trend={kpi.trend}
-          />
-        </StaggerChildren.Item>
-      ))}
-    </StaggerChildren>
+    <section aria-label="Key performance indicators">
+      <StaggerChildren className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {kpis.map((kpi) => (
+          <StaggerChildren.Item key={kpi.label} className="h-full">
+            <KpiCard
+              label={kpi.label}
+              value={kpi.value}
+              unit={kpi.unit}
+              numericValue={kpi.numericValue}
+              formatter={getFormatter(kpi)}
+              decimals={kpi.unit === '%' || kpi.unit === 'months' ? 1 : 0}
+              change={kpi.change}
+              changePeriod={kpi.changePeriod}
+              status={kpi.status}
+              tooltip={kpi.tooltip}
+              trend={kpi.trend}
+            />
+          </StaggerChildren.Item>
+        ))}
+      </StaggerChildren>
+    </section>
   );
 }

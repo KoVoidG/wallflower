@@ -76,12 +76,12 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
+      <div>
         <h2 className="text-[20px]/[28px] font-[600] text-text-primary">
-          Forgot your password?
+          Reset your password
         </h2>
         <p className="mt-1 text-[13px]/[20px] text-text-secondary">
-          Enter your email and we&apos;ll send you a reset link
+          Enter your account email and we&apos;ll send instructions for restoring access.
         </p>
       </div>
 
