@@ -43,7 +43,7 @@ export function StepIndicator({ steps, currentStep, className }: StepIndicatorPr
                       'relative flex items-center justify-center size-9 rounded-full text-[13px] font-[600] transition-all duration-200',
                       isCompleted && 'bg-brand text-white shadow-sm',
                       isCurrent && 'bg-brand text-white shadow-md shadow-brand/25',
-                      !isCompleted && !isCurrent && 'bg-surface border-2 border-border text-text-muted'
+                      !isCompleted && !isCurrent && 'bg-surface border-2 border-border-strong text-text-muted'
                     )}
                     aria-hidden="true"
                   >

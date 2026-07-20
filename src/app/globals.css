@@ -50,17 +50,23 @@
   
   --brand: #2DD4BF;
   --brand-hover: #5EEAD4;
-  --brand-soft: #123A34;
+  --brand-soft: #143D36;
+  --brand-strong: #5EEAD4;
   
   --info: #60A5FA;
+  --info-soft: #0C2D4A;
   
   --success: #4ADE80;
+  --success-soft: #052E16;
   
   --warning: #FBBF24;
+  --warning-soft: #422006;
   
   --danger: #F87171;
+  --danger-soft: #450A0A;
   
   --ai: #22D3EE;
+  --ai-soft: #083344;
 }
 
 @theme {

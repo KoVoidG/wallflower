@@ -51,7 +51,7 @@ export function CurrencyInput({
         className={cn(
           'flex items-center rounded-[var(--radius-md)] border transition-colors',
           'focus-within:ring-2 focus-within:ring-brand/20 focus-within:border-brand',
-          error ? 'border-danger' : 'border-border',
+          error ? 'border-danger' : 'border-border dark:border-border-strong',
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >

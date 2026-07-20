@@ -137,7 +137,7 @@ export function Dialog({
                 : { duration: 0.2, ease: EASINGS.default }
             }
             className={cn(
-              'relative z-10 w-full rounded-[var(--radius-lg)] border border-border bg-surface shadow-xl',
+              'relative z-10 w-full rounded-[var(--radius-lg)] border border-border dark:border-border-strong bg-surface shadow-xl dark:shadow-black/50',
               'max-h-[90vh] overflow-y-auto',
               sizeClasses[size]
             )}

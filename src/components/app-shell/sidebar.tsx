@@ -74,7 +74,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     'motion-reduce:transition-none',
                     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
                     isActive
-                      ? 'bg-brand-soft text-brand'
+                      ? 'bg-brand-soft text-brand border-l-2 border-l-brand'
                       : 'text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
                   )}
                   aria-current={isActive ? 'page' : undefined}

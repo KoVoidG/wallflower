@@ -69,7 +69,7 @@ export function DangerZone() {
   };
 
   return (
-    <Surface border className="space-y-4 border-danger/30">
+    <Surface border className="space-y-4 border-danger/30 dark:border-danger/40">
       <H3 className="text-danger">
         <AlertTriangle className="inline size-5 mr-2 align-text-bottom" aria-hidden="true" />
         {t('danger.title')}

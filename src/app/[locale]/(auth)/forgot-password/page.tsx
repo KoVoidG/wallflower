@@ -115,7 +115,7 @@ export default function ForgotPasswordPage() {
               placeholder="you@example.com"
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? 'email-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
               {...register('email')}
             />
           </div>

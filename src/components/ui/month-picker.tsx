@@ -116,7 +116,7 @@ export function MonthPicker({
           'outline-none transition-colors cursor-pointer',
           'focus-visible:ring-2 focus-visible:ring-brand/40',
           'disabled:opacity-50 disabled:cursor-not-allowed',
-          error ? 'border-danger' : 'border-border',
+          error ? 'border-danger' : 'border-border dark:border-border-strong',
           !error && !disabled && 'hover:border-border-strong'
         )}
       >
@@ -147,7 +147,7 @@ export function MonthPicker({
             }
             className={cn(
               'absolute z-50 mt-1 w-full min-w-[260px]',
-              'rounded-[var(--radius-md)] border border-border bg-surface shadow-lg',
+              'rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface shadow-lg dark:shadow-black/40',
               'p-3'
             )}
             role="dialog"

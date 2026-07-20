@@ -139,7 +139,7 @@ export function RiskCard({
       {/* Expandable detail panel — always expanded in print */}
       <div className="print:!block">
         <Expand open={isExpanded}>
-          <div id={panelId} role="region" className="px-4 pb-4 space-y-4 border-t border-border pt-4">
+          <div id={panelId} role="region" className="px-4 pb-4 space-y-4 border-t border-border dark:border-border-strong pt-4">
             {/* Question 1: What happened? */}
             <div>
               <h4 className="text-[13px]/[18px] font-[600] text-text-primary mb-1">

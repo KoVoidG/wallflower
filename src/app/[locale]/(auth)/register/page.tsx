@@ -88,7 +88,7 @@ export default function RegisterPage() {
               placeholder="Your name"
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? 'name-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
               {...register('name')}
             />
           </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               placeholder="you@example.com"
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? 'email-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
               {...register('email')}
             />
           </div>
@@ -150,7 +150,7 @@ export default function RegisterPage() {
               placeholder="••••••••"
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? 'password-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
               {...register('password')}
             />
             <button
@@ -201,7 +201,7 @@ export default function RegisterPage() {
       <button
         type="button"
         onClick={() => authClient.signIn.social({ provider: 'google' })}
-        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface px-4 py-2.5 text-[15px]/[24px] font-[500] text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
+        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface px-4 py-2.5 text-[15px]/[24px] font-[500] text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
           <path

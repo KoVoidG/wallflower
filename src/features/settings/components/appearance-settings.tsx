@@ -74,7 +74,7 @@ export function AppearanceSettings() {
                   'flex items-center gap-2 rounded-[var(--radius-md)] border px-4 py-2.5 text-[14px] font-[550] transition-colors cursor-pointer',
                   isActive
                     ? 'border-brand bg-brand-soft text-brand'
-                    : 'border-border bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
+                    : 'border-border dark:border-border-strong bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
                 )}
                 aria-pressed={isActive}
               >
@@ -109,7 +109,7 @@ export function AppearanceSettings() {
                   'rounded-[var(--radius-md)] border px-4 py-2.5 text-[14px] font-[550] transition-colors cursor-pointer',
                   isActive
                     ? 'border-brand bg-brand-soft text-brand'
-                    : 'border-border bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
+                    : 'border-border dark:border-border-strong bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
                 )}
                 aria-pressed={isActive}
               >
@@ -133,7 +133,7 @@ export function AppearanceSettings() {
                 'rounded-[var(--radius-md)] border px-4 py-2.5 text-[14px] font-[550] transition-colors cursor-pointer font-mono',
                 dateFormat === format
                   ? 'border-brand bg-brand-soft text-brand'
-                  : 'border-border bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
+                  : 'border-border dark:border-border-strong bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
               )}
               aria-pressed={dateFormat === format}
             >
@@ -159,7 +159,7 @@ export function AppearanceSettings() {
                 'rounded-[var(--radius-md)] border px-4 py-2.5 text-[14px] font-[550] transition-colors cursor-pointer',
                 currencyDisplay === option.value
                   ? 'border-brand bg-brand-soft text-brand'
-                  : 'border-border bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
+                  : 'border-border dark:border-border-strong bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
               )}
               aria-pressed={currencyDisplay === option.value}
             >

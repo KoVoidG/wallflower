@@ -32,7 +32,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         </div>
 
         {/* Card */}
-        <Surface variant="raised" border className="p-6">
+        <Surface variant="raised" border className="p-6 dark:border-border-strong">
           {children}
         </Surface>
       </div>
