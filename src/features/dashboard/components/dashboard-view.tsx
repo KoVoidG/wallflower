@@ -190,7 +190,7 @@ export function DashboardView({ initialData }: DashboardViewProps) {
 
       {/* 3. Business Pulse (8 cols) + Recommended Action (4 cols) */}
       <FadeInView>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+        <div data-tour="pulse" className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
           <BusinessPulse
             data={data.pulse}
             mostImportantChange="Revenue up 8.2% month-over-month with reduced burn rate"

@@ -62,7 +62,7 @@ function BusinessHealthContent({ data }: { data: DashboardData }) {
   const postureBg = avgScore >= 75 ? 'bg-success-soft/30 border-success/15' : avgScore >= 55 ? 'bg-brand-soft/30 border-brand/15' : avgScore >= 35 ? 'bg-warning-soft/30 border-warning/15' : 'bg-danger-soft/30 border-danger/15';
 
   return (
-    <div className="flex flex-col gap-8">
+    <div data-tour="health-score" className="flex flex-col gap-8">
       {/* Page heading + data freshness */}
       <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1">

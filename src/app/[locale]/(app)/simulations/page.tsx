@@ -21,7 +21,9 @@ async function SimulationsContent() {
 
   return (
     <FadeIn>
-      <SimulationHistoryView initialHistory={history} />
+      <div data-tour="simulations-view">
+        <SimulationHistoryView initialHistory={history} />
+      </div>
     </FadeIn>
   );
 }

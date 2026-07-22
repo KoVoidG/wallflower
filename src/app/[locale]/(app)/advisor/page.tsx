@@ -89,7 +89,7 @@ export default function AdvisorPage() {
   };
 
   return (
-    <FadeIn className="flex flex-col gap-6 pb-8">
+    <FadeIn data-tour="advisor-view" className="flex flex-col gap-6 pb-8">
       {/* Page header */}
       <header className="flex flex-col gap-1">
         <div className="flex items-center gap-2">

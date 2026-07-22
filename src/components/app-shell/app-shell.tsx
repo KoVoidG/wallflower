@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Sidebar } from './sidebar';
 import { Topbar } from './topbar';
 import { MobileBottomNav, MobileNavDrawer } from './mobile-nav';
+import { ProductTour } from './product-tour';
 
 interface AppShellProps {
   children: ReactNode;
@@ -84,6 +85,9 @@ export function AppShell({ children, title, aside, asideTitle }: AppShellProps) 
 
       {/* Mobile bottom nav */}
       <MobileBottomNav />
+
+      {/* Product Tour Guide Modal */}
+      <ProductTour />
     </div>
   );
 }

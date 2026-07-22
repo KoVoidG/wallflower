@@ -12,6 +12,9 @@ const registerSchema = z.object({
   name: z.string().min(1, 'Full name is required'),
   email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: 'You must agree to the Terms of Service and acknowledge the Privacy Policy to create an account.',
+  }),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -26,7 +29,7 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '' },
+    defaultValues: { name: '', email: '', password: '', acceptTerms: false },
   });
 
   async function onSubmit(data: RegisterFormData) {
@@ -174,6 +177,46 @@ export default function RegisterPage() {
           <p className="text-[12px]/[18px] text-text-muted">
             Minimum 8 characters
           </p>
+        </div>
+
+        {/* Required Registration Consent Checkbox */}
+        <div className="space-y-1.5 pt-1">
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              id="acceptTerms"
+              type="checkbox"
+              aria-invalid={!!errors.acceptTerms}
+              aria-describedby={errors.acceptTerms ? 'acceptTerms-error' : undefined}
+              className="mt-1 rounded accent-brand size-4 cursor-pointer shrink-0"
+              {...register('acceptTerms')}
+            />
+            <span className="text-[13px]/[20px] text-text-secondary">
+              I agree to the{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-brand underline hover:text-brand-hover transition-colors"
+              >
+                Terms of Service
+              </a>{' '}
+              and acknowledge that I have read the{' '}
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-brand underline hover:text-brand-hover transition-colors"
+              >
+                Privacy Policy
+              </a>
+              .
+            </span>
+          </label>
+          {errors.acceptTerms && (
+            <p id="acceptTerms-error" className="text-[12px]/[18px] text-danger">
+              {errors.acceptTerms.message}
+            </p>
+          )}
         </div>
 
         {/* Submit */}

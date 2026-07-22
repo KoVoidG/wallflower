@@ -19,7 +19,7 @@ export default async function ReportsPage() {
   const latestReport = reports.length > 0 ? await getReport(reports[0].id) : null;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div data-tour="reports-view" className="flex flex-col gap-8">
       {/* Page header */}
       <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col gap-1">

@@ -54,6 +54,11 @@
   * T066 Add data completeness, stale-data, and missing-history states
   * T067 Add print-safe data table alternatives for charts
   * T067a Build the form/modal to update/create a new monthly financial snapshot, and expose clear entry paths (links/buttons) to it from both the dashboard and simulation pages (FR-039)
+  * T031a Redesign sidebar with section dividers, restrained Upgrade to Pro card, Plan comparison modal, and new FAQ & Help & Support routes
+  * T031b Redesign Settings workspace (2-column layout, 8 modular sections) and unified Account control menu in sidebar & topbar
+  * T031c Refine sidebar & account menu with ChatGPT-style information architecture (Overview, Decisions, Account menu upward popover)
+  * T031d Refine 4 core areas: Dashboard chart legend (above plot, 2-row mobile wrap, line samples + labels), Product Tour (5-step coach-mark, mobile bottom sheet, replay button), Registration Consent (required unchecked checkbox with separate teal links), and Legal Pages (dedicated legal layout, prototype banner, TOC nav, 760px readable width)
+  * T031e Dedicated Legal Header (no marketing navbar, no absolute positioning, logo + Wallflower Legal + Back link + Language switcher + Print action) and 7-Step Cross-Route Guided Product Tour (real route navigation, target element spotlight, localStorage persistence, keyboard controls, dark mode & i18n support)
 * **In-Progress Tasks:**
   * None
 * **Next Tasks:**

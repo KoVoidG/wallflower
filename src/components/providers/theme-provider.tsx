@@ -1,3 +1,5 @@
+'use client';
+
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { type ReactNode } from 'react';
 
@@ -14,6 +16,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       disableTransitionOnChange
       storageKey="wallflower-theme"
       themes={['light', 'dark']}
+      scriptProps={{
+        'data-cfasync': 'false',
+      }}
     >
       {children}
     </NextThemesProvider>

@@ -147,6 +147,11 @@ Responsible for:
 - [x] T029 [P] [Owner: Void] Configure next-intl routing and English/Thai message files in `src/lib/i18n/` and `src/messages/`
 - [x] T030 [Owner: Void] Build reusable typography, surface, status badge, metric value, empty state, error state, and skeleton components in `src/components/ui/`
 - [x] T031 [Owner: Void] Build responsive application shell, sidebar, topbar, mobile navigation, and contextual drawer in `src/components/app-shell/`
+- [x] T031a [Owner: Void] Redesign sidebar with section dividers, Upgrade Card banner (restrained brand tokens), Plan Modal, and FAQ/Help & Support routes
+- [x] T031b [Owner: Void] Redesign Settings workspace (2-column layout, 8 modular sections) and unified Account control menu in sidebar & topbar
+- [x] T031c [Owner: Void] Refine sidebar & account menu with ChatGPT-style information architecture (Overview, Decisions, Account menu upward popover)
+- [x] T031d [Owner: Void] Refine 4 core areas: Chart Legend (above plot, 2-row wrap), Product Tour (5-step guide, mobile sheet, replay button), Registration Consent (required checkbox with separate teal links), and Legal Pages (dedicated legal layout, prototype banner, TOC nav, 760px readable width)
+- [x] T031e [Owner: Void] Dedicated Shared Legal Header (no marketing navbar, no absolute positioning, logo + Wallflower Legal + Back link + Language switcher + Print action) and 7-Step Cross-Route Guided Product Tour (real route navigation, target element spotlighting, localStorage state, keyboard & i18n support)
 - [x] T032 [Owner: Void] Build reduced-motion-aware animation primitives in `src/components/motion/`
 - [x] T033 [P] [Owner: Void] Add Storybook or a local design-system showcase route at `src/app/[locale]/design-system/page.tsx`
 - [x] T034 [P] [Owner: Void] Add automated contrast and accessibility checks for core primitives in `tests/unit/design-system.test.tsx`

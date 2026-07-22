@@ -47,6 +47,7 @@ interface ComparisonChartProps {
  * Comparison chart for before/after scenario analysis.
  * Baseline is always rendered as a dashed slate line.
  * Scenarios use the ordered chart palette.
+ * Legend is rendered at top above the plot area.
  */
 export function ComparisonChart({
   data,
@@ -79,96 +80,99 @@ export function ComparisonChart({
 
   return (
     <div
-      className={cn('w-full', className)}
+      className={cn('w-full flex flex-col', className)}
       role="img"
       aria-label={ariaLabel}
     >
-      <ResponsiveContainer width="100%" height={height}>
-        <LineChart data={data} margin={CHART_MARGINS}>
-          <title>{ariaLabel}</title>
-          <desc>
-            {`Comparison chart showing baseline (${labels[baselineKey] ?? baselineKey}) against ${scenarioKeys.length} scenario(s): ${scenarioKeys.map((k) => labels[k] ?? k).join(', ')}`}
-          </desc>
+      {/* Legend placed ABOVE plot area */}
+      <ChartLegend items={legendItems} className="mb-3 px-1" />
 
-          <CartesianGrid
-            strokeDasharray={GRID_STYLES.strokeDasharray}
-            strokeOpacity={GRID_STYLES.strokeOpacity}
-            vertical={false}
-          />
+      <div className="w-full flex-1">
+        <ResponsiveContainer width="100%" height={height}>
+          <LineChart data={data} margin={CHART_MARGINS}>
+            <title>{ariaLabel}</title>
+            <desc>
+              {`Comparison chart showing baseline (${labels[baselineKey] ?? baselineKey}) against ${scenarioKeys.length} scenario(s): ${scenarioKeys.map((k) => labels[k] ?? k).join(', ')}`}
+            </desc>
 
-          <XAxis
-            dataKey={xKey}
-            fontSize={AXIS_STYLES.fontSize}
-            tickLine={AXIS_STYLES.tickLine}
-            axisLine={AXIS_STYLES.axisLine}
-            tick={{ fill: 'var(--text-muted)' }}
-          />
+            <CartesianGrid
+              strokeDasharray={GRID_STYLES.strokeDasharray}
+              strokeOpacity={GRID_STYLES.strokeOpacity}
+              vertical={false}
+            />
 
-          <YAxis
-            fontSize={AXIS_STYLES.fontSize}
-            tickLine={AXIS_STYLES.tickLine}
-            axisLine={AXIS_STYLES.axisLine}
-            tickFormatter={formatY}
-            tick={{ fill: 'var(--text-muted)' }}
-            width={60}
-          />
+            <XAxis
+              dataKey={xKey}
+              fontSize={AXIS_STYLES.fontSize}
+              tickLine={AXIS_STYLES.tickLine}
+              axisLine={AXIS_STYLES.axisLine}
+              tick={{ fill: 'var(--text-muted)' }}
+            />
 
-          <Tooltip
-            content={({ active, label, payload }) => {
-              const entries: TooltipEntry[] = (payload ?? []).map((p) => {
-                const isBaseline = p.dataKey === baselineKey;
-                return {
-                  name: labels[String(p.dataKey)] ?? String(p.dataKey),
-                  value: p.value as number,
-                  color: String(p.color),
-                  dashed: isBaseline,
-                };
-              });
+            <YAxis
+              fontSize={AXIS_STYLES.fontSize}
+              tickLine={AXIS_STYLES.tickLine}
+              axisLine={AXIS_STYLES.axisLine}
+              tickFormatter={formatY}
+              tick={{ fill: 'var(--text-muted)' }}
+              width={60}
+            />
+
+            <Tooltip
+              content={({ active, label, payload }) => {
+                const entries: TooltipEntry[] = (payload ?? []).map((p) => {
+                  const isBaseline = p.dataKey === baselineKey;
+                  return {
+                    name: labels[String(p.dataKey)] ?? String(p.dataKey),
+                    value: p.value as number,
+                    color: String(p.color),
+                    dashed: isBaseline,
+                  };
+                });
+                return (
+                  <ChartTooltip
+                    active={active}
+                    label={String(label)}
+                    entries={entries}
+                    formatValue={formatY}
+                  />
+                );
+              }}
+            />
+
+            {/* Baseline — always dashed slate */}
+            <Line
+              type="monotone"
+              dataKey={baselineKey}
+              stroke={baselineColor}
+              strokeWidth={2}
+              strokeDasharray="6 4"
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 2 }}
+              isAnimationActive={!prefersReduced}
+              animationDuration={350}
+            />
+
+            {/* Scenario series */}
+            {scenarioKeys.map((key, i) => {
+              const color = palette[i % palette.length];
               return (
-                <ChartTooltip
-                  active={active}
-                  label={String(label)}
-                  entries={entries}
-                  formatValue={formatY}
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={color}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4, strokeWidth: 2 }}
+                  isAnimationActive={!prefersReduced}
+                  animationDuration={350}
                 />
               );
-            }}
-          />
-
-          {/* Baseline — always dashed slate */}
-          <Line
-            type="monotone"
-            dataKey={baselineKey}
-            stroke={baselineColor}
-            strokeWidth={2}
-            strokeDasharray="6 4"
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 2 }}
-            isAnimationActive={!prefersReduced}
-            animationDuration={350}
-          />
-
-          {/* Scenario series */}
-          {scenarioKeys.map((key, i) => {
-            const color = palette[i % palette.length];
-            return (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={color}
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4, strokeWidth: 2 }}
-                isAnimationActive={!prefersReduced}
-                animationDuration={350}
-              />
-            );
-          })}
-        </LineChart>
-      </ResponsiveContainer>
-
-      <ChartLegend items={legendItems} className="mt-3 px-4" />
+            })}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

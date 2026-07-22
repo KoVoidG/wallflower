@@ -21,7 +21,9 @@ async function RisksContent() {
 
   return (
     <FadeIn>
-      <RisksView initialData={data} />
+      <div data-tour="risks-view">
+        <RisksView initialData={data} />
+      </div>
     </FadeIn>
   );
 }

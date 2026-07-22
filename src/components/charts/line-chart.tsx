@@ -48,7 +48,7 @@ interface LineChartProps {
   formatX?: (value: string) => string;
   /** Show grid lines */
   showGrid?: boolean;
-  /** Show legend below chart */
+  /** Show legend above chart */
   showLegend?: boolean;
   /** Accessible label for the chart */
   ariaLabel?: string;
@@ -59,6 +59,7 @@ interface LineChartProps {
 /**
  * Reusable line chart with multiple series support.
  * Accessible, responsive, dark-mode aware, reduced-motion safe.
+ * Legend is placed above the plot area and wraps into 2 rows on mobile.
  */
 export function LineChart({
   data,
@@ -83,87 +84,91 @@ export function LineChart({
 
   return (
     <div
-      className={cn('w-full', className)}
+      className={cn('w-full flex flex-col', className)}
       role="img"
       aria-label={ariaLabel}
     >
-      <ResponsiveContainer width="100%" height={height}>
-        <RechartsLineChart data={data} margin={CHART_MARGINS}>
-          <title>{ariaLabel}</title>
-          <desc>
-            {`Line chart with ${lines.length} series: ${lines.map((l) => l.label).join(', ')}`}
-          </desc>
+      {/* Legend placed ABOVE the plot area */}
+      {showLegend && <ChartLegend items={legendItems} className="mb-3 px-1" />}
 
-          {showGrid && (
-            <CartesianGrid
-              strokeDasharray={GRID_STYLES.strokeDasharray}
-              strokeOpacity={GRID_STYLES.strokeOpacity}
-              vertical={false}
+      {/* Plot area */}
+      <div className="w-full flex-1">
+        <ResponsiveContainer width="100%" height={height}>
+          <RechartsLineChart data={data} margin={CHART_MARGINS}>
+            <title>{ariaLabel}</title>
+            <desc>
+              {`Line chart with ${lines.length} series: ${lines.map((l) => l.label).join(', ')}`}
+            </desc>
+
+            {showGrid && (
+              <CartesianGrid
+                strokeDasharray={GRID_STYLES.strokeDasharray}
+                strokeOpacity={GRID_STYLES.strokeOpacity}
+                vertical={false}
+              />
+            )}
+
+            <XAxis
+              dataKey={xKey}
+              fontSize={AXIS_STYLES.fontSize}
+              tickLine={AXIS_STYLES.tickLine}
+              axisLine={AXIS_STYLES.axisLine}
+              tickFormatter={formatX}
+              tick={{ fill: 'var(--text-muted)' }}
             />
-          )}
 
-          <XAxis
-            dataKey={xKey}
-            fontSize={AXIS_STYLES.fontSize}
-            tickLine={AXIS_STYLES.tickLine}
-            axisLine={AXIS_STYLES.axisLine}
-            tickFormatter={formatX}
-            tick={{ fill: 'var(--text-muted)' }}
-          />
+            <YAxis
+              fontSize={AXIS_STYLES.fontSize}
+              tickLine={AXIS_STYLES.tickLine}
+              axisLine={AXIS_STYLES.axisLine}
+              tickFormatter={formatY}
+              tick={{ fill: 'var(--text-muted)' }}
+              width={60}
+            />
 
-          <YAxis
-            fontSize={AXIS_STYLES.fontSize}
-            tickLine={AXIS_STYLES.tickLine}
-            axisLine={AXIS_STYLES.axisLine}
-            tickFormatter={formatY}
-            tick={{ fill: 'var(--text-muted)' }}
-            width={60}
-          />
+            <Tooltip
+              content={({ active, label, payload }) => {
+                const entries: TooltipEntry[] = (payload ?? []).map((p) => {
+                  const lineConfig = lines.find((l) => l.key === p.dataKey);
+                  return {
+                    name: lineConfig?.label ?? String(p.dataKey),
+                    value: p.value as number,
+                    color: String(p.color),
+                    dashed: lineConfig?.dashed,
+                  };
+                });
+                return (
+                  <ChartTooltip
+                    active={active}
+                    label={String(label)}
+                    entries={entries}
+                    formatValue={formatY}
+                  />
+                );
+              }}
+            />
 
-          <Tooltip
-            content={({ active, label, payload }) => {
-              const entries: TooltipEntry[] = (payload ?? []).map((p) => {
-                const lineConfig = lines.find((l) => l.key === p.dataKey);
-                return {
-                  name: lineConfig?.label ?? String(p.dataKey),
-                  value: p.value as number,
-                  color: String(p.color),
-                  dashed: lineConfig?.dashed,
-                };
-              });
+            {lines.map((line, i) => {
+              const color =
+                line.color ?? palette[i % palette.length];
               return (
-                <ChartTooltip
-                  active={active}
-                  label={String(label)}
-                  entries={entries}
-                  formatValue={formatY}
+                <Line
+                  key={line.key}
+                  type="monotone"
+                  dataKey={line.key}
+                  stroke={color}
+                  strokeWidth={2}
+                  strokeDasharray={line.dashed ? '6 4' : undefined}
+                  dot={false}
+                  activeDot={{ r: 4, strokeWidth: 2 }}
+                  isAnimationActive={!prefersReduced}
+                  animationDuration={350}
                 />
               );
-            }}
-          />
-
-          {lines.map((line, i) => {
-            const color =
-              line.color ?? palette[i % palette.length];
-            return (
-              <Line
-                key={line.key}
-                type="monotone"
-                dataKey={line.key}
-                stroke={color}
-                strokeWidth={2}
-                strokeDasharray={line.dashed ? '6 4' : undefined}
-                dot={false}
-                activeDot={{ r: 4, strokeWidth: 2 }}
-                isAnimationActive={!prefersReduced}
-                animationDuration={350}
-              />
-            );
-          })}
-        </RechartsLineChart>
-      </ResponsiveContainer>
-
-      {showLegend && <ChartLegend items={legendItems} className="mt-3 px-4" />}
+            })}
+          </RechartsLineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

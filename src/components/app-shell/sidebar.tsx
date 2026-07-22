@@ -7,27 +7,47 @@ import {
   FlaskConical,
   Bot,
   FileText,
-  Settings,
   PanelLeftClose,
   PanelLeft,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
+import { AccountMenu } from './account-menu';
 
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
 }
 
-const navItems = [
-  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { key: 'businessHealth', href: '/business-health', icon: HeartPulse },
-  { key: 'risk', href: '/risks', icon: ShieldAlert },
-  { key: 'simulation', href: '/simulations', icon: FlaskConical },
-  { key: 'advisor', href: '/advisor', icon: Bot },
-  { key: 'reports', href: '/reports', icon: FileText },
-  { key: 'settings', href: '/settings', icon: Settings },
+interface NavItem {
+  key: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+}
+
+interface NavSection {
+  titleKey: string;
+  items: readonly NavItem[];
+}
+
+const navSections: readonly NavSection[] = [
+  {
+    titleKey: 'sectionMain',
+    items: [
+      { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { key: 'businessHealth', href: '/business-health', icon: HeartPulse },
+    ],
+  },
+  {
+    titleKey: 'sectionAnalytics',
+    items: [
+      { key: 'risk', href: '/risks', icon: ShieldAlert },
+      { key: 'simulation', href: '/simulations', icon: FlaskConical },
+      { key: 'advisor', href: '/advisor', icon: Bot },
+      { key: 'reports', href: '/reports', icon: FileText },
+    ],
+  },
 ] as const;
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
@@ -44,7 +64,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       )}
     >
       {/* Brand */}
-      <div className="flex h-16 items-center gap-3 border-b border-border px-4">
+      <div className="flex h-16 items-center gap-3 border-b border-border px-4 shrink-0">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand text-white font-bold text-sm">
           W
         </div>
@@ -55,48 +75,62 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         )}
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
-        <ul className="flex flex-col gap-1" role="list">
-          {navItems.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
-            const label = t(item.key);
+      {/* Navigation Groups */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5" aria-label="Main navigation">
+        {navSections.map((section, idx) => (
+          <div key={section.titleKey} className={cn(idx > 0 && 'pt-1 border-t border-border/50')}>
+            {!collapsed && (
+              <h2 className="px-3 pb-2 text-[10px] font-bold tracking-wider text-text-muted uppercase">
+                {t(section.titleKey)}
+              </h2>
+            )}
+            <ul className="flex flex-col gap-1" role="list">
+              {section.items.map((item) => {
+                const isActive =
+                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const Icon = item.icon;
+                const label = t(item.key);
 
-            return (
-              <li key={item.key}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium',
-                    'transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)]',
-                    'motion-reduce:transition-none',
-                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
-                    isActive
-                      ? 'bg-brand-soft text-brand border-l-2 border-l-brand'
-                      : 'text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                  title={collapsed ? label : undefined}
-                >
-                  <Icon
-                    className={cn(
-                      'size-5 shrink-0',
-                      isActive ? 'text-brand' : 'text-text-muted group-hover:text-text-secondary'
-                    )}
-                    aria-hidden="true"
-                  />
-                  {!collapsed && <span className="truncate">{label}</span>}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                return (
+                  <li key={item.key}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
+                        'transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                        'motion-reduce:transition-none',
+                        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                        isActive
+                          ? 'bg-brand-soft text-brand border-l-2 border-l-brand'
+                          : 'text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
+                      )}
+                      aria-current={isActive ? 'page' : undefined}
+                      title={collapsed ? label : undefined}
+                    >
+                      <Icon
+                        className={cn(
+                          'size-5 shrink-0',
+                          isActive ? 'text-brand' : 'text-text-muted group-hover:text-text-secondary'
+                        )}
+                        aria-hidden="true"
+                      />
+                      {!collapsed && <span className="truncate">{label}</span>}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
+      {/* Account Control Row */}
+      <div className="px-3 py-2 border-t border-border/50 shrink-0">
+        <AccountMenu collapsed={collapsed} align="top" />
+      </div>
+
       {/* Collapse toggle */}
-      <div className="border-t border-border px-3 py-3">
+      <div className="border-t border-border px-3 py-3 shrink-0">
         <button
           type="button"
           onClick={onToggle}

@@ -9,13 +9,20 @@
   "advisor": "Advisor",
   "reports": "Reports",
   "nav": {
+    "sectionMain": "Overview",
+    "sectionAnalytics": "Decisions",
     "dashboard": "Dashboard",
     "businessHealth": "Business Health",
     "risk": "Risk Center",
     "simulation": "Simulation",
-    "advisor": "Advisor",
+    "advisor": "AI Advisor",
     "reports": "Reports",
+    "faq": "FAQ",
+    "helpSupport": "Help & Support",
     "settings": "Settings",
+    "planUsage": "Plan & Usage",
+    "profileAccount": "Profile & Account",
+    "signOut": "Sign Out",
     "collapse": "Collapse",
     "expand": "Expand",
     "openMenu": "Open navigation menu",
@@ -389,35 +396,154 @@
   },
   "settingsPage": {
     "pageTitle": "Settings",
+    "subtitle": "Manage your account, business preferences, analysis rules, and security.",
+    "sections": {
+      "profile": "Profile & Account",
+      "business": "Business Profile",
+      "analysis": "Analysis Preferences",
+      "notifications": "Notifications",
+      "appearance": "Appearance & Language",
+      "privacy": "Data & Privacy",
+      "security": "Security",
+      "plan": "Plan & Usage"
+    },
+    "sectionDescriptions": {
+      "profile": "Personal identity, display details, email, and user role.",
+      "business": "Company details, operating industry, team size, and baseline status.",
+      "analysis": "Thresholds, simulation defaults, and risk sensitivity settings.",
+      "notifications": "In-app alerts, risk warnings, and summary reminders.",
+      "appearance": "Theme, language, date format, and motion accessibility.",
+      "privacy": "Data completeness, AI data usage notes, and data reset actions.",
+      "security": "Password controls, active device sessions, and 2FA status.",
+      "plan": "Current plan tier, feature limits, and upgrade preview."
+    },
+    "saveBar": {
+      "unsavedChanges": "You have unsaved changes",
+      "discard": "Discard",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Settings saved successfully"
+    },
+    "profileAccount": {
+      "title": "Profile & Account",
+      "avatarNotice": "Avatar upload is not available in this prototype.",
+      "displayName": "Display Name",
+      "preferredName": "Preferred Name",
+      "email": "Email Address",
+      "role": "User Role",
+      "created": "Account Created",
+      "verified": "Verified Account",
+      "roles": {
+        "owner": "Owner / Founder",
+        "manager": "General Manager",
+        "finance": "Finance & Accounting",
+        "operations": "Operations Lead"
+      },
+      "goToSecurity": "Manage Password & Security",
+      "signOut": "Sign Out"
+    },
+    "businessProfile": {
+      "title": "Business Profile",
+      "name": "Business Name",
+      "industry": "Industry",
+      "location": "Location",
+      "currency": "Reporting Currency",
+      "fiscalYear": "Fiscal Year Start",
+      "teamSize": "Team Size",
+      "operatingSince": "Operating Since",
+      "goals": "Selected Business Goals",
+      "baselineStatus": "Financial Baseline Status",
+      "dataCompleteness": "Data Completeness",
+      "dataThrough": "Data-Through Date",
+      "lastUpdated": "Last Updated",
+      "editAction": "Edit business profile",
+      "reviewBaseline": "Review financial baseline",
+      "mockNotice": "Edits made here update local prototype state."
+    },
+    "analysis": {
+      "title": "Analysis Preferences",
+      "thresholdsTitle": "Financial Thresholds",
+      "thresholdsNote": "Changing thresholds alters diagnostic alerts and warning thresholds; it does not alter calculated financial math.",
+      "minRunway": "Minimum safe cash runway (months)",
+      "minRunwayDesc": "Highlight scenarios where projected runway falls below this level.",
+      "targetMargin": "Target gross margin (%)",
+      "receivableDays": "Receivable overdue threshold (days)",
+      "maxDebtRatio": "Maximum acceptable debt-to-revenue ratio",
+
+      "simDefaultsTitle": "Simulation Defaults",
+      "forecastPeriod": "Default forecast period",
+      "months": "{count} months",
+      "openingScenario": "Default opening scenario posture",
+      "autoIncludeBestWorst": "Automatically include best and worst cases",
+      "showSensitivity": "Show sensitivity analysis by default",
+
+      "riskPreferencesTitle": "Risk Preferences",
+      "riskSensitivity": "Risk engine sensitivity",
+      "sensitivityOptions": {
+        "conservative": "Conservative (Alert on minor deviations)",
+        "balanced": "Balanced (Standard threshold warnings)",
+        "flexible": "Flexible (Alert on critical threats only)"
+      },
+      "surfaceLowConfidence": "Surface low-confidence risks",
+      "includeOperational": "Include operational risk rules",
+      "includeGrowth": "Include growth-readiness warnings",
+      "defaultSort": "Default risk sorting",
+      "sortOptions": {
+        "severity": "Highest Severity",
+        "impact": "Highest Impact",
+        "newest": "Newest"
+      }
+    },
+    "notificationsPage": {
+      "title": "Notifications",
+      "channelsTitle": "Notification Channels",
+      "emailNotice": "Email notifications are not connected in this prototype.",
+      "inApp": "In-app alerts",
+      "email": "Email alerts (Coming later)",
+
+      "topicsTitle": "Alert Types & Preferences",
+      "criticalRisk": "Critical risk alerts",
+      "runwayWarning": "Cash-runway warnings",
+      "staleData": "Stale-data reminders",
+      "simCompletion": "Simulation completion alerts",
+      "monthlySummary": "Monthly business summary",
+      "reportReady": "Report-ready notifications",
+      "missingData": "Missing-data reminders"
+    },
     "appearance": {
       "title": "Appearance & Language",
       "theme": "Theme",
       "system": "System",
       "light": "Light",
       "dark": "Dark",
-      "currentlyDark": "Currently using dark mode",
-      "currentlyLight": "Currently using light mode",
       "language": "Language",
       "dateFormat": "Date Format",
-      "currency": "Currency Display",
+      "currencyFormat": "Currency Display",
+      "density": "Data Density",
+      "densityOptions": {
+        "comfortable": "Comfortable",
+        "compact": "Compact"
+      },
       "reducedMotion": "Reduced Motion",
-      "reducedMotionDescription": "Animations follow your system preference. Change this in your operating system accessibility settings."
+      "reducedMotionDesc": "Animations follow your operating system accessibility preference."
     },
-    "profile": {
-      "title": "Profile & Business",
-      "displayName": "Display Name",
-      "email": "Email",
-      "verified": "Verified",
-      "unverified": "Unverified",
-      "avatarPlaceholder": "Avatar upload coming soon",
-      "businessInfo": "Business Information",
-      "businessName": "Business Name",
-      "industry": "Industry",
-      "location": "Location",
-      "editHint": "To edit business information, visit the onboarding flow.",
-      "save": "Save Changes",
-      "saving": "Saving...",
-      "saved": "Profile updated successfully."
+    "privacyPage": {
+      "title": "Data & Privacy",
+      "prototypeNotice": "Wallflower currently uses mock and user-entered prototype data. External accounting systems are not connected.",
+      "dataUsageTitle": "How your data is used",
+      "mathUsage": "Deterministic math formulas process revenue, expenses, and cash reserves to compute exact indicators.",
+      "aiUsage": "The AI Advisor reads structured calculated outputs to generate natural-language explanations without modifying values.",
+
+      "statusTitle": "Data Status & Completeness",
+      "dataThrough": "Data-through date",
+      "completenessScore": "Completeness score",
+      "missingCategories": "Missing historical data",
+
+      "destructiveTitle": "Prototype Data Actions",
+      "resetData": "Reset prototype data",
+      "resetDataDesc": "Restore default SME baseline fixtures.",
+      "clearData": "Clear business profile data",
+      "clearDataDesc": "Clear saved snapshot and baseline profile inputs."
     },
     "security": {
       "title": "Security",
@@ -428,16 +554,32 @@
       "changePassword": "Change Password",
       "changing": "Changing...",
       "passwordChanged": "Password changed successfully.",
+      "connectedAuth": "Connected Authentication Method",
+      "credentials": "Email & Password",
+      "googleAuth": "Google OAuth (Not connected)",
       "activeSessions": "Active Sessions",
       "currentDevice": "Current Device",
       "thisSession": "This session",
       "active": "Active",
-      "signOutOther": "Sign out other sessions"
+      "signOutOther": "Sign out other sessions",
+      "twoFactorTitle": "Two-Factor Authentication (2FA)",
+      "twoFactorDesc": "Add an extra layer of security. Coming later in future releases."
+    },
+    "planPage": {
+      "title": "Plan & Usage",
+      "prototypeNotice": "Plan purchasing and real billing are not available in this prototype.",
+      "currentPlan": "Current Plan",
+      "basicTier": "Basic Plan (Prototype)",
+      "basicDesc": "Core diagnostics & snapshot tracking for SME founders.",
+      "usageTitle": "Resource Usage",
+      "snapshotsUsed": "Monthly snapshots recorded",
+      "simulationsRun": "Simulations run this month",
+      "viewPlans": "View plans"
     },
     "danger": {
       "title": "Danger Zone",
-      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
       "deleteAccount": "Delete Account",
+      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
       "warningTitle": "This action is irreversible",
       "warningMessage": "Deleting your account will permanently remove:",
       "warningItem1": "All business data and financial snapshots",
@@ -574,6 +716,113 @@
       "privacy": "Privacy",
       "terms": "Terms",
       "copyright": "© {year} Wallflower. All rights reserved."
+    }
+  },
+  "upgradeCard": {
+    "badge": "Basic Plan",
+    "title": "Upgrade to Pro",
+    "description": "Unlock deeper AI analysis & unlimited simulations.",
+    "viewPlans": "View plans"
+  },
+  "planModal": {
+    "title": "Wallflower Plans",
+    "subtitle": "Explore decision-intelligence features across Wallflower tiers.",
+    "prototypeNotice": "Pricing and purchasing are not yet available in this prototype.",
+    "currentPlan": "Current Plan",
+    "basicTier": "Basic",
+    "basicDesc": "Core diagnostics & snapshot tracking for SME founders.",
+    "proTier": "Pro",
+    "proDesc": "Advanced decision simulations, risk mitigation & deep AI analysis.",
+    "enterpriseTier": "Enterprise",
+    "enterpriseDesc": "Dedicated multi-entity analysis, custom export templates & priority support.",
+    "features": {
+      "snapshots": "Monthly financial snapshots",
+      "riskDetection": "Deterministic risk engine rules",
+      "simulations": "Scenario simulation engine",
+      "aiAdvisor": "AI-powered decision explanations",
+      "reports": "Print-safe decision reports",
+      "multiEntity": "Multi-entity consolidation"
+    },
+    "featureValues": {
+      "basicSnapshots": "Up to 6 snapshots",
+      "proSnapshots": "Unlimited snapshots",
+      "enterpriseSnapshots": "Unlimited snapshots",
+      "basicSimulations": "3 simulations / mo",
+      "proSimulations": "Unlimited simulations",
+      "enterpriseSimulations": "Unlimited simulations",
+      "basicAi": "Standard AI summaries",
+      "proAi": "Deep AI diagnostic breakdown",
+      "enterpriseAi": "Custom prompt & priority AI model"
+    },
+    "close": "Close"
+  },
+  "faqPage": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Clear answers about Wallflower's decision-intelligence platform.",
+    "categories": {
+      "general": "General & Methodology",
+      "data": "Data & Privacy",
+      "simulations": "Simulations & Math",
+      "reports": "Reports & Exports"
+    },
+    "items": [
+      {
+        "category": "general",
+        "question": "What is Wallflower and how does it help my business?",
+        "answer": "Wallflower is a planning and risk warning platform for Thai SMEs. It evaluates your business health using deterministic financial calculations, alerts you to potential risks, and allows you to simulate major decisions before taking action."
+      },
+      {
+        "category": "general",
+        "question": "Does Wallflower replace my accounting software?",
+        "answer": "No. Wallflower is a decision-intelligence platform, not an accounting or tax tool. You enter monthly financial summary data to analyze trends, assess runway, and model scenarios."
+      },
+      {
+        "category": "data",
+        "question": "How safe is my financial data?",
+        "answer": "Your financial data is stored securely and processed exclusively for your business decision calculations. Wallflower never sells or shares your business records."
+      },
+      {
+        "category": "simulations",
+        "question": "How are financial simulations calculated?",
+        "answer": "Simulations use deterministic math formulas (revenue trends, expense ratios, cash burn, working capital) rather than AI guesswork. AI is used strictly to explain the calculated results in clear, natural language."
+      },
+      {
+        "category": "reports",
+        "question": "Can I export reports for bank applications or partners?",
+        "answer": "Yes! Wallflower generates print-safe PDF decision reports that highlight baseline metrics, simulated scenario outcomes, 90-day action plans, and key assumptions."
+      }
+    ]
+  },
+  "helpSupportPage": {
+    "title": "Help & Support Center",
+    "subtitle": "Get assistance, read documentation, or reach out to our team.",
+    "searchPlaceholder": "Search help articles, guides & FAQs...",
+    "quickLinksTitle": "Quick Assistance",
+    "cards": {
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "desc": "Browse answers to common questions about calculations, risk rules, and security."
+      },
+      "guide": {
+        "title": "Onboarding & Snapshot Guide",
+        "desc": "Learn how to prepare monthly financial summary data for maximum diagnostic accuracy."
+      },
+      "simulations": {
+        "title": "Scenario Simulation Guide",
+        "desc": "Understand bullish, cautious, and neutral posture assumptions when modeling decisions."
+      },
+      "contact": {
+        "title": "Contact Support Team",
+        "desc": "Send a inquiry or report a technical issue to our support team."
+      }
+    },
+    "contactBox": {
+      "title": "Need direct help?",
+      "desc": "Our Thai & English support team is ready to assist your SME with platform questions.",
+      "emailLabel": "Email Support",
+      "emailValue": "support@wallflower.app",
+      "hoursLabel": "Operating Hours",
+      "hoursValue": "Monday – Friday, 09:00 – 18:00 ICT"
     }
   }
 }
