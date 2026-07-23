@@ -2,11 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Settings, LifeBuoy, LogOut, MoreVertical, Sparkles, PlayCircle } from 'lucide-react';
+import {
+  Settings,
+  LifeBuoy,
+  LogOut,
+  MoreVertical,
+  Sparkles,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useRouter } from '@/lib/i18n/navigation';
 import { Badge } from '@/components/ui/badge';
-import { replayProductTour } from '@/components/app-shell/product-tour';
 
 interface AccountMenuProps {
   collapsed?: boolean;
@@ -14,7 +19,11 @@ interface AccountMenuProps {
   className?: string;
 }
 
-export function AccountMenu({ collapsed = false, align = 'top', className }: AccountMenuProps) {
+export function AccountMenu({
+  collapsed = false,
+  align = 'top',
+  className,
+}: AccountMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -49,18 +58,16 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
     triggerRef.current?.focus();
   };
 
-  const handleReplayTourClick = () => {
-    setOpen(false);
-    replayProductTour();
-  };
-
   const handleSignOut = () => {
     setOpen(false);
     router.push('/login');
   };
 
   return (
-    <div ref={menuRef} className={cn('relative inline-block text-left w-full', className)}>
+    <div
+      ref={menuRef}
+      className={cn('relative inline-block text-left w-full', className)}
+    >
       {/* Trigger Button */}
       {collapsed ? (
         <button
@@ -70,7 +77,7 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
           className={cn(
             'flex size-10 w-full items-center justify-center rounded-lg border border-border bg-surface-subtle text-text-primary',
             'hover:bg-brand-soft hover:text-brand transition-colors',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer'
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer',
           )}
           title="Somchai Wattana • Basic plan"
           aria-expanded={open}
@@ -89,7 +96,7 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
           className={cn(
             'group flex w-full items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2 text-left',
             'hover:border-border-strong hover:bg-surface-subtle transition-colors',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer'
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer',
           )}
           aria-expanded={open}
           aria-haspopup="true"
@@ -118,9 +125,10 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
           className={cn(
             'absolute z-50 rounded-lg border border-border bg-surface p-1.5 shadow-xl dark:shadow-black/60',
             'animate-in fade-in-50 zoom-in-95 duration-100',
-            align === 'top' && 'bottom-full mb-2 left-0 right-0 w-full min-w-[200px]',
+            align === 'top' &&
+              'bottom-full mb-2 left-0 right-0 w-full min-w-[200px]',
             align === 'right' && 'top-full mt-2 right-0 w-56',
-            align === 'left' && 'top-full mt-2 left-0 w-56'
+            align === 'left' && 'top-full mt-2 left-0 w-56',
           )}
           role="menu"
           aria-orientation="vertical"
@@ -173,8 +181,6 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
               <LifeBuoy className="size-4 text-text-muted shrink-0" />
               <span>{tNav('helpSupport')}</span>
             </Link>
-
-            
           </div>
 
           <div className="border-t border-border/60 mt-1 pt-1" role="none">
