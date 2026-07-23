@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Link } from '@/lib/i18n/navigation';
 import { Plus, Play, TrendingUp, TrendingDown, Shield } from 'lucide-react';
 import type { SavedSimulation, PostureType } from '@/features/simulations/adapters/simulations.adapter';
+import { PageContextualHint } from '@/components/app-shell/product-tour';
 
 interface SimulationHistoryViewProps {
   initialHistory: SavedSimulation[];
@@ -57,19 +58,27 @@ export function SimulationHistoryView({ initialHistory }: SimulationHistoryViewP
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-[600] text-text-primary">Simulations</h1>
-        <Link
-          href="/simulations/new"
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)]',
-            'bg-brand text-white font-[550] text-[14px]',
-            'hover:bg-brand-hover transition-colors'
-          )}
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          New Simulation
-        </Link>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-[20px] font-[600] text-text-primary">Simulations</h1>
+          <Link
+            href="/simulations/new"
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)]',
+              'bg-brand text-white font-[550] text-[14px]',
+              'hover:bg-brand-hover transition-colors'
+            )}
+          >
+            <Plus className="size-4" aria-hidden="true" />
+            New Simulation
+          </Link>
+        </div>
+
+        <PageContextualHint
+          hintKey="simulations"
+          title="Decision Simulation Guide"
+          message="Click 'New Simulation' to test what-if business decisions like hiring, price changes, or equipment purchases before spending capital."
+        />
       </div>
 
       {/* History grid */}

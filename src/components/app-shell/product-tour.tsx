@@ -7,83 +7,76 @@ import {
   ArrowRight,
   ArrowLeft,
   X,
-  Check,
+  LayoutDashboard,
   HeartPulse,
-  BarChart3,
   ShieldAlert,
   FlaskConical,
   Bot,
   FileText,
-  Settings as SettingsIcon,
+  UserCheck,
+  Lightbulb,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/components/motion/use-reduced-motion';
+import { H3, Label, Caption, BodySmall } from '@/components/ui/typography';
 
-export interface TourStepConfig {
+export interface SidebarTourStep {
   id: string;
-  route: string;
   selector: string;
   title: string;
   desc: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const TOUR_STEPS: TourStepConfig[] = [
+const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
   {
     id: 'dashboard',
-    route: '/dashboard',
-    selector: '[data-tour="pulse"]',
-    title: '1. Dashboard — Pulse & KPIs',
-    desc: 'Monitor core business health indicators, warning alerts, and monthly snapshot performance metrics.',
-    icon: HeartPulse,
+    selector: '[data-tour="sidebar-dashboard"]',
+    title: 'Dashboard — Business Position',
+    desc: 'Review overall financial health status, cash runway, and top recommended actions at a glance.',
+    icon: LayoutDashboard,
   },
   {
     id: 'business-health',
-    route: '/business-health',
-    selector: '[data-tour="health-score"]',
-    title: '2. Business Health & Metrics',
-    desc: 'Inspect historical health trends, snapshot history, and contributing ratio breakdown scores.',
-    icon: BarChart3,
+    selector: '[data-tour="sidebar-business-health"]',
+    title: 'Business Health & Metrics',
+    desc: 'Inspect financial strengths, vulnerabilities, ratio breakdowns, and historical snapshot trends.',
+    icon: HeartPulse,
   },
   {
     id: 'risks',
-    route: '/risks',
-    selector: '[data-tour="risks-view"]',
-    title: '3. Risk Center',
-    desc: 'Review urgent financial risks automatically detected by our deterministic risk engine with actionable mitigation steps.',
+    selector: '[data-tour="sidebar-risks"]',
+    title: 'Risk Center',
+    desc: 'Identify active financial & operational risks, review underlying evidence, and test mitigations.',
     icon: ShieldAlert,
   },
   {
     id: 'simulations',
-    route: '/simulations',
-    selector: '[data-tour="simulations-view"]',
-    title: '4. Decision Simulations',
-    desc: 'Model what-if business decisions—like price increases or hiring—before spending real capital.',
+    selector: '[data-tour="sidebar-simulations"]',
+    title: 'Decision Simulations',
+    desc: 'Test strategic decisions like price changes, hiring, or marketing investments before spending capital.',
     icon: FlaskConical,
   },
   {
     id: 'advisor',
-    route: '/advisor',
-    selector: '[data-tour="advisor-view"]',
-    title: '5. AI Advisor Interpretation',
-    desc: 'Receive AI interpretations that translate calculated financial facts into actionable strategic recommendations.',
+    selector: '[data-tour="sidebar-advisor"]',
+    title: 'AI Advisor',
+    desc: 'Ask questions and receive executive summaries grounded strictly in your calculated financial facts.',
     icon: Bot,
   },
   {
     id: 'reports',
-    route: '/reports',
-    selector: '[data-tour="reports-view"]',
-    title: '6. Decision Reports',
-    desc: 'Generate comprehensive, print-safe decision reports complete with evidence snapshots and action plans.',
+    selector: '[data-tour="sidebar-reports"]',
+    title: 'Decision Reports',
+    desc: 'Review and export formal decision intelligence reports to share with co-founders or lenders.',
     icon: FileText,
   },
   {
-    id: 'settings',
-    route: '/settings',
-    selector: '[data-tour="settings-view"]',
-    title: '7. Settings & Replay Controls',
-    desc: 'Customize financial thresholds, theme preferences, and replay this tour anytime from Help & Support.',
-    icon: SettingsIcon,
+    id: 'account-menu',
+    selector: '[data-tour="sidebar-account-menu"]',
+    title: 'Account & Support Menu',
+    desc: 'Manage your settings, view plan details, access support documentation, or replay this tour anytime.',
+    icon: UserCheck,
   },
 ];
 
@@ -95,25 +88,16 @@ const STORAGE_KEYS = {
 };
 
 export function ProductTour() {
-  const router = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
   const prefersReduced = useReducedMotion();
 
-  const [active, setActive] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem(STORAGE_KEYS.ACTIVE) === 'true';
-  });
-
-  const [currentStepIdx, setCurrentStepIdx] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0;
-    const savedStep = localStorage.getItem(STORAGE_KEYS.STEP);
-    return savedStep !== null ? Number(savedStep) : 0;
-  });
-
-  const [showSkipToast, setShowSkipToast] = useState(false);
+  const [active, setActive] = useState<boolean>(false);
+  const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const [showSkipToast, setShowSkipToast] = useState(false);
 
-  // Initialize tour state from localStorage or auto-start on first dashboard visit
+  // Initialize tour check on Dashboard mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -121,19 +105,23 @@ export function ProductTour() {
     const isCompleted = localStorage.getItem(STORAGE_KEYS.COMPLETED) === 'true';
     const isSkipped = localStorage.getItem(STORAGE_KEYS.SKIPPED) === 'true';
 
-    if (!tourActive && !isCompleted && !isSkipped && pathname.endsWith('/dashboard')) {
-      // Auto start on first dashboard visit after onboarding
+    // Auto-trigger sidebar tour when user enters dashboard for the first time
+    if ((tourActive || (!isCompleted && !isSkipped)) && pathname.endsWith('/dashboard')) {
       const timer = setTimeout(() => {
         setActive(true);
         setCurrentStepIdx(0);
         localStorage.setItem(STORAGE_KEYS.ACTIVE, 'true');
-        localStorage.setItem(STORAGE_KEYS.STEP, '0');
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      const timer = setTimeout(() => {
+        setActive(false);
       }, 0);
       return () => clearTimeout(timer);
     }
   }, [pathname]);
 
-  // Listen for custom replay event
+  // Global custom event listener for replay tour
   useEffect(() => {
     const handleReplay = () => {
       localStorage.setItem(STORAGE_KEYS.ACTIVE, 'true');
@@ -142,85 +130,68 @@ export function ProductTour() {
       localStorage.removeItem(STORAGE_KEYS.COMPLETED);
       setActive(true);
       setCurrentStepIdx(0);
-      router.push('/dashboard');
+
+      if (!pathname.endsWith('/dashboard')) {
+        router.push('/dashboard');
+      }
     };
 
     window.addEventListener('wallflower_start_tour', handleReplay);
     return () => window.removeEventListener('wallflower_start_tour', handleReplay);
-  }, [router]);
+  }, [pathname, router]);
 
-  const currentStepConfig = TOUR_STEPS[currentStepIdx] || TOUR_STEPS[0];
+  const currentStep = SIDEBAR_TOUR_STEPS[currentStepIdx] || SIDEBAR_TOUR_STEPS[0];
 
-  // Element spotlight & scroll effect when step or route changes
+  // Measure target sidebar item bounding rect
   useEffect(() => {
     if (!active) return;
 
     let checkCount = 0;
     const interval = setInterval(() => {
       checkCount++;
-      const el = document.querySelector(currentStepConfig.selector);
+      const el = document.querySelector(currentStep.selector);
       if (el) {
         clearInterval(interval);
-        const rect = el.getBoundingClientRect();
-        setTargetRect(rect);
-        el.scrollIntoView({
-          behavior: prefersReduced ? 'auto' : 'smooth',
-          block: 'center',
-        });
-      } else if (checkCount > 15) {
+        setTargetRect(el.getBoundingClientRect());
+      } else if (checkCount > 10) {
         clearInterval(interval);
         setTargetRect(null);
       }
-    }, 150);
+    }, 100);
 
     return () => clearInterval(interval);
-  }, [active, currentStepIdx, currentStepConfig, pathname, prefersReduced]);
-
-  const goToStep = useCallback(
-    (stepIdx: number) => {
-      if (stepIdx < 0 || stepIdx >= TOUR_STEPS.length) return;
-      setCurrentStepIdx(stepIdx);
-      localStorage.setItem(STORAGE_KEYS.STEP, String(stepIdx));
-      const targetStep = TOUR_STEPS[stepIdx];
-
-      if (!pathname.endsWith(targetStep.route)) {
-        router.push(targetStep.route);
-      }
-    },
-    [pathname, router]
-  );
-
-  const handleSkip = useCallback(() => {
-    setActive(false);
-    setTargetRect(null);
-    localStorage.setItem(STORAGE_KEYS.ACTIVE, 'false');
-    localStorage.setItem(STORAGE_KEYS.SKIPPED, 'true');
-    setShowSkipToast(true);
-    setTimeout(() => setShowSkipToast(false), 4500);
-  }, []);
-
-  const handleFinish = useCallback(() => {
-    setActive(false);
-    setTargetRect(null);
-    localStorage.setItem(STORAGE_KEYS.ACTIVE, 'false');
-    localStorage.setItem(STORAGE_KEYS.COMPLETED, 'true');
-  }, []);
+  }, [active, currentStepIdx, currentStep]);
 
   const handleNext = useCallback(() => {
-    if (currentStepIdx < TOUR_STEPS.length - 1) {
-      goToStep(currentStepIdx + 1);
+    if (currentStepIdx < SIDEBAR_TOUR_STEPS.length - 1) {
+      const next = currentStepIdx + 1;
+      setCurrentStepIdx(next);
+      localStorage.setItem(STORAGE_KEYS.STEP, String(next));
     } else {
-      handleFinish();
+      // Finish
+      setActive(false);
+      localStorage.setItem(STORAGE_KEYS.ACTIVE, 'false');
+      localStorage.setItem(STORAGE_KEYS.COMPLETED, 'true');
     }
-  }, [currentStepIdx, goToStep, handleFinish]);
+  }, [currentStepIdx]);
 
   const handleBack = useCallback(() => {
     if (currentStepIdx > 0) {
-      goToStep(currentStepIdx - 1);
+      const prev = currentStepIdx - 1;
+      setCurrentStepIdx(prev);
+      localStorage.setItem(STORAGE_KEYS.STEP, String(prev));
     }
-  }, [currentStepIdx, goToStep]);
+  }, [currentStepIdx]);
 
-  // Keyboard controls
+  const handleSkip = useCallback(() => {
+    setActive(false);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE, 'false');
+    localStorage.setItem(STORAGE_KEYS.SKIPPED, 'true');
+    setShowSkipToast(true);
+    setTimeout(() => setShowSkipToast(false), 4000);
+  }, []);
+
+  // Keyboard navigation
   useEffect(() => {
     if (!active) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -232,129 +203,203 @@ export function ProductTour() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [active, handleNext, handleBack, handleSkip]);
 
-  const StepIcon = currentStepConfig.icon;
-  const isLastStep = currentStepIdx === TOUR_STEPS.length - 1;
-
-  return (
-    <>
-      {/* Skip Notification Toast */}
-      {showSkipToast && (
+  if (!active) {
+    if (showSkipToast) {
+      return (
         <div className="fixed bottom-6 right-6 z-50 rounded-lg border border-brand/40 bg-surface p-4 shadow-xl flex items-center gap-3 animate-in fade-in-50 slide-in-from-bottom-5">
           <Sparkles className="size-5 text-brand shrink-0" />
-          <p className="text-xs sm:text-sm font-medium text-text-primary">
-            Tour skipped. You can replay it anytime from <strong>Help & Support</strong>.
-          </p>
+          <BodySmall className="font-medium text-text-primary">
+            Sidebar tour completed. Replay anytime from <strong>Help & Support</strong> or the account menu.
+          </BodySmall>
         </div>
+      );
+    }
+    return null;
+  }
+
+  const StepIcon = currentStep.icon;
+  const isLastStep = currentStepIdx === SIDEBAR_TOUR_STEPS.length - 1;
+
+  // Viewport-aware Tooltip Positioning:
+  // If target element is in the lower portion of the screen (e.g. Account menu at step 7),
+  // anchor the popover ABOVE or dynamically shift `top` so the bottom controls are 100% visible!
+  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+  const popoverHeight = 220;
+
+  let tooltipTop = 100;
+  let tooltipLeft = 260;
+
+  if (targetRect) {
+    tooltipLeft = targetRect.right + 12;
+
+    if (targetRect.top + popoverHeight > windowHeight - 20) {
+      // Near bottom: align bottom of popover near bottom of target item
+      tooltipTop = Math.max(16, targetRect.bottom - popoverHeight);
+    } else {
+      tooltipTop = Math.max(16, targetRect.top - 8);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      {/* Focus highlight ring around sidebar item */}
+      {targetRect && (
+        <div
+          className="absolute border-2 border-brand rounded-lg shadow-[0_0_0_4px_rgba(20,184,166,0.25)] transition-all duration-200 pointer-events-none"
+          style={{
+            top: `${targetRect.top - 4}px`,
+            left: `${targetRect.left - 4}px`,
+            width: `${targetRect.width + 8}px`,
+            height: `${targetRect.height + 8}px`,
+          }}
+        />
       )}
 
-      {/* Active Guided Tour Spotlight & Overlay */}
-      {active && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          {/* Spotlight Highlight Ring around target element */}
-          {targetRect && (
-            <div
-              className="absolute border-2 border-brand rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.55)] transition-all duration-300 motion-reduce:transition-none pointer-events-none"
-              style={{
-                top: `${Math.max(10, targetRect.top - 6)}px`,
-                left: `${Math.max(10, targetRect.left - 6)}px`,
-                width: `${targetRect.width + 12}px`,
-                height: `${targetRect.height + 12}px`,
-              }}
-            />
-          )}
-
-          {/* Fallback backdrop if element not found */}
-          {!targetRect && (
-            <div className="absolute inset-0 bg-black/50 pointer-events-auto" />
-          )}
-
-          {/* Tour Explanation Card (Desktop Floating / Mobile Bottom Sheet) */}
-          <div
-            className={cn(
-              'pointer-events-auto fixed z-50 w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-2xl',
-              'bottom-4 left-4 sm:left-auto sm:right-6 sm:bottom-6',
-              !prefersReduced && 'animate-in fade-in-50 zoom-in-95 duration-150'
-            )}
-          >
-            {/* Step Header */}
-            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-brand text-white shrink-0 font-bold">
-                  <StepIcon className="size-5" />
-                </div>
-                <div>
-                  <span className="text-[11px] font-bold text-brand uppercase tracking-wider">
-                    Step {currentStepIdx + 1} of {TOUR_STEPS.length}
-                  </span>
-                  <h3 className="text-base font-semibold text-text-primary">
-                    {currentStepConfig.title}
-                  </h3>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleSkip}
-                className="rounded-lg p-1 text-text-muted hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer"
-                aria-label="Exit tour"
-                title="Exit tour (Escape)"
-              >
-                <X className="size-4" />
-              </button>
+      {/* Compact Tooltip Popover beside sidebar item */}
+      <div
+        className={cn(
+          'pointer-events-auto fixed z-50 w-80 max-h-[calc(100vh-32px)] overflow-y-auto rounded-xl border border-brand/40 bg-surface p-4 shadow-2xl dark:shadow-black/70',
+          !prefersReduced && 'animate-in fade-in-50 zoom-in-95 duration-150'
+        )}
+        style={{
+          top: `${tooltipTop}px`,
+          left: `${tooltipLeft}px`,
+        }}
+      >
+        {/* Step Header */}
+        <div className="flex items-start justify-between gap-2 border-b border-border/60 pb-2.5">
+          <div className="flex items-center gap-2">
+            <div className="flex size-7 items-center justify-center rounded-md bg-brand-soft text-brand shrink-0">
+              <StepIcon className="size-4" />
             </div>
-
-            {/* Step Explanation */}
-            <div className="py-4">
-              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                {currentStepConfig.desc}
-              </p>
-            </div>
-
-            {/* Actions & Controls */}
-            <div className="flex items-center justify-between gap-3 pt-3 border-t border-border/60">
-              <button
-                type="button"
-                onClick={handleSkip}
-                className="text-xs font-semibold text-text-muted hover:text-text-primary transition-colors cursor-pointer"
-              >
-                Skip tour
-              </button>
-
-              <div className="flex items-center gap-2">
-                {currentStepIdx > 0 && (
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
-                  >
-                    <ArrowLeft className="size-3.5" />
-                    <span>Back</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover transition-colors cursor-pointer"
-                >
-                  <span>{isLastStep ? 'Finish' : 'Next'}</span>
-                  {isLastStep ? (
-                    <Check className="size-3.5" />
-                  ) : (
-                    <ArrowRight className="size-3.5" />
-                  )}
-                </button>
-              </div>
+            <div>
+              <Caption className="text-[10px] font-bold text-brand uppercase tracking-wider block">
+                Sidebar Tour ({currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length})
+              </Caption>
+              <H3 className="text-xs font-bold text-text-primary leading-snug">
+                {currentStep.title}
+              </H3>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="rounded-md p-1 text-text-muted hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer"
+            title="Close tour (Escape)"
+          >
+            <X className="size-3.5" />
+          </button>
         </div>
-      )}
-    </>
+
+        {/* Description */}
+        <BodySmall className="text-xs text-text-secondary leading-relaxed py-3">
+          {currentStep.desc}
+        </BodySmall>
+
+        {/* Controls */}
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/60">
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="text-[11px] font-medium text-text-muted hover:text-text-primary cursor-pointer"
+          >
+            Skip
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {currentStepIdx > 0 && !isLastStep && (
+              <button
+                type="button"
+                onClick={handleBack}
+                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-subtle cursor-pointer"
+              >
+                <ArrowLeft className="size-3" />
+                <span>Back</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleNext}
+              className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-semibold text-white hover:bg-brand-hover cursor-pointer shadow-xs"
+            >
+              <span>{isLastStep ? 'Start exploring Wallflower' : 'Next'}</span>
+              {!isLastStep && <ArrowRight className="size-3" />}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
-/** Global Helper function to trigger replay from Help & Support or Settings */
+/** Global Helper function to trigger replay from Help & Support, Settings, or Account Menu */
 export function replayProductTour() {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('wallflower_start_tour'));
   }
+}
+
+/** Component for lightweight first-visit contextual hints on individual pages */
+interface PageContextualHintProps {
+  hintKey: string;
+  title: string;
+  message: string;
+  className?: string;
+}
+
+export function PageContextualHint({ hintKey, title, message, className }: PageContextualHintProps) {
+  const storageKey = `wallflower_hint_dismissed_${hintKey}`;
+
+  const [dismissed, setDismissed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem(storageKey) === 'true';
+  });
+
+  if (dismissed) return null;
+
+  const handleGotIt = () => {
+    setDismissed(true);
+  };
+
+  const handleNeverShow = () => {
+    setDismissed(true);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(storageKey, 'true');
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        'rounded-lg border border-brand/30 bg-brand-soft/20 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs',
+        className
+      )}
+    >
+      <div className="flex items-start gap-2.5">
+        <Lightbulb className="size-4 text-brand shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <Label className="font-semibold text-text-primary block">{title}</Label>
+          <BodySmall className="text-text-secondary leading-relaxed">{message}</BodySmall>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+        <button
+          type="button"
+          onClick={handleGotIt}
+          className="rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover transition-colors cursor-pointer"
+        >
+          Got it
+        </button>
+        <button
+          type="button"
+          onClick={handleNeverShow}
+          className="text-text-muted hover:text-text-primary text-[11px] cursor-pointer"
+        >
+          Do not show again
+        </button>
+      </div>
+    </div>
+  );
 }

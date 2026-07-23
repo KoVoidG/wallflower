@@ -13,13 +13,15 @@ import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { getReportHistory, getReport } from '@/features/reports/adapters/reports.adapter';
 
+import { PageContextualHint } from '@/components/app-shell/product-tour';
+
 export default async function ReportsPage() {
   const reports = await getReportHistory();
   // Load the latest report for the featured section
   const latestReport = reports.length > 0 ? await getReport(reports[0].id) : null;
 
   return (
-    <div data-tour="reports-view" className="flex flex-col gap-8">
+    <div data-tour="reports-view" className="flex flex-col gap-6">
       {/* Page header */}
       <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col gap-1">
@@ -41,6 +43,13 @@ export default async function ReportsPage() {
           Generate Report
         </button>
       </header>
+
+      {/* First-visit Contextual Hint */}
+      <PageContextualHint
+        hintKey="reports"
+        title="Reports Guide"
+        message="Review decision intelligence reports or click 'Generate Report' to create a print-safe summary of risks and recommendations."
+      />
 
       {/* Empty state */}
       {reports.length === 0 ? (

@@ -23,6 +23,7 @@ interface SidebarProps {
 interface NavItem {
   key: string;
   href: string;
+  tourId: string;
   icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
 }
 
@@ -35,17 +36,17 @@ const navSections: readonly NavSection[] = [
   {
     titleKey: 'sectionMain',
     items: [
-      { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
-      { key: 'businessHealth', href: '/business-health', icon: HeartPulse },
+      { key: 'dashboard', href: '/dashboard', tourId: 'sidebar-dashboard', icon: LayoutDashboard },
+      { key: 'businessHealth', href: '/business-health', tourId: 'sidebar-business-health', icon: HeartPulse },
     ],
   },
   {
     titleKey: 'sectionAnalytics',
     items: [
-      { key: 'risk', href: '/risks', icon: ShieldAlert },
-      { key: 'simulation', href: '/simulations', icon: FlaskConical },
-      { key: 'advisor', href: '/advisor', icon: Bot },
-      { key: 'reports', href: '/reports', icon: FileText },
+      { key: 'risk', href: '/risks', tourId: 'sidebar-risks', icon: ShieldAlert },
+      { key: 'simulation', href: '/simulations', tourId: 'sidebar-simulations', icon: FlaskConical },
+      { key: 'advisor', href: '/advisor', tourId: 'sidebar-advisor', icon: Bot },
+      { key: 'reports', href: '/reports', tourId: 'sidebar-reports', icon: FileText },
     ],
   },
 ] as const;
@@ -95,6 +96,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   <li key={item.key}>
                     <Link
                       href={item.href}
+                      data-tour={item.tourId}
                       className={cn(
                         'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
                         'transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)]',
@@ -125,7 +127,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Account Control Row */}
-      <div className="px-3 py-2 border-t border-border/50 shrink-0">
+      <div data-tour="sidebar-account-menu" className="px-3 py-2 border-t border-border/50 shrink-0">
         <AccountMenu collapsed={collapsed} align="top" />
       </div>
 

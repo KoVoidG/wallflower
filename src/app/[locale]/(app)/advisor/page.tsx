@@ -46,6 +46,9 @@ const ICON_MAP: Record<string, React.ElementType> = {
 type PageState = 'initial' | 'loading' | 'success' | 'error';
 type ErrorVariant = AdvisorErrorType | null;
 
+import { PageContextualHint } from '@/components/app-shell/product-tour';
+
+// Component start
 export default function AdvisorPage() {
   const t = useTranslations('advisor');
   const [state, setState] = useState<PageState>('initial');
@@ -98,6 +101,13 @@ export default function AdvisorPage() {
         </div>
         <Body className="text-text-secondary">{t('subtitle')}</Body>
       </header>
+
+      {/* First-visit Contextual Hint */}
+      <PageContextualHint
+        hintKey="advisor"
+        title="AI Advisor Guide"
+        message="Type a custom question or select one of the suggested prompts to receive tailored executive guidance grounded strictly in your baseline."
+      />
 
       {/* Business context bar */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 rounded-[var(--radius-md)] bg-surface-subtle border border-border/60">

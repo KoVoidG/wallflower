@@ -1,3 +1,4 @@
+import { onboardingService } from '../services/onboarding.service';
 import type { OnboardingData } from '../schemas';
 
 export interface OnboardingStatus {
@@ -11,28 +12,15 @@ export interface SubmitResult {
 
 /**
  * Check whether the current user has already completed onboarding.
- * Mock implementation — returns { completed: false } for now.
- * Will be replaced with a real server action call later.
  */
 export async function checkOnboardingStatus(): Promise<OnboardingStatus> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 600));
-  return { completed: false };
+  const completed = onboardingService.isOnboardingCompleted();
+  return { completed };
 }
 
 /**
- * Submit onboarding data to create a business profile.
- * Mock implementation — returns success for now.
- * Will be replaced with a real server action call later.
+ * Submit onboarding data to create a business profile baseline.
  */
 export async function submitOnboarding(data: OnboardingData): Promise<SubmitResult> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-
-  // Log the data in development for debugging
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[onboarding.adapter] submitOnboarding called with:', data);
-  }
-
-  return { success: true };
+  return onboardingService.completeOnboarding(data);
 }

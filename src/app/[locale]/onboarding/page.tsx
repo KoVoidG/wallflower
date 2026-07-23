@@ -1,27 +1,20 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from '@/lib/i18n/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-
 import { OnboardingForm } from '@/features/business-profile/components/onboarding-form';
 import { DraftBanner } from '@/features/business-profile/components/draft-banner';
 import { PrivacyNotice } from '@/features/business-profile/components/privacy-notice';
-import { getSavedDraft } from '@/features/business-profile/hooks/use-onboarding-autosave';
+import { onboardingService } from '@/features/business-profile/services/onboarding.service';
 import { Skeleton, SkeletonText } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/ui/error-state';
 import { FadeIn } from '@/components/motion';
-import {
-  checkOnboardingStatus,
-  submitOnboarding,
-} from '@/features/business-profile/adapters/onboarding.adapter';
 import type { OnboardingData } from '@/features/business-profile/schemas';
-
-// --- Loading Skeleton ---
+import { RefreshCw } from 'lucide-react';
 
 function OnboardingLoadingSkeleton() {
   return (
-    <div className="space-y-6" aria-label="Loading onboarding" role="status">
+    <div className="space-y-6 max-w-4xl mx-auto py-8" aria-label="Loading onboarding" role="status">
       <Skeleton className="h-8 w-64" />
       <SkeletonText lines={2} />
       <div className="space-y-4 mt-8">
@@ -30,260 +23,141 @@ function OnboardingLoadingSkeleton() {
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
         </div>
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
       </div>
-      <Skeleton className="h-12 w-32 mt-6" />
     </div>
   );
 }
 
-// --- Page States ---
-
 type PageState =
   | { status: 'loading' }
   | { status: 'ready' }
-  | { status: 'submitting' }
-  | { status: 'error'; message: string }
-  | { status: 'success' };
-
-// --- Onboarding Page ---
+  | { status: 'error'; message: string };
 
 export default function OnboardingPage() {
-  const router = useRouter();
   const t = useTranslations('onboarding');
 
   const [pageState, setPageState] = useState<PageState>({ status: 'loading' });
-  const [hasDraft, setHasDraft] = useState(false);
-  const isSubmittingRef = useRef(false);
+  const [draftData, setDraftData] = useState<OnboardingData | null>(null);
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
 
-  // Check onboarding status on mount
   useEffect(() => {
     let cancelled = false;
 
-    async function checkStatus() {
+    async function init() {
       try {
-        const { completed } = await checkOnboardingStatus();
-        if (cancelled) return;
-
-        if (completed) {
-          router.replace('/dashboard');
-          return;
+        // Prototype mode: Allow accessing onboarding page anytime for testing & iteration
+        if (onboardingService.isOnboardingCompleted()) {
+          setIsAlreadyCompleted(true);
         }
 
-        // Check for saved draft
-        const draft = getSavedDraft();
-        if (draft) {
-          setHasDraft(true);
+        const draft = onboardingService.loadDraft();
+        if (draft && !cancelled) {
+          setDraftData(draft);
+          setShowDraftBanner(true);
         }
 
-        setPageState({ status: 'ready' });
+        if (!cancelled) {
+          setPageState({ status: 'ready' });
+        }
       } catch {
         if (!cancelled) {
-          setPageState({ status: 'error', message: t('error') });
+          setPageState({ status: 'ready' });
         }
       }
     }
 
-    checkStatus();
+    init();
     return () => {
       cancelled = true;
     };
-  }, [router, t]);
-
-  // --- Draft handlers ---
+  }, []);
 
   const handleContinueDraft = useCallback(() => {
-    // The OnboardingForm + useOnboardingAutosave will handle restoring
-    // We just dismiss the banner — form picks up draft on its own
-    setHasDraft(false);
+    setShowDraftBanner(false);
   }, []);
 
   const handleClearDraft = useCallback(() => {
-    try {
-      window.localStorage.removeItem('wallflower-onboarding-draft');
-    } catch {
-      // Silently ignore
-    }
-    setHasDraft(false);
+    onboardingService.clearDraft();
+    setDraftData(null);
+    setShowDraftBanner(false);
   }, []);
 
-  // --- Submit handler with duplicate submission guard ---
+  const handleResetBaseline = useCallback(() => {
+    onboardingService.resetPrototypeData();
+    setIsAlreadyCompleted(false);
+    setDraftData(null);
+    setShowDraftBanner(false);
+    window.location.reload();
+  }, []);
 
-  const handleSubmit = useCallback(
+  const handleSubmitComplete = useCallback(
     async (data: OnboardingData) => {
-      // Duplicate submission guard
-      if (isSubmittingRef.current) return;
-      isSubmittingRef.current = true;
-
-      setPageState({ status: 'submitting' });
-
-      try {
-        const result = await submitOnboarding(data);
-
-        if (result.success) {
-          // Clear draft from localStorage on success
-          try {
-            window.localStorage.removeItem('wallflower-onboarding-draft');
-          } catch {
-            // Silently ignore
-          }
-          setPageState({ status: 'success' });
-          // Redirect to dashboard after brief success display
-          setTimeout(() => {
-            router.replace('/dashboard');
-          }, 1500);
-        } else {
-          setPageState({
-            status: 'error',
-            message: result.error || t('error'),
-          });
-          isSubmittingRef.current = false;
-        }
-      } catch {
-        setPageState({ status: 'error', message: t('error') });
-        isSubmittingRef.current = false;
-      }
+      await onboardingService.completeOnboarding(data);
     },
-    [router, t]
+    []
   );
-
-  // --- Retry handler ---
-
-  const handleRetry = useCallback(() => {
-    setPageState({ status: 'ready' });
-  }, []);
-
-  // --- Render ---
 
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6">
-      <div className="mx-auto max-w-5xl">
-        {/* Loading state */}
+      <div className="mx-auto max-w-6xl">
         {pageState.status === 'loading' && (
           <FadeIn>
             <OnboardingLoadingSkeleton />
           </FadeIn>
         )}
 
-        {/* Server error state */}
         {pageState.status === 'error' && (
           <FadeIn>
             <ErrorState
               title={t('error')}
               description={pageState.message}
-              onRetry={handleRetry}
+              onRetry={() => setPageState({ status: 'ready' })}
             />
           </FadeIn>
         )}
 
-        {/* Success state */}
-        {pageState.status === 'success' && (
-          <FadeIn>
-            <div className="flex flex-col items-center justify-center py-16 text-center max-w-lg mx-auto">
-              <div className="size-16 rounded-full bg-success-soft flex items-center justify-center mb-4">
-                <svg
-                  className="size-8 text-success"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h2 className="text-[20px]/[28px] font-[600] text-text-primary mb-2">
-                Your business baseline is ready
-              </h2>
-              <p className="text-[15px]/[24px] text-text-secondary mb-6">
-                Wallflower can now assess business health, identify initial risks, and run decision simulations using your current data.
-              </p>
-              <p className="text-[13px] text-text-muted mb-6">
-                Redirecting to your dashboard...
-              </p>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Submitting state */}
-        {pageState.status === 'submitting' && (
-          <FadeIn>
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="size-8 border-2 border-brand border-t-transparent rounded-full animate-spin motion-reduce:animate-none mb-4" aria-hidden="true" />
-              <p className="text-text-secondary text-[15px]">
-                {t('duplicateGuard')}
-              </p>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Ready state — form with context column */}
         {pageState.status === 'ready' && (
           <FadeIn>
             <div className="flex flex-col gap-6">
-              {/* Draft banner */}
-              {hasDraft && (
+              {/* Prototype Re-access Notice Banner */}
+              {isAlreadyCompleted && (
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-brand/40 bg-brand-soft/20 p-3.5 text-xs text-text-secondary">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-brand-soft px-2 py-0.5 font-bold text-brand uppercase tracking-wider text-[10px]">
+                      Development Prototype Mode
+                    </span>
+                    <span>
+                      You have already set up a business baseline. You can re-run onboarding or edit fields anytime.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetBaseline}
+                    className="inline-flex items-center gap-1 font-semibold text-brand hover:underline shrink-0 cursor-pointer"
+                  >
+                    <RefreshCw className="size-3" />
+                    <span>Reset & Start Fresh</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Draft Banner */}
+              {showDraftBanner && draftData && (
                 <DraftBanner
                   onContinue={handleContinueDraft}
                   onClear={handleClearDraft}
                 />
               )}
 
-              {/* Two-column layout: form + context */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Main form column */}
-                <div className="lg:col-span-8">
-                  <OnboardingForm onSubmit={handleSubmit} />
-                </div>
+              {/* Redesigned Onboarding Flow Component */}
+              <OnboardingForm
+                initialData={draftData || onboardingService.getOnboardingData()}
+                onSubmitComplete={handleSubmitComplete}
+              />
 
-                {/* Context column */}
-                <aside className="hidden lg:block lg:col-span-4" aria-label="Onboarding context">
-                  <div className="sticky top-8 rounded-[var(--radius-lg)] border border-border bg-surface-subtle/40 p-5 flex flex-col gap-5">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
-                        Why we ask
-                      </span>
-                      <p className="text-[14px]/[22px] text-text-secondary">
-                        Wallflower uses your business profile and financial snapshot to calculate health scores, detect risks, and power decision simulations.
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
-                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
-                        What you will receive
-                      </span>
-                      <ul className="flex flex-col gap-1.5 text-[13px]/[20px] text-text-secondary">
-                        <li>• Business health assessment</li>
-                        <li>• Risk detection and prioritization</li>
-                        <li>• Decision simulation capability</li>
-                        <li>• Evidence-based recommendations</li>
-                      </ul>
-                    </div>
-
-                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
-                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
-                        Setup time
-                      </span>
-                      <p className="text-[13px]/[20px] text-text-secondary">
-                        Approximately 3–5 minutes. You can skip optional fields and add information later.
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
-                      <span className="text-[12px]/[16px] font-[600] uppercase tracking-wide text-text-muted">
-                        Data handling
-                      </span>
-                      <p className="text-[13px]/[20px] text-text-secondary">
-                        This is a prototype. Data is stored locally and used only for demonstrating Wallflower&apos;s capabilities.
-                      </p>
-                    </div>
-                  </div>
-                </aside>
-              </div>
-
-              {/* Privacy notice footer */}
-              <PrivacyNotice className="mt-4" />
+              {/* Footer Privacy Notice */}
+              <PrivacyNotice className="mt-6 border-t border-border/60 pt-4" />
             </div>
           </FadeIn>
         )}

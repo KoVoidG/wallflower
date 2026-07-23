@@ -7,6 +7,7 @@ import { RiskFilters, type SortOption } from './risk-filters';
 import { RiskCard } from './risk-card';
 import { RiskEmpty } from './risk-empty';
 import { ErrorState } from '@/components/ui/error-state';
+import { PageContextualHint } from '@/components/app-shell/product-tour';
 import { FadeIn, FadeInView, StaggerChildren } from '@/components/motion';
 import { H2, H3, Caption } from '@/components/ui/typography';
 import { Calendar } from 'lucide-react';
@@ -196,6 +197,13 @@ export function RisksView({ initialData }: RisksViewProps) {
             </div>
           </div>
         </header>
+
+        {/* First-visit Contextual Hint */}
+        <PageContextualHint
+          hintKey="risks"
+          title="Risk Center Guide"
+          message="Review active risks detected in your baseline. Click 'Simulate Mitigation' on any risk card to test protective decisions."
+        />
 
         {/* Risk Position Summary */}
         <RiskSummary

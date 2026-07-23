@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Settings, LifeBuoy, LogOut, MoreVertical, Sparkles } from 'lucide-react';
+import { Settings, LifeBuoy, LogOut, MoreVertical, Sparkles, PlayCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useRouter } from '@/lib/i18n/navigation';
 import { Badge } from '@/components/ui/badge';
+import { replayProductTour } from '@/components/app-shell/product-tour';
 
 interface AccountMenuProps {
   collapsed?: boolean;
@@ -46,6 +47,11 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
   const handleNavClick = () => {
     setOpen(false);
     triggerRef.current?.focus();
+  };
+
+  const handleReplayTourClick = () => {
+    setOpen(false);
+    replayProductTour();
   };
 
   const handleSignOut = () => {
@@ -167,6 +173,8 @@ export function AccountMenu({ collapsed = false, align = 'top', className }: Acc
               <LifeBuoy className="size-4 text-text-muted shrink-0" />
               <span>{tNav('helpSupport')}</span>
             </Link>
+
+            
           </div>
 
           <div className="border-t border-border/60 mt-1 pt-1" role="none">

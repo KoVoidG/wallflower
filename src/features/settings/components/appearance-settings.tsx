@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { useRouter, usePathname } from '@/lib/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, useSyncExternalStore } from 'react';
-import { Sun, Moon, Monitor, Globe } from 'lucide-react';
+import { Sun, Moon, Monitor, Globe, PlayCircle } from 'lucide-react';
 import { Surface } from '@/components/ui/surface';
 import { H3, Body, BodySmall, Label } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,7 @@ import {
   updatePreferences,
   type UserPreferences,
 } from '@/features/settings/adapters/settings.adapter';
+import { replayProductTour } from '@/components/app-shell/product-tour';
 
 const themeOptions = [
   { value: 'system', icon: Monitor, labelKey: 'system' as const },
@@ -161,12 +162,25 @@ export function AppearanceSettings() {
                   ? 'border-brand bg-brand-soft text-brand'
                   : 'border-border dark:border-border-strong bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-subtle'
               )}
-              aria-pressed={currencyDisplay === option.value}
+              aria-pressed={option.value === currencyDisplay}
             >
               {option.display}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Replay Product Tour */}
+      <div className="space-y-2 pt-2 border-t border-border/50">
+        <Label as="p">Product Orientation Tour</Label>
+        <button
+          type="button"
+          onClick={replayProductTour}
+          className="inline-flex items-center gap-2 rounded-lg border border-brand/40 bg-brand-soft/30 px-4 py-2 text-xs font-semibold text-brand hover:bg-brand-soft/60 transition-colors cursor-pointer"
+        >
+          <PlayCircle className="size-4" />
+          <span>Replay product tour</span>
+        </button>
       </div>
 
       {/* Reduced motion info */}

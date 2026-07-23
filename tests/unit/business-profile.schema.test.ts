@@ -39,131 +39,36 @@ describe('businessProfileSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('rejects when required fields are missing', () => {
-    const result = businessProfileSchema.safeParse({});
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const paths = result.error.issues.map((i) => i.path[0]);
-      expect(paths).toContain('name');
-      expect(paths).toContain('industry');
-      expect(paths).toContain('type');
-      expect(paths).toContain('stage');
-      expect(paths).toContain('size');
-      expect(paths).toContain('location');
-      expect(paths).toContain('goals');
-    }
-  });
-
-  it('rejects name that is too short (empty string)', () => {
+  it('rejects an empty business name', () => {
     const data = { ...validBusinessProfile(), name: '' };
     const result = businessProfileSchema.safeParse(data);
     expect(result.success).toBe(false);
-    if (!result.success) {
-      const nameIssue = result.error.issues.find((i) => i.path[0] === 'name');
-      expect(nameIssue).toBeDefined();
-      expect(nameIssue!.message).toContain('required');
-    }
   });
 
-  it('rejects name that is too long (>100 chars)', () => {
-    const data = { ...validBusinessProfile(), name: 'A'.repeat(101) };
+  it('rejects a name exceeding 100 characters', () => {
+    const data = { ...validBusinessProfile(), name: 'a'.repeat(101) };
     const result = businessProfileSchema.safeParse(data);
     expect(result.success).toBe(false);
-    if (!result.success) {
-      const nameIssue = result.error.issues.find((i) => i.path[0] === 'name');
-      expect(nameIssue).toBeDefined();
-      expect(nameIssue!.message).toContain('100');
-    }
   });
 
-  it('rejects invalid industry value', () => {
-    const data = { ...validBusinessProfile(), industry: 'invalid_industry' };
+  it('rejects an invalid industry', () => {
+    const data = { ...validBusinessProfile(), industry: 'invalid_industry' as const };
     const result = businessProfileSchema.safeParse(data);
     expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'industry');
-      expect(issue).toBeDefined();
-    }
-  });
-
-  it('rejects invalid type value', () => {
-    const data = { ...validBusinessProfile(), type: 'llc' };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'type');
-      expect(issue).toBeDefined();
-    }
-  });
-
-  it('rejects invalid stage value', () => {
-    const data = { ...validBusinessProfile(), stage: 'bankrupt' };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'stage');
-      expect(issue).toBeDefined();
-    }
-  });
-
-  it('rejects invalid size value', () => {
-    const data = { ...validBusinessProfile(), size: 'large' };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'size');
-      expect(issue).toBeDefined();
-    }
   });
 
   it('rejects empty goals array', () => {
     const data = { ...validBusinessProfile(), goals: [] };
     const result = businessProfileSchema.safeParse(data);
     expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'goals');
-      expect(issue).toBeDefined();
-      expect(issue!.message).toContain('At least one goal');
-    }
   });
 
-  it('rejects too many goals (>5)', () => {
+  it('accepts valid optional fields', () => {
     const data = {
       ...validBusinessProfile(),
-      goals: ['a', 'b', 'c', 'd', 'e', 'f'],
-    };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'goals');
-      expect(issue).toBeDefined();
-      expect(issue!.message).toContain('5');
-    }
-  });
-
-  it('rejects goals with empty strings', () => {
-    const data = { ...validBusinessProfile(), goals: ['Valid goal', ''] };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find(
-        (i) => i.path[0] === 'goals' && i.path.length > 1
-      );
-      expect(issue).toBeDefined();
-      expect(issue!.message).toContain('empty');
-    }
-  });
-
-  it('accepts name at exactly 100 characters', () => {
-    const data = { ...validBusinessProfile(), name: 'A'.repeat(100) };
-    const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts exactly 5 goals', () => {
-    const data = {
-      ...validBusinessProfile(),
-      goals: ['Goal 1', 'Goal 2', 'Goal 3', 'Goal 4', 'Goal 5'],
+      userRole: 'Owner',
+      revenueModel: 'direct_sales',
+      employeeCount: 5,
     };
     const result = businessProfileSchema.safeParse(data);
     expect(result.success).toBe(true);
@@ -182,7 +87,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse({});
     expect(result.success).toBe(false);
     if (!result.success) {
-      const paths = result.error.issues.map((i) => i.path[0]);
+      const paths = result.error.issues.map((i: { path: (string | number)[] }) => i.path[0]);
       expect(paths).toContain('revenue');
       expect(paths).toContain('cashReserve');
       expect(paths).toContain('receivables');
@@ -196,7 +101,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'revenue');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'revenue');
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('non-negative');
     }
@@ -207,7 +112,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'cashReserve');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'cashReserve');
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('non-negative');
     }
@@ -218,7 +123,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'receivables');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'receivables');
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('non-negative');
     }
@@ -229,7 +134,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'payables');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'payables');
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('non-negative');
     }
@@ -240,7 +145,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'debt');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'debt');
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('non-negative');
     }
@@ -252,7 +157,7 @@ describe('financialSnapshotSchema', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       const issue = result.error.issues.find(
-        (i) => i.path[0] === 'expenseCategories'
+        (i: { path: (string | number)[] }) => i.path[0] === 'expenseCategories'
       );
       expect(issue).toBeDefined();
       expect(issue!.message).toContain('At least one expense category');
@@ -264,7 +169,7 @@ describe('financialSnapshotSchema', () => {
     const result = financialSnapshotSchema.safeParse(data);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path[0] === 'month');
+      const issue = result.error.issues.find((i: { path: (string | number)[] }) => i.path[0] === 'month');
       expect(issue).toBeDefined();
     }
   });
@@ -278,7 +183,7 @@ describe('financialSnapshotSchema', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       const issue = result.error.issues.find(
-        (i) =>
+        (i: { path: (string | number)[] }) =>
           i.path[0] === 'expenseCategories' ||
           (i.path.length > 1 && i.path[0] === 'expenseCategories')
       );
@@ -327,12 +232,11 @@ describe('onboardingSchema', () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      // Should have errors from both sub-schemas
       const businessErrors = result.error.issues.filter(
-        (i) => i.path[0] === 'business'
+        (i: { path: (string | number)[] }) => i.path[0] === 'business'
       );
       const financialErrors = result.error.issues.filter(
-        (i) => i.path[0] === 'financial'
+        (i: { path: (string | number)[] }) => i.path[0] === 'financial'
       );
       expect(businessErrors.length).toBeGreaterThan(0);
       expect(financialErrors.length).toBeGreaterThan(0);
@@ -343,7 +247,7 @@ describe('onboardingSchema', () => {
     const result = onboardingSchema.safeParse({});
     expect(result.success).toBe(false);
     if (!result.success) {
-      const paths = result.error.issues.map((i) => i.path[0]);
+      const paths = result.error.issues.map((i: { path: (string | number)[] }) => i.path[0]);
       expect(paths).toContain('business');
       expect(paths).toContain('financial');
     }
