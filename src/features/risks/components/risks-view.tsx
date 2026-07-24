@@ -9,7 +9,8 @@ import { RiskEmpty } from './risk-empty';
 import { ErrorState } from '@/components/ui/error-state';
 import { PageContextualHint } from '@/components/app-shell/product-tour';
 import { FadeIn, FadeInView, StaggerChildren } from '@/components/motion';
-import { H2, H3, Caption } from '@/components/ui/typography';
+import { Caption, SectionTitle } from '@/components/ui/typography';
+import { AppPage, PageHeader } from '@/components/ui/layout';
 import { Calendar } from 'lucide-react';
 import type {
   RisksData,
@@ -23,7 +24,7 @@ interface RisksViewProps {
   initialData: RisksData;
 }
 
-const SEVERITY_ORDER: Record<RiskSeverity, number> = { critical: 0, warning: 1 };
+const SEVERITY_ORDER: Record<RiskSeverity, number> = { critical: 0, high: 1, medium: 2, low: 3, warning: 4 };
 const IMPACT_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 
 export function RisksView({ initialData }: RisksViewProps) {
@@ -47,48 +48,48 @@ export function RisksView({ initialData }: RisksViewProps) {
   }, [data.risks]);
 
   // i18n label maps
-  const categoryLabels = useMemo(
+  const categoryLabels = useMemo<Record<RiskCategory, string>>(
     () => ({
-      financial: t('categories.financial'),
-      operational: t('categories.operational'),
-      growth: t('categories.growth'),
-      compliance: t('categories.compliance'),
+      financial: 'Financial',
+      cash_flow: 'Cash Flow',
+      revenue: 'Revenue',
+      expense: 'Expense',
+      debt: 'Debt',
+      operational: 'Operational',
+      growth: 'Growth',
+      compliance: 'Compliance',
     }),
-    [t]
+    []
   );
 
-  const severityLabels = useMemo(
-    () => ({ critical: t('severity.critical'), warning: t('severity.warning') }),
-    [t]
+  const severityLabels = useMemo<Record<RiskSeverity, string>>(
+    () => ({ critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low', warning: 'Warning' }),
+    []
   );
 
   const probabilityLabels = useMemo(
-    () => ({ high: t('probability.high'), medium: t('probability.medium'), low: t('probability.low') }),
-    [t]
+    () => ({ high: 'High', medium: 'Medium', low: 'Low' }),
+    []
   );
 
   const impactLabels = useMemo(
-    () => ({ high: t('impact.high'), medium: t('impact.medium'), low: t('impact.low') }),
-    [t]
+    () => ({ high: 'High', medium: 'Medium', low: 'Low' }),
+    []
   );
 
-  const statusLabels = useMemo(
-    () => ({ active: t('status.active'), mitigated: t('status.mitigated') }),
-    [t]
+  const statusLabels = useMemo<Record<RiskStatus, string>>(
+    () => ({ active: 'Active', mitigated: 'Mitigated', ignored: 'Ignored' }),
+    []
   );
 
   // Estimate total financial exposure from evidence values
   const estimatedExposure = useMemo(() => {
     let total = 0;
     data.risks.filter(r => r.status === 'active').forEach((r) => {
-      if (r.evidenceValues.netProfit && typeof r.evidenceValues.netProfit === 'number') {
-        total += r.evidenceValues.netProfit;
-      }
-      if (r.evidenceValues.receivables && typeof r.evidenceValues.receivables === 'number') {
-        total += Number(r.evidenceValues.receivables);
+      if (r.estimatedExposure) {
+        total += r.estimatedExposure;
       }
     });
-    // Use a simplified exposure calculation
     return total || 286000;
   }, [data.risks]);
 
@@ -103,31 +104,28 @@ export function RisksView({ initialData }: RisksViewProps) {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter((r) => {
-        let title: string;
-        let whatHappened: string;
-        try { title = t(`rules.${r.ruleId}.title`, r.evidenceValues); } catch { title = r.ruleId; }
-        try { whatHappened = t(`rules.${r.ruleId}.whatHappened`, r.evidenceValues); } catch { whatHappened = ''; }
-        return title.toLowerCase().includes(query) || whatHappened.toLowerCase().includes(query) || r.ruleId.toLowerCase().includes(query);
+        const title = r.title || r.ruleId;
+        return title.toLowerCase().includes(query) || r.ruleId.toLowerCase().includes(query);
       });
     }
 
     result.sort((a, b) => {
       if (sortBy === 'severity') {
-        const diff = SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];
+        const diff = (SEVERITY_ORDER[a.severity] ?? 5) - (SEVERITY_ORDER[b.severity] ?? 5);
         if (diff !== 0) return diff;
-        return IMPACT_ORDER[a.impact] - IMPACT_ORDER[b.impact];
+        return IMPACT_ORDER[a.impact || 'medium'] - IMPACT_ORDER[b.impact || 'medium'];
       }
-      const diff = IMPACT_ORDER[a.impact] - IMPACT_ORDER[b.impact];
+      const diff = IMPACT_ORDER[a.impact || 'medium'] - IMPACT_ORDER[b.impact || 'medium'];
       if (diff !== 0) return diff;
-      return SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];
+      return (SEVERITY_ORDER[a.severity] ?? 5) - (SEVERITY_ORDER[b.severity] ?? 5);
     });
 
     return result;
-  }, [data.risks, severityFilter, categoryFilter, statusFilter, searchQuery, sortBy, t]);
+  }, [data.risks, severityFilter, categoryFilter, statusFilter, searchQuery, sortBy]);
 
   // Group by status
-  const actNowRisks = filteredRisks.filter(r => r.status === 'active' && r.severity === 'critical');
-  const monitorRisks = filteredRisks.filter(r => r.status === 'active' && r.severity === 'warning');
+  const actNowRisks = filteredRisks.filter(r => r.status === 'active' && (r.severity === 'critical' || r.severity === 'high'));
+  const monitorRisks = filteredRisks.filter(r => r.status === 'active' && (r.severity === 'medium' || r.severity === 'low' || r.severity === 'warning'));
   const resolvedRisks = filteredRisks.filter(r => r.status === 'mitigated');
 
   const hasActiveFilters = severityFilter !== 'all' || categoryFilter !== 'all' || statusFilter !== 'all' || searchQuery.trim() !== '';
@@ -183,197 +181,199 @@ export function RisksView({ initialData }: RisksViewProps) {
   };
 
   return (
-    <FadeIn>
-      <div className="flex flex-col gap-6">
-        {/* Page heading + data freshness */}
-        <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-1">
-            <H2>{t('pageTitle')}</H2>
-            <div className="flex items-center gap-2">
-              <Calendar className="size-3.5 text-text-muted" aria-hidden="true" />
-              <Caption>
-                Last assessment: {data.summary.lastAssessmentDate} · {data.summary.totalCount} risks tracked
-              </Caption>
-            </div>
-          </div>
-        </header>
+    <AppPage>
+      <FadeIn>
+        <div className="flex flex-col gap-6">
+          {/* Page heading + data freshness */}
+          <PageHeader
+            title={t('pageTitle')}
+            description={
+              <div className="flex items-center gap-2">
+                <Calendar className="size-3.5 text-text-muted" aria-hidden="true" />
+                <Caption>
+                  Last assessment: {data.summary.lastAssessmentDate} · {data.summary.totalCount} risks tracked
+                </Caption>
+              </div>
+            }
+          />
 
-        {/* First-visit Contextual Hint */}
-        <PageContextualHint
-          hintKey="risks"
-          title="Risk Center Guide"
-          message="Review active risks detected in your baseline. Click 'Simulate Mitigation' on any risk card to test protective decisions."
-        />
+          {/* First-visit Contextual Hint */}
+          <PageContextualHint
+            hintKey="risks"
+            title="Risk Center Guide"
+            message="Review active risks detected in your baseline. Click 'Simulate Mitigation' on any risk card to test protective decisions."
+          />
 
-        {/* Risk Position Summary */}
-        <RiskSummary
-          summary={data.summary}
-          estimatedExposure={estimatedExposure}
-          t={{
-            title: t('summary.title'),
-            overallScore: t('summary.overallScore'),
-            scoreExplanation: t('summary.scoreExplanation'),
-            totalRisks: t('summary.totalRisks'),
-            criticalRisks: t('summary.criticalRisks'),
-            warningRisks: t('summary.warningRisks'),
-            lastAssessment: t('summary.lastAssessment'),
-            staleBanner: t('summary.staleBanner'),
-            incompleteBanner: t('summary.incompleteBanner'),
-          }}
-        />
-
-        {/* Empty state */}
-        {noRisksAtAll ? (
-          <RiskEmpty
+          {/* Risk Position Summary */}
+          <RiskSummary
+            summary={data.summary}
+            estimatedExposure={estimatedExposure}
             t={{
-              title: t('empty.title'),
-              description: t('empty.description'),
-              actionHealth: t('empty.actionHealth'),
-              actionSnapshot: t('empty.actionSnapshot'),
-              actionSimulation: t('empty.actionSimulation'),
+              title: t('summary.title'),
+              overallScore: t('summary.overallScore'),
+              scoreExplanation: t('summary.scoreExplanation'),
+              totalRisks: t('summary.totalRisks'),
+              criticalRisks: t('summary.criticalRisks'),
+              warningRisks: t('summary.warningRisks'),
+              lastAssessment: t('summary.lastAssessment'),
+              staleBanner: t('summary.staleBanner'),
+              incompleteBanner: t('summary.incompleteBanner'),
             }}
           />
-        ) : (
-          <>
-            {/* Filters */}
-            <RiskFilters
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              severityFilter={severityFilter}
-              onSeverityChange={setSeverityFilter}
-              categoryFilter={categoryFilter}
-              onCategoryChange={setCategoryFilter}
-              statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              availableCategories={availableCategories}
+
+          {/* Empty state */}
+          {noRisksAtAll ? (
+            <RiskEmpty
               t={{
-                search: t('filters.search'),
-                severity: t('filters.severity'),
-                category: t('filters.category'),
-                status: t('filters.status'),
-                all: t('filters.all'),
-                active: t('filters.active'),
-                mitigated: t('filters.mitigated'),
-                sortBy: t('filters.sortBy'),
-                sortSeverity: t('filters.sortSeverity'),
-                sortImpact: t('filters.sortImpact'),
-                clearFilters: t('filters.clearFilters'),
+                title: t('empty.title'),
+                description: t('empty.description'),
+                actionHealth: t('empty.actionHealth'),
+                actionSnapshot: t('empty.actionSnapshot'),
+                actionSimulation: t('empty.actionSimulation'),
               }}
-              categoryLabels={categoryLabels}
-              severityLabels={severityLabels}
-              hasActiveFilters={hasActiveFilters}
-              onClearFilters={clearFilters}
             />
+          ) : (
+            <>
+              {/* Filters */}
+              <RiskFilters
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                severityFilter={severityFilter}
+                onSeverityChange={setSeverityFilter}
+                categoryFilter={categoryFilter}
+                onCategoryChange={setCategoryFilter}
+                statusFilter={statusFilter}
+                onStatusChange={setStatusFilter}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                availableCategories={availableCategories}
+                t={{
+                  search: t('filters.search'),
+                  severity: t('filters.severity'),
+                  category: t('filters.category'),
+                  status: t('filters.status'),
+                  all: t('filters.all'),
+                  active: t('filters.active'),
+                  mitigated: t('filters.mitigated'),
+                  sortBy: t('filters.sortBy'),
+                  sortSeverity: t('filters.sortSeverity'),
+                  sortImpact: t('filters.sortImpact'),
+                  clearFilters: t('filters.clearFilters'),
+                }}
+                categoryLabels={categoryLabels}
+                severityLabels={severityLabels}
+                hasActiveFilters={hasActiveFilters}
+                onClearFilters={clearFilters}
+              />
 
-            {/* No results after filtering */}
-            {filteredRisks.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-[15px]/[24px] text-text-muted mb-3">
-                  {t('filters.noResults')}
-                </p>
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="text-[14px] font-[550] text-brand hover:text-brand-hover cursor-pointer transition-colors"
-                >
-                  {t('filters.clearFilters')}
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-8">
-                {/* Act Now section */}
-                {actNowRisks.length > 0 && (
-                  <FadeInView>
-                    <section aria-label="Risks requiring action" className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <H3 className="text-[18px]/[24px]">Act now</H3>
-                        <span className="text-[13px] font-[600] text-danger tabular-nums">
-                          {actNowRisks.length}
-                        </span>
-                      </div>
-                      <StaggerChildren triggerOnView className="flex flex-col gap-3">
-                        {actNowRisks.map((risk) => (
-                          <RiskCard
-                            key={risk.id}
-                            risk={risk}
-                            t={cardTranslations}
-                            ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
-                            severityLabel={severityLabels[risk.severity]}
-                            probabilityLabel={probabilityLabels[risk.probability]}
-                            impactLabel={impactLabels[risk.impact]}
-                            statusLabel={statusLabels[risk.status]}
-                            categoryLabel={categoryLabels[risk.category]}
-                          />
-                        ))}
-                      </StaggerChildren>
-                    </section>
-                  </FadeInView>
-                )}
+              {/* No results after filtering */}
+              {filteredRisks.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-[15px]/[24px] text-text-muted mb-3">
+                    {t('filters.noResults')}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="text-xs font-semibold text-brand hover:text-brand-hover cursor-pointer transition-colors"
+                  >
+                    {t('filters.clearFilters')}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6">
+                  {/* Act Now section */}
+                  {actNowRisks.length > 0 && (
+                    <FadeInView>
+                      <section aria-label="Risks requiring action" className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <SectionTitle>Act now</SectionTitle>
+                          <span className="text-xs font-semibold text-danger tabular-nums">
+                            {actNowRisks.length}
+                          </span>
+                        </div>
+                        <StaggerChildren triggerOnView className="flex flex-col gap-3">
+                          {actNowRisks.map((risk) => (
+                            <RiskCard
+                              key={risk.id}
+                              risk={risk}
+                              t={cardTranslations}
+                              ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
+                              severityLabel={severityLabels[risk.severity] || risk.severity}
+                              probabilityLabel={probabilityLabels[risk.probability || 'medium']}
+                              impactLabel={impactLabels[risk.impact || 'medium']}
+                              statusLabel={statusLabels[risk.status] || risk.status}
+                              categoryLabel={categoryLabels[risk.category] || risk.category}
+                            />
+                          ))}
+                        </StaggerChildren>
+                      </section>
+                    </FadeInView>
+                  )}
 
-                {/* Monitor section */}
-                {monitorRisks.length > 0 && (
-                  <FadeInView>
-                    <section aria-label="Risks to monitor" className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <H3 className="text-[18px]/[24px]">Monitor</H3>
-                        <span className="text-[13px] font-[600] text-warning tabular-nums">
-                          {monitorRisks.length}
-                        </span>
-                      </div>
-                      <StaggerChildren triggerOnView className="flex flex-col gap-3">
-                        {monitorRisks.map((risk) => (
-                          <RiskCard
-                            key={risk.id}
-                            risk={risk}
-                            t={cardTranslations}
-                            ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
-                            severityLabel={severityLabels[risk.severity]}
-                            probabilityLabel={probabilityLabels[risk.probability]}
-                            impactLabel={impactLabels[risk.impact]}
-                            statusLabel={statusLabels[risk.status]}
-                            categoryLabel={categoryLabels[risk.category]}
-                          />
-                        ))}
-                      </StaggerChildren>
-                    </section>
-                  </FadeInView>
-                )}
+                  {/* Monitor section */}
+                  {monitorRisks.length > 0 && (
+                    <FadeInView>
+                      <section aria-label="Risks to monitor" className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <SectionTitle>Monitor</SectionTitle>
+                          <span className="text-xs font-semibold text-warning tabular-nums">
+                            {monitorRisks.length}
+                          </span>
+                        </div>
+                        <StaggerChildren triggerOnView className="flex flex-col gap-3">
+                          {monitorRisks.map((risk) => (
+                            <RiskCard
+                              key={risk.id}
+                              risk={risk}
+                              t={cardTranslations}
+                              ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
+                              severityLabel={severityLabels[risk.severity] || risk.severity}
+                              probabilityLabel={probabilityLabels[risk.probability || 'medium']}
+                              impactLabel={impactLabels[risk.impact || 'medium']}
+                              statusLabel={statusLabels[risk.status] || risk.status}
+                              categoryLabel={categoryLabels[risk.category] || risk.category}
+                            />
+                          ))}
+                        </StaggerChildren>
+                      </section>
+                    </FadeInView>
+                  )}
 
-                {/* Resolved section */}
-                {resolvedRisks.length > 0 && (
-                  <FadeInView>
-                    <section aria-label="Resolved risks" className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <H3 className="text-[18px]/[24px]">Resolved</H3>
-                        <span className="text-[13px] font-[600] text-success tabular-nums">
-                          {resolvedRisks.length}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-3">
-                        {resolvedRisks.map((risk) => (
-                          <RiskCard
-                            key={risk.id}
-                            risk={risk}
-                            t={cardTranslations}
-                            ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
-                            severityLabel={severityLabels[risk.severity]}
-                            probabilityLabel={probabilityLabels[risk.probability]}
-                            impactLabel={impactLabels[risk.impact]}
-                            statusLabel={statusLabels[risk.status]}
-                            categoryLabel={categoryLabels[risk.category]}
-                          />
-                        ))}
-                      </div>
-                    </section>
-                  </FadeInView>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </FadeIn>
+                  {/* Resolved section */}
+                  {resolvedRisks.length > 0 && (
+                    <FadeInView>
+                      <section aria-label="Resolved risks" className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <SectionTitle>Resolved</SectionTitle>
+                          <span className="text-xs font-semibold text-success tabular-nums">
+                            {resolvedRisks.length}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                          {resolvedRisks.map((risk) => (
+                            <RiskCard
+                              key={risk.id}
+                              risk={risk}
+                              t={cardTranslations}
+                              ruleText={getRuleTexts(risk.ruleId, risk.evidenceValues)}
+                              severityLabel={severityLabels[risk.severity] || risk.severity}
+                              probabilityLabel={probabilityLabels[risk.probability || 'medium']}
+                              impactLabel={impactLabels[risk.impact || 'medium']}
+                              statusLabel={statusLabels[risk.status] || risk.status}
+                              categoryLabel={categoryLabels[risk.category] || risk.category}
+                            />
+                          ))}
+                        </div>
+                      </section>
+                    </FadeInView>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </FadeIn>
+    </AppPage>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<HireEmployeesValues>({
     resolver: zodResolver(schema),
@@ -42,7 +42,8 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
     },
   });
 
-  const salaryValue = watch('salary');
+  const salaryValue = useWatch({ control, name: 'salary' });
+  const benefitsValue = useWatch({ control, name: 'benefits' });
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -54,13 +55,13 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
           max={20}
           {...register('headcount', { valueAsNumber: true })}
           className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+            'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
             'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
             errors.headcount && 'border-danger'
           )}
         />
         {errors.headcount && (
-          <span className="text-[12px] text-danger">{errors.headcount.message}</span>
+          <span className="text-xs text-danger">{errors.headcount.message}</span>
         )}
       </div>
 
@@ -87,12 +88,12 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
             {...register('benefits', { valueAsNumber: true })}
             className="flex-1 accent-brand"
           />
-          <span className="text-[13px] font-[550] text-text-primary tabular-nums w-10 text-right">
-            {watch('benefits')}%
+          <span className="text-xs sm:text-sm font-semibold text-text-primary tabular-nums w-10 text-right">
+            {benefitsValue}%
           </span>
         </div>
         {errors.benefits && (
-          <span className="text-[12px] text-danger">{errors.benefits.message}</span>
+          <span className="text-xs text-danger">{errors.benefits.message}</span>
         )}
       </div>
 
@@ -105,13 +106,13 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
             max={12}
             {...register('startMonth', { valueAsNumber: true })}
             className={cn(
-              'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+              'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
               'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
               errors.startMonth && 'border-danger'
             )}
           />
           {errors.startMonth && (
-            <span className="text-[12px] text-danger">{errors.startMonth.message}</span>
+            <span className="text-xs text-danger">{errors.startMonth.message}</span>
           )}
         </div>
 
@@ -123,13 +124,13 @@ export function HireEmployeesForm({ defaultValues, onSubmit, id }: HireEmployees
             max={12}
             {...register('rampUpMonths', { valueAsNumber: true })}
             className={cn(
-              'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+              'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
               'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
               errors.rampUpMonths && 'border-danger'
             )}
           />
           {errors.rampUpMonths && (
-            <span className="text-[12px] text-danger">{errors.rampUpMonths.message}</span>
+            <span className="text-xs text-danger">{errors.rampUpMonths.message}</span>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -27,7 +27,7 @@ export function PaymentDelayForm({ defaultValues, onSubmit, id }: PaymentDelayFo
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<PaymentDelayValues>({
     resolver: zodResolver(schema),
@@ -39,7 +39,8 @@ export function PaymentDelayForm({ defaultValues, onSubmit, id }: PaymentDelayFo
     },
   });
 
-  const receivablesValue = watch('currentReceivables');
+  const receivablesValue = useWatch({ control, name: 'currentReceivables' });
+  const affectedPercentValue = useWatch({ control, name: 'affectedPercent' });
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -51,13 +52,13 @@ export function PaymentDelayForm({ defaultValues, onSubmit, id }: PaymentDelayFo
           max={180}
           {...register('delayDays', { valueAsNumber: true })}
           className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+            'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
             'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
             errors.delayDays && 'border-danger'
           )}
         />
         {errors.delayDays && (
-          <span className="text-[12px] text-danger">{errors.delayDays.message}</span>
+          <span className="text-xs text-danger">{errors.delayDays.message}</span>
         )}
       </div>
 
@@ -71,18 +72,18 @@ export function PaymentDelayForm({ defaultValues, onSubmit, id }: PaymentDelayFo
             {...register('affectedPercent', { valueAsNumber: true })}
             className="flex-1 accent-brand"
           />
-          <span className="text-[13px] font-[550] text-text-primary tabular-nums w-10 text-right">
-            {watch('affectedPercent')}%
+          <span className="text-xs sm:text-sm font-semibold text-text-primary tabular-nums w-10 text-right">
+            {affectedPercentValue}%
           </span>
         </div>
         {errors.affectedPercent && (
-          <span className="text-[12px] text-danger">{errors.affectedPercent.message}</span>
+          <span className="text-xs text-danger">{errors.affectedPercent.message}</span>
         )}
       </div>
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-[550] text-text-muted">Current Receivables</span>
+          <span className="text-xs font-semibold text-text-muted">Current Receivables</span>
           <Badge variant="info">From baseline</Badge>
         </div>
         <CurrencyInput

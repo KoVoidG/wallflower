@@ -9,10 +9,13 @@ import {
   X,
   LayoutDashboard,
   HeartPulse,
+  Banknote,
   ShieldAlert,
   FlaskConical,
   Bot,
+  CheckSquare,
   FileText,
+  Database,
   UserCheck,
   Lightbulb,
 } from 'lucide-react';
@@ -32,44 +35,65 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
   {
     id: 'dashboard',
     selector: '[data-tour="sidebar-dashboard"]',
-    title: 'Dashboard — Business Position',
-    desc: 'Review overall financial health status, cash runway, and top recommended actions at a glance.',
+    title: 'Dashboard — Executive Cockpit',
+    desc: 'Review overall financial posture, cash runway countdown, health scores, and recommended actions at a glance.',
     icon: LayoutDashboard,
   },
   {
     id: 'business-health',
     selector: '[data-tour="sidebar-business-health"]',
-    title: 'Business Health & Metrics',
-    desc: 'Inspect financial strengths, vulnerabilities, ratio breakdowns, and historical snapshot trends.',
+    title: 'Business Health Diagnostics',
+    desc: 'Inspect financial strengths, risk vulnerabilities, liquidity ratios, and diagnostic metric trends.',
     icon: HeartPulse,
+  },
+  {
+    id: 'cash-flow',
+    selector: '[data-tour="sidebar-cash-flow"]',
+    title: 'Cash Flow Workspace',
+    desc: 'Track cash runway projection timelines, receivable collections, payable schedules, and liquidity pressure.',
+    icon: Banknote,
   },
   {
     id: 'risks',
     selector: '[data-tour="sidebar-risks"]',
-    title: 'Risk Center',
-    desc: 'Identify active financial & operational risks, review underlying evidence, and test mitigations.',
+    title: 'Risk Investigation Center',
+    desc: 'Identify active financial & operational risks, inspect evidence, and test mitigation scenarios.',
     icon: ShieldAlert,
   },
   {
     id: 'simulations',
     selector: '[data-tour="sidebar-simulations"]',
     title: 'Decision Simulations',
-    desc: 'Test strategic decisions like price changes, hiring, or marketing investments before spending capital.',
+    desc: 'Model strategic decisions like hiring, price changes, or capex loans before committing business capital.',
     icon: FlaskConical,
   },
   {
     id: 'advisor',
     selector: '[data-tour="sidebar-advisor"]',
-    title: 'AI Advisor',
-    desc: 'Ask questions and receive executive summaries grounded strictly in your calculated financial facts.',
+    title: 'AI Advisor Workspace',
+    desc: 'Ask contextual questions and receive executive decision intelligence backed strictly by calculated business facts.',
     icon: Bot,
+  },
+  {
+    id: 'actions',
+    selector: '[data-tour="sidebar-actions"]',
+    title: 'Action Plan & Decision Log',
+    desc: 'Track execution tasks from risks & simulations, and verify Expected versus Actual decision outcomes.',
+    icon: CheckSquare,
   },
   {
     id: 'reports',
     selector: '[data-tour="sidebar-reports"]',
-    title: 'Decision Reports',
-    desc: 'Review and export formal decision intelligence reports to share with co-founders or lenders.',
+    title: 'Decision Intelligence Reports',
+    desc: 'Generate, review, and export formal decision memos and executive reports to share with partners or lenders.',
     icon: FileText,
+  },
+  {
+    id: 'data-sources',
+    selector: '[data-tour="sidebar-data-sources"]',
+    title: 'Data & Connections',
+    desc: 'Manage data sources, snapshot data quality, completeness confidence, and baseline financial history.',
+    icon: Database,
   },
   {
     id: 'account-menu',
@@ -220,9 +244,6 @@ export function ProductTour() {
   const StepIcon = currentStep.icon;
   const isLastStep = currentStepIdx === SIDEBAR_TOUR_STEPS.length - 1;
 
-  // Viewport-aware Tooltip Positioning:
-  // If target element is in the lower portion of the screen (e.g. Account menu at step 7),
-  // anchor the popover ABOVE or dynamically shift `top` so the bottom controls are 100% visible!
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
   const popoverHeight = 220;
 
@@ -233,7 +254,6 @@ export function ProductTour() {
     tooltipLeft = targetRect.right + 12;
 
     if (targetRect.top + popoverHeight > windowHeight - 20) {
-      // Near bottom: align bottom of popover near bottom of target item
       tooltipTop = Math.max(16, targetRect.bottom - popoverHeight);
     } else {
       tooltipTop = Math.max(16, targetRect.top - 8);

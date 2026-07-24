@@ -73,7 +73,7 @@ export function RiskCard({
   categoryLabel,
 }: RiskCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const config = severityConfig[risk.severity];
+  const config = severityConfig[risk.severity as keyof typeof severityConfig] || severityConfig.critical;
   const panelId = `risk-panel-${risk.id}`;
   const isMitigated = risk.status === 'mitigated';
 
@@ -122,7 +122,7 @@ export function RiskCard({
           {/* Brief preview when collapsed */}
           {!isExpanded && (
             <p className="text-[13px]/[20px] text-text-secondary line-clamp-1">
-              {interpolate(ruleText.whatHappened, risk.evidenceValues)}
+              {interpolate(ruleText.whatHappened, risk.evidenceValues || {})}
             </p>
           )}
         </div>
@@ -146,7 +146,7 @@ export function RiskCard({
                 {t.whatHappened}
               </h4>
               <p className="text-[13px]/[20px] text-text-secondary">
-                {interpolate(ruleText.whatHappened, risk.evidenceValues)}
+                {interpolate(ruleText.whatHappened, risk.evidenceValues || {})}
               </p>
             </div>
 
@@ -156,7 +156,7 @@ export function RiskCard({
                 {t.whyMatters}
               </h4>
               <p className="text-[13px]/[20px] text-text-secondary">
-                {interpolate(ruleText.whyMatters, risk.evidenceValues)}
+                {interpolate(ruleText.whyMatters, risk.evidenceValues || {})}
               </p>
             </div>
 
@@ -166,7 +166,7 @@ export function RiskCard({
                 {t.howSerious}
               </h4>
               <p className="text-[13px]/[20px] text-text-secondary mb-2">
-                {interpolate(ruleText.howSerious, risk.evidenceValues)}
+                {interpolate(ruleText.howSerious, risk.evidenceValues || {})}
               </p>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12px]/[18px]">
                 <span>
@@ -192,7 +192,7 @@ export function RiskCard({
                 {t.whatNext}
               </h4>
               <p className="text-[13px]/[20px] text-text-secondary">
-                {interpolate(ruleText.whatNext, risk.evidenceValues)}
+                {interpolate(ruleText.whatNext, risk.evidenceValues || {})}
               </p>
               {risk.mitigationScenario && !isMitigated && (
                 <a
@@ -218,19 +218,19 @@ export function RiskCard({
       <div className="hidden print:block px-4 pb-4 space-y-3 border-t border-border pt-3">
         <div>
           <span className="text-[11px] font-[600]">{t.whatHappened}</span>
-          <p className="text-[11px]">{interpolate(ruleText.whatHappened, risk.evidenceValues)}</p>
+          <p className="text-[11px]">{interpolate(ruleText.whatHappened, risk.evidenceValues || {})}</p>
         </div>
         <div>
           <span className="text-[11px] font-[600]">{t.whyMatters}</span>
-          <p className="text-[11px]">{interpolate(ruleText.whyMatters, risk.evidenceValues)}</p>
+          <p className="text-[11px]">{interpolate(ruleText.whyMatters, risk.evidenceValues || {})}</p>
         </div>
         <div>
           <span className="text-[11px] font-[600]">{t.howSerious}</span>
-          <p className="text-[11px]">{interpolate(ruleText.howSerious, risk.evidenceValues)}</p>
+          <p className="text-[11px]">{interpolate(ruleText.howSerious, risk.evidenceValues || {})}</p>
         </div>
         <div>
           <span className="text-[11px] font-[600]">{t.whatNext}</span>
-          <p className="text-[11px]">{interpolate(ruleText.whatNext, risk.evidenceValues)}</p>
+          <p className="text-[11px]">{interpolate(ruleText.whatNext, risk.evidenceValues || {})}</p>
         </div>
       </div>
     </Surface>

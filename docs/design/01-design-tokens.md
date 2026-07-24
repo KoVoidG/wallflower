@@ -50,12 +50,18 @@
 | `--text-muted` | `#829891` | Metadata |
 | `--brand` | `#2DD4BF` | Primary action |
 | `--brand-hover` | `#5EEAD4` | Primary hover |
-| `--brand-soft` | `#123A34` | Selection background |
+| `--brand-soft` | `#143D36` | Selection background |
+| `--brand-strong` | `#5EEAD4` | High-emphasis brand text |
 | `--info` | `#60A5FA` | Information |
+| `--info-soft` | `#0C2D4A` | Informational region |
 | `--success` | `#4ADE80` | Positive outcome |
+| `--success-soft` | `#052E16` | Positive background |
 | `--warning` | `#FBBF24` | Caution |
+| `--warning-soft` | `#422006` | Warning background |
 | `--danger` | `#F87171` | Critical outcome |
+| `--danger-soft` | `#450A0A` | Critical background |
 | `--ai` | `#22D3EE` | AI interpretation |
+| `--ai-soft` | `#083344` | AI background |
 
 ## Semantic color roles
 
@@ -100,16 +106,18 @@ Semantic defaults:
 Primary:
 
 ```css
-font-family: "Geist", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+font-family: var(--font-geist-sans), var(--font-noto-thai), system-ui, sans-serif;
 ```
 
 Monospace:
 
 ```css
-font-family: "Geist Mono", ui-monospace, monospace;
+font-family: var(--font-geist-mono), monospace;
 ```
 
 Use monospace only for IDs, technical metadata, calculation versions, and structured previews. Never use monospace for ordinary financial values.
+
+Portalled elements (Dialogs, Drawers, Dropdown menus, MonthPicker panels, Tooltips) MUST explicitly inherit `--font-sans`.
 
 | Token | Size / line-height | Weight | Usage |
 |---|---|---:|---|
@@ -131,7 +139,7 @@ Required for financial values:
 font-variant-numeric: tabular-nums;
 ```
 
-Do not use muted color for essential values, form labels, warnings, or primary explanation.
+Always consume `<FinancialValue value={val} />` from `@/components/ui/domain-values` for monetary figures.
 
 ## Spacing
 
@@ -166,14 +174,6 @@ Use 24–32px internal padding for major analytical regions. Use 16–20px for c
 
 Do not use 20–24px radius on standard dashboard cards.
 
-## Borders
-
-- Default: 1px semantic border
-- Emphasized: strong border or subtle inset ring
-- Tables: row dividers, not individually boxed rows
-- Active navigation: brand indicator plus surface change
-- Critical risk: severity edge or header; do not fill the entire panel red
-
 ## Elevation
 
 Light mode:
@@ -195,27 +195,3 @@ Most application surfaces use no shadow. Use `shadow-md` only for floating dialo
 | Default input | 40–44px |
 | Mobile touch target | Minimum 44×44px |
 | Top bar | 64px |
-
-## Icons
-
-- Compact metadata: 14–16px
-- Standard controls: 16–18px
-- Navigation: 18–20px
-- Empty-state illustration marks: 32–56px
-- Use Lucide icons consistently.
-- Do not mix filled and outlined icon families without a defined semantic reason.
-
-## Suggested Tailwind mappings
-
-| Semantic role | Utility or token pattern |
-|---|---|
-| Page background | `bg-background` |
-| Primary surface | `bg-card` or `bg-surface` |
-| Secondary region | `bg-muted/40` or semantic subtle surface |
-| Primary text | `text-foreground` |
-| Supporting text | `text-muted-foreground` |
-| Default divider | `border-border` |
-| Primary action | `bg-primary text-primary-foreground` |
-| Focus | `focus-visible:ring-2 focus-visible:ring-ring` |
-
-The project may map tokens differently, but semantic names must remain stable.

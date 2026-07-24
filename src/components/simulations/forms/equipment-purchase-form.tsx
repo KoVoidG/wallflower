@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export function EquipmentPurchaseForm({ defaultValues, onSubmit, id }: Equipment
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<EquipmentPurchaseValues>({
     resolver: zodResolver(schema),
@@ -41,8 +41,9 @@ export function EquipmentPurchaseForm({ defaultValues, onSubmit, id }: Equipment
     },
   });
 
-  const costValue = watch('cost');
-  const maintenanceValue = watch('maintenance');
+  const costValue = useWatch({ control, name: 'cost' });
+  const maintenanceValue = useWatch({ control, name: 'maintenance' });
+  const financingValue = useWatch({ control, name: 'financing' });
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -62,13 +63,13 @@ export function EquipmentPurchaseForm({ defaultValues, onSubmit, id }: Equipment
           max={20}
           {...register('usefulLife', { valueAsNumber: true })}
           className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+            'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
             'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
             errors.usefulLife && 'border-danger'
           )}
         />
         {errors.usefulLife && (
-          <span className="text-[12px] text-danger">{errors.usefulLife.message}</span>
+          <span className="text-xs text-danger">{errors.usefulLife.message}</span>
         )}
       </div>
 
@@ -82,7 +83,7 @@ export function EquipmentPurchaseForm({ defaultValues, onSubmit, id }: Equipment
 
       <div className="flex flex-col gap-1.5">
         <Select
-          value={watch('financing')}
+          value={financingValue}
           onChange={(val) => setValue('financing', val, { shouldValidate: true })}
           options={[
             { value: 'cash', label: 'Cash Purchase' },

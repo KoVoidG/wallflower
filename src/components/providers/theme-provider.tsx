@@ -16,9 +16,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       disableTransitionOnChange
       storageKey="wallflower-theme"
       themes={['light', 'dark']}
-      scriptProps={{
-        'data-cfasync': 'false',
-      }}
     >
       {children}
     </NextThemesProvider>

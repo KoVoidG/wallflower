@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<MarketingInvestmentValues>({
     resolver: zodResolver(schema),
@@ -41,7 +41,8 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
     },
   });
 
-  const budgetValue = watch('budget');
+  const budgetValue = useWatch({ control, name: 'budget' });
+  const channelValue = useWatch({ control, name: 'channel' });
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -55,7 +56,7 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
 
       <div className="flex flex-col gap-1.5">
         <Select
-          value={watch('channel')}
+          value={channelValue}
           onChange={(val) => setValue('channel', val, { shouldValidate: true })}
           options={[
             { value: 'social', label: 'Social Media' },
@@ -74,13 +75,13 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
           max={12}
           {...register('duration', { valueAsNumber: true })}
           className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+            'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
             'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
             errors.duration && 'border-danger'
           )}
         />
         {errors.duration && (
-          <span className="text-[12px] text-danger">{errors.duration.message}</span>
+          <span className="text-xs text-danger">{errors.duration.message}</span>
         )}
       </div>
 
@@ -91,13 +92,13 @@ export function MarketingInvestmentForm({ defaultValues, onSubmit, id }: Marketi
           min={100}
           {...register('expectedReach', { valueAsNumber: true })}
           className={cn(
-            'w-full rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 text-[15px] text-text-primary',
+            'w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs sm:text-sm text-text-primary',
             'focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors',
             errors.expectedReach && 'border-danger'
           )}
         />
         {errors.expectedReach && (
-          <span className="text-[12px] text-danger">{errors.expectedReach.message}</span>
+          <span className="text-xs text-danger">{errors.expectedReach.message}</span>
         )}
       </div>
     </form>

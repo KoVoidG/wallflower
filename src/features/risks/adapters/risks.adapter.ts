@@ -1,31 +1,43 @@
 // src/features/risks/adapters/risks.adapter.ts
+import type { DataConfidence } from '@/types/domain';
 
-// ── Types ───────────────────────────────────────────────────────────────────
+export type RiskCategory = 'cash_flow' | 'revenue' | 'expense' | 'debt' | 'operational' | 'compliance' | 'growth' | 'financial';
+export type RiskSeverity = 'critical' | 'high' | 'medium' | 'low' | 'warning';
+export type RiskLikelihood = 'high' | 'medium' | 'low';
+export type RiskStatus = 'active' | 'mitigated' | 'ignored';
 
-export type RiskCategory = 'financial' | 'operational' | 'growth' | 'compliance';
-export type RiskSeverity = 'critical' | 'warning';
-export type RiskStatus = 'active' | 'mitigated';
-
-export interface DetectedRiskData {
+export type DetailedRiskItem = {
   id: string;
   ruleId: string;
+  title: string;
   category: RiskCategory;
   severity: RiskSeverity;
-  probability: 'high' | 'medium' | 'low';
-  impact: 'high' | 'medium' | 'low';
+  likelihood: RiskLikelihood;
+  probability?: RiskLikelihood;
+  impact?: 'high' | 'medium' | 'low';
+  estimatedExposure: number; // In THB
+  expectedTiming: string;
+  confidence: DataConfidence;
+  evidence: string[];
+  evidenceValues?: Record<string, number | string>;
+  affectedMetrics: string[];
+  recommendedMitigation: string;
   status: RiskStatus;
-  /** Structured metric values that triggered this risk */
-  evidenceValues: Record<string, number | string>;
-  /** Scenario type for deep-linking into simulations */
+  owner?: string;
   mitigationScenario?: string;
-}
+};
+
+export type DetectedRiskData = DetailedRiskItem;
 
 export interface RiskSummaryData {
   overallScore: number;
   overallStatus: 'healthy' | 'warning' | 'critical';
   totalCount: number;
   criticalCount: number;
+  highCount: number;
+  mediumCount: number;
   warningCount: number;
+  totalEstimatedExposure: number;
   lastAssessmentDate: string;
   isStale: boolean;
   isIncomplete: boolean;
@@ -33,175 +45,165 @@ export interface RiskSummaryData {
 
 export interface RisksData {
   summary: RiskSummaryData;
-  risks: DetectedRiskData[];
+  risks: DetailedRiskItem[];
 }
 
-// ── Mock Data ───────────────────────────────────────────────────────────────
-
-const MOCK_RISKS: DetectedRiskData[] = [
+const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
   {
     id: 'risk-001',
-    ruleId: 'NEGATIVE_CASH_FLOW',
-    category: 'financial',
+    ruleId: 'CASH_DEFICIT_FEB',
+    title: 'Projected Cash Deficit in Late February',
+    category: 'cash_flow',
     severity: 'critical',
+    likelihood: 'high',
     probability: 'high',
     impact: 'high',
+    estimatedExposure: 12400,
+    expectedTiming: 'Feb 28, 2025',
+    confidence: 'high',
+    evidence: [
+      'Monthly operating expenses (฿164,800) exceed expected customer inflows (฿152,400).',
+      'Staff payroll of ฿85,000 due on Feb 28.',
+      'Usable cash reserve stands at ฿245,000 against minimum safe buffer of ฿164,800.',
+    ],
+    evidenceValues: { netProfit: -12400, revenue: 152400, totalExpenses: 164800 },
+    affectedMetrics: ['Cash Runway', 'Net Cash Flow', 'Usable Liquidity'],
+    recommendedMitigation: 'Negotiate early customer invoice collection or delay supplier payment terms by 15 days.',
     status: 'active',
-    evidenceValues: {
-      netProfit: 12400,
-      revenue: 152400,
-      totalExpenses: 164800,
-      month: '2025-01',
-    },
-    mitigationScenario: 'cost_reduction',
+    owner: 'Financial Officer',
+    mitigationScenario: 'payment_delay',
   },
   {
     id: 'risk-002',
-    ruleId: 'LOW_RUNWAY',
-    category: 'financial',
+    ruleId: 'OVERDUE_RECEIVABLES_DRAG',
+    title: '฿21,340 Overdue Receivables Dragging Runway',
+    category: 'cash_flow',
     severity: 'critical',
+    likelihood: 'high',
     probability: 'high',
     impact: 'high',
+    estimatedExposure: 21340,
+    expectedTiming: 'Immediate (Past Due)',
+    confidence: 'high',
+    evidence: [
+      'Client Invoice #1042 (฿14,340) is 45 days overdue.',
+      'Client Invoice #1038 (฿7,000) is 65 days overdue.',
+      'Uncollected invoices represent 40% of total receivables outstanding.',
+    ],
+    evidenceValues: { receivablesRatio: 40, receivables: 21340 },
+    affectedMetrics: ['Days Sales Outstanding (DSO)', 'Working Capital Ratio'],
+    recommendedMitigation: 'Offer 2% early settlement discount to expedite collection.',
     status: 'active',
-    evidenceValues: {
-      runwayMonths: 2.1,
-      cashReserve: 280000,
-      monthlyBurn: 132000,
-    },
-    mitigationScenario: 'price_adjustment',
+    owner: 'Sales Operations',
+    mitigationScenario: 'payment_delay',
   },
   {
     id: 'risk-003',
-    ruleId: 'EXPENSE_GROWTH',
-    category: 'operational',
-    severity: 'warning',
-    probability: 'medium',
+    ruleId: 'LANDLORD_RENT_INCREASE',
+    title: 'Upcoming 5% Commercial Rent Increase',
+    category: 'expense',
+    severity: 'medium',
+    likelihood: 'high',
+    probability: 'high',
     impact: 'medium',
+    estimatedExposure: 3500,
+    expectedTiming: 'Mar 1, 2025',
+    confidence: 'high',
+    evidence: [
+      'Landlord notification received for annual lease adjustment.',
+      'Monthly rent will increase from ฿32,000 to ฿33,600.',
+      'Increases monthly fixed operating burn by ฿1,600 recurring.',
+    ],
+    evidenceValues: { currentRent: 32000, newRent: 33600 },
+    affectedMetrics: ['Operating Margin', 'Monthly Operating Expense'],
+    recommendedMitigation: 'Test price adjustments on primary products to absorb rent increase.',
     status: 'active',
-    evidenceValues: {
-      growthRate: 22,
-      currentExpenses: 164800,
-      previousExpenses: 135000,
-    },
-    mitigationScenario: 'cost_reduction',
+    owner: 'General Manager',
+    mitigationScenario: 'change_price',
   },
   {
     id: 'risk-004',
-    ruleId: 'HIGH_PAYROLL',
+    ruleId: 'HIGH_PAYROLL_RATIO',
+    title: 'Payroll Consuming 55.7% of Monthly Revenue',
     category: 'operational',
-    severity: 'warning',
+    severity: 'medium',
+    likelihood: 'medium',
     probability: 'medium',
     impact: 'medium',
+    estimatedExposure: 85000,
+    expectedTiming: 'Recurring Monthly',
+    confidence: 'high',
+    evidence: [
+      'Staff salaries (฿85,000) exceed target threshold of 50% revenue.',
+      'Revenue per employee stands at ฿38,100/mo.',
+    ],
+    evidenceValues: { payrollRatio: 55.7, payrollAmount: 85000 },
+    affectedMetrics: ['Operating Efficiency', 'Payroll-to-Revenue Ratio'],
+    recommendedMitigation: 'Simulate headcount productivity expansion before adding new hires.',
     status: 'active',
-    evidenceValues: {
-      payrollRatio: 54,
-      payrollAmount: 82300,
-      revenue: 152400,
-    },
-    mitigationScenario: 'hire',
+    owner: 'HR Lead',
+    mitigationScenario: 'hire_employees',
   },
   {
     id: 'risk-005',
-    ruleId: 'HIGH_RECEIVABLES',
-    category: 'financial',
-    severity: 'warning',
+    ruleId: 'EQUIPMENT_CAPEX_PRESSURE',
+    title: 'Kitchen Equipment Replacement Capital Expense',
+    category: 'operational',
+    severity: 'medium',
+    likelihood: 'medium',
     probability: 'medium',
     impact: 'medium',
+    estimatedExposure: 200000,
+    expectedTiming: 'Apr 15, 2025',
+    confidence: 'medium',
+    evidence: [
+      'Primary commercial oven requires replacement after 5 years service.',
+      'Outright cash purchase (฿200,000) would reduce cash runway to 0.8 months.',
+    ],
+    evidenceValues: { capexCost: 200000, usefulLife: 5 },
+    affectedMetrics: ['Cash Buffer', 'Capital Expenditure'],
+    recommendedMitigation: 'Explore equipment leasing or SME bank financing to preserve liquidity.',
     status: 'active',
-    evidenceValues: {
-      receivablesRatio: 35,
-      receivables: 53340,
-      revenue: 152400,
-    },
+    owner: 'Operations Manager',
+    mitigationScenario: 'purchase_equipment',
   },
   {
     id: 'risk-006',
-    ruleId: 'LOW_LIQUIDITY',
-    category: 'financial',
-    severity: 'critical',
-    probability: 'high',
-    impact: 'high',
-    status: 'active',
-    evidenceValues: {
-      currentRatio: 0.85,
-      currentAssets: 333340,
-      currentLiabilities: 392200,
-    },
-    mitigationScenario: 'price_adjustment',
-  },
-  {
-    id: 'risk-007',
-    ruleId: 'INCOMPLETE_DATA',
-    category: 'compliance',
-    severity: 'warning',
-    probability: 'low',
-    impact: 'low',
-    status: 'active',
-    evidenceValues: {
-      snapshotCount: 2,
-      requiredCount: 3,
-    },
-  },
-  {
-    id: 'risk-008',
-    ruleId: 'DECLINING_GROWTH',
+    ruleId: 'MARKETING_ACQUISITION_EFFICIENCY',
+    title: 'Digital Ad Acquisition Cost Inflation',
     category: 'growth',
-    severity: 'warning',
+    severity: 'low',
+    likelihood: 'medium',
     probability: 'medium',
-    impact: 'medium',
+    impact: 'low',
+    estimatedExposure: 12000,
+    expectedTiming: 'May 1, 2025',
+    confidence: 'medium',
+    evidence: [
+      'Ad cost per click increased 12% across social media channels.',
+      'Customer acquisition ratio holds at 2.4x return.',
+    ],
+    evidenceValues: { marketingSpend: 12000, roi: 2.4 },
+    affectedMetrics: ['Reinvestment Capacity', 'Marketing ROI'],
+    recommendedMitigation: 'Simulate targeted social ad spend vs offline promo mix.',
     status: 'active',
-    evidenceValues: {
-      revenueGrowthRate: -3.2,
-      previousGrowthRate: 8.1,
-    },
-    mitigationScenario: 'expansion',
-  },
-  {
-    id: 'risk-009',
-    ruleId: 'LOW_RUNWAY',
-    category: 'financial',
-    severity: 'warning',
-    probability: 'medium',
-    impact: 'medium',
-    status: 'mitigated',
-    evidenceValues: {
-      runwayMonths: 5.8,
-      cashReserve: 420000,
-      monthlyBurn: 72000,
-    },
-    mitigationScenario: 'price_adjustment',
-  },
-  {
-    id: 'risk-010',
-    ruleId: 'HIGH_DEBT_RATIO',
-    category: 'financial',
-    severity: 'warning',
-    probability: 'medium',
-    impact: 'high',
-    status: 'active',
-    evidenceValues: {
-      debtToRevenueRatio: 2.8,
-      totalDebt: 426720,
-      annualRevenue: 152400,
-    },
+    owner: 'Marketing Lead',
+    mitigationScenario: 'invest_marketing',
   },
 ];
 
-/**
- * Fetch risk assessment data for the current user's business.
- * Mock implementation — returns realistic Thai SME risk data.
- * Will be replaced with real server action calls later.
- */
 export async function getRisksData(): Promise<RisksData> {
-  // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 350));
 
-  const activeRisks = MOCK_RISKS.filter((r) => r.status === 'active');
+  const activeRisks = MOCK_DETAILED_RISKS.filter((r) => r.status === 'active');
   const criticalCount = activeRisks.filter((r) => r.severity === 'critical').length;
-  const warningCount = activeRisks.filter((r) => r.severity === 'warning').length;
+  const highCount = activeRisks.filter((r) => r.severity === 'high').length;
+  const mediumCount = activeRisks.filter((r) => r.severity === 'medium').length;
+  const warningCount = highCount + mediumCount;
 
-  // Score: lower is better. 100 = no risks, 0 = maximum risk.
-  const rawScore = Math.max(0, 100 - criticalCount * 20 - warningCount * 8);
+  const totalEstimatedExposure = activeRisks.reduce((sum, r) => sum + r.estimatedExposure, 0);
+
+  const rawScore = Math.max(0, 100 - criticalCount * 25 - highCount * 15 - mediumCount * 5);
   const overallStatus: RiskSummaryData['overallStatus'] =
     rawScore >= 70 ? 'healthy' : rawScore >= 40 ? 'warning' : 'critical';
 
@@ -209,13 +211,16 @@ export async function getRisksData(): Promise<RisksData> {
     summary: {
       overallScore: rawScore,
       overallStatus,
-      totalCount: MOCK_RISKS.length,
+      totalCount: MOCK_DETAILED_RISKS.length,
       criticalCount,
+      highCount,
+      mediumCount,
       warningCount,
+      totalEstimatedExposure,
       lastAssessmentDate: '2025-01-15',
       isStale: false,
-      isIncomplete: MOCK_RISKS.some((r) => r.ruleId === 'INCOMPLETE_DATA' && r.status === 'active'),
+      isIncomplete: false,
     },
-    risks: MOCK_RISKS,
+    risks: MOCK_DETAILED_RISKS,
   };
 }

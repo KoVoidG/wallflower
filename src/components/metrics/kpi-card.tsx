@@ -5,6 +5,7 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Surface } from '@/components/ui/surface';
 import { Badge } from '@/components/ui/badge';
 import { CountUp } from '@/components/motion';
+import { FinancialValue } from '@/components/ui/domain-values';
 import { MetricTooltip } from './metric-tooltip';
 
 export interface KpiCardProps {
@@ -98,6 +99,7 @@ function MiniSparkline({ data, className }: { data: number[]; className?: string
 /**
  * KPI card component for displaying a single metric with optional
  * change indicator, status badge, sparkline, and tooltip.
+ * Uses FinancialValue from ui/domain-values for currency metrics.
  */
 export function KpiCard({
   label,
@@ -125,6 +127,8 @@ export function KpiCard({
   const ChangeIcon =
     change === undefined || change === 0 ? Minus : change > 0 ? TrendingUp : TrendingDown;
 
+  const isNonCurrency = unit === 'months' || unit === '%';
+
   const content = (
     <Surface
       border
@@ -143,7 +147,7 @@ export function KpiCard({
           {loading ? (
             <Skeleton className="h-4 w-24" />
           ) : (
-            <span className="text-[13px]/[18px] font-[550] text-text-muted truncate">
+            <span className="text-[13px]/[18px] font-medium text-text-muted truncate">
               {label}
             </span>
           )}
@@ -159,25 +163,40 @@ export function KpiCard({
       <div className="flex items-end justify-between gap-3">
         <div className="flex items-baseline gap-1.5 min-w-0">
           {loading ? (
-            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-9 w-28" />
           ) : (
             <>
-              {numericValue !== undefined ? (
-                <CountUp
-                  to={numericValue}
-                  decimals={decimals}
-                  formatter={formatter}
-                  className="text-[34px]/[40px] font-[650] text-text-primary tabular-nums truncate"
-                />
+              {isNonCurrency ? (
+                <>
+                  {numericValue !== undefined ? (
+                    <CountUp
+                      to={numericValue}
+                      decimals={decimals}
+                      formatter={formatter}
+                      className="text-[26px]/[32px] md:text-[28px]/[34px] font-[650] tracking-tight text-text-primary tabular-nums truncate"
+                    />
+                  ) : (
+                    <span className="text-[26px]/[32px] md:text-[28px]/[34px] font-[650] tracking-tight text-text-primary tabular-nums truncate">
+                      {value}
+                    </span>
+                  )}
+                  {unit && (
+                    <span className="text-[15px]/[24px] font-normal text-text-muted">
+                      {unit}
+                    </span>
+                  )}
+                </>
               ) : (
-                <span className="text-[34px]/[40px] font-[650] text-text-primary tabular-nums truncate">
-                  {value}
-                </span>
-              )}
-              {unit && (
-                <span className="text-[15px]/[24px] font-normal text-text-muted">
-                  {unit}
-                </span>
+                <FinancialValue
+                  value={
+                    numericValue !== undefined
+                      ? numericValue
+                      : typeof value === 'number'
+                      ? value
+                      : parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0
+                  }
+                  className="[&>span]:text-[26px]/[32px] md:[&>span]:text-[28px]/[34px] [&>span]:font-[650] [&>span]:tracking-tight [&>span]:text-text-primary [&>span]:tabular-nums [&>span]:truncate"
+                />
               )}
             </>
           )}

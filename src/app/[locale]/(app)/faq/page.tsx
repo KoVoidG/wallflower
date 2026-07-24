@@ -6,6 +6,7 @@ import { HelpCircle, ChevronDown, Search, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from '@/lib/i18n/navigation';
 import { Expand } from '@/components/motion';
+import { AppPage, PageHeader } from '@/components/ui/layout';
 
 export default function FAQPage() {
   const t = useTranslations('faqPage');
@@ -54,86 +55,86 @@ export default function FAQPage() {
   );
 
   return (
-    <div className="flex flex-col gap-8 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <Link
-            href="/help-support"
-            className="inline-flex items-center gap-1 text-xs font-medium text-text-muted hover:text-brand transition-colors"
-          >
-            <ArrowLeft className="size-3.5" />
-            <span>Help & Support</span>
-          </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-brand-soft text-brand">
-            <HelpCircle className="size-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary">
-              {t('title')}
-            </h1>
-            <p className="text-sm text-text-secondary">{t('subtitle')}</p>
-          </div>
-        </div>
-      </div>
+    <AppPage>
+      <div className="flex flex-col gap-6 max-w-4xl mx-auto">
+        {/* Navigation back link */}
+        <Link
+          href="/help-support"
+          className="inline-flex items-center gap-1 text-xs font-medium text-text-muted hover:text-brand transition-colors self-start"
+        >
+          <ArrowLeft className="size-3.5" />
+          <span>Help & Support</span>
+        </Link>
 
-      {/* Search Input */}
-      <div className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-text-muted" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('subtitle')}
-          className={cn(
-            'w-full rounded-lg border border-border bg-surface pl-10 pr-4 py-2.5 text-sm text-text-primary',
-            'placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
-          )}
-        />
-      </div>
-
-      {/* FAQ Accordion List with Motion Expand animation */}
-      <div className="space-y-3">
-        {filteredItems.map((item, index) => {
-          const isOpen = !!openItems[index];
-
-          return (
-            <div
-              key={index}
-              className="rounded-lg border border-border bg-surface overflow-hidden transition-colors"
-            >
-              <button
-                type="button"
-                onClick={() => toggleItem(index)}
-                className="flex w-full items-center justify-between gap-4 p-4 text-left font-medium text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
-                aria-expanded={isOpen}
-              >
-                <span className="text-sm sm:text-base">{item.question}</span>
-                <ChevronDown
-                  className={cn(
-                    'size-4 shrink-0 text-text-muted transition-transform duration-200',
-                    isOpen && 'rotate-180 text-brand'
-                  )}
-                />
-              </button>
-
-              <Expand open={isOpen}>
-                <div className="border-t border-border/50 bg-surface-subtle/50 px-4 py-3.5 text-xs sm:text-sm text-text-secondary leading-relaxed">
-                  {item.answer}
-                </div>
-              </Expand>
+        {/* Page Header */}
+        <PageHeader
+          title={
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-brand-soft text-brand">
+                <HelpCircle className="size-5" />
+              </div>
+              <span>{t('title')}</span>
             </div>
-          );
-        })}
+          }
+          description={t('subtitle')}
+        />
 
-        {filteredItems.length === 0 && (
-          <div className="rounded-lg border border-border bg-surface p-8 text-center text-text-muted text-sm">
-            No questions match your query.
-          </div>
-        )}
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-text-muted" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('subtitle')}
+            className={cn(
+              'w-full rounded-lg border border-border bg-surface pl-10 pr-4 py-2.5 text-xs sm:text-sm text-text-primary',
+              'placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+            )}
+          />
+        </div>
+
+        {/* FAQ Accordion List with Motion Expand animation */}
+        <div className="space-y-3">
+          {filteredItems.map((item, index) => {
+            const isOpen = !!openItems[index];
+
+            return (
+              <div
+                key={index}
+                className="rounded-xl border border-border bg-surface overflow-hidden transition-colors"
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleItem(index)}
+                  className="flex w-full items-center justify-between gap-4 p-4 text-left font-medium text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-xs sm:text-sm font-semibold">{item.question}</span>
+                  <ChevronDown
+                    className={cn(
+                      'size-4 shrink-0 text-text-muted transition-transform duration-200',
+                      isOpen && 'rotate-180 text-brand'
+                    )}
+                  />
+                </button>
+
+                <Expand open={isOpen}>
+                  <div className="border-t border-border/50 bg-surface-subtle/50 px-4 py-3.5 text-xs sm:text-sm text-text-secondary leading-relaxed">
+                    {item.answer}
+                  </div>
+                </Expand>
+              </div>
+            );
+          })}
+
+          {filteredItems.length === 0 && (
+            <div className="rounded-xl border border-border bg-surface p-8 text-center text-text-muted text-xs">
+              No questions match your query.
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AppPage>
   );
 }

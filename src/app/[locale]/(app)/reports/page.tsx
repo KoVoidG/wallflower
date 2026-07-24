@@ -1,216 +1,168 @@
-// src/app/[locale]/(app)/reports/page.tsx
+'use client';
+
+import { useState, useEffect } from 'react';
 import {
   FileText,
+  ListFilter,
   Plus,
-  Calendar,
-  Clock,
   ArrowRight,
-  AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from '@/lib/i18n/navigation';
+import { AppPage, PageHeader } from '@/components/ui/layout';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { getReportHistory, getReport } from '@/features/reports/adapters/reports.adapter';
+import { ErrorState } from '@/components/ui/error-state';
+import { FadeIn } from '@/components/motion';
+import {
+  getReportsData,
+  type DetailedReportCard,
+  type ReportType,
+} from '@/features/reports/adapters/reports.adapter';
 
-import { PageContextualHint } from '@/components/app-shell/product-tour';
+export default function ReportsPage() {
+  const [reports, setReports] = useState<DetailedReportCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [typeFilter, setTypeFilter] = useState<ReportType | 'All'>('All');
 
-export default async function ReportsPage() {
-  const reports = await getReportHistory();
-  // Load the latest report for the featured section
-  const latestReport = reports.length > 0 ? await getReport(reports[0].id) : null;
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getReportsData();
+      setReports(res);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to load report documents.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    getReportsData()
+      .then((res) => {
+        if (isMounted) {
+          setReports(res);
+          setLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to load report documents.');
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (loading) return <ReportsPageSkeleton />;
+  if (error) return <ErrorState onRetry={loadData} title="Reports Error" description={error} />;
+  if (reports.length === 0) return <EmptyState icon={<FileText />} title="No Reports Generated" description="Generate a decision memo or cash forecast to populate your decision reports." />;
+
+  const filteredReports = typeFilter === 'All' ? reports : reports.filter((r) => r.type === typeFilter);
 
   return (
-    <div data-tour="reports-view" className="flex flex-col gap-6">
-      {/* Page header */}
-      <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-[28px]/[36px] font-[650] text-text-primary">
-            Reports
-          </h1>
-          <p className="text-[15px]/[24px] text-text-secondary">
-            Decision intelligence reports for your business.
-          </p>
-        </div>
-        <button
-          type="button"
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-[var(--radius-md)] px-4 py-2.5 text-[13px]/[18px] font-[600]',
-            'bg-brand text-white hover:bg-brand-hover transition-colors cursor-pointer self-start sm:self-center'
-          )}
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          Generate Report
-        </button>
-      </header>
-
-      {/* First-visit Contextual Hint */}
-      <PageContextualHint
-        hintKey="reports"
-        title="Reports Guide"
-        message="Review decision intelligence reports or click 'Generate Report' to create a print-safe summary of risks and recommendations."
-      />
-
-      {/* Empty state */}
-      {reports.length === 0 ? (
-        <EmptyState
-          icon={<FileText />}
-          title="No reports yet"
-          description="Generate your first decision intelligence report to get actionable insights about your business. Reports combine health assessments, risk analysis, and simulation outcomes into a comprehensive business narrative."
-          action={
-            <button
-              type="button"
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-[var(--radius-md)] px-4 py-2.5 text-[13px]/[18px] font-[600]',
-                'bg-brand text-white hover:bg-brand-hover transition-colors cursor-pointer'
-              )}
-            >
-              <Plus className="size-4" aria-hidden="true" />
-              Generate First Report
-            </button>
-          }
-        />
-      ) : (
-        <>
-          {/* Featured / latest report */}
-          {latestReport && (
-            <section
-              className="rounded-[var(--radius-lg)] border border-brand/15 bg-brand-soft/15 p-6 md:p-8"
-              aria-label="Latest report"
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="brand">Latest</Badge>
-                      <Badge variant="success" dot>Ready</Badge>
-                    </div>
-                    <h2 className="text-[20px]/[28px] font-[600] text-text-primary mt-1">
-                      {latestReport.cover.reportTitle}
-                    </h2>
-                  </div>
-                </div>
-
-                {/* Key finding */}
-                <p className="text-[15px]/[26px] text-text-primary max-w-[640px]">
-                  {latestReport.executiveSummary.keyTakeaway}
-                </p>
-
-                {/* Metadata */}
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-text-muted">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="size-3.5" aria-hidden="true" />
-                    Generated {latestReport.cover.generatedDate}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="size-3.5" aria-hidden="true" />
-                    Data through {latestReport.cover.dataThroughDate}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <FileText className="size-3.5" aria-hidden="true" />
-                    {latestReport.cover.businessName}
-                  </span>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border/40">
-                  <Link
-                    href={`/reports/${latestReport.id}`}
-                    className={cn(
-                      'inline-flex items-center gap-1.5 rounded-[var(--radius-md)] px-4 py-2.5',
-                      'bg-brand text-white text-[14px] font-[600]',
-                      'hover:bg-brand-hover transition-colors cursor-pointer'
-                    )}
-                  >
-                    Preview report
-                    <ArrowRight className="size-3.5" aria-hidden="true" />
-                  </Link>
-                  <button
-                    type="button"
-                    className={cn(
-                      'inline-flex items-center gap-1.5 rounded-[var(--radius-md)] px-4 py-2.5',
-                      'border border-border text-text-primary text-[14px] font-[550]',
-                      'hover:bg-surface-subtle transition-colors cursor-pointer'
-                    )}
-                  >
-                    Regenerate
-                  </button>
-                </div>
+    <AppPage>
+      <FadeIn>
+        <div className="space-y-6">
+          {/* Page Header */}
+          <PageHeader
+            title={
+              <div className="flex items-center gap-2.5">
+                <FileText className="size-6 text-brand shrink-0" aria-hidden="true" />
+                <span>Decision Intelligence Reports</span>
               </div>
-            </section>
-          )}
-
-          {/* Report library */}
-          <section aria-label="Report library" className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[18px]/[24px] font-[600] text-text-primary">
-                All reports
-              </h2>
-              <span className="text-[13px] text-text-muted">
-                {reports.length} report{reports.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              {reports.map((report, idx) => (
+            }
+            description="Structured executive reports, decision memos, and forward forecasts grounded in business data."
+            badge={<Badge variant="healthy" dot>{reports.length} Reports</Badge>}
+            actions={
+              <div className="flex items-center gap-2">
                 <Link
-                  key={report.id}
-                  href={`/reports/${report.id}`}
+                  href="/reports/rpt-memo-001"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand text-white hover:bg-brand-hover transition-colors shadow-2xs"
+                >
+                  <Plus className="size-3.5" />
+                  <span>Generate Decision Memo</span>
+                </Link>
+              </div>
+            }
+          />
+
+          {/* Report Type Filters */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-border bg-surface text-xs">
+            <div className="flex items-center gap-1.5">
+              <ListFilter className="size-3.5 text-text-muted" />
+              <span className="font-semibold text-text-muted">Report Type:</span>
+              {(['All', 'Decision memo', 'Executive summary', 'Cash-flow forecast', 'Risk report', 'Simulation comparison'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTypeFilter(t)}
                   className={cn(
-                    'group rounded-[var(--radius-md)] border border-border bg-surface p-4 md:p-5',
-                    'hover:border-brand/30 hover:bg-surface-subtle/50 transition-colors cursor-pointer',
-                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand'
+                    'px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer',
+                    typeFilter === t ? 'bg-brand text-white' : 'text-text-muted hover:text-text-primary'
                   )}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex flex-col gap-2 min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-[15px]/[22px] font-[600] text-text-primary truncate">
-                          {report.name}
-                        </h3>
-                        {idx === 0 && <Badge variant="success" dot>Ready</Badge>}
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-text-muted">
-                        <span>{report.businessName}</span>
-                        <span>·</span>
-                        <span>{report.generatedDate}</span>
-                        <span>·</span>
-                        <span className="font-[550] text-text-secondary">{report.scenarioType}</span>
-                      </div>
-
-                      {/* Mock key finding for context */}
-                      <p className="text-[13px]/[20px] text-text-secondary line-clamp-1 mt-0.5">
-                        {getReportFinding(report.id)}
-                      </p>
-                    </div>
-
-                    <ArrowRight className="size-4 text-text-muted group-hover:text-brand shrink-0 mt-1 transition-colors" aria-hidden="true" />
-                  </div>
-                </Link>
+                  {t}
+                </button>
               ))}
             </div>
-          </section>
-
-          {/* Prototype notice */}
-          <div className="flex items-start gap-2 px-4 py-3 rounded-[var(--radius-md)] bg-surface-subtle border border-border/60">
-            <AlertTriangle className="size-3.5 mt-0.5 shrink-0 text-text-muted" aria-hidden="true" />
-            <p className="text-[12px]/[18px] text-text-muted">
-              Reports use prototype calculations and mock business data. Export and sharing are simulated.
-              Generated content should not be treated as validated professional advice.
-            </p>
           </div>
-        </>
-      )}
-    </div>
+
+          {/* Report Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredReports.map((report) => (
+              <Link key={report.id} href={`/reports/${report.id}`} className="block">
+                <Card className="p-5 space-y-3 border-border hover:border-brand/40 transition-colors h-full flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge variant={report.type === 'Decision memo' ? 'brand' : 'healthy'}>{report.type}</Badge>
+                      <Badge variant={report.status === 'final' ? 'success' : 'default'} className="capitalize">{report.status}</Badge>
+                    </div>
+
+                    <h3 className="text-base font-bold text-text-primary leading-snug">{report.title}</h3>
+                  </div>
+
+                  <div className="space-y-2 pt-2 border-t border-border/60 text-xs text-text-muted">
+                    <div className="flex items-center justify-between">
+                      <span>Reporting Period: <strong className="text-text-primary">{report.reportingPeriod}</strong></span>
+                      <span>Created: <strong>{report.createdDate}</strong></span>
+                    </div>
+                    <div>Source Data: <strong className="text-text-primary truncate block">{report.sourceData}</strong></div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <span className="text-text-muted">Confidence: <strong className="text-text-primary uppercase">{report.confidence}</strong></span>
+                    <span className="text-brand font-semibold hover:underline inline-flex items-center gap-1">
+                      <span>View Document</span>
+                      <ArrowRight className="size-3" />
+                    </span>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </FadeIn>
+    </AppPage>
   );
 }
 
-function getReportFinding(reportId: string): string {
-  const findings: Record<string, string> = {
-    'rpt-001': 'Expense growth outpacing revenue gains. Action on cost control within 30 days recommended.',
-    'rpt-002': 'Hiring 2 employees reduces expected runway from 4.2 to 2.9 months.',
-    'rpt-003': 'Q4 revenue grew 5.2% but profit margin declined 2.1 percentage points.',
-  };
-  return findings[reportId] || 'Report contains detailed business analysis and recommendations.';
+function ReportsPageSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-10 w-64" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-40 w-full" />
+      </div>
+    </div>
+  );
 }

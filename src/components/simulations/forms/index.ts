@@ -13,9 +13,11 @@ const FORM_MAP: Record<ScenarioType, FormComponent> = {
   change_price: 'ChangePriceForm',
   marketing_investment: 'MarketingInvestmentForm',
   purchase_equipment: 'EquipmentPurchaseForm',
+  expand_location: 'EquipmentPurchaseForm',
   payment_delay: 'PaymentDelayForm',
+  financing: 'EquipmentPurchaseForm',
 };
 
 export function getFormForScenario(type: ScenarioType): FormComponent {
-  return FORM_MAP[type];
+  return FORM_MAP[type] || 'HireEmployeesForm';
 }

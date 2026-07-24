@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CurrencyInput } from '@/features/business-profile/components/currency-input';
@@ -28,7 +28,7 @@ export function ChangePriceForm({ defaultValues, onSubmit, id }: ChangePriceForm
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<ChangePriceValues>({
     resolver: zodResolver(schema),
@@ -41,14 +41,16 @@ export function ChangePriceForm({ defaultValues, onSubmit, id }: ChangePriceForm
     },
   });
 
-  const currentPriceValue = watch('currentPrice');
-  const newPriceValue = watch('newPrice');
+  const productValue = useWatch({ control, name: 'product' });
+  const currentPriceValue = useWatch({ control, name: 'currentPrice' });
+  const newPriceValue = useWatch({ control, name: 'newPrice' });
+  const elasticityValue = useWatch({ control, name: 'elasticity' });
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <Select
-          value={watch('product')}
+          value={productValue}
           onChange={(val) => setValue('product', val, { shouldValidate: true })}
           options={[
             { value: 'main', label: 'Main Product' },
@@ -92,7 +94,7 @@ export function ChangePriceForm({ defaultValues, onSubmit, id }: ChangePriceForm
             className="flex-1 accent-brand"
           />
           <span className="text-[13px] font-[550] text-text-primary tabular-nums w-10 text-right">
-            {watch('elasticity')}
+            {elasticityValue}
           </span>
         </div>
         <span className="text-[12px] text-text-muted">

@@ -1,478 +1,363 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useState, useCallback, useRef } from 'react';
 import {
-  TrendingUp,
-  Users,
-  Scissors,
-  DollarSign,
-  RefreshCw,
-  DatabaseZap,
-  WifiOff,
-  Clock,
-  AlertTriangle,
+  HelpCircle,
+  Play,
+  ShieldAlert,
+  HeartPulse,
+  CheckSquare,
+  FileText,
   Send,
-  Calendar,
-  Shield,
   ArrowRight,
-  MessageSquare,
+  Sparkles,
+  Bot,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { H2, H3, Body, BodySmall, Caption } from '@/components/ui/typography';
+import { CardTitle, Caption } from '@/components/ui/typography';
+import { AppPage, PageHeader } from '@/components/ui/layout';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FinancialValue, QualityBadge } from '@/components/ui/domain-values';
 import { FadeIn, FadeInView } from '@/components/motion';
 import { Link } from '@/lib/i18n/navigation';
-import {
-  CalculatedFact,
-  AssumptionTag,
-  AIInterpretation,
-  UncertaintyNotice,
-  Disclaimer,
-} from '@/features/advisor/components';
-import {
-  getAdvisorRecommendation,
-  getSuggestedPrompts,
-  type AIRecommendation,
-  type SuggestedPrompt,
-  type AdvisorErrorType,
-} from '@/features/advisor/adapters/advisor.adapter';
-
-const ICON_MAP: Record<string, React.ElementType> = {
-  TrendingUp, Users, Scissors, DollarSign,
-};
-
-type PageState = 'initial' | 'loading' | 'success' | 'error';
-type ErrorVariant = AdvisorErrorType | null;
-
 import { PageContextualHint } from '@/components/app-shell/product-tour';
 
-// Component start
+export interface ContextualAdvisorAnswer {
+  question: string;
+  summary: string;
+  basis: {
+    snapshot: string;
+    healthMetric: string;
+    relatedRisk: string;
+    savedSimulation: string;
+    quality: 'actual' | 'estimated' | 'sample';
+  };
+  actions: {
+    type: 'metric' | 'risk' | 'simulation' | 'action_plan' | 'report';
+    label: string;
+    href: string;
+  }[];
+}
+
+const MOCK_ANSWERS: Record<string, ContextualAdvisorAnswer> = {
+  'Why did cash runway decrease?': {
+    question: 'Why did cash runway decrease?',
+    summary: 'Cash runway decreased from 2.5 to 2.1 months because monthly operating burn exceeded customer inflows by ฿12,400, while ฿21,340 in customer invoices became 45+ days overdue.',
+    basis: {
+      snapshot: 'Jan 2025 Financial Snapshot (฿152,400 revenue vs ฿164,800 expenses)',
+      healthMetric: 'Liquidity & Runway Buffer (Score: 42/100 · Needs attention)',
+      relatedRisk: 'CASH_DEFICIT_FEB (฿12,400 estimated exposure)',
+      savedSimulation: '30-Day Customer Delay Impact',
+      quality: 'actual',
+    },
+    actions: [
+      { type: 'metric', label: 'Open Related Metric', href: '/business-health' },
+      { type: 'risk', label: 'Open Related Risk', href: '/risks' },
+      { type: 'simulation', label: 'Test Payment Delay Simulation', href: '/simulations/new?type=payment_delay' },
+      { type: 'action_plan', label: 'Add Collection to Action Plan', href: '/actions' },
+      { type: 'report', label: 'Generate Cash Report', href: '/reports' },
+    ],
+  },
+  'Which expense changed the most?': {
+    question: 'Which expense changed the most?',
+    summary: 'Staff payroll increased by 12% to ฿85,000/month (consuming 55.7% of total revenue), representing the single largest expense change over the past 90 days.',
+    basis: {
+      snapshot: 'Jan 2025 Payroll Expense Breakdown (฿85,000 / 51.6% total burn)',
+      healthMetric: 'Operating Efficiency & Cost Structure (Score: 58/100 · Stable)',
+      relatedRisk: 'HIGH_PAYROLL_RATIO (฿85,000 recurring exposure)',
+      savedSimulation: 'Hire 2 Service Staff',
+      quality: 'actual',
+    },
+    actions: [
+      { type: 'metric', label: 'Inspect Expense Breakdown', href: '/business-health' },
+      { type: 'risk', label: 'Review Payroll Risk', href: '/risks' },
+      { type: 'simulation', label: 'Simulate Headcount Optimization', href: '/simulations/new?type=hire_employees' },
+      { type: 'action_plan', label: 'Add Payroll Review Action', href: '/actions' },
+    ],
+  },
+  'Can the business afford another employee?': {
+    question: 'Can the business afford another employee?',
+    summary: 'Outright hiring at ฿25,000/month is manageable only if new sales ramp up within 3 months; under conservative conditions, cash runway contracts below 1.5 months.',
+    basis: {
+      snapshot: 'Jan 2025 Cash Reserve (฿245,000 usable cash floor)',
+      healthMetric: 'Liquidity & Runway Buffer',
+      relatedRisk: 'CASH_DEFICIT_FEB',
+      savedSimulation: 'Hire 2 Service Staff (Proceed cautiously posture)',
+      quality: 'estimated',
+    },
+    actions: [
+      { type: 'simulation', label: 'Test Hiring Scenario', href: '/simulations/new?type=hire_employees' },
+      { type: 'metric', label: 'Open Health Diagnostic', href: '/business-health' },
+      { type: 'report', label: 'Generate Decision Memo', href: '/reports' },
+    ],
+  },
+  'What happens if customer payment is delayed?': {
+    question: 'What happens if customer payment is delayed?',
+    summary: 'A 30-day payment delay on 40% of customer invoices reduces usable cash to ฿140,000 by Month 3, triggering a critical cash deficit on Feb 28.',
+    basis: {
+      snapshot: 'Jan 2025 Receivables Outstanding (฿53,340 total receivables)',
+      healthMetric: 'Working Capital & Collections (Score: 48/100 · Watch)',
+      relatedRisk: 'OVERDUE_RECEIVABLES_DRAG (฿21,340 overdue)',
+      savedSimulation: 'Customer Payment Delay Simulation',
+      quality: 'actual',
+    },
+    actions: [
+      { type: 'risk', label: 'Inspect Overdue Invoices', href: '/risks' },
+      { type: 'simulation', label: 'Test Payment Delay', href: '/simulations/new?type=payment_delay' },
+      { type: 'action_plan', label: 'Add Invoice Collection Action', href: '/actions' },
+    ],
+  },
+  'Which assumption creates the greatest risk?': {
+    question: 'Which assumption creates the greatest risk?',
+    summary: 'Sales conversion velocity is your most sensitive assumption, accounting for 65% of the total variance in cash runway forecasting.',
+    basis: {
+      snapshot: 'Jan 2025 Revenue Trajectory',
+      healthMetric: 'Growth Readiness & Expansion Margin',
+      relatedRisk: 'DECLINING_GROWTH',
+      savedSimulation: 'Sensitivity Analysis Model (Rank 1 Importance)',
+      quality: 'estimated',
+    },
+    actions: [
+      { type: 'simulation', label: 'Review Sensitivity Chart', href: '/simulations/sim-hire-01' },
+      { type: 'action_plan', label: 'Add Sales Tracking Action', href: '/actions' },
+    ],
+  },
+  'What information is missing?': {
+    question: 'What information is missing?',
+    summary: 'Supplier payment terms and detailed utility breakdowns for Q4 2024 are currently estimated using sample values rather than verified receipts.',
+    basis: {
+      snapshot: 'Data Completeness Audit (88% completeness score)',
+      healthMetric: 'Operating Efficiency',
+      relatedRisk: 'INCOMPLETE_DATA',
+      savedSimulation: 'N/A',
+      quality: 'sample',
+    },
+    actions: [
+      { type: 'metric', label: 'Update Data Snapshot', href: '/dashboard' },
+      { type: 'action_plan', label: 'Add Data Upload Task', href: '/actions' },
+    ],
+  },
+};
+
 export default function AdvisorPage() {
-  const t = useTranslations('advisor');
-  const [state, setState] = useState<PageState>('initial');
-  const [recommendation, setRecommendation] = useState<AIRecommendation | null>(null);
-  const [prompts, setPrompts] = useState<SuggestedPrompt[]>([]);
-  const [errorVariant, setErrorVariant] = useState<ErrorVariant>(null);
-  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Load prompts on mount
-  useEffect(() => {
-    getSuggestedPrompts().then(setPrompts);
+  const handleAsk = useCallback((q: string) => {
+    if (!q.trim()) return;
+    setSelectedQuestion(q);
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 400);
   }, []);
-
-  const handleAsk = useCallback(async (question: string) => {
-    if (!question.trim()) return;
-    setActiveQuestion(question);
-    setState('loading');
-    setErrorVariant(null);
-    setInputValue('');
-
-    try {
-      const rec = await getAdvisorRecommendation();
-      setRecommendation(rec);
-      setState('success');
-    } catch (err: unknown) {
-      const error = err as { type?: AdvisorErrorType } | undefined;
-      setErrorVariant(error?.type ?? 'provider_unavailable');
-      setState('error');
-    }
-  }, []);
-
-  const handleRetry = useCallback(() => {
-    if (activeQuestion) handleAsk(activeQuestion);
-  }, [activeQuestion, handleAsk]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleAsk(inputValue);
+    if (inputValue.trim()) {
+      handleAsk(inputValue);
+      setInputValue('');
+    }
   };
 
+  const currentAnswer = selectedQuestion ? MOCK_ANSWERS[selectedQuestion] || MOCK_ANSWERS['Why did cash runway decrease?'] : null;
+
   return (
-    <FadeIn data-tour="advisor-view" className="flex flex-col gap-6 pb-8">
-      {/* Page header */}
-      <header className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <MessageSquare className="size-5 text-ai" aria-hidden="true" />
-          <H2>{t('pageTitle')}</H2>
-        </div>
-        <Body className="text-text-secondary">{t('subtitle')}</Body>
-      </header>
+    <AppPage>
+      <FadeIn>
+        <div className="space-y-6">
+          {/* Page Header */}
+          <PageHeader
+            title={
+              <div className="flex items-center gap-2.5">
+                <Bot className="size-6 text-ai shrink-0" aria-hidden="true" />
+                <span>Contextual AI Advisor</span>
+              </div>
+            }
+            description="Executive decision guidance grounded in your financial snapshot, business health, active risks, and saved simulations."
+            badge={<Badge variant="ai" dot>Mock Decision AI</Badge>}
+          />
 
-      {/* First-visit Contextual Hint */}
-      <PageContextualHint
-        hintKey="advisor"
-        title="AI Advisor Guide"
-        message="Type a custom question or select one of the suggested prompts to receive tailored executive guidance grounded strictly in your baseline."
-      />
+          <PageContextualHint
+            hintKey="advisor"
+            title="Contextual Decision Guidance"
+            message="Ask any strategic question or select a suggested prompt to inspect provenance basis and recommended actions."
+          />
 
-      {/* Business context bar */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 rounded-[var(--radius-md)] bg-surface-subtle border border-border/60">
-        <div className="flex items-center gap-1.5 text-[13px] text-text-secondary">
-          <Calendar className="size-3.5 text-text-muted" aria-hidden="true" />
-          <span>Data through Jan 15, 2025</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-[13px] text-text-secondary">
-          <Shield className="size-3.5 text-text-muted" aria-hidden="true" />
-          <span>6 months of history</span>
-        </div>
-        <Badge variant="ai" dot>Prototype analysis</Badge>
-      </div>
+          {/* Prototype AI Disclaimer Banner */}
+          <div className="p-3.5 rounded-xl border border-ai/20 bg-ai-soft/10 flex items-start gap-2.5 text-xs text-ai">
+            <Sparkles className="size-4 shrink-0 mt-0.5" />
+            <div>
+              <strong>Deterministic Prototype Engine:</strong> Advisor responses are mock contextual explanations generated directly from your structured business baseline and rule engine. No unverified AI hallucinations or real API calls.
+            </div>
+          </div>
 
-      {/* Main content: split layout on desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Conversation area */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          {/* Initial state: suggested questions */}
-          {state === 'initial' && (
-            <FadeInView>
-              <section aria-label="Suggested questions" className="flex flex-col gap-4">
-                <H3 className="text-[16px]/[22px]">What would you like to understand?</H3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {prompts.map((prompt) => {
-                    const Icon = ICON_MAP[prompt.icon] ?? TrendingUp;
-                    return (
-                      <button
-                        key={prompt.id}
-                        type="button"
-                        onClick={() => handleAsk(prompt.title)}
-                        className={cn(
-                          'text-left rounded-[var(--radius-md)] p-4 border border-border bg-surface',
-                          'hover:border-ai/40 hover:bg-ai-soft/20 transition-colors cursor-pointer',
-                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ai/40'
-                        )}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="p-1.5 rounded-[var(--radius-sm)] bg-ai-soft shrink-0">
-                            <Icon className="size-4 text-ai" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col gap-0.5 min-w-0">
-                            <span className="text-[14px]/[20px] font-[550] text-text-primary">
-                              {prompt.title}
-                            </span>
-                            <Caption as="span" className="text-text-muted">
-                              {prompt.description}
-                            </Caption>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left 8 cols: Question Prompts & Answer Flow */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Contextual Question Prompts */}
+              <div className="space-y-3">
+                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Contextual Questions</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {CONTEXTUAL_PROMPTS.map((prompt) => (
+                    <button
+                      key={prompt.title}
+                      type="button"
+                      onClick={() => handleAsk(prompt.title)}
+                      className={cn(
+                        'p-3 rounded-xl border text-left flex items-start gap-2.5 transition-all cursor-pointer text-xs',
+                        selectedQuestion === prompt.title
+                          ? 'border-ai bg-ai-soft/20 text-ai font-semibold shadow-2xs'
+                          : 'border-border bg-surface hover:bg-surface-subtle text-text-primary'
+                      )}
+                    >
+                      <HelpCircle className="size-4 text-ai shrink-0 mt-0.5" />
+                      <span>{prompt.title}</span>
+                    </button>
+                  ))}
                 </div>
-              </section>
-            </FadeInView>
-          )}
+              </div>
 
-          {/* Loading state */}
-          {state === 'loading' && (
-            <FadeInView>
-              <div className="flex flex-col gap-5">
-                {activeQuestion && (
-                  <div className="self-end max-w-[80%] px-4 py-2.5 rounded-[var(--radius-md)] bg-brand-soft text-[14px] text-text-primary">
-                    {activeQuestion}
-                  </div>
-                )}
-                <div className="flex flex-col gap-3 p-5 rounded-[var(--radius-md)] bg-surface border border-border">
-                  <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-ai animate-pulse motion-reduce:animate-none" />
-                    <Caption className="text-ai font-[550]">Reviewing business context...</Caption>
+              {/* Loading State */}
+              {loading && (
+                <Card className="p-6 space-y-3 border-ai/20">
+                  <div className="flex items-center gap-2 text-ai font-semibold text-xs">
+                    <div className="size-2 rounded-full bg-ai animate-pulse" />
+                    <span>Analyzing business baseline, risks, and simulations...</span>
                   </div>
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
-                </div>
-              </div>
-            </FadeInView>
-          )}
+                </Card>
+              )}
 
-          {/* Error state */}
-          {state === 'error' && (
-            <FadeInView>
-              <AdvisorError variant={errorVariant!} onRetry={handleRetry} retryLabel={t('retry')} />
-            </FadeInView>
-          )}
-
-          {/* Success: structured response */}
-          {state === 'success' && recommendation && (
-            <FadeInView>
-              <div className="flex flex-col gap-6">
-                {/* User question */}
-                {activeQuestion && (
-                  <div className="self-end max-w-[80%] px-4 py-2.5 rounded-[var(--radius-md)] bg-brand-soft text-[14px] text-text-primary">
-                    {activeQuestion}
-                  </div>
-                )}
-
-                {/* Direct answer */}
-                <div className="rounded-[var(--radius-lg)] border border-ai/20 bg-ai-soft/15 p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="ai" dot>Direct answer</Badge>
-                    <Caption>{new Date(recommendation.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</Caption>
-                  </div>
-                  <p className="text-[15px]/[26px] text-text-primary font-[450]">
-                    {recommendation.summary}
-                  </p>
-                </div>
-
-                {/* Calculated facts */}
-                <section className="flex flex-col gap-3">
-                  <H3 className="text-[16px]/[22px]">Calculated facts</H3>
-                  <div className="flex flex-col gap-2">
-                    {recommendation.evidence
-                      .filter((ev) => ev.type === 'calculated')
-                      .map((ev, idx) => (
-                        <CalculatedFact key={idx} value={ev.value} unit={ev.unit} source={ev.source} />
-                      ))}
-                  </div>
-                </section>
-
-                {/* AI Interpretation */}
-                {recommendation.evidence.filter(ev => ev.type === 'ai_interpretation').length > 0 && (
-                  <section className="flex flex-col gap-3">
-                    <H3 className="text-[16px]/[22px]">Interpretation</H3>
-                    {recommendation.evidence
-                      .filter((ev) => ev.type === 'ai_interpretation')
-                      .map((ev, idx) => (
-                        <AIInterpretation key={idx} body={ev.value} disclaimer={ev.source} />
-                      ))}
-                  </section>
-                )}
-
-                {/* Recommended actions */}
-                <section className="flex flex-col gap-3">
-                  <H3 className="text-[16px]/[22px]">Recommended actions</H3>
-                  <div className="flex flex-col gap-2">
-                    {recommendation.actions.map((action, idx) => (
-                      <div
-                        key={idx}
-                        className={cn(
-                          'rounded-[var(--radius-md)] p-4 flex items-start gap-3',
-                          idx === 0 ? 'bg-brand-soft/30 border border-brand/15' : 'bg-surface border border-border/60'
-                        )}
-                      >
-                        <span className={cn(
-                          'flex items-center justify-center size-6 rounded-full text-[12px] font-[650] shrink-0',
-                          idx === 0 ? 'bg-brand text-white' : 'bg-surface-subtle text-text-muted border border-border'
-                        )}>
-                          {idx + 1}
-                        </span>
-                        <div className="flex flex-col gap-0.5 min-w-0">
-                          <span className="text-[14px]/[20px] font-[550] text-text-primary">{action.title}</span>
-                          <Caption as="span" className="text-text-secondary">{action.description}</Caption>
-                        </div>
+              {/* Answer Card with Provenance & Actions */}
+              {!loading && currentAnswer && (
+                <FadeInView className="space-y-6">
+                  {/* Direct Answer */}
+                  <Card className="p-5 md:p-6 space-y-4 border-ai/30 bg-surface shadow-xs">
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="ai" dot>Direct Answer</Badge>
+                        <QualityBadge quality={currentAnswer.basis.quality} />
                       </div>
-                    ))}
-                  </div>
-                  <Link
-                    href="/simulations/new"
-                    className="inline-flex items-center gap-1.5 self-start text-[13px] font-[550] text-brand hover:text-brand-hover transition-colors cursor-pointer mt-1"
+                      <span className="text-xs text-text-muted">Jan 2025 Context</span>
+                    </div>
+
+                    <p className="text-sm sm:text-base font-medium text-text-primary leading-relaxed">
+                      {currentAnswer.summary}
+                    </p>
+
+                    {/* Data Provenance Basis Box */}
+                    <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-2 text-xs">
+                      <span className="font-bold text-text-muted uppercase tracking-wider block">Proven Data Basis & Sources</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-text-secondary">
+                        <div>Snapshot: <strong className="text-text-primary">{currentAnswer.basis.snapshot}</strong></div>
+                        <div>Health Metric: <strong className="text-text-primary">{currentAnswer.basis.healthMetric}</strong></div>
+                        <div>Related Risk: <strong className="text-text-primary">{currentAnswer.basis.relatedRisk}</strong></div>
+                        <div>Saved Simulation: <strong className="text-text-primary">{currentAnswer.basis.savedSimulation}</strong></div>
+                      </div>
+                    </div>
+
+                    {/* Embedded Action Buttons */}
+                    <div className="space-y-2 pt-2 border-t border-border">
+                      <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Recommended Actions</span>
+                      <div className="flex flex-wrap gap-2">
+                        {currentAnswer.actions.map((act) => (
+                          <Link
+                            key={act.label}
+                            href={act.href}
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-surface hover:bg-surface-subtle text-xs font-semibold text-text-primary transition-colors cursor-pointer shadow-2xs"
+                          >
+                            {act.type === 'metric' && <HeartPulse className="size-3.5 text-brand" />}
+                            {act.type === 'risk' && <ShieldAlert className="size-3.5 text-danger" />}
+                            {act.type === 'simulation' && <Play className="size-3.5 text-brand" />}
+                            {act.type === 'action_plan' && <CheckSquare className="size-3.5 text-emerald-600" />}
+                            {act.type === 'report' && <FileText className="size-3.5 text-text-muted" />}
+                            <span>{act.label}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                </FadeInView>
+              )}
+
+              {/* Input Composer */}
+              <form onSubmit={handleSubmit} className="relative">
+                <div className="flex items-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-xs">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Ask Advisor about cash flow, runway, risks, or hiring plans..."
+                    className="flex-1 px-3 py-1.5 text-xs sm:text-sm bg-transparent text-text-primary focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="p-2.5 rounded-lg bg-ai text-white hover:bg-ai/90 transition-colors cursor-pointer"
                   >
-                    Test a recommendation in the simulator
-                    <ArrowRight className="size-3" aria-hidden="true" />
-                  </Link>
-                </section>
+                    <Send className="size-4" />
+                  </button>
+                </div>
+              </form>
+            </div>
 
-                {/* Assumptions + Uncertainty */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <section className="flex flex-col gap-3">
-                    <H3 className="text-[16px]/[22px]">Assumptions</H3>
-                    <div className="rounded-[var(--radius-md)] bg-surface-subtle p-4">
-                      <ul className="flex flex-col gap-1.5 text-[13px]/[20px] text-text-secondary">
-                        {recommendation.assumptions.map((a, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="shrink-0 mt-1.5 size-1.5 rounded-full bg-text-muted" aria-hidden="true" />
-                            {a}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* User inputs */}
-                    <div className="flex flex-wrap gap-2">
-                      {recommendation.evidence
-                        .filter((ev) => ev.type === 'user_input')
-                        .map((ev, idx) => (
-                          <AssumptionTag key={idx} label={`${ev.label}: ${ev.value}`} />
-                        ))}
-                    </div>
-                  </section>
-
-                  <section className="flex flex-col gap-3">
-                    <H3 className="text-[16px]/[22px]">Confidence & limitations</H3>
-                    <UncertaintyNotice
-                      items={recommendation.uncertainty.items}
-                      completeness={recommendation.uncertainty.completeness}
-                    />
-                  </section>
+            {/* Right 4 cols: Business Context Sidebar */}
+            <aside className="lg:col-span-4 space-y-4">
+              <Card className="p-5 space-y-4 sticky top-20">
+                <div className="border-b border-border pb-3">
+                  <CardTitle>Active Business Context</CardTitle>
+                  <Caption className="text-text-muted">Data grounded in Jan 2025 snapshot</Caption>
                 </div>
 
-                {/* Disclaimer */}
-                <Disclaimer text={recommendation.disclaimer} />
-
-                {/* Follow-up suggestions */}
-                <section className="flex flex-col gap-3 pt-4 border-t border-border">
-                  <Caption className="text-text-muted font-[550]">Follow up</Caption>
-                  <div className="flex flex-wrap gap-2">
-                    {['What if receivables are collected this month?', 'Test a smaller hiring plan', 'Which expense changed the most?'].map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => handleAsk(q)}
-                        className="px-3 py-1.5 rounded-[var(--radius-md)] border border-border text-[13px] font-[500] text-text-secondary hover:text-text-primary hover:border-ai/40 transition-colors cursor-pointer"
-                      >
-                        {q}
-                      </button>
-                    ))}
+                <div className="space-y-2.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">Monthly Revenue</span>
+                    <FinancialValue value={152400} className="font-bold text-text-primary" />
                   </div>
-                </section>
-              </div>
-            </FadeInView>
-          )}
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">Monthly Expenses</span>
+                    <FinancialValue value={164800} className="font-bold text-text-primary" />
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">Usable Cash</span>
+                    <FinancialValue value={245000} className="font-bold text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">Cash Runway</span>
+                    <span className="font-bold text-amber-600 dark:text-amber-400">2.1 months</span>
+                  </div>
+                  <div className="flex justify-between border-t border-border/50 pt-2">
+                    <span className="text-text-muted">Active Critical Risks</span>
+                    <span className="font-bold text-danger">2 Critical</span>
+                  </div>
+                </div>
 
-          {/* Input composer */}
-          <form onSubmit={handleSubmit} className="sticky bottom-4 mt-auto">
-            <div className="flex items-center gap-2 px-4 py-3 rounded-[var(--radius-md)] bg-surface border border-border shadow-sm">
-              <input
-                ref={inputRef}
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask about your cash flow, risks, or a business decision"
-                disabled={state === 'loading'}
-                className="flex-1 bg-transparent text-[14px] text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50"
-                aria-label="Ask the advisor a question"
-              />
-              <button
-                type="submit"
-                disabled={!inputValue.trim() || state === 'loading'}
-                className={cn(
-                  'p-2 rounded-[var(--radius-sm)] transition-colors cursor-pointer',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ai/40',
-                  inputValue.trim() ? 'bg-ai text-white hover:bg-ai/90' : 'bg-surface-subtle text-text-muted'
-                )}
-                aria-label="Send question"
-              >
-                <Send className="size-4" />
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Right: Contextual sidebar (desktop only) */}
-        <aside className="hidden lg:block lg:col-span-4" aria-label="Business context">
-          <div className="sticky top-6 rounded-[var(--radius-lg)] border border-border bg-surface-subtle/40 p-5 flex flex-col gap-5">
-            <div className="flex flex-col gap-1">
-              <Caption className="text-text-muted font-[600] uppercase tracking-wide">Current context</Caption>
-              <span className="text-[14px] font-[550] text-text-primary">Cash resilience & operations</span>
-            </div>
-
-            <div className="flex flex-col gap-2.5 text-[13px]">
-              <div className="flex justify-between">
-                <span className="text-text-muted">Revenue</span>
-                <span className="font-[550] text-text-primary tabular-nums">฿152,400</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-muted">Expenses</span>
-                <span className="font-[550] text-text-primary tabular-nums">฿164,800</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-muted">Cash runway</span>
-                <span className="font-[550] text-warning tabular-nums">2.1 months</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-muted">Receivables</span>
-                <span className="font-[550] text-text-primary tabular-nums">฿53,340</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-text-muted">Active risks</span>
-                <span className="font-[550] text-danger tabular-nums">3 critical</span>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-border/60 flex flex-col gap-2">
-              <Caption className="text-text-muted">Source: Business baseline · Jan 2025</Caption>
-              <Link
-                href="/business-health"
-                className="inline-flex items-center gap-1 text-[12px] font-[550] text-brand hover:text-brand-hover transition-colors cursor-pointer"
-              >
-                View full health assessment
-                <ArrowRight className="size-3" aria-hidden="true" />
-              </Link>
-            </div>
+                <div className="pt-2">
+                  <Link href="/business-health" className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover">
+                    <span>View full health diagnostic</span>
+                    <ArrowRight className="size-3" />
+                  </Link>
+                </div>
+              </Card>
+            </aside>
           </div>
-        </aside>
-      </div>
-    </FadeIn>
+        </div>
+      </FadeIn>
+    </AppPage>
   );
 }
 
-// ── Error State ─────────────────────────────────────────────────────────────
-
-function AdvisorError({
-  variant,
-  onRetry,
-  retryLabel,
-}: {
-  variant: AdvisorErrorType;
-  onRetry: () => void;
-  retryLabel: string;
-}) {
-  const t = useTranslations('advisor');
-
-  const errorConfig: Record<
-    AdvisorErrorType,
-    { icon: React.ElementType; title: string; description: string; color: string }
-  > = {
-    insufficient_data: {
-      icon: DatabaseZap,
-      title: t('errors.insufficientData.title'),
-      description: t('errors.insufficientData.description'),
-      color: 'text-warning',
-    },
-    malformed_output: {
-      icon: AlertTriangle,
-      title: t('errors.malformedOutput.title'),
-      description: t('errors.malformedOutput.description'),
-      color: 'text-danger',
-    },
-    timeout: {
-      icon: Clock,
-      title: t('errors.timeout.title'),
-      description: t('errors.timeout.description'),
-      color: 'text-warning',
-    },
-    provider_unavailable: {
-      icon: WifiOff,
-      title: t('errors.providerUnavailable.title'),
-      description: t('errors.providerUnavailable.description'),
-      color: 'text-danger',
-    },
-  };
-
-  const config = errorConfig[variant];
-  const Icon = config.icon;
-
-  return (
-    <div className="flex flex-col items-center text-center py-12 px-6 rounded-[var(--radius-lg)] border border-border bg-surface">
-      <div className={cn('mb-3', config.color)} aria-hidden="true">
-        <Icon className="size-8" />
-      </div>
-      <h3 className="text-[16px]/[22px] font-[600] text-text-primary mb-1">{config.title}</h3>
-      <p className="text-[13px]/[20px] text-text-muted max-w-sm mb-4">{config.description}</p>
-      <button
-        type="button"
-        onClick={onRetry}
-        className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-brand px-4 py-2 text-[14px] font-[550] text-white transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand cursor-pointer"
-      >
-        <RefreshCw className="size-4" aria-hidden="true" />
-        {retryLabel}
-      </button>
-      <BodySmall className="mt-3 max-w-xs text-text-muted">
-        Your business data and risk assessments remain accessible.
-      </BodySmall>
-    </div>
-  );
-}
-
-
+const CONTEXTUAL_PROMPTS = [
+  { title: 'Why did cash runway decrease?' },
+  { title: 'Which expense changed the most?' },
+  { title: 'Can the business afford another employee?' },
+  { title: 'What happens if customer payment is delayed?' },
+  { title: 'Which assumption creates the greatest risk?' },
+  { title: 'What information is missing?' },
+];

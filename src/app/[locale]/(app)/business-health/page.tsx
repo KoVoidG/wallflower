@@ -5,375 +5,398 @@ import {
   HeartPulse,
   CheckCircle2,
   AlertCircle,
-  Calendar,
   AlertTriangle,
   ArrowRight,
   TrendingUp,
   TrendingDown,
   Shield,
   Activity,
-  Rocket,
+  ChevronDown,
+  RefreshCw,
+  HelpCircle,
+  Play,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { H2, H3, Body, Caption } from '@/components/ui/typography';
+import { Body, SectionTitle, CardTitle } from '@/components/ui/typography';
+import { AppPage, PageHeader } from '@/components/ui/layout';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FadeIn, FadeInView } from '@/components/motion';
+import { FreshnessIndicator, CompletenessIndicator, QualityBadge } from '@/components/ui/domain-values';
+import { BusinessHealthSkeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ErrorState } from '@/components/ui/error-state';
+import { FadeIn, FadeInView, Expand } from '@/components/motion';
 import { Link } from '@/lib/i18n/navigation';
-import { getDashboardData } from '@/features/dashboard/adapters/dashboard.adapter';
-import type { DashboardData, HealthScoreItem, HealthMetric } from '@/features/dashboard/adapters/dashboard.adapter';
+import {
+  BusinessHealthAdapter,
+  type BusinessHealthAssessment,
+} from '@/features/business-health/adapters/business-health.adapter';
+import type { HealthPostureStatus } from '@/features/business-health/lib/thresholds';
 
 export default function BusinessHealthPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [assessment, setAssessment] = useState<BusinessHealthAssessment | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [expandedDimension, setExpandedDimension] = useState<string | null>('working-capital');
+
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await BusinessHealthAdapter.getHealthAssessment({ simulatedDelayMs: 300 });
+      setAssessment(res);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to load business health diagnostic.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let active = true;
-    getDashboardData().then((res) => {
-      if (active) setData(res);
-    });
-    return () => { active = false; };
+    let isMounted = true;
+    BusinessHealthAdapter.getHealthAssessment({ simulatedDelayMs: 300 })
+      .then((res) => {
+        if (isMounted) {
+          setAssessment(res);
+          setLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to load business health diagnostic.');
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (!data) return <HealthPageSkeleton />;
+  if (loading) return <BusinessHealthSkeleton />;
+  if (error) return <ErrorState onRetry={loadData} title="Assessment Error" description={error} />;
+  if (!assessment) return <EmptyState icon={<HeartPulse />} title="No Health Assessment" description="Record a financial snapshot to generate your business health diagnostic." />;
+
+  const { overallScore, posture, summaryExplanation, strongestDimension, weakestDimension, mostImportantChange, recommendedAction, confidence, diagnosticDimensions, strengths, vulnerabilities, completeness } = assessment;
+
+  const postureBadgeVariant = posture === 'Strong' ? 'success' as const : posture === 'Stable' ? 'healthy' as const : 'warning' as const;
 
   return (
-    <FadeIn>
-      <BusinessHealthContent data={data} />
-    </FadeIn>
-  );
-}
+    <AppPage>
+      <FadeIn>
+        <div data-tour="health-score" className="space-y-6">
+          {/* Header Controls */}
+          <PageHeader
+            title={
+              <div className="flex items-center gap-2.5">
+                <HeartPulse className="size-6 text-brand shrink-0" aria-hidden="true" />
+                <span>Business Health Diagnostic</span>
+              </div>
+            }
+            description="Diagnostic evaluation of liquidity, profitability, working capital, debt pressure, operating efficiency, and growth readiness."
+            badge={<Badge variant={postureBadgeVariant} dot>Estimated Posture: {posture}</Badge>}
+            actions={
+              <div className="flex items-center gap-2.5">
+                <FreshnessIndicator lastUpdated={completeness.lastUpdated} staleDays={completeness.staleDays} />
+                <CompletenessIndicator score={completeness.completenessScore} confidence={confidence} />
+                <button
+                  type="button"
+                  onClick={loadData}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface hover:bg-surface-subtle transition-colors cursor-pointer"
+                >
+                  <RefreshCw className="size-3.5" aria-hidden="true" />
+                  <span>Refresh</span>
+                </button>
+              </div>
+            }
+          />
 
-function BusinessHealthContent({ data }: { data: DashboardData }) {
-  const { health } = data;
-  const comp = health.completeness;
-
-  // Determine strongest and weakest areas
-  const areas = [
-    { key: 'financial', label: 'Financial', score: health.financial.score, status: health.financial.status, icon: Activity },
-    { key: 'operational', label: 'Operational', score: health.operational.score, status: health.operational.status, icon: HeartPulse },
-    { key: 'growth', label: 'Growth readiness', score: health.growth.score, status: health.growth.status, icon: Rocket },
-  ];
-  const strongest = areas.reduce((a, b) => (a.score >= b.score ? a : b));
-  const weakest = areas.reduce((a, b) => (a.score <= b.score ? a : b));
-
-  // Overall posture
-  const avgScore = Math.round(areas.reduce((sum, a) => sum + a.score, 0) / areas.length);
-  const posture = avgScore >= 75 ? 'Strong' : avgScore >= 55 ? 'Stable' : avgScore >= 35 ? 'Needs attention' : 'Under pressure';
-  const postureColor = avgScore >= 75 ? 'text-success' : avgScore >= 55 ? 'text-brand' : avgScore >= 35 ? 'text-warning' : 'text-danger';
-  const postureBg = avgScore >= 75 ? 'bg-success-soft/30 border-success/15' : avgScore >= 55 ? 'bg-brand-soft/30 border-brand/15' : avgScore >= 35 ? 'bg-warning-soft/30 border-warning/15' : 'bg-danger-soft/30 border-danger/15';
-
-  return (
-    <div data-tour="health-score" className="flex flex-col gap-8">
-      {/* Page heading + data freshness */}
-      <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <HeartPulse className="size-5 text-brand" aria-hidden="true" />
-            <H2>Business Health</H2>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="size-3.5 text-text-muted" aria-hidden="true" />
-            <Caption>
-              Assessment through {comp.lastUpdated} · {comp.periodCount} months of data
-            </Caption>
-          </div>
-        </div>
-      </header>
-
-      {/* Overall health summary - dominant */}
-      <section
-        className={cn('rounded-[var(--radius-lg)] p-6 md:p-8 border', postureBg)}
-        aria-label="Overall business health"
-      >
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <HeartPulse className={cn('size-5', postureColor)} aria-hidden="true" />
-              <H2 className="text-[22px]/[28px] md:text-[24px]/[32px]">{posture}</H2>
+          {/* Overall Health Executive Summary */}
+          <section className="rounded-xl border border-brand/20 bg-brand-soft/15 p-5 md:p-6 space-y-4" aria-label="Overall business health summary">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <HeartPulse className="size-5 text-brand" aria-hidden="true" />
+                <SectionTitle>Overall Posture: {posture}</SectionTitle>
+              </div>
+              <Badge variant={overallScore >= 70 ? 'success' : overallScore >= 40 ? 'warning' : 'danger'} dot>
+                Score: {overallScore}/100
+              </Badge>
             </div>
-            <Badge variant={avgScore >= 70 ? 'success' : avgScore >= 40 ? 'warning' : 'danger'} dot>
-              {avgScore}/100
-            </Badge>
-          </div>
 
-          <Body className="text-text-primary max-w-[700px] text-[15px]/[26px]">
-            {generateHealthSummary(health, strongest, weakest)}
-          </Body>
+            <Body className="text-text-primary max-w-3xl leading-relaxed">
+              {summaryExplanation}
+            </Body>
 
-          {/* Strongest / weakest indicators */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
-            <div className="flex items-start gap-2 text-[13px]/[20px]">
-              <TrendingUp className="size-3.5 mt-0.5 shrink-0 text-success" aria-hidden="true" />
-              <span className="text-text-secondary">
-                <span className="font-[550] text-text-primary">{strongest.label}</span> is strongest at {strongest.score}/100
-              </span>
-            </div>
-            <div className="flex items-start gap-2 text-[13px]/[20px]">
-              <TrendingDown className="size-3.5 mt-0.5 shrink-0 text-warning" aria-hidden="true" />
-              <span className="text-text-secondary">
-                <span className="font-[550] text-text-primary">{weakest.label}</span> needs attention at {weakest.score}/100
-              </span>
-            </div>
-          </div>
+            {/* Quick Diagnostic Callouts */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div className="p-3 rounded-lg border border-success/20 bg-surface flex items-start gap-2 text-xs">
+                <TrendingUp className="size-4 text-success shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-text-muted font-medium block">What is Healthy?</span>
+                  <span className="font-semibold text-text-primary">{strongestDimension.label} ({strongestDimension.score}/100)</span>
+                </div>
+              </div>
 
-          {/* Footer: confidence + recommendation */}
-          <div className="flex flex-col gap-3 pt-4 border-t border-border/40">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <Shield className="size-3.5 text-text-muted" aria-hidden="true" />
-                <Caption>{comp.score >= 80 ? 'High confidence' : comp.score >= 50 ? 'Medium confidence' : 'Low confidence'} · {comp.score}% data completeness</Caption>
+              <div className="p-3 rounded-lg border border-warning/20 bg-surface flex items-start gap-2 text-xs">
+                <TrendingDown className="size-4 text-warning shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-text-muted font-medium block">What Needs Attention?</span>
+                  <span className="font-semibold text-text-primary">{weakestDimension.label} ({weakestDimension.score}/100)</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg border border-brand/20 bg-surface flex items-start gap-2 text-xs">
+                <Activity className="size-4 text-brand shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-text-muted font-medium block">Key Recent Change</span>
+                  <span className="text-text-primary line-clamp-1">{mostImportantChange}</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Caption className="text-brand font-[550]">
-                Recommended: {getTopRecommendation(weakest.key)}
-              </Caption>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Health categories - all visible */}
-      <FadeInView>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <HealthCategorySection
-            title="Financial Health"
-            icon={<Activity className="size-4" />}
-            item={health.financial}
-          />
-          <HealthCategorySection
-            title="Operational Health"
-            icon={<HeartPulse className="size-4" />}
-            item={health.operational}
-          />
-          <HealthCategorySection
-            title="Growth Readiness"
-            icon={<Rocket className="size-4" />}
-            item={health.growth}
-          />
-        </div>
-      </FadeInView>
-
-      {/* Strengths and weaknesses */}
-      <FadeInView>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Strengths */}
-          <section className="rounded-[var(--radius-lg)] border border-success/15 bg-success-soft/10 p-6 flex flex-col gap-4" aria-label="Business strengths">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-success" aria-hidden="true" />
-              <H3 className="text-[16px]/[22px]">Strengths</H3>
+            {/* Recommended Action & Confidence */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-brand/15 text-xs">
+              <div className="flex items-center gap-1.5 text-text-muted">
+                <Shield className="size-3.5 shrink-0" aria-hidden="true" />
+                <span>Data Confidence: <strong className="text-text-primary uppercase">{confidence}</strong> (90% complete)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-brand">Recommended: {recommendedAction}</span>
+              </div>
             </div>
-            <ul className="flex flex-col gap-2.5">
-              {health.strengths.map((item, idx) => (
-                <li key={idx} className="flex gap-2 text-[14px]/[22px] text-text-primary">
-                  <span className="text-success shrink-0 mt-1" aria-hidden="true">•</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </section>
 
-          {/* Weaknesses */}
-          <section className="rounded-[var(--radius-lg)] border border-warning/15 bg-warning-soft/10 p-6 flex flex-col gap-4" aria-label="Potential vulnerabilities">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="size-4 text-warning" aria-hidden="true" />
-              <H3 className="text-[16px]/[22px]">Vulnerabilities</H3>
-            </div>
-            <ul className="flex flex-col gap-2.5">
-              {health.weaknesses.map((item, idx) => (
-                <li key={idx} className="flex gap-2 text-[14px]/[22px] text-text-primary">
-                  <span className="text-warning shrink-0 mt-1" aria-hidden="true">•</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/risks"
-              className="inline-flex items-center gap-1 self-start text-[13px] font-[550] text-brand hover:text-brand-hover transition-colors cursor-pointer"
-            >
-              View risks
-              <ArrowRight className="size-3" aria-hidden="true" />
-            </Link>
-          </section>
-        </div>
-      </FadeInView>
+          {/* Diagnostic Dimensions Cards with Detailed Accordion */}
+          <FadeInView>
+            <div className="space-y-4">
+              <SectionTitle>Diagnostic Health Dimensions</SectionTitle>
 
-      {/* Data completeness and confidence */}
-      <FadeInView>
-        <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 flex flex-col gap-4" aria-label="Data completeness">
-          <div className="flex items-center justify-between">
-            <H3 className="text-[16px]/[22px]">Assessment confidence</H3>
-            <Badge variant={comp.score >= 80 ? 'success' : comp.score >= 50 ? 'warning' : 'danger'} dot>
-              {comp.score >= 80 ? 'High' : comp.score >= 50 ? 'Medium' : 'Low'}
-            </Badge>
+              <div className="space-y-4">
+                {diagnosticDimensions.map((dim) => {
+                  const isExpanded = expandedDimension === dim.id;
+                  const postureBadge = getPostureBadgeVariant(dim.status);
+
+                  return (
+                    <Card key={dim.id} className="overflow-hidden border-border">
+                      {/* Compact Collapsed Row */}
+                      <button
+                        type="button"
+                        onClick={() => setExpandedDimension(isExpanded ? null : dim.id)}
+                        className="w-full p-4 sm:p-5 flex items-center justify-between gap-4 text-left hover:bg-surface-subtle/50 transition-colors cursor-pointer"
+                        aria-expanded={isExpanded}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="p-2 rounded-lg bg-surface-subtle text-brand shrink-0">
+                            <Activity className="size-4" />
+                          </div>
+                          <div>
+                            <CardTitle>{dim.title}</CardTitle>
+                            <span className="text-xs text-text-muted block">{dim.metrics.length} metrics assessed</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="text-right hidden sm:block">
+                            <span className="text-xs text-text-muted block">Score</span>
+                            <span className="text-sm font-bold tabular-nums text-text-primary">{dim.score}/100</span>
+                          </div>
+                          <Badge variant={postureBadge.variant} dot>{dim.status}</Badge>
+                          <ChevronDown className={cn('size-4 text-text-muted transition-transform duration-200', isExpanded && 'rotate-180 text-brand')} />
+                        </div>
+                      </button>
+
+                      {/* Expanded Rich Diagnostic Content */}
+                      <Expand open={isExpanded}>
+                        <div className="border-t border-border/60 bg-surface-subtle/30 p-4 sm:p-6 space-y-5">
+                          {/* 1. Summary Row */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg border border-border bg-surface">
+                            <div className="flex items-center gap-3">
+                              <Badge variant={postureBadge.variant} dot>{dim.status}</Badge>
+                              <span className="text-xs text-text-muted font-medium">
+                                Trend: <strong className="text-text-primary capitalize">{dim.recentTrend}</strong>
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs">
+                              <span className="text-text-muted">Confidence: <strong className="text-text-primary uppercase">{dim.confidence}</strong></span>
+                              <QualityBadge quality={dim.dataQualityBadge} />
+                            </div>
+                          </div>
+
+                          {/* 2. Diagnostic Explanation */}
+                          <div className="space-y-1">
+                            <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider">Diagnostic Analysis</h4>
+                            <p className="text-xs sm:text-sm text-text-primary leading-relaxed">
+                              {dim.explanation}
+                            </p>
+                          </div>
+
+                          {/* 3. Dense Diagnostic Table of Contributing Metrics */}
+                          <div className="space-y-2">
+                            <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider">Contributing Metrics</h4>
+                            <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+                              <table className="w-full text-left text-xs text-text-primary">
+                                <thead className="border-b border-border bg-surface-subtle/60 text-text-muted">
+                                  <tr>
+                                    <th className="px-3 py-2 font-semibold">Metric</th>
+                                    <th className="px-3 py-2 font-semibold">Current Value</th>
+                                    <th className="px-3 py-2 font-semibold">Previous</th>
+                                    <th className="px-3 py-2 font-semibold">Status</th>
+                                    <th className="px-3 py-2 font-semibold">Impact</th>
+                                    <th className="px-3 py-2 font-semibold">Source</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/50">
+                                  {dim.metrics.map((m) => {
+                                    const metricBadge = getPostureBadgeVariant(m.status);
+                                    return (
+                                      <tr key={m.id} className="hover:bg-surface-subtle/30">
+                                        <td className="px-3 py-2 font-medium">{m.name}</td>
+                                        <td className="px-3 py-2 font-bold tabular-nums">{m.formattedValue}</td>
+                                        <td className="px-3 py-2 text-text-muted tabular-nums">{m.formattedPrevious}</td>
+                                        <td className="px-3 py-2">
+                                          <Badge variant={metricBadge.variant} className="text-[10px] py-0.5 px-1.5">{m.status}</Badge>
+                                        </td>
+                                        <td className="px-3 py-2 text-text-muted">{m.contributionScore}% weight</td>
+                                        <td className="px-3 py-2">
+                                          <QualityBadge quality={m.quality} className="text-[10px]" />
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+                          {/* 4. Why This Matters */}
+                          <div className="p-3 rounded-lg border border-brand/15 bg-brand-soft/10 space-y-1">
+                            <h4 className="text-xs font-bold text-brand uppercase tracking-wider">Why This Matters</h4>
+                            <p className="text-xs text-text-primary leading-relaxed">
+                              {dim.whyItMatters}
+                            </p>
+                          </div>
+
+                          {/* 5. Recommended Actions Grid */}
+                          <div className="space-y-2">
+                            <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider">Recommended Next Actions</h4>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Link
+                                href={dim.primaryAction.href}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-white hover:bg-brand-hover text-xs font-semibold transition-colors shadow-2xs"
+                              >
+                                <Play className="size-3" />
+                                <span>{dim.primaryAction.label}</span>
+                              </Link>
+                              {dim.secondaryActions.map((sec) => (
+                                <Link
+                                  key={sec.label}
+                                  href={sec.href}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-subtle text-xs font-semibold text-text-primary transition-colors"
+                                >
+                                  <ArrowRight className="size-3 text-text-muted" />
+                                  <span>{sec.label}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 6. Assessment Disclosure */}
+                          <div className="p-3 rounded-lg border border-border bg-surface text-[11px] text-text-muted space-y-1">
+                            <div className="flex items-center gap-1.5 font-semibold text-text-primary">
+                              <HelpCircle className="size-3.5 text-text-muted" />
+                              <span>How This Is Assessed</span>
+                            </div>
+                            <p>
+                              {dim.assessmentDisclosure.relativeImportanceSummary} {dim.assessmentDisclosure.confidenceNote} Assessment rules are prototype estimates derived from baseline inputs.
+                            </p>
+                          </div>
+
+                          {/* 7. Mini Trend Context */}
+                          {dim.history && dim.history.length > 0 && (
+                            <div className="flex items-center gap-3 pt-2 border-t border-border/50 text-xs">
+                              <span className="text-text-muted font-medium">3-Month Score Trend:</span>
+                              <div className="flex items-center gap-2">
+                                {dim.history.map((h) => (
+                                  <div key={h.period} className="flex items-center gap-1">
+                                    <span className="text-text-muted">{h.period}:</span>
+                                    <span className="font-bold tabular-nums text-text-primary">{h.score}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </Expand>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </FadeInView>
+
+          {/* Strengths & Vulnerabilities */}
+          <FadeInView>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <section className="rounded-xl border border-success/15 bg-success-soft/10 p-5 space-y-3" aria-label="Strengths">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="size-4 text-success" aria-hidden="true" />
+                  <CardTitle>Business Strengths</CardTitle>
+                </div>
+                <ul className="space-y-2">
+                  {strengths.map((item, idx) => (
+                    <li key={idx} className="flex gap-2 text-xs sm:text-sm text-text-primary">
+                      <span className="text-success shrink-0 mt-0.5">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="rounded-xl border border-warning/15 bg-warning-soft/10 p-5 space-y-3" aria-label="Vulnerabilities">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="size-4 text-warning" aria-hidden="true" />
+                  <CardTitle>Vulnerabilities</CardTitle>
+                </div>
+                <ul className="space-y-2">
+                  {vulnerabilities.map((item, idx) => (
+                    <li key={idx} className="flex gap-2 text-xs sm:text-sm text-text-primary">
+                      <span className="text-warning shrink-0 mt-0.5">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/risks" className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover transition-colors">
+                  <span>View associated risk rules</span>
+                  <ArrowRight className="size-3" aria-hidden="true" />
+                </Link>
+              </section>
+            </div>
+          </FadeInView>
+
+          {/* Prototype Disclaimer */}
+          <div className="flex items-start gap-2 p-4 rounded-xl bg-surface-subtle border border-border/60">
+            <AlertTriangle className="size-4 mt-0.5 shrink-0 text-text-muted" aria-hidden="true" />
+            <p className="text-xs text-text-muted leading-relaxed">
+              Business health diagnostic outputs are prototype estimates derived deterministically from snapshot data. They do not constitute guaranteed financial validation.
+            </p>
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="flex flex-col gap-0.5">
-              <Caption>Data completeness</Caption>
-              <span className="text-[18px]/[24px] font-[650] tabular-nums text-text-primary">{comp.score}%</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <Caption>Periods recorded</Caption>
-              <span className="text-[18px]/[24px] font-[650] tabular-nums text-text-primary">{comp.periodCount}</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <Caption>Last updated</Caption>
-              <span className="text-[14px]/[20px] font-[550] text-text-primary">{comp.lastUpdated}</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <Caption>Days since update</Caption>
-              <span className={cn('text-[18px]/[24px] font-[650] tabular-nums', comp.staleDays > 30 ? 'text-warning' : 'text-text-primary')}>
-                {comp.staleDays}
-              </span>
-            </div>
-          </div>
-
-          {comp.hasStaleWarning && (
-            <div className="flex items-start gap-2 p-3 rounded-[var(--radius-md)] bg-warning-soft/50 border border-warning/15">
-              <AlertTriangle className="size-4 mt-0.5 shrink-0 text-warning" aria-hidden="true" />
-              <Caption as="p" className="text-text-primary">
-                Financial data may be stale. Update your snapshot to maintain assessment accuracy.
-              </Caption>
-            </div>
-          )}
-
-          <Caption as="p" className="text-text-secondary max-w-[600px]">
-            Assessment reliability depends on data freshness and completeness.
-            Scores are prototype estimates and should not be treated as validated financial assessments.
-            Missing data may affect accuracy in specific categories.
-          </Caption>
-        </section>
-      </FadeInView>
-    </div>
-  );
-}
-
-// ── Helper Components ────────────────────────────────────────────────────
-
-function HealthCategorySection({
-  title,
-  icon,
-  item,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  item: HealthScoreItem;
-}) {
-  const statusColor = item.status === 'healthy' ? 'text-success' : item.status === 'warning' ? 'text-warning' : 'text-danger';
-  const statusLabel = item.status === 'healthy' ? 'Strong' : item.status === 'warning' ? 'Needs attention' : 'Critical';
-
-  return (
-    <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 flex flex-col gap-4" aria-label={title}>
-      {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-border/60">
-        <div className="flex items-center gap-2">
-          <span className="text-text-muted" aria-hidden="true">{icon}</span>
-          <H3 className="text-[15px]/[20px]">{title}</H3>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={item.status === 'healthy' ? 'success' : 'warning'} dot>
-            {statusLabel}
-          </Badge>
-        </div>
-      </div>
-
-      {/* Score */}
-      <div className="flex items-baseline gap-1.5">
-        <span className={cn('text-[28px]/[34px] font-[650] tabular-nums', statusColor)}>
-          {item.score}
-        </span>
-        <span className="text-[14px] text-text-muted">/100</span>
-      </div>
-
-      {/* Contributing metrics */}
-      <div className="flex flex-col gap-2">
-        {item.metrics.map((metric) => (
-          <MetricRow key={metric.label} metric={metric} />
-        ))}
-      </div>
-    </section>
+      </FadeIn>
+    </AppPage>
   );
 }
 
-function MetricRow({ metric }: { metric: HealthMetric }) {
-  const statusColor = metric.status === 'healthy' ? 'text-success' : metric.status === 'warning' ? 'text-warning' : 'text-danger';
-  const statusIcon = metric.status === 'healthy' ? '↑' : metric.status === 'warning' ? '→' : '↓';
-
-  return (
-    <div className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0">
-      <div className="flex items-center gap-2 min-w-0">
-        <span className={cn('text-[11px] shrink-0', statusColor)} aria-hidden="true">
-          {statusIcon}
-        </span>
-        <span className="text-[13px] text-text-primary truncate">{metric.label}</span>
-      </div>
-      <span className={cn('text-[13px] font-[600] tabular-nums shrink-0', statusColor)}>
-        {metric.value}{metric.unit ? ` ${metric.unit}` : ''}
-      </span>
-    </div>
-  );
-}
-
-// ── Helper Functions ─────────────────────────────────────────────────────
-
-function generateHealthSummary(
-  health: DashboardData['health'],
-  strongest: { key: string; label: string; score: number },
-  weakest: { key: string; label: string; score: number }
-): string {
-  if (strongest.score === weakest.score) {
-    return `All business areas are performing at a similar level. Continue monitoring key metrics and keep financial data current.`;
-  }
-
-  const weakMetrics = weakest.key === 'financial' ? health.financial.metrics :
-    weakest.key === 'operational' ? health.operational.metrics : health.growth.metrics;
-
-  const warningMetric = weakMetrics.find(m => m.status === 'warning' || m.status === 'danger');
-
-  let summary = `${strongest.label} health is the strongest area at ${strongest.score}/100. `;
-  summary += `${weakest.label} needs the most attention at ${weakest.score}/100`;
-
-  if (warningMetric) {
-    summary += `, primarily because ${warningMetric.label.toLowerCase()} (${warningMetric.value}${warningMetric.unit ? ' ' + warningMetric.unit : ''}) is below target.`;
-  } else {
-    summary += '.';
-  }
-
-  return summary;
-}
-
-function getTopRecommendation(weakestKey: string): string {
-  switch (weakestKey) {
-    case 'financial':
-      return 'Review cash reserves and overdue receivables to improve financial resilience.';
-    case 'operational':
-      return 'Review operational efficiency and identify process bottlenecks.';
-    case 'growth':
-      return 'Evaluate customer acquisition costs and market expansion feasibility.';
+function getPostureBadgeVariant(status: HealthPostureStatus): { variant: 'success' | 'healthy' | 'warning' | 'danger' } {
+  switch (status) {
+    case 'Strong':
+      return { variant: 'success' };
+    case 'Stable':
+      return { variant: 'healthy' };
+    case 'Watch':
+      return { variant: 'warning' };
+    case 'Needs attention':
+      return { variant: 'danger' };
     default:
-      return 'Keep business data current and monitor key metrics.';
+      return { variant: 'healthy' };
   }
-}
-
-// ── Skeleton ─────────────────────────────────────────────────────────────
-
-function HealthPageSkeleton() {
-  return (
-    <div className="flex flex-col gap-8 animate-pulse motion-reduce:animate-none" aria-busy="true" aria-label="Loading business health">
-      <div className="flex flex-col gap-1">
-        <div className="h-9 w-48 bg-border/60 rounded-[var(--radius-md)]" />
-        <div className="h-4 w-64 bg-border/60 rounded-[var(--radius-md)]" />
-      </div>
-      <div className="h-52 w-full bg-border/60 rounded-[var(--radius-lg)]" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="h-64 bg-border/60 rounded-[var(--radius-lg)]" />
-        <div className="h-64 bg-border/60 rounded-[var(--radius-lg)]" />
-        <div className="h-64 bg-border/60 rounded-[var(--radius-lg)]" />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="h-40 bg-border/60 rounded-[var(--radius-lg)]" />
-        <div className="h-40 bg-border/60 rounded-[var(--radius-lg)]" />
-      </div>
-    </div>
-  );
 }

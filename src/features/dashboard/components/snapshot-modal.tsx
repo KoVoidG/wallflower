@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { AlertTriangle } from 'lucide-react';
@@ -35,7 +35,6 @@ const DEFAULT_EXPENSE_CATEGORIES = ['Rent', 'Payroll', 'Materials', 'Utilities',
 
 export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: SnapshotModalProps) {
   const errorSummaryRef = useRef<HTMLDivElement>(null);
-  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const [expenseEntries, setExpenseEntries] = useState<{ name: string; amount: string }[]>(
@@ -47,7 +46,6 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
     handleSubmit,
     control,
     setValue,
-    watch,
     formState: { errors },
     reset,
   } = useForm<SnapshotFormValues>({
@@ -64,7 +62,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
     mode: 'onTouched',
   });
 
-  const selectedMonth = watch('month');
+  const selectedMonth = useWatch({ control, name: 'month' });
 
   const getSelectedMonthStr = (dateVal: Date | string | number | null | undefined): string => {
     if (!dateVal) return '';
@@ -79,14 +77,8 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
     }
   };
 
-  useEffect(() => {
-    const monthStr = getSelectedMonthStr(selectedMonth);
-    if (monthStr && existingMonths.includes(monthStr)) {
-      setShowDuplicateWarning(true);
-    } else {
-      setShowDuplicateWarning(false);
-    }
-  }, [selectedMonth, existingMonths]);
+  const monthStr = getSelectedMonthStr(selectedMonth);
+  const showDuplicateWarning = Boolean(monthStr && existingMonths.includes(monthStr));
 
   useEffect(() => {
     if (Object.keys(errors).length > 0 && errorSummaryRef.current) {
@@ -132,12 +124,12 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
           tabIndex={-1}
           role="alert"
           aria-live="assertive"
-          className="mb-4 p-3 bg-danger-soft/50 border border-danger/30 rounded-[var(--radius-md)] focus:outline-none"
+          className="mb-4 p-3 bg-danger-soft/50 border border-danger/30 rounded-lg focus:outline-none"
         >
-          <p className="text-[13px]/[20px] font-semibold text-danger">
+          <p className="text-xs font-semibold text-danger">
             Please correct the following errors:
           </p>
-          <ul className="list-disc pl-5 mt-1 text-[12px] text-danger/90">
+          <ul className="list-disc pl-5 mt-1 text-xs text-danger/90">
             {errors.month && <li>Month: {errors.month.message?.toString()}</li>}
             {errors.revenue && <li>Revenue: {errors.revenue.message?.toString()}</li>}
             {errors.cashReserve && <li>Cash Reserve: {errors.cashReserve.message?.toString()}</li>}
@@ -151,9 +143,9 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
       {/* Duplicate Month Notice */}
       {showDuplicateWarning && (
-        <div className="flex gap-2 p-3 mb-4 bg-warning-soft text-warning border border-warning/30 rounded-[var(--radius-md)]">
+        <div className="flex gap-2 p-3 mb-4 bg-warning-soft text-warning border border-warning/30 rounded-lg">
           <AlertTriangle className="size-5 shrink-0" />
-          <div className="text-[12px]">
+          <div className="text-xs">
             <span className="font-semibold">Update Mode:</span> A snapshot already exists for this
             month. Saving will update the existing records.
           </div>
@@ -180,7 +172,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
         <div className="grid grid-cols-2 gap-4">
           {/* Revenue */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="revenue" className="text-[13px]/[18px] font-[550] text-text-primary">
+            <label htmlFor="revenue" className="text-xs font-semibold text-text-primary">
               Monthly Revenue
             </label>
             <input
@@ -195,13 +187,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
               {...register('revenue', { valueAsNumber: true })}
               placeholder="0"
               className={cn(
-                'w-full px-3 py-2 border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[14px]',
+                'w-full px-3 py-2 border rounded-lg bg-transparent text-text-primary text-xs sm:text-sm',
                 'focus:outline-none focus:border-brand-strong',
                 errors.revenue ? 'border-danger' : 'border-border'
               )}
             />
             {errors.revenue?.message && (
-              <span className="text-[12px]/[18px] font-[450] text-danger" role="alert">
+              <span className="text-xs text-danger" role="alert">
                 {errors.revenue.message.toString()}
               </span>
             )}
@@ -209,7 +201,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
           {/* Cash Reserve */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="cashReserve" className="text-[13px]/[18px] font-[550] text-text-primary">
+            <label htmlFor="cashReserve" className="text-xs font-semibold text-text-primary">
               Cash Reserve
             </label>
             <input
@@ -224,13 +216,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
               {...register('cashReserve', { valueAsNumber: true })}
               placeholder="0"
               className={cn(
-                'w-full px-3 py-2 border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[14px]',
+                'w-full px-3 py-2 border rounded-lg bg-transparent text-text-primary text-xs sm:text-sm',
                 'focus:outline-none focus:border-brand-strong',
                 errors.cashReserve ? 'border-danger' : 'border-border'
               )}
             />
             {errors.cashReserve?.message && (
-              <span className="text-[12px]/[18px] font-[450] text-danger" role="alert">
+              <span className="text-xs text-danger" role="alert">
                 {errors.cashReserve.message.toString()}
               </span>
             )}
@@ -238,7 +230,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
           {/* Receivables */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="receivables" className="text-[13px]/[18px] font-[550] text-text-primary">
+            <label htmlFor="receivables" className="text-xs font-semibold text-text-primary">
               Receivables
             </label>
             <input
@@ -253,13 +245,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
               {...register('receivables', { valueAsNumber: true })}
               placeholder="0"
               className={cn(
-                'w-full px-3 py-2 border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[14px]',
+                'w-full px-3 py-2 border rounded-lg bg-transparent text-text-primary text-xs sm:text-sm',
                 'focus:outline-none focus:border-brand-strong',
                 errors.receivables ? 'border-danger' : 'border-border'
               )}
             />
             {errors.receivables?.message && (
-              <span className="text-[12px]/[18px] font-[450] text-danger" role="alert">
+              <span className="text-xs text-danger" role="alert">
                 {errors.receivables.message.toString()}
               </span>
             )}
@@ -267,7 +259,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
           {/* Payables */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="payables" className="text-[13px]/[18px] font-[550] text-text-primary">
+            <label htmlFor="payables" className="text-xs font-semibold text-text-primary">
               Payables
             </label>
             <input
@@ -282,13 +274,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
               {...register('payables', { valueAsNumber: true })}
               placeholder="0"
               className={cn(
-                'w-full px-3 py-2 border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[14px]',
+                'w-full px-3 py-2 border rounded-lg bg-transparent text-text-primary text-xs sm:text-sm',
                 'focus:outline-none focus:border-brand-strong',
                 errors.payables ? 'border-danger' : 'border-border'
               )}
             />
             {errors.payables?.message && (
-              <span className="text-[12px]/[18px] font-[450] text-danger" role="alert">
+              <span className="text-xs text-danger" role="alert">
                 {errors.payables.message.toString()}
               </span>
             )}
@@ -297,7 +289,7 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
         {/* Debt */}
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="debt" className="text-[13px]/[18px] font-[550] text-text-primary">
+          <label htmlFor="debt" className="text-xs font-semibold text-text-primary">
             Total Debt
           </label>
           <input
@@ -312,13 +304,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
             {...register('debt', { valueAsNumber: true })}
             placeholder="0"
             className={cn(
-              'w-full px-3 py-2 border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[14px]',
+              'w-full px-3 py-2 border rounded-lg bg-transparent text-text-primary text-xs sm:text-sm',
               'focus:outline-none focus:border-brand-strong',
               errors.debt ? 'border-danger' : 'border-border'
             )}
           />
           {errors.debt?.message && (
-            <span className="text-[12px]/[18px] font-[450] text-danger" role="alert">
+            <span className="text-xs text-danger" role="alert">
               {errors.debt.message.toString()}
             </span>
           )}
@@ -326,13 +318,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
 
         {/* Expense Categories */}
         <div className="border-t border-border pt-4">
-          <label className="block mb-2 text-[13px]/[18px] font-[550] text-text-primary">
+          <label className="block mb-2 text-xs font-semibold text-text-primary">
             Expense Breakdown
           </label>
           <div className="grid grid-cols-2 gap-3">
             {expenseEntries.map((entry, index) => (
               <div key={entry.name} className="flex flex-col gap-1">
-                <span className="text-[12px] text-text-secondary">{entry.name}</span>
+                <span className="text-xs text-text-secondary">{entry.name}</span>
                 <input
                   type="number"
                   step="any"
@@ -344,13 +336,13 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
                   value={entry.amount}
                   onChange={(e) => handleExpenseChange(index, e.target.value)}
                   placeholder="0"
-                  className="w-full px-3 py-1.5 border border-border rounded-[var(--radius-md)] bg-transparent text-text-primary text-[13px] focus:outline-none focus:border-brand-strong"
+                  className="w-full px-3 py-1.5 border border-border rounded-lg bg-transparent text-text-primary text-xs focus:outline-none focus:border-brand-strong"
                 />
               </div>
             ))}
           </div>
           {errors.expenseCategories?.message && (
-            <span className="text-[12px]/[18px] font-[450] text-danger block mt-2" role="alert">
+            <span className="text-xs text-danger block mt-2" role="alert">
               {errors.expenseCategories.message.toString()}
             </span>
           )}
@@ -361,14 +353,14 @@ export function SnapshotModal({ isOpen, onClose, onSave, existingMonths }: Snaps
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium border border-border rounded-lg text-text-secondary hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold border border-border rounded-lg text-text-secondary hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isPending}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-brand text-white hover:bg-brand-hover transition-colors disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold rounded-lg bg-brand text-white hover:bg-brand-hover transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
           >
             {isPending ? 'Saving...' : 'Save Snapshot'}
           </button>
