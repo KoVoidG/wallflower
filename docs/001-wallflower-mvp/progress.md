@@ -59,6 +59,7 @@
   * T031c Refine sidebar & account menu with ChatGPT-style information architecture (Overview, Decisions, Account menu upward popover)
   * T031d Refine 4 core areas: Dashboard chart legend (above plot, 2-row mobile wrap, line samples + labels), Product Tour (5-step coach-mark, mobile bottom sheet, replay button), Registration Consent (required unchecked checkbox with separate teal links), and Legal Pages (dedicated legal layout, prototype banner, TOC nav, 760px readable width)
   * T031e Dedicated Legal Header (no marketing navbar, no absolute positioning, logo + Wallflower Legal + Back link + Language switcher + Print action) and 7-Step Cross-Route Guided Product Tour (real route navigation, target element spotlight, localStorage persistence, keyboard controls, dark mode & i18n support)
+  * T031f Comprehensive UI/UX Pro Max design system overhaul (frosted glass surface variants, portal font-family inheritance, shimmer skeleton loaders, live decision impact preview panel in simulator, direct risk mitigation shortcuts, custom select text-xs font size fix, and calmed 1.2s smooth count-up numeric animation)
 * **In-Progress Tasks:**
   * None
 * **Next Tasks:**

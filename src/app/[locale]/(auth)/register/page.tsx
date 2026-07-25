@@ -133,51 +133,62 @@ export default function RegisterPage() {
           )}
         </div>
 
-        {/* Password */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="password"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
-          >
-            Password
-          </label>
-          <div className="relative">
-            <Lock
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
-            <input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              placeholder="••••••••"
-              aria-invalid={!!errors.password}
-              aria-describedby={errors.password ? 'password-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
-              {...register('password')}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+          {/* Password */}
+          <div className="space-y-1.5">
+            <label
+              htmlFor="password"
+              className="block text-[13px]/[18px] font-[550] text-text-primary"
             >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </button>
+              Password
+            </label>
+            <div className="relative">
+              <Lock
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+                aria-hidden="true"
+              />
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                placeholder="••••••••"
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? 'password-error' : undefined}
+                className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+
+            {/* Password Strength Indicator */}
+            <div className="space-y-1 pt-1">
+              <div className="h-1.5 w-full bg-surface-subtle rounded-full overflow-hidden flex gap-1">
+                <div className="h-full bg-brand/40 flex-1 transition-colors" />
+                <div className="h-full bg-brand/60 flex-1 transition-colors" />
+                <div className="h-full bg-brand flex-1 transition-colors" />
+              </div>
+              <p className="text-[11px] text-text-muted flex justify-between">
+                <span>Minimum 8 characters</span>
+                <span className="font-semibold text-brand">Secure Password Format</span>
+              </p>
+            </div>
+
+            {errors.password && (
+              <p id="password-error" className="text-[12px]/[18px] text-danger">
+                {errors.password.message}
+              </p>
+            )}
           </div>
-          {errors.password && (
-            <p id="password-error" className="text-[12px]/[18px] text-danger">
-              {errors.password.message}
-            </p>
-          )}
-          <p className="text-[12px]/[18px] text-text-muted">
-            Minimum 8 characters
-          </p>
-        </div>
 
         {/* Required Registration Consent Checkbox */}
         <div className="space-y-1.5 pt-1">

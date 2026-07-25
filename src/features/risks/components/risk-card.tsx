@@ -194,19 +194,19 @@ export function RiskCard({
               <p className="text-[13px]/[20px] text-text-secondary">
                 {interpolate(ruleText.whatNext, risk.evidenceValues || {})}
               </p>
-              {risk.mitigationScenario && !isMitigated && (
+              {!isMitigated && (
                 <a
-                  href={`/simulations/new?scenario=${risk.mitigationScenario}&risk=${risk.ruleId}`}
+                  href={`/simulations/new?type=${risk.mitigationScenario || 'hire_employees'}&risk=${risk.ruleId}`}
                   className={cn(
                     'inline-flex items-center gap-1.5 mt-2 px-3 py-1.5',
                     'text-[13px] font-[550] text-brand rounded-[var(--radius-md)]',
-                    'border border-brand/30 hover:bg-brand-soft transition-colors',
+                    'border border-brand/30 hover:bg-brand-soft/30 transition-colors',
                     'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand',
-                    'print:hidden'
+                    'print:hidden cursor-pointer shadow-2xs'
                   )}
                 >
                   <ExternalLink className="size-3.5" aria-hidden="true" />
-                  {t.mitigate}
+                  <span>Test Mitigation in Simulator</span>
                 </a>
               )}
             </div>

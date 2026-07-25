@@ -9,13 +9,33 @@ import { useReducedMotion } from '@/components/motion/use-reduced-motion';
 import { DURATIONS, EASINGS } from '@/components/motion/motion-config';
 
 const MONTHS = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 const FULL_MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export interface MonthPickerProps {
@@ -24,6 +44,7 @@ export interface MonthPickerProps {
   label?: string;
   error?: string;
   disabled?: boolean;
+  align?: 'start' | 'end';
   className?: string;
 }
 
@@ -33,6 +54,7 @@ export function MonthPicker({
   label,
   error,
   disabled = false,
+  align = 'start',
   className,
 }: MonthPickerProps) {
   const [open, setOpen] = useState(false);
@@ -45,9 +67,9 @@ export function MonthPicker({
   // viewYear tracks the currently displayed year in the picker
   const [viewYear, setViewYear] = useState(() => (value ? value.getFullYear() : new Date().getFullYear()));
 
-  // Generate a broad list of years (e.g. 15 years back to 10 years ahead)
+  // Generate a broad list of years
   const currentSystemYear = new Date().getFullYear();
-  const yearOptions = Array.from({ length: 30 }, (_, i) => currentSystemYear - 15 + i);
+  const yearOptions = Array.from({ length: 26 }, (_, i) => currentSystemYear - 15 + i);
 
   // Close on click outside
   useEffect(() => {
@@ -117,7 +139,7 @@ export function MonthPicker({
         </label>
       )}
 
-      {/* Trigger Button */}
+      {/* Trigger Button - Matches canonical Select and DatePicker */}
       <button
         id={pickerId}
         type="button"
@@ -128,7 +150,7 @@ export function MonthPicker({
         onClick={toggle}
         onKeyDown={handleKeyDown}
         className={cn(
-          'flex w-full items-center justify-between gap-2 px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-[14px] sm:text-[15px] text-left',
+          'flex w-full items-center justify-between gap-2 px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-xs font-medium text-left',
           'outline-none transition-colors cursor-pointer',
           'focus-visible:ring-2 focus-visible:ring-brand/40',
           'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -136,15 +158,15 @@ export function MonthPicker({
           !error && !disabled && 'hover:border-border-strong'
         )}
       >
-        <span className={cn(!formatValue() && 'text-text-muted', formatValue() && 'text-text-primary font-medium')}>
+        <span className={cn(!formatValue() && 'text-text-muted', formatValue() && 'text-text-primary font-semibold')}>
           {formatValue() || 'Select month & year...'}
         </span>
-        <Calendar className="size-4 shrink-0 text-brand" aria-hidden="true" />
+        <Calendar className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
       </button>
 
       {/* Error Message */}
       {error && (
-        <span id={`${pickerId}-error`} className="block mt-1 text-[12px] text-danger" role="alert">
+        <span id={`${pickerId}-error`} className="block mt-1 text-[11px] text-danger" role="alert">
           {error}
         </span>
       )}
@@ -162,9 +184,10 @@ export function MonthPicker({
                 : { duration: DURATIONS.cardPanel, ease: EASINGS.default }
             }
             className={cn(
-              'absolute z-50 mt-1 w-full min-w-[280px]',
+              'absolute z-50 mt-1 w-[260px]',
+              align === 'end' ? 'right-0' : 'left-0',
               'rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface shadow-xl dark:shadow-black/50',
-              'p-3 space-y-3'
+              'p-2.5 space-y-2.5 text-xs'
             )}
             role="dialog"
             aria-label="Pick a month and year"
@@ -174,17 +197,17 @@ export function MonthPicker({
               <button
                 type="button"
                 onClick={() => setViewYear((y) => y - 1)}
-                className="p-1 rounded-md text-text-secondary hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-brand"
+                className="p-1 rounded-md text-text-secondary hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer"
                 aria-label="Previous year"
               >
-                <ChevronLeft className="size-4" />
+                <ChevronLeft className="size-4 text-text-secondary" />
               </button>
 
               {/* Direct Year Dropdown Toggle */}
               <button
                 type="button"
                 onClick={() => setShowYearSelector((prev) => !prev)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border/80 text-xs sm:text-sm font-semibold text-text-primary hover:border-brand hover:text-brand transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-subtle border border-border/80 text-xs font-semibold text-text-primary hover:border-brand hover:text-brand transition-colors cursor-pointer"
                 title="Click to choose year directly"
               >
                 <span className="tabular-nums">{viewYear}</span>
@@ -194,30 +217,30 @@ export function MonthPicker({
               <button
                 type="button"
                 onClick={() => setViewYear((y) => y + 1)}
-                className="p-1 rounded-md text-text-secondary hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-brand"
+                className="p-1 rounded-md text-text-secondary hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer"
                 aria-label="Next year"
               >
-                <ChevronRight className="size-4" />
+                <ChevronRight className="size-4 text-text-secondary" />
               </button>
             </div>
 
-            {/* Direct Year Selector Grid (when year header is clicked) */}
+            {/* Direct Year Selector Grid */}
             {showYearSelector ? (
               <div className="space-y-2">
-                <Caption className="block text-text-muted text-[11px] font-semibold uppercase tracking-wider">
+                <Caption className="block text-text-muted text-[10px] font-semibold uppercase tracking-wider">
                   Select Year Directly:
                 </Caption>
-                <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto p-1 border border-border/40 rounded-md bg-surface-subtle/30">
+                <div className="grid grid-cols-4 gap-1 max-h-44 overflow-y-auto p-1 border border-border/40 rounded-md bg-surface-subtle/30">
                   {yearOptions.map((yr) => (
                     <button
                       key={yr}
                       type="button"
                       onClick={() => selectYear(yr)}
                       className={cn(
-                        'py-1.5 rounded text-xs font-semibold tabular-nums transition-colors cursor-pointer',
+                        'py-1 rounded text-xs font-semibold tabular-nums transition-colors cursor-pointer',
                         yr === viewYear
-                          ? 'bg-brand text-white'
-                          : 'text-text-primary hover:bg-brand-soft hover:text-brand'
+                          ? 'bg-brand text-white dark:text-background font-semibold'
+                          : 'text-text-primary hover:bg-surface-subtle hover:text-brand'
                       )}
                     >
                       {yr}
@@ -237,11 +260,10 @@ export function MonthPicker({
                       onClick={() => selectMonth(idx)}
                       aria-pressed={selected}
                       className={cn(
-                        'px-2 py-2 rounded-[var(--radius-sm)] text-[13px] font-[500] transition-colors cursor-pointer',
-                        'focus-visible:outline-2 focus-visible:outline-brand',
+                        'px-2 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold transition-colors cursor-pointer',
                         selected
-                          ? 'bg-brand text-white shadow-xs font-semibold'
-                          : 'text-text-secondary hover:bg-brand-soft hover:text-brand'
+                          ? 'bg-brand text-white dark:text-background font-semibold shadow-xs'
+                          : 'text-text-primary hover:bg-surface-subtle hover:text-brand'
                       )}
                     >
                       {month}

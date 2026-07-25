@@ -109,15 +109,15 @@ export function Dialog({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
-            initial={prefersReduced ? { opacity: 0.5 } : { opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            initial={prefersReduced ? { opacity: 0.6 } : { opacity: 0 }}
+            animate={{ opacity: 0.6 }}
             exit={prefersReduced ? { opacity: 0 } : { opacity: 0 }}
             transition={
               prefersReduced
                 ? { duration: 0 }
                 : { duration: DURATIONS.drawerDialog, ease: EASINGS.default }
             }
-            className="fixed inset-0 bg-black"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
             onClick={handleBackdropClick}
             aria-hidden="true"
           />
@@ -137,7 +137,7 @@ export function Dialog({
                 : { duration: 0.2, ease: EASINGS.default }
             }
             className={cn(
-              'relative z-10 w-full rounded-[var(--radius-lg)] border border-border dark:border-border-strong bg-surface shadow-xl dark:shadow-black/50',
+              'relative z-10 w-full rounded-[var(--radius-lg)] border border-border/80 dark:border-border bg-surface/95 dark:bg-surface/90 backdrop-blur-lg shadow-2xl dark:shadow-black/60',
               'max-h-[90vh] overflow-y-auto',
               sizeClasses[size]
             )}

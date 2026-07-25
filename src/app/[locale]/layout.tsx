@@ -1,14 +1,15 @@
 import { ReactNode } from 'react';
-import { Geist, Geist_Mono, Noto_Sans_Thai } from 'next/font/google';
+import { Inter, Geist_Mono, Noto_Sans_Thai } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import '../globals.css';
 import '../print.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const geistMono = Geist_Mono({
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 const notoTh = Noto_Sans_Thai({
   variable: '--font-noto-thai',
   subsets: ['thai'],
-  weight: ['400', '500', '700'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export default async function LocaleLayout({
@@ -34,7 +35,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${notoTh.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.variable} ${geistMono.variable} ${notoTh.variable} antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             {children}

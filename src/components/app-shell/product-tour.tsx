@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useSyncExternalStore } from 'react';
 import { usePathname, useRouter } from '@/lib/i18n/navigation';
 import {
   Sparkles,
@@ -371,19 +371,25 @@ interface PageContextualHintProps {
 export function PageContextualHint({ hintKey, title, message, className }: PageContextualHintProps) {
   const storageKey = `wallflower_hint_dismissed_${hintKey}`;
 
-  const [dismissed, setDismissed] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    return localStorage.getItem(storageKey) === 'true';
-  });
+  const isDismissedInStorage = useSyncExternalStore(
+    (callback: () => void) => {
+      window.addEventListener('storage', callback);
+      return () => window.removeEventListener('storage', callback);
+    },
+    () => (typeof window !== 'undefined' ? localStorage.getItem(storageKey) === 'true' : true),
+    () => true
+  );
 
-  if (dismissed) return null;
+  const [dismissedLocally, setDismissedLocally] = useState<boolean>(false);
+
+  if (isDismissedInStorage || dismissedLocally) return null;
 
   const handleGotIt = () => {
-    setDismissed(true);
+    setDismissedLocally(true);
   };
 
   const handleNeverShow = () => {
-    setDismissed(true);
+    setDismissedLocally(true);
     if (typeof window !== 'undefined') {
       localStorage.setItem(storageKey, 'true');
     }

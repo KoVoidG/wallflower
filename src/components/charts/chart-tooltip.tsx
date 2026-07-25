@@ -35,7 +35,7 @@ export function ChartTooltip({
   return (
     <div
       className={cn(
-        'rounded-[var(--radius-md)] border border-border bg-surface-raised px-3 py-2 shadow-md',
+        'rounded-[var(--radius-md)] border border-border/80 bg-surface/95 dark:bg-surface/90 backdrop-blur-md px-3.5 py-2.5 shadow-md',
         className
       )}
     >

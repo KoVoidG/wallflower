@@ -17,7 +17,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-md bg-border/50 animate-pulse motion-reduce:animate-none',
+          'rounded-md bg-border/50 animate-shimmer motion-reduce:animate-none',
           className
         )}
         aria-hidden="true"
@@ -193,17 +193,25 @@ export function SimulationResultsSkeleton() {
 
 export function AdvisorSkeleton() {
   return (
-    <AppPage aria-busy="true" aria-label="Loading AI advisor">
-      <div className="space-y-2 pb-5 border-b border-border/60">
-        <Skeleton className="h-7 w-36" />
-        <Skeleton className="h-4 w-64" />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 space-y-4">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-40 rounded-xl" />
+    <AppPage aria-busy="true" aria-label="Loading AI Advisor">
+      <div className="flex justify-between items-center pb-4 border-b border-border/80">
+        <div className="space-y-1">
+          <Skeleton className="h-7 w-36 rounded-md" />
+          <Skeleton className="h-4 w-72 rounded-md" />
         </div>
-        <Skeleton className="hidden lg:block lg:col-span-4 h-80 rounded-xl" />
+        <div className="flex gap-2">
+          <Skeleton className="h-8 w-24 rounded-lg" />
+          <Skeleton className="h-8 w-32 rounded-lg" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+        <div className="min-w-0 space-y-6">
+          <Skeleton className="h-56 rounded-2xl" />
+          <Skeleton className="h-20 rounded-xl" />
+        </div>
+        <div className="hidden lg:block lg:w-[320px] xl:w-[340px] shrink-0 space-y-4">
+          <Skeleton className="h-80 rounded-xl" />
+        </div>
       </div>
     </AppPage>
   );
@@ -211,15 +219,30 @@ export function AdvisorSkeleton() {
 
 export function ActionPlanSkeleton() {
   return (
-    <AppPage aria-busy="true" aria-label="Loading action plan">
-      <div className="space-y-2 pb-5 border-b border-border/60">
-        <Skeleton className="h-7 w-40" />
-        <Skeleton className="h-4 w-60" />
+    <AppPage aria-busy="true" aria-label="Loading Action Plan">
+      <div className="flex justify-between items-center pb-4 border-b border-border/80">
+        <div className="space-y-1">
+          <Skeleton className="h-7 w-36 rounded-md" />
+          <Skeleton className="h-4 w-80 rounded-md" />
+        </div>
+        <Skeleton className="h-9 w-32 rounded-lg" />
       </div>
-      <div className="space-y-3">
-        <Skeleton className="h-20 rounded-xl" />
-        <Skeleton className="h-20 rounded-xl" />
-        <Skeleton className="h-20 rounded-xl" />
+      <div className="flex gap-2 pb-2">
+        <Skeleton className="h-8 w-20 rounded-lg" />
+        <Skeleton className="h-8 w-24 rounded-lg" />
+        <Skeleton className="h-8 w-24 rounded-lg" />
+        <Skeleton className="h-8 w-20 rounded-lg" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[400px_minmax(0,1fr)] xl:grid-cols-[440px_minmax(0,1fr)] gap-6 items-start">
+        <div className="space-y-3">
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+        </div>
+        <div className="hidden lg:block space-y-4">
+          <Skeleton className="h-96 rounded-xl" />
+        </div>
       </div>
     </AppPage>
   );

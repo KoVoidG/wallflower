@@ -16,7 +16,7 @@ export const DURATIONS = {
   cardPanel: 0.2,
   drawerDialog: 0.26,
   pageReveal: 0.35,
-  simulationResult: 0.52,
+  simulationResult: 1.2,
 } as const;
 
 /**

@@ -9,6 +9,7 @@ import type { ScenarioType } from '@/features/simulations/adapters/simulations.a
 export type FormComponent = 'HireEmployeesForm' | 'ChangePriceForm' | 'MarketingInvestmentForm' | 'EquipmentPurchaseForm' | 'PaymentDelayForm';
 
 const FORM_MAP: Record<ScenarioType, FormComponent> = {
+  custom: 'HireEmployeesForm',
   hire_employees: 'HireEmployeesForm',
   change_price: 'ChangePriceForm',
   marketing_investment: 'MarketingInvestmentForm',

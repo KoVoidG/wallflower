@@ -34,7 +34,7 @@ export function Topbar({ title, onMobileMenuToggle }: TopbarProps) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-surface/80 backdrop-blur-sm px-4 md:px-6 lg:px-8',
+        'sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/80 bg-surface/85 backdrop-blur-md px-4 md:px-6 lg:px-8',
         'transition-[padding-left] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
         'motion-reduce:transition-none'
       )}

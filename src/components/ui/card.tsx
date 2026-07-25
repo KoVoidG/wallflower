@@ -5,7 +5,7 @@ import { CardTitle as CardTitleTypography, MetricValue, Label, Caption } from '.
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  variant?: 'default' | 'subtle' | 'interactive' | 'outline' | 'warning' | 'critical';
+  variant?: 'default' | 'subtle' | 'interactive' | 'outline' | 'warning' | 'critical' | 'glass';
   className?: string;
 }
 
@@ -15,9 +15,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-2xs transition-all',
+          'rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-2xs transition-all duration-200',
           variant === 'subtle' && 'bg-surface-subtle border-border/60',
-          variant === 'interactive' && 'hover:border-border-strong hover:bg-surface-subtle cursor-pointer select-none',
+          variant === 'glass' && 'bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-border/80 shadow-sm',
+          variant === 'interactive' && 'hover:border-brand/40 hover:bg-surface-subtle/80 cursor-pointer select-none active:scale-[0.995]',
           variant === 'outline' && 'bg-transparent border-border',
           variant === 'warning' && 'border-warning/30 bg-warning-soft/20',
           variant === 'critical' && 'border-danger/30 bg-danger-soft/20',

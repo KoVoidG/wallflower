@@ -10,7 +10,7 @@ export interface DataStatusSummary {
   missingHighImpactFields: string[];
 }
 
-export type DataSourceStatus = 'connected' | 'stale' | 'coming_later' | 'disconnected';
+export type DataSourceStatus = 'connected' | 'stale' | 'coming_later' | 'disconnected' | 'needs_review' | 'sample';
 
 export interface DataSourceItem {
   id: string;
@@ -22,6 +22,12 @@ export interface DataSourceItem {
   valuesContributed: number;
   quality: DataQuality;
   isExternalIntegration?: boolean;
+  category?: 'financial_summary' | 'cash_flow' | 'operations' | 'assumptions';
+  description?: string;
+  provenanceNote?: string;
+  affectedFeatures?: string[];
+  issueCount?: number;
+  issuesList?: string[];
 }
 
 export interface MonthlySnapshotHistory {
@@ -59,26 +65,54 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
   sources: [
     {
       id: 'ds-001',
-      name: 'Manual Monthly Financial Snapshot',
+      name: 'January 2025 Financial Summary',
       provider: 'manual',
       status: 'connected',
       lastSync: '2025-01-15',
       reportingPeriod: 'Jan 2025',
       valuesContributed: 42,
       quality: 'actual',
+      category: 'financial_summary',
+      description: 'Monthly baseline revenue, expenses, net profit, usable cash reserves, and debt obligations.',
+      provenanceNote: 'Manual Entry by Somchai Wattana (General Manager)',
+      affectedFeatures: ['Dashboard', 'Business Health', 'Cash Flow', 'Reports'],
+      issueCount: 0,
+      issuesList: [],
     },
     {
       id: 'ds-002',
-      name: 'Spreadsheet Financial Import',
+      name: 'Accounts Receivable & Invoices Import',
       provider: 'spreadsheet',
       status: 'stale',
       lastSync: '2024-12-10',
       reportingPeriod: 'Dec 2024',
       valuesContributed: 28,
       quality: 'estimated',
+      category: 'cash_flow',
+      description: 'Customer receivables aging schedule, invoice balances, due dates, and payment status.',
+      provenanceNote: 'Imported File (receivables_q1_2025.csv)',
+      affectedFeatures: ['Cash Flow', 'Risk Center', 'Action Plan', 'Reports'],
+      issueCount: 1,
+      issuesList: ['Client Invoice #1042 overdue by 14 days without collection action'],
     },
     {
       id: 'ds-003',
+      name: 'Monthly Operating Overhead & Payroll',
+      provider: 'manual',
+      status: 'connected',
+      lastSync: '2025-01-05',
+      reportingPeriod: 'Jan 2025',
+      valuesContributed: 36,
+      quality: 'actual',
+      category: 'operations',
+      description: 'Staff payroll, store rental contract, electricity utilities, and recurring supplier orders.',
+      provenanceNote: 'Manual Entry (GreenCafe Operating Expense Log)',
+      affectedFeatures: ['Dashboard', 'Business Health', 'Cash Flow', 'Simulation'],
+      issueCount: 0,
+      issuesList: [],
+    },
+    {
+      id: 'ds-004',
       name: 'Sample SME Retail Benchmark Data',
       provider: 'sample',
       status: 'connected',
@@ -86,9 +120,15 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
       reportingPeriod: 'Jan 2025',
       valuesContributed: 64,
       quality: 'sample',
+      category: 'assumptions',
+      description: 'Preconfigured SME retail cafe baseline data used for simulation and risk modeling defaults.',
+      provenanceNote: 'Sample Prototype Dataset (Default Active Baseline)',
+      affectedFeatures: ['Risk Center', 'Simulation', 'AI Advisor', 'Reports'],
+      issueCount: 0,
+      issuesList: [],
     },
     {
-      id: 'ds-004',
+      id: 'ds-005',
       name: 'Google Sheets Live Integration',
       provider: 'google_sheets',
       status: 'coming_later',
@@ -97,10 +137,16 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
       valuesContributed: 0,
       quality: 'estimated',
       isExternalIntegration: true,
+      category: 'financial_summary',
+      description: 'Direct Google Sheets spreadsheet sync for real-time revenue and cash updates.',
+      provenanceNote: 'Connection Not Available in Prototype (Planned Feature)',
+      affectedFeatures: ['Dashboard', 'Cash Flow'],
+      issueCount: 0,
+      issuesList: [],
     },
     {
-      id: 'ds-005',
-      name: 'FlowAccount Integration',
+      id: 'ds-006',
+      name: 'FlowAccount Accounting Integration',
       provider: 'flowaccount',
       status: 'coming_later',
       lastSync: 'N/A',
@@ -108,9 +154,15 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
       valuesContributed: 0,
       quality: 'actual',
       isExternalIntegration: true,
+      category: 'financial_summary',
+      description: 'Automated Thai SME accounting sync for invoices, expenses, and VAT tax filings.',
+      provenanceNote: 'Connection Not Available in Prototype (Planned Feature)',
+      affectedFeatures: ['Business Health', 'Cash Flow', 'Reports'],
+      issueCount: 0,
+      issuesList: [],
     },
     {
-      id: 'ds-006',
+      id: 'ds-007',
       name: 'PEAK Accounting Integration',
       provider: 'peak',
       status: 'coming_later',
@@ -119,6 +171,12 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
       valuesContributed: 0,
       quality: 'actual',
       isExternalIntegration: true,
+      category: 'financial_summary',
+      description: 'PEAK engine sync for automated general ledger and balance sheet imports.',
+      provenanceNote: 'Connection Not Available in Prototype (Planned Feature)',
+      affectedFeatures: ['Business Health', 'Reports'],
+      issueCount: 0,
+      issuesList: [],
     },
   ],
   history: [
@@ -149,6 +207,6 @@ const MOCK_DATA_WORKSPACE: DataWorkspaceData = {
 };
 
 export async function getDataWorkspaceData(): Promise<DataWorkspaceData> {
-  await new Promise((resolve) => setTimeout(resolve, 250));
+  await new Promise((resolve) => setTimeout(resolve, 150));
   return MOCK_DATA_WORKSPACE;
 }

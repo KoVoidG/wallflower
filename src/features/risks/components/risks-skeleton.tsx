@@ -1,14 +1,4 @@
-// src/features/risks/components/risks-skeleton.tsx
-import { cn } from '@/lib/utils';
-
-function Skeleton({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn('block animate-pulse motion-reduce:animate-none rounded-[var(--radius-md)] bg-border', className)}
-      aria-hidden="true"
-    />
-  );
-}
+import { Skeleton } from '@/components/ui/skeleton';
 
 /** Skeleton for the Risk Overview summary card */
 export function RiskSummarySkeleton() {

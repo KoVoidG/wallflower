@@ -31,6 +31,10 @@
   --ai: #0891B2;
   --ai-soft: #E5F7FB;
   
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(220, 231, 227, 0.7);
+  --glass-shadow: 0 10px 30px rgba(16, 32, 29, 0.06);
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
@@ -67,6 +71,10 @@
   
   --ai: #22D3EE;
   --ai-soft: #083344;
+
+  --glass-bg: rgba(13, 25, 22, 0.82);
+  --glass-border: rgba(34, 58, 52, 0.75);
+  --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
 }
 
 @theme {
@@ -106,14 +114,46 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   
-  --font-sans: var(--font-geist-sans), var(--font-noto-thai), system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-noto-thai), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
 body {
+  font-family: var(--font-inter), var(--font-noto-thai), system-ui, sans-serif;
   background: var(--background);
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Enforce font inheritance on floating Radix/shadcn portals */
+[data-radix-portal],
+[role="dialog"],
+[role="popover"],
+[role="menu"],
+[role="tooltip"] {
+  font-family: var(--font-inter), var(--font-noto-thai), system-ui, sans-serif !important;
+}
+
+/* Shimmer animation keyframes for skeletons */
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-subtle) 25%,
+    var(--border) 50%,
+    var(--surface-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 2.2s infinite ease-in-out;
 }
 
 html {
@@ -124,4 +164,8 @@ html {
   html {
     scroll-behavior: auto;
   }
+  .animate-shimmer {
+    animation: none;
+  }
 }
+

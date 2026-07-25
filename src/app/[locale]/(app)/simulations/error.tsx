@@ -1,7 +1,9 @@
 'use client';
 
-import { AlertCircle, RefreshCw } from 'lucide-react';
-import { Surface } from '@/components/ui/surface';
+import { AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { AppPage } from '@/components/ui/layout';
+import { Link } from '@/lib/i18n/navigation';
 
 export default function SimulationsError({
   reset,
@@ -10,26 +12,35 @@ export default function SimulationsError({
   reset: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 gap-4">
-      <Surface border className="flex flex-col items-center gap-4 p-8 max-w-md text-center">
-        <div className="flex size-12 items-center justify-center rounded-full bg-danger-soft">
-          <AlertCircle className="size-6 text-danger" aria-hidden="true" />
+    <AppPage>
+      <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
+        <div className="flex size-12 items-center justify-center rounded-full bg-danger-soft text-danger">
+          <AlertCircle className="size-6" aria-hidden="true" />
         </div>
-        <h2 className="text-[18px]/[26px] font-[600] text-text-primary">
-          Failed to load simulations
-        </h2>
-        <p className="text-[14px]/[22px] text-text-secondary">
-          Something went wrong while loading your simulations. Please try again.
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] px-4 py-2.5 text-[14px] font-[550] bg-brand text-white hover:bg-brand-hover transition-colors cursor-pointer"
-        >
-          <RefreshCw className="size-4" aria-hidden="true" />
-          Try Again
-        </button>
-      </Surface>
-    </div>
+
+        <div className="space-y-1 max-w-md">
+          <h2 className="text-lg font-bold text-text-primary">
+            Failed to Compute Decision Simulation
+          </h2>
+          <p className="text-xs text-text-secondary leading-relaxed">
+            An error occurred while running the scenario model. Your business baseline and stored simulations remain safe.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 pt-2">
+          <Button type="button" variant="primary" size="md" onClick={reset}>
+            <RefreshCw className="size-3.5" />
+            <span>Try Again</span>
+          </Button>
+
+          <Button asChild variant="outline" size="md">
+            <Link href="/simulations">
+              <ArrowLeft className="size-3.5" />
+              <span>Back to Simulations</span>
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </AppPage>
   );
 }

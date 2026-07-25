@@ -1,40 +1,67 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   ShieldAlert,
-  ListFilter,
-  Grid,
-  Calendar,
+  AlertTriangle,
+  TrendingDown,
+  Search,
+  SlidersHorizontal,
   Play,
-  CheckCircle2,
-  Bot,
-  RefreshCw,
+  Sparkles,
+  Banknote,
+  ArrowRight,
   Clock,
+  Layers,
+  ChevronRight,
 } from 'lucide-react';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from 'recharts';
 import { cn } from '@/lib/utils';
 import { Link } from '@/lib/i18n/navigation';
-import { AppPage, PageHeader } from '@/components/ui/layout';
-import { Card, CardTitle, CardDescription } from '@/components/ui/card';
+import { AppPage } from '@/components/ui/layout';
+import { Card, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FinancialValue } from '@/components/ui/domain-values';
+import { Button } from '@/components/ui/button';
+import { ChartCard } from '@/components/charts/chart-card';
+import {
+  FinancialValue,
+  FreshnessIndicator,
+  CompletenessIndicator,
+} from '@/components/ui/domain-values';
 import { RiskCenterSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ErrorState } from '@/components/ui/error-state';
-import { FadeIn, Expand } from '@/components/motion';
+import { FadeInView, ChartInView } from '@/components/motion';
 import {
   getRisksData,
   type RisksData,
-  type DetailedRiskItem,
+  type RiskSeverity,
+  type RiskCategory,
 } from '@/features/risks/adapters/risks.adapter';
+import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/chart-config';
+
+type TriageStageFilter = 'all' | 'action_required' | 'monitoring' | 'mitigating' | 'resolved';
 
 export default function RiskCenterPage() {
   const [data, setData] = useState<RisksData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'priority' | 'matrix' | 'timeline'>('priority');
-  const [selectedRisk, setSelectedRisk] = useState<DetailedRiskItem | null>(null);
-  const [showEvidence, setShowEvidence] = useState(false);
+  const [selectedRiskId, setSelectedRiskId] = useState<string | null>(null);
+
+  // Controls & Filters
+  const [searchQuery, setSearchQuery] = useState('');
+  const [stageFilter, setStageFilter] = useState<TriageStageFilter>('all');
+  const [severityFilter, setSeverityFilter] = useState<RiskSeverity | 'all'>('all');
+  const [categoryFilter] = useState<RiskCategory | 'all'>('all');
+  const [sortBy, setSortBy] = useState<'priority' | 'exposure' | 'severity'>('priority');
 
   const loadData = async () => {
     setLoading(true);
@@ -43,10 +70,14 @@ export default function RiskCenterPage() {
       const res = await getRisksData();
       setData(res);
       if (res.risks.length > 0) {
-        setSelectedRisk(res.risks[0]);
+        setSelectedRiskId(res.risks[0].id);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to load risk center assessment.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to load risk center assessment.',
+      );
     } finally {
       setLoading(false);
     }
@@ -58,13 +89,17 @@ export default function RiskCenterPage() {
       .then((res) => {
         if (isMounted) {
           setData(res);
-          if (res.risks.length > 0) setSelectedRisk(res.risks[0]);
+          if (res.risks.length > 0) setSelectedRiskId(res.risks[0].id);
           setLoading(false);
         }
       })
       .catch((err: unknown) => {
         if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load risk center assessment.');
+          setError(
+            err instanceof Error
+              ? err.message
+              : 'Failed to load risk center assessment.',
+          );
           setLoading(false);
         }
       });
@@ -74,420 +109,705 @@ export default function RiskCenterPage() {
     };
   }, []);
 
+  // Logical triage stage calculations (Current Statuses)
+  const triageStageCounts = useMemo(() => {
+    if (!data) return { actionRequired: 0, monitoring: 0, mitigating: 0, resolved: 0 };
+    const actionRequired = data.risks.filter(r => r.status === 'active' && (r.severity === 'critical' || r.severity === 'high')).length;
+    const monitoring = data.risks.filter(r => r.status === 'active' && (r.severity === 'medium' || r.severity === 'low' || r.severity === 'warning')).length;
+    const mitigating = data.risks.filter(r => r.status === 'mitigated').length;
+    const resolved = 0;
+    return { actionRequired, monitoring, mitigating, resolved };
+  }, [data]);
+
+  // Filter & sort risk items for the triage queue
+  const filteredRisks = useMemo(() => {
+    if (!data) return [];
+    let result = [...data.risks];
+
+    // Stage filter
+    if (stageFilter === 'action_required') {
+      result = result.filter(r => r.status === 'active' && (r.severity === 'critical' || r.severity === 'high'));
+    } else if (stageFilter === 'monitoring') {
+      result = result.filter(r => r.status === 'active' && (r.severity === 'medium' || r.severity === 'low' || r.severity === 'warning'));
+    } else if (stageFilter === 'mitigating') {
+      result = result.filter(r => r.status === 'mitigated');
+    } else if (stageFilter === 'resolved') {
+      result = result.filter(r => r.status === 'ignored');
+    }
+
+    // Severity filter
+    if (severityFilter !== 'all') {
+      result = result.filter((r) => r.severity === severityFilter);
+    }
+    // Category filter
+    if (categoryFilter !== 'all') {
+      result = result.filter((r) => r.category === categoryFilter);
+    }
+    // Search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.title.toLowerCase().includes(query) ||
+          r.category.toLowerCase().includes(query) ||
+          r.ruleId.toLowerCase().includes(query),
+      );
+    }
+
+    const severityWeight: Record<RiskSeverity, number> = {
+      critical: 0,
+      high: 1,
+      medium: 2,
+      low: 3,
+      warning: 4,
+    };
+
+    result.sort((a, b) => {
+      if (sortBy === 'priority' || sortBy === 'severity') {
+        const diff = severityWeight[a.severity] - severityWeight[b.severity];
+        if (diff !== 0) return diff;
+        return b.estimatedExposure - a.estimatedExposure;
+      }
+      return b.estimatedExposure - a.estimatedExposure;
+    });
+
+    return result;
+  }, [data, stageFilter, severityFilter, categoryFilter, searchQuery, sortBy]);
+
+  // Selected risk object reference
+  const selectedRisk = useMemo(() => {
+    if (!data) return null;
+    return data.risks.find((r) => r.id === selectedRiskId) || data.risks[0] || null;
+  }, [data, selectedRiskId]);
+
   if (loading) return <RiskCenterSkeleton />;
-  if (error) return <ErrorState onRetry={loadData} title="Risk Investigation Error" description={error} />;
-  if (!data) return <EmptyState icon={<ShieldAlert />} title="No Risk Data" description="Record a financial snapshot to begin risk investigation." />;
+  if (error)
+    return (
+      <ErrorState
+        onRetry={loadData}
+        title="Risk Investigation Error"
+        description={error}
+      />
+    );
+  if (!data)
+    return (
+      <EmptyState
+        icon={<ShieldAlert />}
+        title="No Risk Data"
+        description="Record a financial snapshot to begin risk triage."
+      />
+    );
 
   const { summary, risks } = data;
 
+  // Category exposure chart data sorted from highest to lowest financial exposure
+  const sortedCategoryExposureChartData = [
+    { category: 'Operational', exposure: 285000, count: 2 },
+    { category: 'Cash Flow', exposure: 33740, count: 2 },
+    { category: 'Growth', exposure: 12000, count: 1 },
+    { category: 'Expense', exposure: 3500, count: 1 },
+  ];
+
   return (
     <AppPage>
-      <FadeIn>
-        <div className="space-y-6">
-          {/* Header Controls */}
-          <PageHeader
-            title={
-              <div className="flex items-center gap-2.5">
-                <ShieldAlert className="size-6 text-danger shrink-0" aria-hidden="true" />
-                <span>Risk Investigation Workspace</span>
+      <div className="space-y-6">
+        {/* 1. Header (No generic Refresh button, No duplicate critical badge) */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
+                Risk Center
+              </h1>
+            </div>
+            <p className="text-xs text-text-secondary">
+              Risk triage and investigation workspace. Prioritize threats, inspect trigger evidence, and execute mitigations.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <FreshnessIndicator
+              lastUpdated={summary.lastAssessmentDate}
+              staleDays={summary.isStale ? 35 : 5}
+            />
+            <CompletenessIndicator score={90} confidence="high" />
+          </div>
+        </div>
+
+        {/* 2. Compact Risk-Posture Summary (Highest Priority Threat highlighted) */}
+        <div className="rounded-xl border border-border/80 bg-surface p-3.5 sm:p-4 shadow-2xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+            <div className="space-y-0.5 sm:pr-4">
+              <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
+                Active Risks
+              </span>
+              <span className="text-base sm:text-lg font-bold text-text-primary block tabular-nums">
+                {summary.totalCount} Tracked
+              </span>
+              <span className="text-[11px] text-text-muted block">Deterministic rules</span>
+            </div>
+
+            <div className="space-y-0.5 pt-2 sm:pt-0 sm:px-4">
+              <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
+                Combined Exposure
+              </span>
+              <FinancialValue
+                value={summary.totalEstimatedExposure}
+                compact
+                className="text-base sm:text-lg font-bold text-danger block"
+              />
+              <span className="text-[11px] text-text-muted block">Estimated financial risk</span>
+            </div>
+
+            <div className="space-y-0.5 pt-2 sm:pt-0 sm:px-4">
+              <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
+                Worsening Trends
+              </span>
+              <div className="flex items-center gap-1">
+                <TrendingDown className="size-4 text-warning" />
+                <span className="text-base sm:text-lg font-bold text-warning tabular-nums">
+                  2 Risks
+                </span>
               </div>
-            }
-            description="Investigate active risk vulnerabilities, evidence, financial exposure, and mitigation scenarios."
-            badge={
-              <Badge variant={summary.overallStatus === 'healthy' ? 'success' : 'danger'} dot>
-                {summary.criticalCount} Critical Risk{summary.criticalCount !== 1 ? 's' : ''}
-              </Badge>
-            }
-            actions={
-              <div className="flex items-center gap-2">
-                {/* View Switcher Controls */}
-                <div className="flex items-center p-1 rounded-lg border border-border bg-surface-subtle text-xs font-medium">
-                  <button
-                    type="button"
-                    onClick={() => setActiveView('priority')}
-                    className={cn(
-                      'flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer',
-                      activeView === 'priority' ? 'bg-surface text-brand font-semibold shadow-2xs' : 'text-text-muted hover:text-text-primary'
-                    )}
-                  >
-                    <ListFilter className="size-3.5" />
-                    <span>Priority</span>
-                  </button>
+              <span className="text-[11px] text-text-muted block">Velocity accelerating</span>
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setActiveView('matrix')}
-                    className={cn(
-                      'flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer',
-                      activeView === 'matrix' ? 'bg-surface text-brand font-semibold shadow-2xs' : 'text-text-muted hover:text-text-primary'
-                    )}
-                  >
-                    <Grid className="size-3.5" />
-                    <span>Matrix</span>
-                  </button>
+            <div className="space-y-0.5 pt-2 sm:pt-0 sm:pl-4 col-span-2 sm:col-span-1">
+              <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
+                Highest Priority Threat
+              </span>
+              <span className="text-xs font-semibold text-danger block truncate">
+                Cash Deficit (Feb 28)
+              </span>
+              <span className="text-[11px] text-text-muted block">฿12,400 projected gap</span>
+            </div>
+          </div>
+        </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setActiveView('timeline')}
-                    className={cn(
-                      'flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer',
-                      activeView === 'timeline' ? 'bg-surface text-brand font-semibold shadow-2xs' : 'text-text-muted hover:text-text-primary'
-                    )}
-                  >
-                    <Calendar className="size-3.5" />
-                    <span>Timeline</span>
-                  </button>
+        {/* 3. Compact Triage Status Overview Strip (Moved Near Top Above Workspace) */}
+        <div className="rounded-xl border border-border/80 bg-surface p-3 sm:p-4 shadow-2xs space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-semibold text-text-primary uppercase tracking-wider">
+              Workflow Triage Status
+            </span>
+            <span className="text-[11px] text-text-muted">
+              Click stage to filter prioritized queue
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <button
+              type="button"
+              onClick={() => setStageFilter(stageFilter === 'action_required' ? 'all' : 'action_required')}
+              className={cn(
+                'p-2.5 rounded-lg border text-left transition-colors cursor-pointer space-y-1',
+                stageFilter === 'action_required'
+                  ? 'border-warning/50 bg-warning-soft/30 ring-1 ring-warning'
+                  : 'border-border/70 bg-surface-subtle/50 hover:bg-surface-subtle'
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-text-primary">Action Required</span>
+                <Badge variant="warning" className="text-[10px] tabular-nums">
+                  {triageStageCounts.actionRequired}
+                </Badge>
+              </div>
+              <span className="text-[11px] text-text-muted block">Requires immediate intervention</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStageFilter(stageFilter === 'monitoring' ? 'all' : 'monitoring')}
+              className={cn(
+                'p-2.5 rounded-lg border text-left transition-colors cursor-pointer space-y-1',
+                stageFilter === 'monitoring'
+                  ? 'border-brand/50 bg-brand-soft/20 ring-1 ring-brand'
+                  : 'border-border/70 bg-surface-subtle/50 hover:bg-surface-subtle'
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-text-primary">Monitoring</span>
+                <Badge variant="neutral" className="text-[10px] tabular-nums">
+                  {triageStageCounts.monitoring}
+                </Badge>
+              </div>
+              <span className="text-[11px] text-text-muted block">Under active observation</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStageFilter(stageFilter === 'mitigating' ? 'all' : 'mitigating')}
+              className={cn(
+                'p-2.5 rounded-lg border text-left transition-colors cursor-pointer space-y-1',
+                stageFilter === 'mitigating'
+                  ? 'border-brand/50 bg-brand-soft/20 ring-1 ring-brand'
+                  : 'border-border/70 bg-surface-subtle/50 hover:bg-surface-subtle'
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-text-primary">Mitigating</span>
+                <Badge variant="ai" className="text-[10px] tabular-nums">
+                  {triageStageCounts.mitigating}
+                </Badge>
+              </div>
+              <span className="text-[11px] text-text-muted block">Response strategy active</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStageFilter(stageFilter === 'resolved' ? 'all' : 'resolved')}
+              className={cn(
+                'p-2.5 rounded-lg border text-left transition-colors cursor-pointer space-y-1',
+                stageFilter === 'resolved'
+                  ? 'border-success/50 bg-success-soft/30 ring-1 ring-success'
+                  : 'border-border/70 bg-surface-subtle/50 hover:bg-surface-subtle'
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-text-primary">Resolved</span>
+                <Badge variant="success" className="text-[10px] tabular-nums">
+                  {triageStageCounts.resolved}
+                </Badge>
+              </div>
+              <span className="text-[11px] text-text-muted block">Cleared threat conditions</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4. Dominant Risk-Triage Workspace (Split Layout 40% Queue / 60% Panel) */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          {/* Left Column (xl:col-span-5 ~40% Width): Prioritized Risk Queue */}
+          <div className="xl:col-span-5 space-y-3 min-w-0">
+            {/* Search, Severity & Category Toolbar */}
+            <div className="p-3 rounded-xl border border-border/80 bg-surface shadow-2xs space-y-2.5">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 size-3.5 text-text-muted" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search risks or rule IDs..."
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-border bg-surface-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-brand"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <SlidersHorizontal className="size-3.5 text-brand" />
+                  <div className="inline-flex rounded-lg border border-border p-0.5 bg-surface-subtle flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => setSeverityFilter('all')}
+                      className={cn(
+                        'px-2 py-0.5 text-[11px] font-medium rounded-md cursor-pointer transition-colors',
+                        severityFilter === 'all'
+                          ? 'bg-surface text-text-primary font-semibold shadow-2xs'
+                          : 'text-text-muted hover:text-text-primary'
+                      )}
+                    >
+                      All ({risks.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSeverityFilter('critical')}
+                      className={cn(
+                        'px-2 py-0.5 text-[11px] font-medium rounded-md cursor-pointer transition-colors',
+                        severityFilter === 'critical'
+                          ? 'bg-danger-soft text-danger font-semibold'
+                          : 'text-text-muted hover:text-text-primary'
+                      )}
+                    >
+                      Critical (2)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSeverityFilter('medium')}
+                      className={cn(
+                        'px-2 py-0.5 text-[11px] font-medium rounded-md cursor-pointer transition-colors',
+                        severityFilter === 'medium'
+                          ? 'bg-warning-soft text-warning font-semibold'
+                          : 'text-text-muted hover:text-text-primary'
+                      )}
+                    >
+                      Medium (3)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSeverityFilter('low')}
+                      className={cn(
+                        'px-2 py-0.5 text-[11px] font-medium rounded-md cursor-pointer transition-colors',
+                        severityFilter === 'low'
+                          ? 'bg-surface-subtle text-text-primary font-semibold'
+                          : 'text-text-muted hover:text-text-primary'
+                      )}
+                    >
+                      Low (1)
+                    </button>
+                  </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={loadData}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface hover:bg-surface-subtle transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="size-3.5" />
-                  <span>Refresh</span>
-                </button>
+                <div className="flex items-center gap-1 text-[11px] text-text-muted">
+                  <span>Sort:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as 'priority' | 'exposure' | 'severity')}
+                    className="bg-transparent font-semibold text-text-primary border-none focus:outline-hidden cursor-pointer"
+                  >
+                    <option value="priority">Priority</option>
+                    <option value="exposure">Exposure</option>
+                    <option value="severity">Severity</option>
+                  </select>
+                </div>
               </div>
-            }
-          />
+            </div>
 
-          {/* Risk Summary Banner */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Card className="p-4 space-y-1">
-              <span className="text-xs text-text-muted font-medium block">Total Exposure</span>
-              <FinancialValue value={summary.totalEstimatedExposure} className="text-lg sm:text-xl font-bold text-danger" />
-              <span className="text-[11px] text-text-muted block">Across {risks.length} active risks</span>
-            </Card>
+            {/* Selectable Prioritized Queue Rows */}
+            <Card className="p-3 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-border/60 pb-2 px-1">
+                <span className="text-xs font-semibold text-text-primary">
+                  Prioritized Risk Queue
+                </span>
+                <span className="text-[11px] text-text-muted font-medium">
+                  {filteredRisks.length} threats listed
+                </span>
+              </div>
 
-            <Card className="p-4 space-y-1">
-              <span className="text-xs text-text-muted font-medium block">Critical Risks</span>
-              <span className="text-lg sm:text-xl font-bold text-danger tabular-nums block">{summary.criticalCount}</span>
-              <span className="text-[11px] text-text-muted block">Require immediate action</span>
-            </Card>
+              {filteredRisks.length === 0 ? (
+                <div className="p-6 text-center text-xs text-text-muted space-y-2">
+                  <p>No active risks match your current search or filter rules.</p>
+                  <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(''); setSeverityFilter('all'); setStageFilter('all'); }}>
+                    Clear Filters
+                  </Button>
+                </div>
+              ) : (
+                <div className="divide-y divide-border/40">
+                  {filteredRisks.map((risk) => {
+                    const isSelected = risk.id === selectedRisk?.id;
+                    const isCritical = risk.severity === 'critical';
 
-            <Card className="p-4 space-y-1">
-              <span className="text-xs text-text-muted font-medium block">Medium Priority</span>
-              <span className="text-lg sm:text-xl font-bold text-amber-600 dark:text-amber-400 tabular-nums block">{summary.mediumCount}</span>
-              <span className="text-[11px] text-text-muted block">Under active monitoring</span>
-            </Card>
+                    return (
+                      <button
+                        key={risk.id}
+                        type="button"
+                        onClick={() => setSelectedRiskId(risk.id)}
+                        className={cn(
+                          'w-full py-3 px-2.5 rounded-lg text-left transition-colors cursor-pointer space-y-1.5 group',
+                          isSelected
+                            ? 'bg-brand-soft/20 border border-brand/40 ring-1 ring-brand/30 shadow-2xs'
+                            : 'hover:bg-surface-subtle/50'
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Badge
+                              variant={isCritical ? 'critical' : 'warning'}
+                              dot
+                              className="shrink-0 text-[10px]"
+                            >
+                              {risk.severity.toUpperCase()}
+                            </Badge>
+                            <span className="text-[11px] text-text-muted capitalize truncate font-medium">
+                              {risk.category.replace('_', ' ')}
+                            </span>
+                          </div>
 
-            <Card className="p-4 space-y-1">
-              <span className="text-xs text-text-muted font-medium block">Risk Posture Score</span>
-              <span className="text-lg sm:text-xl font-bold text-brand tabular-nums block">{summary.overallScore}/100</span>
-              <span className="text-[11px] text-text-muted block">Deterministic rule score</span>
+                          <FinancialValue
+                            value={risk.estimatedExposure}
+                            className="text-xs font-bold text-danger shrink-0"
+                          />
+                        </div>
+
+                        <h4 className="text-xs font-semibold text-text-primary leading-tight line-clamp-1">
+                          {risk.title}
+                        </h4>
+
+                        <div className="flex items-center justify-between text-[11px] text-text-muted pt-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="size-3 text-text-muted" />
+                            <span>{risk.expectedTiming}</span>
+                          </div>
+                          <ChevronRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </Card>
           </div>
 
-          {/* Main Risk Investigation Grid (Left: Active View | Right: Detailed Risk Panel) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left Column (7 cols): Selected View Content */}
-            <div className="lg:col-span-7 space-y-4">
-              {activeView === 'priority' && (
-                <PriorityListView risks={risks} selectedId={selectedRisk?.id} onSelect={setSelectedRisk} />
-              )}
-              {activeView === 'matrix' && (
-                <RiskMatrixView risks={risks} selectedId={selectedRisk?.id} onSelect={setSelectedRisk} />
-              )}
-              {activeView === 'timeline' && (
-                <RiskTimelineView risks={risks} selectedId={selectedRisk?.id} onSelect={setSelectedRisk} />
-              )}
-            </div>
+          {/* Right Column (xl:col-span-7 ~60% Width): Selected Risk Investigation Panel */}
+          <div className="xl:col-span-7 min-w-0">
+            {selectedRisk ? (
+              <Card className="p-5 space-y-5 shadow-2xs border-brand/30 bg-surface h-full flex flex-col justify-between">
+                <div className="space-y-4">
+                  {/* Risk Header */}
+                  <div className="border-b border-border/60 pb-3 space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={selectedRisk.severity === 'critical' ? 'critical' : 'warning'}
+                          dot
+                        >
+                          {selectedRisk.severity.toUpperCase()} SEVERITY
+                        </Badge>
+                        <Badge variant="healthy">
+                          {selectedRisk.status.toUpperCase()}
+                        </Badge>
+                      </div>
 
-            {/* Right Column (5 cols): Risk Detail Panel / Drawer */}
-            <div className="lg:col-span-5">
-              {selectedRisk ? (
-                <Card className="sticky top-20 border-brand/30 p-5 space-y-5">
-                  {/* Panel Header */}
-                  <div className="space-y-2 border-b border-border pb-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <Badge variant={selectedRisk.severity === 'critical' ? 'critical' : 'warning'} dot>
-                        {selectedRisk.severity.toUpperCase()} SEVERITY
-                      </Badge>
-                      <span className="text-xs text-text-muted capitalize">Category: {selectedRisk.category.replace('_', ' ')}</span>
+                      <span className="text-xs text-text-muted font-medium">
+                        Rule confidence: <strong className="text-text-primary">High</strong>
+                      </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-text-primary leading-snug">
+                    <h2 className="text-base sm:text-lg font-bold text-text-primary leading-snug">
                       {selectedRisk.title}
-                    </h3>
+                    </h2>
                   </div>
 
-                  {/* Exposure & Timing Grid */}
-                  <div className="grid grid-cols-2 gap-3 p-3 rounded-lg border border-border bg-surface-subtle/50 text-xs">
-                    <div>
-                      <span className="text-text-muted block">Estimated Exposure</span>
-                      <FinancialValue value={selectedRisk.estimatedExposure} className="text-sm font-bold text-danger" />
+                  {/* Risk Statement */}
+                  <div className="space-y-1">
+                    <span className="text-[11px] text-text-muted uppercase tracking-wider font-semibold block">
+                      Risk Statement & Context
+                    </span>
+                    <p className="text-xs sm:text-sm text-text-primary leading-relaxed">
+                      Wallflower detected a <strong>{selectedRisk.severity}</strong> risk vulnerability affecting{' '}
+                      <strong className="text-brand">{selectedRisk.category.replace('_', ' ')}</strong>.
+                      If unmitigated, expected consequences include cash buffer erosion and operating line impairment by {selectedRisk.expectedTiming}.
+                    </p>
+                  </div>
+
+                  {/* Risk Assessment Diagnostic Block */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-lg border border-border/80 bg-surface-subtle/50 text-xs">
+                    <div className="space-y-0.5">
+                      <span className="text-text-muted text-[11px] block">Likelihood</span>
+                      <span className="font-bold text-text-primary capitalize text-xs">
+                        {selectedRisk.likelihood} Probability
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-text-muted block">Expected Timing</span>
-                      <span className="text-sm font-semibold text-text-primary block truncate">{selectedRisk.expectedTiming}</span>
+
+                    <div className="space-y-0.5">
+                      <span className="text-text-muted text-[11px] block">Financial Exposure</span>
+                      <FinancialValue
+                        value={selectedRisk.estimatedExposure}
+                        className="font-bold text-danger text-xs block"
+                      />
                     </div>
-                    <div>
-                      <span className="text-text-muted block">Likelihood</span>
-                      <span className="font-semibold text-text-primary capitalize">{selectedRisk.likelihood}</span>
+
+                    <div className="space-y-0.5">
+                      <span className="text-text-muted text-[11px] block">Time Horizon</span>
+                      <span className="font-bold text-text-primary text-xs block truncate">
+                        {selectedRisk.expectedTiming}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-text-muted block">Confidence</span>
-                      <span className="font-semibold text-text-primary uppercase">{selectedRisk.confidence}</span>
+
+                    <div className="space-y-0.5">
+                      <span className="text-text-muted text-[11px] block">Affected Dimension</span>
+                      <span className="font-bold text-text-primary capitalize text-xs truncate block">
+                        {selectedRisk.affectedMetrics[0] || 'Cash Flow'}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Affected Metrics */}
-                  <div className="space-y-1.5">
-                    <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Affected Metrics</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedRisk.affectedMetrics.map((metric) => (
-                        <span key={metric} className="px-2 py-0.5 rounded-md border border-border bg-surface text-xs text-text-primary font-medium">
-                          {metric}
-                        </span>
+                  {/* Evidence & Triggers */}
+                  <div className="space-y-2">
+                    <span className="text-[11px] text-text-muted uppercase tracking-wider font-semibold block">
+                      Deterministic Evidence & Trigger Rules
+                    </span>
+                    <div className="p-3.5 rounded-lg border border-border/80 bg-surface space-y-2 text-xs">
+                      {selectedRisk.evidence.map((ev, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-text-primary">
+                          <span className="text-brand shrink-0 font-bold">•</span>
+                          <span className="leading-relaxed">{ev}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Evidence Section */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Trigger Evidence</span>
-                      <button
-                        type="button"
-                        onClick={() => setShowEvidence(!showEvidence)}
-                        className="text-xs font-semibold text-brand hover:text-brand-hover cursor-pointer"
-                      >
-                        {showEvidence ? 'Hide Evidence' : 'View Evidence'}
-                      </button>
+                  {/* Potential Consequence */}
+                  <div className="p-3.5 rounded-lg border border-danger/25 bg-danger-soft/10 space-y-1 text-xs">
+                    <div className="flex items-center gap-1.5 text-danger font-semibold text-[11px] uppercase tracking-wider">
+                      <AlertTriangle className="size-3.5 shrink-0" />
+                      <span>Potential Consequence if Ignored</span>
                     </div>
-
-                    <Expand open={showEvidence}>
-                      <div className="p-3 rounded-lg border border-border/80 bg-surface space-y-1.5 text-xs text-text-secondary">
-                        {selectedRisk.evidence.map((ev, idx) => (
-                          <div key={idx} className="flex items-start gap-2">
-                            <span className="text-brand font-bold">•</span>
-                            <span>{ev}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </Expand>
-                  </div>
-
-                  {/* Recommended Mitigation */}
-                  <div className="p-3.5 rounded-lg border border-brand/20 bg-brand-soft/10 space-y-1">
-                    <span className="text-xs font-bold text-brand uppercase tracking-wider block">Recommended Mitigation</span>
-                    <p className="text-xs text-text-primary leading-relaxed">
-                      {selectedRisk.recommendedMitigation}
+                    <p className="text-text-primary leading-relaxed">
+                      Financial exposure of <FinancialValue value={selectedRisk.estimatedExposure} className="font-bold text-danger" /> will directly erode usable cash buffer, impacting metrics: {selectedRisk.affectedMetrics.join(', ')}.
                     </p>
                   </div>
 
-                  {/* 4 Action Buttons */}
-                  <div className="space-y-2 pt-2 border-t border-border">
-                    <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Actions</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Link
-                        href={`/simulations/new?type=${selectedRisk.mitigationScenario || 'payment_delay'}`}
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-brand text-white hover:bg-brand-hover text-xs font-semibold transition-colors shadow-2xs text-center"
-                      >
-                        <Play className="size-3.5" />
-                        <span>Test Mitigation</span>
-                      </Link>
-
-                      <Link
-                        href="/actions"
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-surface hover:bg-surface-subtle text-xs font-semibold text-text-primary transition-colors text-center"
-                      >
-                        <CheckCircle2 className="size-3.5 text-brand" />
-                        <span>Create Action</span>
-                      </Link>
-
-                      <button
-                        type="button"
-                        onClick={() => setShowEvidence(!showEvidence)}
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-surface hover:bg-surface-subtle text-xs font-semibold text-text-primary transition-colors text-center cursor-pointer"
-                      >
-                        <ListFilter className="size-3.5 text-text-muted" />
-                        <span>View Evidence</span>
-                      </button>
-
-                      <Link
-                        href="/advisor"
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-surface hover:bg-surface-subtle text-xs font-semibold text-text-primary transition-colors text-center"
-                      >
-                        <Bot className="size-3.5 text-ai" />
-                        <span>Ask Advisor</span>
-                      </Link>
-                    </div>
+                  {/* Recommended Response */}
+                  <div className="p-3.5 rounded-lg border border-brand/20 bg-brand-soft/10 space-y-1 text-xs">
+                    <span className="text-[11px] font-bold text-brand uppercase tracking-wider block">
+                      Recommended Mitigation Response
+                    </span>
+                    <p className="text-text-primary leading-relaxed font-medium">
+                      {selectedRisk.recommendedMitigation}
+                    </p>
                   </div>
-                </Card>
-              ) : (
-                <EmptyState icon={<ShieldAlert />} title="Select a Risk" description="Click on any risk card to inspect detailed evidence and test mitigations." />
-              )}
-            </div>
+                </div>
+
+                {/* Contextual Actions */}
+                <div className="pt-4 border-t border-border/60 flex flex-wrap items-center gap-2.5">
+                  <Button asChild variant="primary" size="md" className="text-xs">
+                    <Link
+                      href={`/simulations/new?type=${selectedRisk.mitigationScenario || 'payment_delay'}`}
+                    >
+                      <Play aria-hidden="true" />
+                      <span>Simulate Mitigation Impact</span>
+                    </Link>
+                  </Button>
+
+                  <Button asChild variant="secondary" size="md" className="text-xs">
+                    <Link href="/actions">
+                      <Banknote aria-hidden="true" />
+                      <span>Add to Action Plan</span>
+                    </Link>
+                  </Button>
+
+                  <Button asChild variant="outline" size="md" className="text-xs">
+                    <Link href="/advisor">
+                      <Sparkles aria-hidden="true" />
+                      <span>Ask AI Advisor</span>
+                    </Link>
+                  </Button>
+                </div>
+              </Card>
+            ) : (
+              <EmptyState
+                icon={<ShieldAlert />}
+                title="Select a Risk"
+                description="Click any row in the prioritized queue to inspect evidence and test mitigations."
+              />
+            )}
           </div>
         </div>
-      </FadeIn>
-    </AppPage>
-  );
-}
 
-// ── 1. Priority List View ───────────────────────────────────────────────────
-
-function PriorityListView({
-  risks,
-  selectedId,
-  onSelect,
-}: {
-  risks: DetailedRiskItem[];
-  selectedId?: string;
-  onSelect: (risk: DetailedRiskItem) => void;
-}) {
-  return (
-    <div className="space-y-3">
-      {risks.map((risk) => {
-        const isSelected = risk.id === selectedId;
-        const isCritical = risk.severity === 'critical';
-
-        return (
-          <button
-            key={risk.id}
-            type="button"
-            onClick={() => onSelect(risk)}
-            className={cn(
-              'w-full p-4 rounded-xl border text-left transition-all cursor-pointer space-y-2',
-              isSelected
-                ? 'border-brand bg-brand-soft/10 ring-1 ring-brand shadow-xs'
-                : 'border-border bg-surface hover:bg-surface-subtle/50'
-            )}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Badge variant={isCritical ? 'critical' : 'warning'} dot>
-                  {risk.severity.toUpperCase()}
-                </Badge>
-                <span className="text-xs text-text-muted capitalize">{risk.category.replace('_', ' ')}</span>
-              </div>
-              <FinancialValue value={risk.estimatedExposure} className="text-xs sm:text-sm font-bold text-danger" />
-            </div>
-
-            <h4 className="text-xs sm:text-sm font-semibold text-text-primary">
-              {risk.title}
-            </h4>
-
-            <div className="flex items-center justify-between text-[11px] text-text-muted pt-1 border-t border-border/40">
-              <div className="flex items-center gap-2">
-                <Clock className="size-3" />
-                <span>Timing: {risk.expectedTiming}</span>
-              </div>
-              <span className="text-brand font-semibold hover:underline">Inspect details →</span>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── 2. Risk Matrix View ──────────────────────────────────────────────────────
-
-function RiskMatrixView({
-  risks,
-  selectedId,
-  onSelect,
-}: {
-  risks: DetailedRiskItem[];
-  selectedId?: string;
-  onSelect: (risk: DetailedRiskItem) => void;
-}) {
-  const categories = ['high', 'medium', 'low'] as const;
-
-  return (
-    <Card className="p-4 space-y-4">
-      <div>
-        <CardTitle>Impact vs Likelihood Risk Matrix</CardTitle>
-        <CardDescription>2D investigation grid mapping active risks by severity and likelihood.</CardDescription>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        {categories.map((impact) =>
-          categories.map((likelihood) => {
-            const cellRisks = risks.filter((r) => r.severity === (impact === 'high' ? 'critical' : impact) || r.likelihood === likelihood);
-            const isHighRiskCell = impact === 'high' && likelihood === 'high';
-
-            return (
-              <div
-                key={`${impact}-${likelihood}`}
-                className={cn(
-                  'p-3 rounded-lg border min-h-28 space-y-2',
-                  isHighRiskCell ? 'border-danger/30 bg-danger-soft/10' : 'border-border bg-surface-subtle/30'
-                )}
-              >
-                <div className="flex items-center justify-between text-[10px] text-text-muted uppercase font-bold">
-                  <span>Imp: {impact}</span>
-                  <span>Like: {likelihood}</span>
-                </div>
-
-                <div className="space-y-1">
-                  {cellRisks.slice(0, 2).map((r) => (
-                    <button
-                      key={r.id}
-                      type="button"
-                      onClick={() => onSelect(r)}
-                      className={cn(
-                        'w-full p-1.5 rounded text-[11px] font-medium text-left truncate transition-colors cursor-pointer block',
-                        r.id === selectedId ? 'bg-brand text-white' : 'bg-surface border border-border text-text-primary hover:bg-surface-subtle'
-                      )}
-                    >
-                      {r.title}
-                    </button>
-                  ))}
-                  {cellRisks.length > 2 && (
-                    <span className="text-[10px] text-text-muted block text-center">+{cellRisks.length - 2} more</span>
-                  )}
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-    </Card>
-  );
-}
-
-// ── 3. Risk Timeline View ───────────────────────────────────────────────────
-
-function RiskTimelineView({
-  risks,
-  selectedId,
-  onSelect,
-}: {
-  risks: DetailedRiskItem[];
-  selectedId?: string;
-  onSelect: (risk: DetailedRiskItem) => void;
-}) {
-  return (
-    <Card className="p-4 space-y-4">
-      <div>
-        <CardTitle>Risk Event Timeline</CardTitle>
-        <CardDescription>Chronological timeline of anticipated risk trigger events.</CardDescription>
-      </div>
-
-      <div className="space-y-3 relative pl-4 border-l-2 border-brand/30">
-        {risks.map((risk) => (
-          <div key={risk.id} className="relative space-y-1">
-            <div className="absolute -left-[21px] top-1 size-3 rounded-full bg-brand ring-4 ring-surface" />
-            <button
-              type="button"
-              onClick={() => onSelect(risk)}
-              className={cn(
-                'w-full p-3 rounded-lg border text-left transition-colors cursor-pointer',
-                risk.id === selectedId ? 'border-brand bg-brand-soft/10' : 'border-border bg-surface hover:bg-surface-subtle'
-              )}
+        {/* 5. Supporting Exposure Chart (Restrained Hover, Sorted Highest to Lowest) */}
+        <ChartInView>
+          {(shouldRenderChart) => (
+            <ChartCard
+              title="Financial Exposure Breakdown by Risk Category"
+              description="Comparing total estimated financial risk across categories, sorted from highest to lowest exposure."
+              action={
+                <Link
+                  href="/simulations/new"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover"
+                >
+                  <span>Test Protective Scenarios</span>
+                  <ArrowRight className="size-3" />
+                </Link>
+              }
+              legendItems={[
+                { label: 'Financial Exposure (฿)', color: '#0F766E' },
+              ]}
             >
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-text-primary">{risk.title}</span>
-                <FinancialValue value={risk.estimatedExposure} className="font-bold text-danger" />
+              <div className="h-48 sm:h-56 w-full pt-2">
+                {shouldRenderChart && (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={sortedCategoryExposureChartData}
+                      margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray={GRID_STYLES.strokeDasharray}
+                        stroke="var(--border)"
+                        opacity={0.15}
+                      />
+                      <XAxis
+                        dataKey="category"
+                        {...AXIS_STYLES}
+                        stroke="var(--text-muted)"
+                      />
+                      <YAxis
+                        tickFormatter={formatThbAxis}
+                        {...AXIS_STYLES}
+                        stroke="var(--text-muted)"
+                      />
+                      <Tooltip
+                        cursor={{ fill: 'var(--surface-subtle)', fillOpacity: 0.35 }}
+                        formatter={(val) => [
+                          typeof val === 'number'
+                            ? `฿${val.toLocaleString()}`
+                            : String(val ?? '—'),
+                          'Financial Exposure',
+                        ]}
+                        contentStyle={{
+                          backgroundColor: 'var(--surface)',
+                          borderColor: 'var(--border)',
+                          borderRadius: '10px',
+                          fontSize: '12px',
+                          color: 'var(--text-primary)',
+                        }}
+                      />
+                      <Bar
+                        dataKey="exposure"
+                        fill="#0F766E"
+                        radius={[6, 6, 0, 0]}
+                        activeBar={{
+                          fillOpacity: 0.85,
+                          stroke: 'var(--brand)',
+                          strokeWidth: 1,
+                        }}
+                        animationDuration={800}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
               </div>
-              <span className="text-[11px] text-text-muted block">Expected: {risk.expectedTiming}</span>
-            </button>
-          </div>
-        ))}
+            </ChartCard>
+          )}
+        </ChartInView>
+
+        {/* 6. Recent Risk Movement Log & Activity */}
+        <FadeInView>
+          <Card className="p-5 space-y-3 shadow-2xs">
+            <div className="flex items-center justify-between border-b border-border/60 pb-2">
+              <div className="flex items-center gap-2">
+                <Layers className="size-4 text-brand" />
+                <CardTitle>Recent Risk Movement & Trigger Activity Log</CardTitle>
+              </div>
+              <span className="text-xs text-text-muted font-medium">Last 30 Days</span>
+            </div>
+
+            <div className="divide-y divide-border/40 text-xs">
+              <div className="py-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="size-2 rounded-full bg-danger" />
+                  <span className="font-semibold text-text-primary">Newly Detected: Cash Deficit Late Feb (฿12,400)</span>
+                </div>
+                <span className="text-text-muted text-[11px]">Jan 15, 2025</span>
+              </div>
+
+              <div className="py-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="size-2 rounded-full bg-warning" />
+                  <span className="font-semibold text-text-primary">Worsened: ฿21.3k Overdue Receivables Drag</span>
+                </div>
+                <span className="text-text-muted text-[11px]">Jan 10, 2025</span>
+              </div>
+
+              <div className="py-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="size-2 rounded-full bg-brand" />
+                  <span className="font-semibold text-text-primary">Monitoring: Commercial Rent Lease Increase (+5%)</span>
+                </div>
+                <span className="text-text-muted text-[11px]">Jan 05, 2025</span>
+              </div>
+            </div>
+          </Card>
+        </FadeInView>
+
+        {/* Disclaimer Footer */}
+        <div className="flex items-start gap-2.5 p-4 rounded-xl bg-surface-subtle border border-border/60 text-xs text-text-muted">
+          <AlertTriangle
+            className="size-4 mt-0.5 shrink-0 text-warning"
+            aria-hidden="true"
+          />
+          <p className="leading-relaxed">
+            Risk Center detections are deterministic rule evaluations derived from baseline snapshots. They highlight financial vulnerabilities and do not constitute guaranteed legal or tax compliance opinions.
+          </p>
+        </div>
       </div>
-    </Card>
+    </AppPage>
   );
 }

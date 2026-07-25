@@ -1,9 +1,45 @@
-// src/components/ui/domain-values.tsx
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Badge, type BadgeVariant } from '@/components/ui/badge';
 import { Clock, ShieldCheck, AlertTriangle } from 'lucide-react';
 import type { DataQuality, DataConfidence } from '@/types/domain';
+
+/**
+ * Smooth count-up animation hook for numeric values.
+ * Animates from 0 (or initial) to target value over specified duration (default: 1400ms).
+ */
+export function useCountUp(target: number, duration: number = 1200): number {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    let animationFrameId: number;
+    const startValue = 0;
+    const diff = target - startValue;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      // Smooth easeOutCubic curve
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(startValue + diff * easeProgress);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [target, duration]);
+
+  return displayValue;
+}
 
 interface FinancialValueProps extends React.HTMLAttributes<HTMLSpanElement> {
   value: number | null | undefined;
@@ -11,6 +47,7 @@ interface FinancialValueProps extends React.HTMLAttributes<HTMLSpanElement> {
   quality?: DataQuality;
   showChip?: boolean;
   compact?: boolean;
+  animate?: boolean;
   className?: string;
 }
 
@@ -20,20 +57,25 @@ export function FinancialValue({
   quality,
   showChip = false,
   compact = false,
+  animate = true,
   className,
   ...props
 }: FinancialValueProps) {
+  const animatedValue = useCountUp(value ?? 0, 1200);
+
   if (value === null || value === undefined) {
     return <span className="text-text-muted italic">—</span>;
   }
 
+  const currentVal = animate ? animatedValue : value;
+
   const formatted = compact
-    ? Math.abs(value) >= 1_000_000
-      ? `${currency}${(value / 1_000_000).toFixed(1)}M`
-      : Math.abs(value) >= 1_000
-      ? `${currency}${(value / 1_000).toFixed(0)}K`
-      : `${currency}${value.toLocaleString()}`
-    : `${currency}${Math.round(value).toLocaleString()}`;
+    ? Math.abs(currentVal) >= 1_000_000
+      ? `${currency}${(currentVal / 1_000_000).toFixed(1)}M`
+      : Math.abs(currentVal) >= 1_000
+      ? `${currency}${(currentVal / 1_000).toFixed(0)}K`
+      : `${currency}${Math.round(currentVal).toLocaleString()}`
+    : `${currency}${Math.round(currentVal).toLocaleString()}`;
 
   return (
     <span className={cn('inline-flex items-baseline gap-1.5 tabular-nums', className)} {...props}>

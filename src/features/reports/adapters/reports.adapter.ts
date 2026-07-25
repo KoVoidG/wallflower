@@ -1,16 +1,14 @@
 // src/features/reports/adapters/reports.adapter.ts
 import type { DataConfidence } from '@/types/domain';
 
-export type ReportType =
-  | 'Executive summary'
-  | 'Cash-flow forecast'
-  | 'Business-health report'
-  | 'Risk report'
-  | 'Simulation comparison'
-  | 'Decision memo'
-  | 'Monthly management report';
+export type CoreReportType =
+  | 'Business Overview'
+  | 'Cash Flow & Risk'
+  | 'Simulation Decision Memo'
+  | 'Action Progress';
 
-export type ReportStatus = 'draft' | 'final' | 'archived';
+export type ReportType = CoreReportType | 'Executive summary' | 'Cash-flow forecast' | 'Risk report' | 'Decision memo';
+export type ReportStatus = 'Draft' | 'Generated' | 'Archived' | 'Needs data' | 'draft' | 'final';
 
 export interface DecisionMemoDetails {
   decisionTitle: string;
@@ -27,16 +25,52 @@ export interface DecisionMemoDetails {
 export interface DetailedReportCard {
   id: string;
   title: string;
-  type: ReportType;
+  type: CoreReportType;
   reportingPeriod: string;
   createdDate: string;
   sourceData: string;
   confidence: DataConfidence;
   status: ReportStatus;
+  audience?: string;
+  detailLevel?: 'concise' | 'detailed';
   decisionMemo?: DecisionMemoDetails;
 }
 
-// --- Legacy Types for Backward Compatibility ---
+export interface OpinionatedReportOption {
+  id: CoreReportType;
+  name: string;
+  purpose: string;
+  audience: string;
+}
+
+export const OPINIONATED_REPORT_OPTIONS: OpinionatedReportOption[] = [
+  {
+    id: 'Business Overview',
+    name: 'Business Overview',
+    purpose: 'General financial health, cash runway, key risks, and active management actions',
+    audience: 'Business owner & leadership',
+  },
+  {
+    id: 'Cash Flow & Risk',
+    name: 'Cash Flow & Risk',
+    purpose: 'Liquidity forecast, safe minimum buffer, receivables aging, and financial exposure',
+    audience: 'Advisors, lenders, & finance leads',
+  },
+  {
+    id: 'Simulation Decision Memo',
+    name: 'Simulation Decision Memo',
+    purpose: 'A formal decision record generated from one completed scenario simulation',
+    audience: 'Internal decision makers & investors',
+  },
+  {
+    id: 'Action Progress',
+    name: 'Action Progress',
+    purpose: 'Execution progress, assigned owners, deadlines, blockers, and measured business outcomes',
+    audience: 'Business owner & operations team',
+  },
+];
+
+// --- Legacy Types for Backward Compatibility with components/reports ---
 export type ReportPosture = 'healthy' | 'cautious' | 'critical';
 export type RiskSeverity = 'critical' | 'warning';
 
@@ -136,80 +170,18 @@ export interface ReportData {
   metadata: ReportMetadataInfo;
 }
 
-export interface SavedReport {
-  id: string;
-  name: string;
-  businessName: string;
-  generatedDate: string;
-  scenarioType: string;
-}
-
-const MOCK_REPORT_DATA: ReportData = {
-  id: 'rpt-memo-001',
-  cover: {
-    businessName: 'GreenCafe',
-    reportTitle: 'Monthly Decision Intelligence Report',
-    generatedDate: '2025-01-15',
-    dataThroughDate: '2024-12-31',
-    calculationVersion: '1.2.0',
-    reportVersion: '1',
-  },
-  executiveSummary: {
-    overview: 'GreenCafe maintains a cautious financial position with steady revenue of ฿152,400/month.',
-    keyTakeaway: 'Expense growth is outpacing revenue gains.',
-    posture: 'cautious',
-  },
-  metrics: {
-    items: [
-      { label: 'Revenue', value: 152400, formatted: '฿152,400', change: 8.2, changeDirection: 'up' },
-      { label: 'Expenses', value: 164800, formatted: '฿164,800', change: 12.0, changeDirection: 'up' },
-    ],
-  },
-  riskAnalysis: {
-    criticalCount: 2,
-    warningCount: 1,
-    risks: [
-      { title: 'Overdue Receivables Drag', severity: 'critical', evidence: '฿21,340 overdue' },
-    ],
-    isIncomplete: false,
-  },
-  simulation: {
-    scenarioName: 'Equipment Loan Option',
-    scenarioType: 'Equipment Purchase',
-    bestCase: { revenue: 195000, expenses: 178000, profit: 17000, cashRunway: 4.8 },
-    expectedCase: { revenue: 172000, expenses: 179800, profit: -7800, cashRunway: 2.6 },
-    worstCase: { revenue: 158000, expenses: 182000, profit: -24000, cashRunway: 1.4 },
-    baselineCase: { revenue: 152400, expenses: 164800, profit: -12400, cashRunway: 2.1 },
-  },
-  recommendation: {
-    summary: 'Procure oven via loan; follow up on invoice collection.',
-    actions: ['Collect Client A invoice', 'Finalize loan terms'],
-    confidenceNote: 'High confidence',
-  },
-  actionPlan: {
-    phases: [
-      { label: '0-30 days', items: [{ text: 'Collect overdue invoice', priority: 'high' }] },
-    ],
-  },
-  metadata: {
-    dataThroughDate: '2025-01-15',
-    calculationVersion: '1.2.0',
-    reportVersion: '1',
-    assumptions: ['Stable demand'],
-    disclaimer: 'Prototype report',
-  },
-};
-
 const MOCK_REPORTS: DetailedReportCard[] = [
   {
     id: 'rpt-memo-001',
     title: 'Equipment Loan vs Lease Decision Memo',
-    type: 'Decision memo',
+    type: 'Simulation Decision Memo',
     reportingPeriod: 'Jan 2025',
     createdDate: '2025-01-18',
-    sourceData: 'Jan 2025 Financial Snapshot + Oven Replacement Simulation',
+    sourceData: 'Jan 2025 Baseline + Oven Replacement Simulation',
     confidence: 'high',
-    status: 'final',
+    status: 'Generated',
+    audience: 'Internal management',
+    detailLevel: 'detailed',
     decisionMemo: {
       decisionTitle: 'Procure Commercial Oven via 24-Month SME Bank Loan',
       optionsConsidered: [
@@ -239,64 +211,48 @@ const MOCK_REPORTS: DetailedReportCard[] = [
   },
   {
     id: 'rpt-exec-002',
-    title: 'Executive Cockpit Monthly Decision Report',
-    type: 'Executive summary',
+    title: 'Executive Monthly Business Overview',
+    type: 'Business Overview',
     reportingPeriod: 'Jan 2025',
     createdDate: '2025-01-15',
     sourceData: 'Jan 2025 Baseline + Business Health Diagnostic',
     confidence: 'high',
-    status: 'final',
+    status: 'Generated',
+    audience: 'Business owner',
+    detailLevel: 'concise',
   },
   {
     id: 'rpt-cash-003',
-    title: 'Q1 Cash-Flow Forecast & Runway Resilience Report',
-    type: 'Cash-flow forecast',
-    reportingPeriod: 'Jan–Apr 2025',
+    title: 'Q1 Cash-Flow & Liquidity Risk Report',
+    type: 'Cash Flow & Risk',
+    reportingPeriod: 'Jan 2025',
     createdDate: '2025-01-12',
     sourceData: 'Cash Flow Workspace + Receivables Aging',
     confidence: 'medium',
-    status: 'final',
+    status: 'Generated',
+    audience: 'Bank or lender',
+    detailLevel: 'detailed',
   },
   {
-    id: 'rpt-risk-004',
-    title: 'Overdue Receivables & Rent Increase Risk Diagnostic',
-    type: 'Risk report',
+    id: 'rpt-action-004',
+    title: 'Monthly Action Plan Progress Report',
+    type: 'Action Progress',
     reportingPeriod: 'Jan 2025',
     createdDate: '2025-01-10',
-    sourceData: 'Risk Investigation Workspace (2 Active Critical Risks)',
+    sourceData: 'Action Plan Workspace (3 Active Tasks)',
     confidence: 'high',
-    status: 'draft',
-  },
-  {
-    id: 'rpt-compare-005',
-    title: 'Hiring vs Equipment Capex Scenario Comparison',
-    type: 'Simulation comparison',
-    reportingPeriod: 'Jan 2025',
-    createdDate: '2025-01-20',
-    sourceData: 'Scenario Comparison Workspace (2 Saved Options)',
-    confidence: 'medium',
-    status: 'final',
+    status: 'Draft',
+    audience: 'Business owner',
+    detailLevel: 'concise',
   },
 ];
 
 export async function getReportsData(): Promise<DetailedReportCard[]> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  await new Promise((resolve) => setTimeout(resolve, 100));
   return MOCK_REPORTS;
 }
 
 export async function getReportById(id: string): Promise<DetailedReportCard | null> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
+  await new Promise((resolve) => setTimeout(resolve, 100));
   return MOCK_REPORTS.find((r) => r.id === id) || MOCK_REPORTS[0];
-}
-
-export async function getReport(_id: string): Promise<ReportData | null> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
-  return { ...MOCK_REPORT_DATA, id: _id };
-}
-
-export async function getReportHistory(): Promise<SavedReport[]> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
-  return [
-    { id: 'rpt-memo-001', name: 'Equipment Loan Decision Memo', businessName: 'GreenCafe', generatedDate: '2025-01-18', scenarioType: 'Equipment Purchase' },
-  ];
 }

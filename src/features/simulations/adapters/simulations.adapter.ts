@@ -2,6 +2,7 @@
 import type { DataConfidence, DataQuality } from '@/types/domain';
 
 export type ScenarioType =
+  | 'custom'
   | 'hire_employees'
   | 'change_price'
   | 'marketing_investment'
@@ -149,6 +150,19 @@ export interface SavedSimulation {
 // ── Scenario Configs ────────────────────────────────────────────────────────
 
 const SCENARIO_CONFIGS: ScenarioConfig[] = [
+  {
+    id: 'custom',
+    type: 'custom',
+    title: 'Custom Business Decision',
+    description: 'Model custom revenue/expense changes, one-time cash impacts, or payment timing shifts.',
+    icon: 'FlaskConical',
+    fields: [
+      { name: 'scenarioName', label: 'Scenario Name', type: 'select', defaultValue: 'Custom Decision' },
+      { name: 'monthlyRevenueDelta', label: 'Monthly Revenue Impact', type: 'number', unit: 'THB', defaultValue: 20000 },
+      { name: 'monthlyExpenseDelta', label: 'Monthly Expense Impact', type: 'number', unit: 'THB', defaultValue: 10000 },
+      { name: 'oneTimeCashImpact', label: 'One-Time Cash Outlay', type: 'number', unit: 'THB', defaultValue: 0 },
+    ],
+  },
   {
     id: 'hire_employees',
     type: 'hire_employees',

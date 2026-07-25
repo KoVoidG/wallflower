@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { CountUp } from '@/components/motion';
 import { FinancialValue } from '@/components/ui/domain-values';
 import { MetricTooltip } from './metric-tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface KpiCardProps {
   /** Metric label (e.g. "Monthly Revenue") */
@@ -49,15 +50,6 @@ const statusLabel = {
   warning: 'Warning',
   danger: 'At Risk',
 } as const;
-
-function Skeleton({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn('block animate-pulse motion-reduce:animate-none rounded-[var(--radius-sm)] bg-border', className)}
-      aria-hidden="true"
-    />
-  );
-}
 
 function MiniSparkline({ data, className }: { data: number[]; className?: string }) {
   if (data.length < 2) return null;

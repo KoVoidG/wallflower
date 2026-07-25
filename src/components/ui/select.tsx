@@ -149,7 +149,7 @@ export function Select({
         onClick={() => (open ? closeDropdown() : openDropdown())}
         onKeyDown={handleKeyDown}
         className={cn(
-          'flex w-full items-center justify-between gap-2 px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-[15px] text-left',
+          'flex w-full items-center justify-between gap-2 px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-xs font-medium text-left',
           'outline-none transition-colors cursor-pointer',
           'focus-visible:ring-2 focus-visible:ring-brand/40',
           'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -162,7 +162,7 @@ export function Select({
         </span>
         <ChevronDown
           className={cn(
-            'size-4 shrink-0 text-text-muted transition-transform duration-150',
+            'size-3.5 shrink-0 text-text-muted transition-transform duration-150',
             'motion-reduce:transition-none',
             open && 'rotate-180'
           )}
@@ -211,7 +211,7 @@ export function Select({
                   onMouseEnter={() => setHighlightedIndex(idx)}
                   onClick={() => selectOption(option.value)}
                   className={cn(
-                    'flex items-center justify-between px-3 py-2 text-[14px] cursor-pointer',
+                    'flex items-center justify-between px-3 py-2 text-xs cursor-pointer',
                     'transition-colors duration-75',
                     isHighlighted && 'bg-brand-soft',
                     isSelected && !isHighlighted && 'text-brand font-[500]',

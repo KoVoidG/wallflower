@@ -1,10 +1,18 @@
 // src/components/charts/chart-card.tsx
+
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card';
 import { ChartLegend, type LegendItem } from './chart-legend';
 
-interface ChartCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+interface ChartCardProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;
   description?: React.ReactNode;
   legendItems?: LegendItem[];
@@ -22,25 +30,40 @@ export function ChartCard({
   className,
   ...props
 }: ChartCardProps) {
+  const hasLegend = Boolean(legendItems?.length);
+
   return (
-    <Card className={cn('flex flex-col justify-between', className)} {...props}>
-      <CardHeader className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b-0 pb-2 mb-0">
-        <div className="space-y-1 min-w-0">
-          {typeof title === 'string' ? <CardTitle>{title}</CardTitle> : title}
-          {description && (
-            typeof description === 'string' ? (
-              <CardDescription>{description}</CardDescription>
-            ) : (
-              description
-            )
-          )}
+    <Card className={cn('flex h-full flex-col', className)} {...props}>
+      <CardHeader className="space-y-0 border-b-0 pb-0">
+        {/* Title and action */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 space-y-1">
+            {typeof title === 'string' ? <CardTitle>{title}</CardTitle> : title}
+
+            {description &&
+              (typeof description === 'string' ? (
+                <CardDescription>{description}</CardDescription>
+              ) : (
+                description
+              ))}
+          </div>
+
+          {action && <div className="shrink-0 self-start">{action}</div>}
         </div>
-        <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
-          {legendItems && legendItems.length > 0 && <ChartLegend items={legendItems} />}
-          {action}
-        </div>
+
+        {/* Legend gets its own row */}
+        {hasLegend && (
+          <div className="mt-4 border-t border-border/60 pt-3">
+            <div className="overflow-x-auto">
+              <ChartLegend items={legendItems!} />
+            </div>
+          </div>
+        )}
       </CardHeader>
-      <CardContent className="pt-2">{children}</CardContent>
+
+      <CardContent className={cn('flex-1', hasLegend ? 'pt-3' : 'pt-4')}>
+        {children}
+      </CardContent>
     </Card>
   );
 }
