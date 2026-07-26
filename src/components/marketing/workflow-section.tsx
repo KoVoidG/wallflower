@@ -1,74 +1,78 @@
 'use client';
 
-import { Stethoscope, FlaskConical, Rocket, ArrowRight } from 'lucide-react';
-import { H2, Body } from '@/components/ui/typography';
-import { Surface } from '@/components/ui/surface';
-import { FadeIn, StaggerChildren } from '@/components/motion';
-
-const steps = [
-  {
-    number: '01',
-    icon: Stethoscope,
-    title: 'Diagnose',
-    description:
-      'Wallflower calculates your business health from real numbers — revenue trends, expense ratios, cash runway, and working capital.',
-  },
-  {
-    number: '02',
-    icon: FlaskConical,
-    title: 'Simulate',
-    description:
-      'Test decisions before committing. Run what-if scenarios for hiring, pricing, marketing spend, or equipment purchases.',
-  },
-  {
-    number: '03',
-    icon: Rocket,
-    title: 'Act',
-    description:
-      'Compare outcomes side-by-side, understand the risks, and move forward with evidence backing your decision.',
-  },
-];
+import { useTranslations } from 'next-intl';
+import { H2, Body, BodyLarge } from '@/components/ui/typography';
+import { Stethoscope, Sliders, CheckCircle2 } from 'lucide-react';
 
 export function WorkflowSection() {
-  return (
-    <section id="how-it-works" className="py-20 md:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8">
-        <FadeIn>
-          <div className="text-center mb-12 md:mb-16">
-            <H2>Three steps to a better decision</H2>
-          </div>
-        </FadeIn>
+  const t = useTranslations('landing.workflow');
 
-        <StaggerChildren
-          staggerDelay={0.1}
-          className="grid md:grid-cols-3 gap-6 md:gap-4 relative"
-        >
-          {steps.map((step, i) => (
-            <StaggerChildren.Item key={step.number} className="relative">
-              <Surface border className="p-6 h-full flex flex-col gap-4 text-center">
-                <div className="mx-auto flex items-center justify-center size-12 rounded-full bg-brand-soft">
-                  <step.icon className="size-5 text-brand" aria-hidden="true" />
+  const steps = [
+    {
+      number: '01',
+      icon: Stethoscope,
+      title: t('step01Title'),
+      description: t('step01Desc'),
+    },
+    {
+      number: '02',
+      icon: Sliders,
+      title: t('step02Title'),
+      description: t('step02Desc'),
+    },
+    {
+      number: '03',
+      icon: CheckCircle2,
+      title: t('step03Title'),
+      description: t('step03Desc'),
+    },
+  ];
+
+  return (
+    <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 border-b border-border bg-background">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <H2 className="text-[26px]/[34px] sm:text-[32px]/[40px] font-[700] text-text-primary tracking-tight">
+            {t('title')}
+          </H2>
+          <BodyLarge className="mt-3 text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
+            {t('subtitle')}
+          </BodyLarge>
+        </div>
+
+        {/* Connected Process Layout */}
+        <div className="relative">
+          {/* Desktop horizontal connecting line */}
+          <div
+            className="hidden md:block absolute top-[28px] left-[15%] right-[15%] h-[2px] bg-border z-0"
+            aria-hidden="true"
+          />
+
+          <div className="grid md:grid-cols-3 gap-8 md:gap-6 relative z-10">
+            {steps.map((step) => (
+              <div key={step.number} className="flex flex-col items-center text-center group">
+                {/* Step Icon Badge */}
+                <div className="size-14 rounded-full bg-surface border-2 border-brand text-brand font-[700] text-[16px] flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-105 mb-5 shrink-0">
+                  <step.icon className="size-6 text-brand" aria-hidden="true" />
                 </div>
+
+                {/* Step Content */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-[12px]/[18px] font-[650] text-brand uppercase tracking-wider">
+                  <span className="text-[12px]/[18px] font-[700] text-brand uppercase tracking-wider">
                     Step {step.number}
                   </span>
-                  <h3 className="text-[20px]/[28px] font-[600] text-text-primary">
+                  <h3 className="text-[18px]/[26px] font-[650] text-text-primary">
                     {step.title}
                   </h3>
-                  <Body>{step.description}</Body>
+                  <Body className="text-[14px]/[22px] text-text-secondary max-w-[320px] mx-auto">
+                    {step.description}
+                  </Body>
                 </div>
-              </Surface>
-
-              {/* Connecting arrow (desktop only, not on last item) */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:flex absolute top-1/2 -right-5 -translate-y-1/2 z-10 text-border">
-                  <ArrowRight className="size-6" aria-hidden="true" />
-                </div>
-              )}
-            </StaggerChildren.Item>
-          ))}
-        </StaggerChildren>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,28 +1,46 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { H2, BodyLarge } from '@/components/ui/typography';
-import { FadeIn } from '@/components/motion';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 
 export function CtaSection() {
+  const t = useTranslations('landing.cta');
+
   return (
-    <section id="cta" className="py-20 md:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8">
-        <FadeIn>
-          <div className="flex flex-col items-center text-center gap-6 max-w-xl mx-auto">
-            <H2>Start understanding your business</H2>
-            <BodyLarge>
-              Turn uncertainty into evidence. Make your next decision with
-              clarity, not guesswork.
-            </BodyLarge>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-[var(--radius-md)] bg-brand text-white text-[16px]/[24px] font-[550] hover:bg-brand-hover transition-colors mt-2"
-            >
-              Analyze my business
-            </Link>
+    <section id="cta" className="py-16 sm:py-20 border-b border-border bg-brand-soft/30">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center text-center gap-5 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-soft text-brand text-[13px]/[18px] font-[600]">
+            <ShieldCheck className="size-4" aria-hidden="true" />
+            <span>Deterministic Math • Evidence-Based Action</span>
           </div>
-        </FadeIn>
+
+          <H2 className="text-[26px]/[34px] sm:text-[34px]/[42px] font-[700] text-text-primary tracking-tight">
+            {t('title')}
+          </H2>
+
+          <BodyLarge className="text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
+            {t('subtitle')}
+          </BodyLarge>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button asChild size="lg" variant="primary">
+              <Link href="/register">
+                {t('primaryCta')}
+                <ArrowRight className="size-4 ml-1" aria-hidden="true" />
+              </Link>
+            </Button>
+
+            <Button asChild size="lg" variant="secondary">
+              <a href="#decisions">
+                {t('secondaryCta')}
+              </a>
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );

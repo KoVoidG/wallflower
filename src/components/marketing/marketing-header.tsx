@@ -1,32 +1,28 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter, usePathname } from '@/lib/i18n/navigation';
-import { Menu, X } from 'lucide-react';
-import { Link } from '@/lib/i18n/navigation';
+import { useState, useCallback } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { useRouter, usePathname, Link } from '@/lib/i18n/navigation';
+import { Menu, X, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-// ── Navigation config ───────────────────────────────────────────────────────
-
-type SectionNavItem = { label: string; type: 'section'; id: string };
-type PageNavItem = { label: string; type: 'page'; href: string };
-type NavItem = SectionNavItem | PageNavItem;
+type NavItem = {
+  key: string;
+  id: string;
+};
 
 const navigation: NavItem[] = [
-  { label: 'How it Works', type: 'section', id: 'how-it-works' },
-  { label: 'Features', type: 'section', id: 'scenarios' },
-  { label: 'Why Wallflower', type: 'section', id: 'why-us' },
-  { label: 'Pricing', type: 'page', href: '/pricing' },
+  { key: 'howItWorks', id: 'how-it-works' },
+  { key: 'decisions', id: 'decisions' },
+  { key: 'whyUs', id: 'why-us' },
+  { key: 'prototype', id: 'prototype' },
 ];
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
-
-/** Smooth-scroll to a section by ID if it exists on the current page. */
 function scrollToSection(id: string): boolean {
   const el = document.getElementById(id);
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Clean up hash from URL after scroll completes (approx 600ms)
     setTimeout(() => {
       history.replaceState(null, '', window.location.pathname);
     }, 600);
@@ -35,136 +31,164 @@ function scrollToSection(id: string): boolean {
   return false;
 }
 
-// ── Component ───────────────────────────────────────────────────────────────
-
 export function MarketingHeader() {
+  const t = useTranslations('landing.header');
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
 
   const isLandingPage = pathname === '/' || pathname === '';
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleNavClick = useCallback(
     (item: NavItem) => {
       setMobileOpen(false);
+      setActiveSection(item.id);
 
-      if (item.type === 'page') {
-        router.push(item.href);
-        return;
-      }
-
-      // Section link
       if (isLandingPage) {
-        // Already on landing page — just scroll
         scrollToSection(item.id);
       } else {
-        // On another page — navigate to landing with hash
         router.push(`/#${item.id}`);
       }
     },
     [router, isLandingPage]
   );
 
+  const handleLanguageToggle = () => {
+    const nextLocale = locale === 'en' ? 'th' : 'en';
+    router.replace(pathname, { locale: nextLocale });
+  };
+
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-colors duration-200',
-        scrolled
-          ? 'bg-background/95 backdrop-blur-md border-b border-border'
-          : 'bg-transparent'
-      )}
-    >
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8 flex items-center justify-between h-16">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-[650] text-[18px] text-text-primary">
-          <FlowerMark className="size-7" />
-          Wallflower
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
-          {navigation.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={() => handleNavClick(item)}
-              className="text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary transition-colors cursor-pointer bg-transparent border-none p-0"
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Desktop auth */}
-        <div className="hidden md:flex items-center gap-3">
+    <header className="sticky top-0 z-50 bg-background/95 border-b border-border transition-colors duration-200">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[70px] flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
+        {/* Col 1: Logo */}
+        <div className="flex items-center justify-self-start">
           <Link
-            href="/login"
-            className="text-[15px]/[24px] font-[550] text-text-secondary hover:text-text-primary transition-colors px-3 py-2"
+            href="/"
+            className="flex items-center gap-2.5 font-[650] text-[18px]/[24px] text-text-primary hover:opacity-90 transition-opacity"
+            aria-label="Wallflower homepage"
           >
-            Sign In
-          </Link>
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-[var(--radius-md)] bg-brand text-white text-[15px]/[24px] font-[550] hover:bg-brand-hover transition-colors"
-          >
-            Get Started
+            <FlowerMark className="size-7" />
+            <span className="tracking-tight">Wallflower</span>
           </Link>
         </div>
 
-        {/* Mobile menu button */}
-        <button
-          type="button"
-          className="md:hidden p-2 text-text-secondary hover:text-text-primary cursor-pointer"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileOpen}
+        {/* Col 2: Navigation (desktop geometrically centered) */}
+        <nav
+          className="hidden md:flex items-center gap-7 justify-self-center"
+          aria-label="Main navigation"
         >
-          {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden bg-background border-b border-border px-6 pb-4">
-          <nav className="flex flex-col gap-3" aria-label="Mobile navigation">
-            {navigation.map((item) => (
+          {navigation.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
               <button
-                key={item.label}
+                key={item.key}
                 type="button"
                 onClick={() => handleNavClick(item)}
-                className="text-left text-[15px]/[24px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer bg-transparent border-none p-0"
+                className={cn(
+                  'text-[14px]/[20px] font-[500] transition-colors cursor-pointer relative py-1',
+                  isActive
+                    ? 'text-brand font-[600]'
+                    : 'text-text-secondary hover:text-text-primary'
+                )}
               >
-                {item.label}
+                {t(item.key)}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand rounded-full" />
+                )}
               </button>
-            ))}
-            <hr className="border-border my-2" />
-            <Link
-              href="/login"
-              className="text-[15px]/[24px] font-[550] text-text-secondary py-2"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center px-4 py-2.5 rounded-[var(--radius-md)] bg-brand text-white text-[15px]/[24px] font-[550]"
-            >
-              Get Started
-            </Link>
-          </nav>
+            );
+          })}
+        </nav>
+
+        {/* Col 3: Controls (desktop end) */}
+        <div className="hidden md:flex items-center gap-3 justify-self-end">
+          {/* Language Switcher */}
+          <button
+            type="button"
+            onClick={handleLanguageToggle}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-[13px]/[18px] font-[550] text-text-secondary hover:text-text-primary rounded-md border border-transparent hover:border-border transition-all cursor-pointer"
+            aria-label={`Switch language to ${locale === 'en' ? 'Thai' : 'English'}`}
+          >
+            <Globe className="size-4 text-text-muted" aria-hidden="true" />
+            <span>{locale === 'en' ? 'TH' : 'EN'}</span>
+          </button>
+
+          {/* Sign In */}
+          <Link
+            href="/login"
+            className="text-[14px]/[20px] font-[550] text-text-secondary hover:text-text-primary transition-colors px-3 py-2"
+          >
+            {t('signIn')}
+          </Link>
+
+          {/* Primary Action Button */}
+          <Button asChild size="md" variant="primary">
+            <Link href="/register">{t('analyseMyBusiness')}</Link>
+          </Button>
+        </div>
+
+        {/* Mobile controls */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={handleLanguageToggle}
+            className="flex items-center gap-1 px-2 py-1 text-[12px] font-[550] text-text-secondary rounded border border-border"
+          >
+            <Globe className="size-3.5 text-text-muted" aria-hidden="true" />
+            <span>{locale === 'en' ? 'TH' : 'EN'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="p-2 text-text-secondary hover:text-text-primary cursor-pointer"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile navigation sheet */}
+      {mobileOpen && (
+        <div className="md:hidden bg-background border-b border-border px-5 py-4">
+          <div className="mx-auto w-full max-w-[1200px] flex flex-col gap-3">
+            <nav className="flex flex-col gap-2" aria-label="Mobile navigation">
+              {navigation.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => handleNavClick(item)}
+                  className="text-left text-[15px]/[22px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer bg-transparent border-none"
+                >
+                  {t(item.key)}
+                </button>
+              ))}
+            </nav>
+
+            <hr className="border-border my-1" />
+
+            <div className="flex flex-col gap-2 pt-1">
+              <Link
+                href="/login"
+                className="text-[14px]/[20px] font-[550] text-text-secondary py-2 text-center border border-border rounded-md"
+              >
+                {t('signIn')}
+              </Link>
+              <Button asChild size="md" variant="primary" className="w-full">
+                <Link href="/register">{t('analyseMyBusiness')}</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </header>
   );
 }
-
-// ── Flower Mark SVG ─────────────────────────────────────────────────────────
 
 function FlowerMark({ className }: { className?: string }) {
   return (
@@ -175,10 +199,10 @@ function FlowerMark({ className }: { className?: string }) {
       aria-hidden="true"
     >
       <circle cx="14" cy="14" r="4" className="fill-brand" />
-      <circle cx="14" cy="6" r="3" className="fill-brand" opacity="0.7" />
-      <circle cx="14" cy="22" r="3" className="fill-brand" opacity="0.7" />
-      <circle cx="6" cy="14" r="3" className="fill-brand" opacity="0.7" />
-      <circle cx="22" cy="14" r="3" className="fill-brand" opacity="0.7" />
+      <circle cx="14" cy="6" r="3" className="fill-brand" opacity="0.75" />
+      <circle cx="14" cy="22" r="3" className="fill-brand" opacity="0.75" />
+      <circle cx="6" cy="14" r="3" className="fill-brand" opacity="0.75" />
+      <circle cx="22" cy="14" r="3" className="fill-brand" opacity="0.75" />
       <circle cx="8.5" cy="8.5" r="2.5" className="fill-brand" opacity="0.5" />
       <circle cx="19.5" cy="8.5" r="2.5" className="fill-brand" opacity="0.5" />
       <circle cx="8.5" cy="19.5" r="2.5" className="fill-brand" opacity="0.5" />

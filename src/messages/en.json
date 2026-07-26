@@ -829,5 +829,183 @@
       "hoursLabel": "Operating Hours",
       "hoursValue": "Monday – Friday, 09:00 – 18:00 ICT"
     }
+  },
+  "landing": {
+    "header": {
+      "howItWorks": "How it works",
+      "decisions": "Decisions",
+      "whyUs": "Why Wallflower",
+      "prototype": "Prototype",
+      "signIn": "Sign In",
+      "analyseMyBusiness": "Analyse my business",
+      "language": "EN"
+    },
+    "hero": {
+      "badge": "Decision intelligence for Thai SMEs",
+      "headline": "See how a business decision affects your cash before you commit.",
+      "subheadline": "Wallflower analyses your financial position, identifies risk and compares possible decisions so you can act with evidence instead of guesswork.",
+      "primaryCta": "Analyse my business",
+      "secondaryCta": "Explore a sample decision"
+    },
+    "proof": {
+      "diagnose": "Diagnose financial pressure",
+      "simulate": "Simulate a decision",
+      "tradeOffs": "Understand trade-offs",
+      "act": "Turn result into action"
+    },
+    "heroDemo": {
+      "badge": "Decision story",
+      "decisionLabel": "Decision being tested",
+      "decisionName": "Hire two service employees",
+      "beforeLabel": "Before decision",
+      "afterLabel": "After decision",
+      "runwayLabel": "Cash runway",
+      "profitLabel": "Monthly profit",
+      "recommendationLabel": "Recommendation",
+      "recommendationText": "Delay hiring until monthly revenue rises by ฿48,000",
+      "replayText": "Replay animation"
+    },
+    "workflow": {
+      "title": "Three steps to an evidence-based decision",
+      "subtitle": "Wallflower turns financial data into clear steps you can test and track.",
+      "step01Title": "Diagnose",
+      "step01Desc": "Understand cash position, margins, working-capital pressure and operational risk.",
+      "step02Title": "Simulate",
+      "step02Desc": "Compare a possible decision against the current business baseline.",
+      "step03Title": "Act",
+      "step03Desc": "Turn the recommendation into an owned action and track the result."
+    },
+    "scenarios": {
+      "title": "Interactive decision simulation",
+      "subtitle": "Select a common business decision to see how Wallflower evaluates impact and trade-offs.",
+      "selectPlaceholder": "Choose a decision scenario",
+      "decisionTested": "Decision tested",
+      "currentState": "Current state",
+      "projectedState": "Projected state",
+      "primaryRisk": "Primary risk detected",
+      "recommendation": "Evidence-based recommendation",
+      "exploreCta": "Explore simulation",
+      "items": {
+        "hire": {
+          "title": "Hire two service employees",
+          "category": "Payroll & Hiring",
+          "decision": "Add 2 full-time staff members at ฿24,000/month each (฿48,000 total payroll increase)",
+          "currentRunway": "8.2 months",
+          "currentProfit": "฿35,000 / mo",
+          "projectedRunway": "5.1 months",
+          "projectedProfit": "-฿13,000 / mo",
+          "risk": "Expense growth outpacing revenue. Net cash flow turns negative immediately.",
+          "recommendation": "Delay hiring until monthly revenue increases by at least ฿48,000, or start with part-time contracts."
+        },
+        "pricing": {
+          "title": "Adjust product pricing",
+          "category": "Revenue & Margin",
+          "decision": "Increase average selling price by 10% assuming a 3% decrease in unit volume",
+          "currentRunway": "6.4 months",
+          "currentProfit": "฿42,000 / mo",
+          "projectedRunway": "9.8 months",
+          "projectedProfit": "฿86,000 / mo",
+          "risk": "Volume elasticity risk if competitors respond with discounting.",
+          "recommendation": "Proceed with price adjustment on high-margin categories first while monitoring order volume closely."
+        },
+        "marketing": {
+          "title": "Launch digital ad campaign",
+          "category": "Growth & CAC",
+          "decision": "Allocate ฿30,000/month to performance marketing over a 90-day trial",
+          "currentRunway": "7.5 months",
+          "currentProfit": "฿50,000 / mo",
+          "projectedRunway": "6.2 months",
+          "projectedProfit": "฿68,000 / mo (month 3)",
+          "risk": "Initial 60-day cash dip before customer acquisition channels convert.",
+          "recommendation": "Cap trial budget at ฿20,000/month and establish a weekly ROI tracking checkpoint."
+        },
+        "equipment": {
+          "title": "Purchase kitchen equipment",
+          "category": "Capital Expenditure",
+          "decision": "Purchase ฿180,000 commercial oven with 30% upfront cash payment and 12-month installment",
+          "currentRunway": "9.0 months",
+          "currentProfit": "฿55,000 / mo",
+          "projectedRunway": "7.1 months",
+          "projectedProfit": "฿64,000 / mo",
+          "risk": "Short-term liquidity drop due to upfront deposit and monthly debt obligation.",
+          "recommendation": "Maintain a minimum cash reserve of ฿100,000 before executing the equipment contract."
+        },
+        "paymentDelay": {
+          "title": "Customer payment delay",
+          "category": "Working Capital",
+          "decision": "Key customer requests 60-day credit terms on a ฿250,000 order instead of upfront payment",
+          "currentRunway": "5.8 months",
+          "currentProfit": "฿38,000 / mo",
+          "projectedRunway": "3.2 months",
+          "projectedProfit": "฿38,000 / mo",
+          "risk": "Working-capital squeeze. Cash runway drops below safe threshold (60 days).",
+          "recommendation": "Negotiate a 40% milestone deposit before dispatch to preserve minimum cash buffer."
+        }
+      }
+    },
+    "explainability": {
+      "title": "Your numbers, calculated. Not invented by AI.",
+      "subtitle": "Wallflower separates deterministic financial math from plain-language AI explanation. Calculations remain immutable.",
+      "calculatedTitle": "Deterministic Calculation Engine",
+      "calculatedDesc": "Proven financial arithmetic runs on your exact data to generate accurate metrics.",
+      "aiTitle": "Contextual AI Explanation",
+      "aiDesc": "Gemini AI interprets the calculated results to provide executive summaries and trade-off guidance.",
+      "calculatedItems": [
+        "Revenue and expense arithmetic",
+        "Exact cash runway and burn rate",
+        "Working-capital gap analysis",
+        "Scenario baseline comparisons",
+        "Deterministic threshold checks"
+      ],
+      "aiItems": [
+        "Plain-language finding summaries",
+        "Clear risk explanations and context",
+        "Decision trade-off summaries",
+        "Recommended next action steps",
+        "Follow-up operational guidance"
+      ]
+    },
+    "thaiSme": {
+      "title": "Designed for real Thai SME challenges",
+      "subtitle": "Wallflower solves the core financial visibility problems faced by small business owners in Thailand.",
+      "problems": [
+        {
+          "title": "Late customer payments",
+          "impact": "Delayed invoices put pressure on payroll, rent, and supplier payments while eroding your minimum cash buffer.",
+          "solution": "Wallflower alerts you to working-capital gaps before payments fall due."
+        },
+        {
+          "title": "Limited finance capacity",
+          "impact": "Small business teams lack dedicated CFOs or time to interpret complex spreadsheets.",
+          "solution": "Wallflower translates raw financial figures into clear diagnostic insights automatically."
+        },
+        {
+          "title": "High-risk commitments",
+          "impact": "Committing to major hiring, borrowing, pricing, or equipment purchases without testing outcomes.",
+          "solution": "Wallflower lets you model decisions in seconds before spending actual capital."
+        }
+      ]
+    },
+    "prototype": {
+      "title": "Explore the Wallflower prototype",
+      "subtitle": "Test supported business decisions using sample SME information or your own locally stored prototype data.",
+      "exploreCta": "Explore the prototype"
+    },
+    "cta": {
+      "title": "Make your next decision with evidence.",
+      "subtitle": "Understand your current financial position, test the impact of decisions, and act with clarity.",
+      "primaryCta": "Analyse my business",
+      "secondaryCta": "Explore a sample decision"
+    },
+    "footer": {
+      "tagline": "Decision intelligence for Thai SMEs",
+      "howItWorks": "How it works",
+      "decisions": "Decisions",
+      "whyUs": "Why Wallflower",
+      "prototype": "Prototype",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "copyright": "© 2026 Wallflower. All rights reserved."
+    }
   }
 }

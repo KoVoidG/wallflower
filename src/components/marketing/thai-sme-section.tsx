@@ -1,74 +1,85 @@
 'use client';
 
-import { Banknote, Users, Brain, Zap, BarChart3 } from 'lucide-react';
-import { H2, Body, BodyLarge } from '@/components/ui/typography';
-import { FadeIn, StaggerChildren } from '@/components/motion';
-
-const challenges = [
-  {
-    icon: Banknote,
-    challenge: 'Cash flow pressure',
-    solution:
-      'Real-time cash runway tracking with early warnings when reserves run thin.',
-  },
-  {
-    icon: Users,
-    challenge: 'Limited staff, no CFO',
-    solution:
-      'Wallflower does the financial analysis so you can focus on running your business.',
-  },
-  {
-    icon: Brain,
-    challenge: 'Decision fatigue',
-    solution:
-      'Side-by-side scenario comparison takes the guesswork out of major decisions.',
-  },
-  {
-    icon: Zap,
-    challenge: 'Traditional vs digital',
-    solution:
-      'Simple interface that works like a conversation, not a spreadsheet.',
-  },
-  {
-    icon: BarChart3,
-    challenge: 'Unclear business health',
-    solution:
-      'Diagnostics and KPIs that show your business standing at a glance.',
-  },
-];
+import { useTranslations } from 'next-intl';
+import { H2, BodyLarge } from '@/components/ui/typography';
+import { Clock, Calculator, ShieldAlert, ArrowRight } from 'lucide-react';
 
 export function ThaiSmeSection() {
-  return (
-    <section className="py-20 md:py-28 bg-surface-subtle">
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8">
-        <FadeIn>
-          <div className="text-center mb-12 md:mb-16 max-w-2xl mx-auto">
-            <H2>Built for Thai small businesses</H2>
-            <BodyLarge className="mt-3">
-              We understand the challenges Thai SMEs face every day.
-              Wallflower is designed to address them directly.
-            </BodyLarge>
-          </div>
-        </FadeIn>
+  const t = useTranslations('landing.thaiSme');
 
-        <StaggerChildren
-          staggerDelay={0.08}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {challenges.map((item) => (
-            <StaggerChildren.Item key={item.challenge}>
-              <div className="flex flex-col gap-3 p-5">
-                <div className="flex items-center justify-center size-10 rounded-[var(--radius-md)] bg-brand-soft">
-                  <item.icon className="size-5 text-brand" aria-hidden="true" />
+  const problems = [
+    {
+      icon: Clock,
+      title: t('problems.0.title'),
+      impact: t('problems.0.impact'),
+      solution: t('problems.0.solution'),
+    },
+    {
+      icon: Calculator,
+      title: t('problems.1.title'),
+      impact: t('problems.1.impact'),
+      solution: t('problems.1.solution'),
+    },
+    {
+      icon: ShieldAlert,
+      title: t('problems.2.title'),
+      impact: t('problems.2.impact'),
+      solution: t('problems.2.solution'),
+    },
+  ];
+
+  return (
+    <section className="py-16 sm:py-20 lg:py-24 border-b border-border bg-surface-subtle">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <H2 className="text-[26px]/[34px] sm:text-[32px]/[40px] font-[700] text-text-primary tracking-tight">
+            {t('title')}
+          </H2>
+          <BodyLarge className="mt-3 text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
+            {t('subtitle')}
+          </BodyLarge>
+        </div>
+
+        {/* Problem and Response Rows */}
+        <div className="flex flex-col gap-5 max-w-4xl mx-auto">
+          {problems.map((item, idx) => (
+            <div
+              key={idx}
+              className="p-6 rounded-[var(--radius-lg)] border border-border bg-surface shadow-xs flex flex-col md:flex-row md:items-center gap-6 justify-between"
+            >
+              {/* Left: Problem & Impact */}
+              <div className="flex items-start gap-4 flex-1">
+                <div className="size-11 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-warning flex items-center justify-center shrink-0 mt-0.5">
+                  <item.icon className="size-5 text-warning" aria-hidden="true" />
                 </div>
-                <h3 className="text-[16px]/[24px] font-[600] text-text-primary">
-                  {item.challenge}
-                </h3>
-                <Body>{item.solution}</Body>
+                <div>
+                  <h3 className="text-[17px]/[24px] font-[700] text-text-primary">
+                    {item.title}
+                  </h3>
+                  <p className="text-[14px]/[22px] text-text-secondary mt-1">
+                    {item.impact}
+                  </p>
+                </div>
               </div>
-            </StaggerChildren.Item>
+
+              {/* Arrow indicator (desktop) */}
+              <div className="hidden md:flex text-border shrink-0" aria-hidden="true">
+                <ArrowRight className="size-5" />
+              </div>
+
+              {/* Right: Wallflower Response */}
+              <div className="p-4 rounded-lg bg-brand-soft/40 border border-brand/30 md:w-[320px] shrink-0">
+                <span className="text-[11px]/[16px] font-[700] text-brand uppercase tracking-wider block mb-1">
+                  Wallflower Response
+                </span>
+                <p className="text-[13px]/[20px] font-[550] text-text-primary">
+                  {item.solution}
+                </p>
+              </div>
+            </div>
           ))}
-        </StaggerChildren>
+        </div>
       </div>
     </section>
   );

@@ -1,93 +1,58 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { Badge } from '@/components/ui/badge';
-import { Display, BodyLarge } from '@/components/ui/typography';
-import { FadeIn } from '@/components/motion';
-import { useReducedMotion } from '@/components/motion';
-import { motion } from 'motion/react';
-import { EASINGS, DURATIONS } from '@/components/motion/motion-config';
+import { Button } from '@/components/ui/button';
+import { H1, BodyLarge } from '@/components/ui/typography';
 import { ProductPreview } from './product-preview';
-
-const headlineLines = [
-  'See the impact',
-  'before you make',
-  'the move.',
-];
+import { ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
-  const prefersReduced = useReducedMotion();
+  const t = useTranslations('landing.hero');
 
   return (
-    <section className="relative min-h-[760px] flex items-center pt-24 pb-16 md:pb-24">
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Copy */}
-          <div className="flex flex-col gap-6 max-w-xl">
-            <FadeIn delay={0.1}>
-              <Badge variant="brand">
-                Decision intelligence for Thai SMEs
-              </Badge>
-            </FadeIn>
-
-            {/* Headline reveal by line */}
+    <section className="relative py-16 sm:py-20 lg:py-24 overflow-hidden border-b border-border bg-background">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          {/* Copy (50% desktop width) */}
+          <div className="flex flex-col gap-5 max-w-[580px]">
             <div>
-              {headlineLines.map((line, i) => {
-                if (prefersReduced) {
-                  return (
-                    <Display key={i} as="span" className="block">
-                      {line}
-                    </Display>
-                  );
-                }
-                return (
-                  <motion.span
-                    key={i}
-                    className="block text-[38px]/[42px] md:text-[44px]/[48px] lg:text-[64px]/[68px] font-[650] text-text-primary"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: DURATIONS.pageReveal,
-                      delay: 0.2 + i * 0.12,
-                      ease: EASINGS.default,
-                    }}
-                  >
-                    {line}
-                  </motion.span>
-                );
-              })}
+              <Badge variant="brand">
+                {t('badge')}
+              </Badge>
             </div>
 
-            <FadeIn delay={0.6}>
-              <BodyLarge>
-                Wallflower turns your business data into clear diagnostics, risk
-                warnings, and decision simulations—so you can act with evidence
-                instead of guesswork.
-              </BodyLarge>
-            </FadeIn>
+            {/* Headline visible immediately without zero-opacity flicker */}
+            <H1 className="text-[32px]/[38px] sm:text-[40px]/[48px] lg:text-[48px]/[54px] font-[700] text-text-primary tracking-tight">
+              {t('headline')}
+            </H1>
 
-            <FadeIn delay={0.75}>
-              <div className="flex flex-wrap gap-3 mt-2">
-                <Link
-                  href="/register"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-md)] bg-brand text-white text-[15px]/[24px] font-[550] hover:bg-brand-hover transition-colors"
-                >
-                  Analyze my business
+            <BodyLarge className="text-text-secondary text-[16px]/[26px] sm:text-[17px]/[28px] max-w-[540px]">
+              {t('subheadline')}
+            </BodyLarge>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button asChild size="lg" variant="primary">
+                <Link href="/register">
+                  {t('primaryCta')}
+                  <ArrowRight className="size-4 ml-1" aria-hidden="true" />
                 </Link>
-                <a
-                  href="#scenarios"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-md)] border border-border text-text-primary text-[15px]/[24px] font-[550] hover:bg-surface-subtle transition-colors"
-                >
-                  See a sample simulation
+              </Button>
+
+              <Button asChild size="lg" variant="secondary">
+                <a href="#decisions">
+                  {t('secondaryCta')}
                 </a>
-              </div>
-            </FadeIn>
+              </Button>
+            </div>
           </div>
 
-          {/* Product preview */}
-          <FadeIn delay={0.5} className="relative">
+          {/* Product Demonstration (50% desktop width) */}
+          <div className="w-full">
             <ProductPreview />
-          </FadeIn>
+          </div>
         </div>
       </div>
     </section>

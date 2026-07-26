@@ -1,86 +1,109 @@
 'use client';
 
-import { Calculator, Sparkles, CheckCircle } from 'lucide-react';
-import { H2, H3, Body, BodyLarge } from '@/components/ui/typography';
-import { Surface } from '@/components/ui/surface';
-import { FadeIn } from '@/components/motion';
-
-const calculatedItems = [
-  'Revenue projections from your data',
-  'Cash runway and burn rate',
-  'Break-even analysis',
-  'Working capital ratios',
-  'ROI and payback period',
-];
-
-const aiItems = [
-  'Summarizes what the numbers mean',
-  'Explains risks in plain language',
-  'Suggests things to consider',
-  'Highlights assumptions made',
-  'Never overrides calculations',
-];
+import { useTranslations } from 'next-intl';
+import { H2, Body, BodyLarge } from '@/components/ui/typography';
+import { Calculator, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export function ExplainabilitySection() {
-  return (
-    <section id="why-us" className="py-20 md:py-28">
-      <div className="mx-auto max-w-[1280px] px-6 md:px-8">
-        <FadeIn>
-          <div className="text-center mb-12 md:mb-16 max-w-2xl mx-auto">
-            <H2>Your numbers, calculated. Not predicted.</H2>
-            <BodyLarge className="mt-3">
-              Wallflower separates deterministic math from AI interpretation.
-              You always know which is which.
-            </BodyLarge>
-          </div>
-        </FadeIn>
+  const t = useTranslations('landing.explainability');
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {/* Calculated column */}
-          <FadeIn delay={0.15}>
-            <Surface border className="p-6 h-full">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="flex items-center justify-center size-10 rounded-full bg-brand-soft">
+  const calculatedItems: string[] = t.raw('calculatedItems');
+  const aiItems: string[] = t.raw('aiItems');
+
+  return (
+    <section id="why-us" className="py-16 sm:py-20 lg:py-24 border-b border-border bg-background">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-soft text-brand text-[13px]/[18px] font-[600] mb-3">
+            <ShieldCheck className="size-4" aria-hidden="true" />
+            <span>Deterministic Math & Executive AI</span>
+          </div>
+          <H2 className="text-[26px]/[34px] sm:text-[32px]/[40px] font-[700] text-text-primary tracking-tight">
+            {t('title')}
+          </H2>
+          <BodyLarge className="mt-3 text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
+            {t('subtitle')}
+          </BodyLarge>
+        </div>
+
+        {/* Clean Split Layout with Central Divider */}
+        <div className="relative border border-border rounded-[var(--radius-xl)] bg-surface shadow-xs p-6 sm:p-10">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 relative">
+            {/* Central Vertical Divider (desktop) */}
+            <div
+              className="hidden md:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-border"
+              aria-hidden="true"
+            />
+
+            {/* Left Column: Calculation Engine */}
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <div className="size-11 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                   <Calculator className="size-5 text-brand" aria-hidden="true" />
                 </div>
-                <H3>Calculated</H3>
+                <div>
+                  <h3 className="text-[20px]/[28px] font-[700] text-text-primary">
+                    {t('calculatedTitle')}
+                  </h3>
+                  <span className="text-[12px]/[18px] font-[600] text-brand uppercase tracking-wider">
+                    Source of Truth
+                  </span>
+                </div>
               </div>
-              <Body className="mb-4">
-                Deterministic formulas produce exact, reproducible results from your business data.
+
+              <Body className="text-[14px]/[22px] text-text-secondary">
+                {t('calculatedDesc')}
               </Body>
-              <ul className="flex flex-col gap-3">
-                {calculatedItems.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <CheckCircle className="size-4 text-brand shrink-0 mt-0.5" aria-hidden="true" />
-                    <span className="text-[14px]/[22px] text-text-secondary">{item}</span>
+
+              <hr className="border-border my-1" />
+
+              <ul className="flex flex-col gap-3.5">
+                {calculatedItems.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <CheckCircle2 className="size-4 text-brand shrink-0 mt-1" aria-hidden="true" />
+                    <span className="text-[14px]/[22px] font-[550] text-text-primary">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
-            </Surface>
-          </FadeIn>
+            </div>
 
-          {/* AI Explained column */}
-          <FadeIn delay={0.3}>
-            <Surface border className="p-6 h-full">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="flex items-center justify-center size-10 rounded-full bg-ai-soft">
+            {/* Right Column: AI Explanation */}
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <div className="size-11 rounded-lg bg-ai-soft flex items-center justify-center shrink-0">
                   <Sparkles className="size-5 text-ai" aria-hidden="true" />
                 </div>
-                <H3>AI Explained</H3>
+                <div>
+                  <h3 className="text-[20px]/[28px] font-[700] text-text-primary">
+                    {t('aiTitle')}
+                  </h3>
+                  <span className="text-[12px]/[18px] font-[600] text-ai uppercase tracking-wider">
+                    Executive Interpretation
+                  </span>
+                </div>
               </div>
-              <Body className="mb-4">
-                AI reads the calculated results and explains them in context — it never calculates financial values.
+
+              <Body className="text-[14px]/[22px] text-text-secondary">
+                {t('aiDesc')}
               </Body>
-              <ul className="flex flex-col gap-3">
-                {aiItems.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <CheckCircle className="size-4 text-ai shrink-0 mt-0.5" aria-hidden="true" />
-                    <span className="text-[14px]/[22px] text-text-secondary">{item}</span>
+
+              <hr className="border-border my-1" />
+
+              <ul className="flex flex-col gap-3.5">
+                {aiItems.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <CheckCircle2 className="size-4 text-ai shrink-0 mt-1" aria-hidden="true" />
+                    <span className="text-[14px]/[22px] font-[550] text-text-primary">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
-            </Surface>
-          </FadeIn>
+            </div>
+          </div>
         </div>
       </div>
     </section>
