@@ -1,22 +1,23 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useTheme } from 'next-themes';
 import { useRouter, usePathname, Link } from '@/lib/i18n/navigation';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-type NavItem = {
-  key: string;
-  id: string;
-};
+type SectionNavItem = { labelKey: string; type: 'section'; id: string };
+type PageNavItem = { labelKey: string; type: 'page'; href: string };
+type NavItem = SectionNavItem | PageNavItem;
 
 const navigation: NavItem[] = [
-  { key: 'howItWorks', id: 'how-it-works' },
-  { key: 'decisions', id: 'decisions' },
-  { key: 'whyUs', id: 'why-us' },
-  { key: 'prototype', id: 'prototype' },
+  { labelKey: 'howItWorks', type: 'section', id: 'how-it-works' },
+  { labelKey: 'decisions', type: 'section', id: 'decisions' },
+  { labelKey: 'whyUs', type: 'section', id: 'why-us' },
+  { labelKey: 'prototype', type: 'section', id: 'prototype' },
+  { labelKey: 'pricing', type: 'page', href: '/pricing' },
 ];
 
 function scrollToSection(id: string): boolean {
@@ -36,14 +37,28 @@ export function MarketingHeader() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
 
+  useEffect(() => {
+    const handle = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(handle);
+  }, []);
+
   const isLandingPage = pathname === '/' || pathname === '';
+  const isPricingPage = pathname.includes('/pricing');
 
   const handleNavClick = useCallback(
     (item: NavItem) => {
       setMobileOpen(false);
+
+      if (item.type === 'page') {
+        router.push(item.href);
+        return;
+      }
+
       setActiveSection(item.id);
 
       if (isLandingPage) {
@@ -60,14 +75,19 @@ export function MarketingHeader() {
     router.replace(pathname, { locale: nextLocale });
   };
 
+  const handleThemeToggle = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-background/95 border-b border-border transition-colors duration-200">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[70px] flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
-        {/* Col 1: Logo */}
-        <div className="flex items-center justify-self-start">
+      {/* Full width container with generous padding & breathing room */}
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 h-[72px] flex items-center justify-between gap-6">
+        {/* Left: Brand Logo */}
+        <div className="flex items-center shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-[650] text-[18px]/[24px] text-text-primary hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2.5 font-[650] text-[18px]/[24px] text-text-primary hover:opacity-90 transition-opacity whitespace-nowrap"
             aria-label="Wallflower homepage"
           >
             <FlowerMark className="size-7" />
@@ -75,26 +95,29 @@ export function MarketingHeader() {
           </Link>
         </div>
 
-        {/* Col 2: Navigation (desktop geometrically centered) */}
+        {/* Center: Navigation Links with ample spacing */}
         <nav
-          className="hidden md:flex items-center gap-7 justify-self-center"
+          className="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10 shrink-0"
           aria-label="Main navigation"
         >
           {navigation.map((item) => {
-            const isActive = activeSection === item.id;
+            const isActive =
+              item.type === 'page'
+                ? isPricingPage
+                : isLandingPage && activeSection === item.id;
             return (
               <button
-                key={item.key}
+                key={item.labelKey}
                 type="button"
                 onClick={() => handleNavClick(item)}
                 className={cn(
-                  'text-[14px]/[20px] font-[500] transition-colors cursor-pointer relative py-1',
+                  'text-[14px]/[20px] font-[500] transition-colors cursor-pointer relative py-1.5 whitespace-nowrap',
                   isActive
                     ? 'text-brand font-[600]'
                     : 'text-text-secondary hover:text-text-primary'
                 )}
               >
-                {t(item.key)}
+                {t(item.labelKey)}
                 {isActive && (
                   <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand rounded-full" />
                 )}
@@ -103,42 +126,70 @@ export function MarketingHeader() {
           })}
         </nav>
 
-        {/* Col 3: Controls (desktop end) */}
-        <div className="hidden md:flex items-center gap-3 justify-self-end">
+        {/* Right: Controls & CTAs */}
+        <div className="hidden md:flex items-center gap-3 lg:gap-4 shrink-0">
           {/* Language Switcher */}
           <button
             type="button"
             onClick={handleLanguageToggle}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-[13px]/[18px] font-[550] text-text-secondary hover:text-text-primary rounded-md border border-transparent hover:border-border transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[13px]/[18px] font-[550] text-text-secondary hover:text-text-primary rounded-md border border-border/60 hover:border-border transition-all cursor-pointer whitespace-nowrap"
             aria-label={`Switch language to ${locale === 'en' ? 'Thai' : 'English'}`}
           >
             <Globe className="size-4 text-text-muted" aria-hidden="true" />
             <span>{locale === 'en' ? 'TH' : 'EN'}</span>
           </button>
 
+          {/* Theme Switcher (Dark/Light) */}
+          <button
+            type="button"
+            onClick={handleThemeToggle}
+            className="flex items-center justify-center p-2 text-text-secondary hover:text-text-primary rounded-md border border-border/60 hover:border-border transition-all cursor-pointer shrink-0"
+            aria-label="Toggle dark/light theme"
+            title={mounted && resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {mounted && resolvedTheme === 'dark' ? (
+              <Sun className="size-4 text-amber-400" aria-hidden="true" />
+            ) : (
+              <Moon className="size-4 text-text-muted" aria-hidden="true" />
+            )}
+          </button>
+
           {/* Sign In */}
           <Link
             href="/login"
-            className="text-[14px]/[20px] font-[550] text-text-secondary hover:text-text-primary transition-colors px-3 py-2"
+            className="text-[14px]/[20px] font-[550] text-text-secondary hover:text-text-primary transition-colors px-3 py-2 whitespace-nowrap"
           >
             {t('signIn')}
           </Link>
 
           {/* Primary Action Button */}
-          <Button asChild size="md" variant="primary">
+          <Button asChild size="md" variant="primary" className="whitespace-nowrap px-5">
             <Link href="/register">{t('analyseMyBusiness')}</Link>
           </Button>
         </div>
 
-        {/* Mobile controls */}
+        {/* Mobile menu controls */}
         <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
             onClick={handleLanguageToggle}
-            className="flex items-center gap-1 px-2 py-1 text-[12px] font-[550] text-text-secondary rounded border border-border"
+            className="flex items-center gap-1 px-2 py-1 text-[12px] font-[550] text-text-secondary rounded border border-border whitespace-nowrap"
           >
             <Globe className="size-3.5 text-text-muted" aria-hidden="true" />
             <span>{locale === 'en' ? 'TH' : 'EN'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleThemeToggle}
+            className="flex items-center justify-center p-1.5 text-text-secondary rounded border border-border"
+            aria-label="Toggle dark/light theme"
+          >
+            {mounted && resolvedTheme === 'dark' ? (
+              <Sun className="size-3.5 text-amber-400" aria-hidden="true" />
+            ) : (
+              <Moon className="size-3.5 text-text-muted" aria-hidden="true" />
+            )}
           </button>
 
           <button
@@ -155,31 +206,31 @@ export function MarketingHeader() {
 
       {/* Mobile navigation sheet */}
       {mobileOpen && (
-        <div className="md:hidden bg-background border-b border-border px-5 py-4">
-          <div className="mx-auto w-full max-w-[1200px] flex flex-col gap-3">
+        <div className="md:hidden bg-background border-b border-border px-6 py-4">
+          <div className="w-full flex flex-col gap-3">
             <nav className="flex flex-col gap-2" aria-label="Mobile navigation">
               {navigation.map((item) => (
                 <button
-                  key={item.key}
+                  key={item.labelKey}
                   type="button"
                   onClick={() => handleNavClick(item)}
-                  className="text-left text-[15px]/[22px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer bg-transparent border-none"
+                  className="text-left text-[15px]/[22px] font-[500] text-text-secondary hover:text-text-primary py-2 cursor-pointer bg-transparent border-none whitespace-nowrap"
                 >
-                  {t(item.key)}
+                  {t(item.labelKey)}
                 </button>
               ))}
             </nav>
 
             <hr className="border-border my-1" />
 
-            <div className="flex flex-col gap-2 pt-1">
+            <div className="flex flex-col gap-2.5 pt-1">
               <Link
                 href="/login"
-                className="text-[14px]/[20px] font-[550] text-text-secondary py-2 text-center border border-border rounded-md"
+                className="text-[14px]/[20px] font-[550] text-text-secondary py-2 text-center border border-border rounded-md whitespace-nowrap"
               >
                 {t('signIn')}
               </Link>
-              <Button asChild size="md" variant="primary" className="w-full">
+              <Button asChild size="md" variant="primary" className="w-full whitespace-nowrap">
                 <Link href="/register">{t('analyseMyBusiness')}</Link>
               </Button>
             </div>
