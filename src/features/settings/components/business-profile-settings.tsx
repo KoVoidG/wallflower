@@ -1,212 +1,212 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Building2, CheckCircle2, Edit3, ArrowRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Link } from '@/lib/i18n/navigation';
+import { Card } from '@/components/ui/card';
+import { Select } from '@/components/ui/select';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { Store } from 'lucide-react';
 
 export function BusinessProfileSettings() {
-  const t = useTranslations('settingsPage.businessProfile');
-  const [isEditing, setIsEditing] = useState(false);
-  const [businessName, setBusinessName] = useState('Siam Craft Brewery Co., Ltd.');
-  const [industry, setIndustry] = useState('Food & Beverage');
-  const [location, setLocation] = useState('Bangkok, Thailand');
-  const [teamSize, setTeamSize] = useState('12 employees');
-  const [saveNotice, setSaveNotice] = useState(false);
+  const [businessName, setBusinessName] = useState('Somchai Retail Store');
+  const [category, setCategory] = useState('Grocery Store');
+  const [size, setSize] = useState<'Micro' | 'Small' | 'Medium'>('Micro');
+  const [age, setAge] = useState('1-3 years');
+  const [storeType, setStoreType] = useState<'Physical' | 'Online' | 'Both'>('Physical');
+  const [branches, setBranches] = useState('1');
+  const [description, setDescription] = useState(
+    'Neighborhood grocery store offering daily essentials, snacks, beverages, and household items.'
+  );
 
-  const handleSaveEdit = () => {
-    setIsEditing(false);
-    setSaveNotice(true);
-    setTimeout(() => setSaveNotice(false), 3000);
-  };
+  const [opDays, setOpDays] = useState('6 days');
+  const [opHours, setOpHours] = useState('8:00 AM - 8:00 PM');
+  const [employees, setEmployees] = useState('5');
+  const [customers, setCustomers] = useState('140');
+  const [transactions, setTransactions] = useState('115');
+  const [suppliers, setSuppliers] = useState('5');
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">{t('title')}</h2>
-          <p className="text-sm text-text-secondary">
-            Company information, team size, baseline status, and financial reporting setup.
-          </p>
+      {/* Card 1: Business Information */}
+      <Card className="p-5 border-border-strong bg-surface space-y-5 text-left">
+        <div className="border-b border-border/60 pb-3">
+          <h3 className="font-display text-sm font-bold text-text-primary">Business Information</h3>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsEditing((prev) => !prev)}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer self-start sm:self-center"
-        >
-          <Edit3 className="size-3.5 text-brand" />
-          <span>{isEditing ? 'Cancel editing' : t('editAction')}</span>
-        </button>
-      </div>
 
-      {saveNotice && (
-        <div className="flex items-center gap-2 rounded-lg border border-success/40 bg-success-soft px-4 py-3 text-sm text-success font-medium">
-          <CheckCircle2 className="size-4 shrink-0" />
-          <span>{t('mockNotice')}</span>
-        </div>
-      )}
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-1 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Business Name</label>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+                />
+              </div>
 
-      {/* Baseline Status Overview Banner */}
-      <div className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-brand-soft text-brand">
-              <Building2 className="size-5" />
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Business Category</label>
+                <Select
+                  value={category}
+                  onChange={setCategory}
+                  options={[
+                    { value: 'Grocery Store', label: 'Grocery Store' },
+                    { value: 'Retail & Boutique', label: 'Retail & Boutique' },
+                    { value: 'Restaurant & Cafe', label: 'Restaurant & Cafe' },
+                    { value: 'Services', label: 'Services' },
+                  ]}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Business Size</label>
+                <SegmentedControl
+                  options={['Micro', 'Small', 'Medium'] as const}
+                  value={size}
+                  onChange={setSize}
+                  layoutId="segmented-biz-size"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Business Age</label>
+                <Select
+                  value={age}
+                  onChange={setAge}
+                  options={[
+                    { value: '< 1 year', label: '< 1 year' },
+                    { value: '1-3 years', label: '1-3 years' },
+                    { value: '3-5 years', label: '3-5 years' },
+                    { value: '5+ years', label: '5+ years' },
+                  ]}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Store Type</label>
+                <SegmentedControl
+                  options={['Physical', 'Online', 'Both'] as const}
+                  value={storeType}
+                  onChange={setStoreType}
+                  layoutId="segmented-biz-store"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-text-primary block">Number of Branches</label>
+                <input
+                  type="number"
+                  value={branches}
+                  onChange={(e) => setBranches(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                />
+              </div>
             </div>
-            <div>
-              <h3 className="text-base font-semibold text-text-primary">{businessName}</h3>
-              <p className="text-xs text-text-muted">{industry} • {location}</p>
-            </div>
-          </div>
-          <Badge variant="success" dot>
-            Verified Baseline
-          </Badge>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm">
-          <div>
-            <span className="block text-text-muted">{t('dataCompleteness')}</span>
-            <span className="font-semibold text-text-primary">85% (4 of 6 snapshots)</span>
-          </div>
-          <div>
-            <span className="block text-text-muted">{t('dataThrough')}</span>
-            <span className="font-semibold text-text-primary">May 2026</span>
-          </div>
-          <div>
-            <span className="block text-text-muted">{t('lastUpdated')}</span>
-            <span className="font-semibold text-text-primary">2 days ago</span>
-          </div>
-        </div>
-
-        <div className="pt-2">
-          <Link
-            href="/business-health"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline"
-          >
-            <span>{t('reviewBaseline')}</span>
-            <ArrowRight className="size-3.5" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Editable Business Details Form / Display */}
-      <div className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('name')}</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-text-primary block">Business Description (Optional)</label>
+              <textarea
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full p-3 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-tertiary"
               />
-            ) : (
-              <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-                {businessName}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('industry')}</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-              />
-            ) : (
-              <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-                {industry}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('location')}</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-              />
-            ) : (
-              <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-                {location}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('teamSize')}</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={teamSize}
-                onChange={(e) => setTeamSize(e.target.value)}
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-              />
-            ) : (
-              <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-                {teamSize}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('currency')}</label>
-            <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-              THB (฿) - Thai Baht
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-primary">{t('fiscalYear')}</label>
-            <div className="rounded-md border border-border bg-surface-subtle px-3 py-2 text-sm text-text-primary font-medium">
-              January
+          {/* Business Logo Box */}
+          <div className="w-full lg:w-48 shrink-0 flex flex-col items-center justify-center p-4 border border-border rounded-2xl bg-surface-subtle text-center space-y-3">
+            <div className="size-20 rounded-2xl bg-tertiary/15 text-tertiary flex items-center justify-center border border-tertiary/30 shadow-2xs">
+              <Store className="size-10" />
+            </div>
+            <div className="space-y-1">
+              <button
+                type="button"
+                className="px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+              >
+                Change Logo
+              </button>
+              <p className="text-[10px] text-text-muted font-medium">PNG, JPG up to 2MB</p>
             </div>
           </div>
         </div>
+      </Card>
 
-        {/* Business Goals Pills */}
-        <div className="space-y-2 pt-2 border-t border-border/50">
-          <label className="text-xs font-semibold text-text-primary">{t('goals')}</label>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand">
-              Maintain Cash Runway &gt; 6 Mos
-            </span>
-            <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand">
-              Expand Distribution Channels
-            </span>
-            <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand">
-              Optimize Payroll Ratios
-            </span>
-          </div>
+      {/* Card 2: Operating Information */}
+      <Card className="p-5 border-border-strong bg-surface space-y-5 text-left">
+        <div className="border-b border-border/60 pb-3">
+          <h3 className="font-display text-sm font-bold text-text-primary">Operating Information</h3>
         </div>
 
-        {isEditing && (
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-subtle transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveEdit}
-              className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover transition-colors cursor-pointer"
-            >
-              Save Changes
-            </button>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Operating Days per Week</label>
+            <Select
+              value={opDays}
+              onChange={setOpDays}
+              options={[
+                { value: '5 days', label: '5 days' },
+                { value: '6 days', label: '6 days' },
+                { value: '7 days', label: '7 days' },
+              ]}
+            />
           </div>
-        )}
-      </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Operating Hours</label>
+            <Select
+              value={opHours}
+              onChange={setOpHours}
+              options={[
+                { value: '8:00 AM - 5:00 PM', label: '8:00 AM - 5:00 PM' },
+                { value: '8:00 AM - 8:00 PM', label: '8:00 AM - 8:00 PM' },
+                { value: '24 Hours', label: '24 Hours' },
+              ]}
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Employees</label>
+            <input
+              type="number"
+              value={employees}
+              onChange={(e) => setEmployees(e.target.value)}
+              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Average Customers per Day</label>
+            <input
+              type="number"
+              value={customers}
+              onChange={(e) => setCustomers(e.target.value)}
+              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Average Transactions per Day</label>
+            <input
+              type="number"
+              value={transactions}
+              onChange={(e) => setTransactions(e.target.value)}
+              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-text-primary block">Number of Suppliers</label>
+            <input
+              type="number"
+              value={suppliers}
+              onChange={(e) => setSuppliers(e.target.value)}
+              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+            />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

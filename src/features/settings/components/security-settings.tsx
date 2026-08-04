@@ -1,172 +1,184 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Shield, Key, Laptop, Check, AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Check, Laptop, Smartphone, Monitor } from 'lucide-react';
 
 export function SecuritySettings() {
-  const t = useTranslations('settingsPage.security');
-
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [changing, setChanging] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-
-  const handleChangePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
-
-    if (!currentPassword) {
-      setError(t('passwordIncorrect'));
-      return;
-    }
-    if (newPassword.length < 8) {
-      setError(t('passwordRequirements'));
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
-    setChanging(true);
-    setTimeout(() => {
-      setChanging(false);
-      setMessage(t('passwordChanged'));
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => setMessage(''), 4000);
-    }, 600);
-  };
+  const [recoveryEmail, setRecoveryEmail] = useState('recovery@example.com');
+  const [editingEmail, setEditingEmail] = useState(false);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-text-primary">{t('title')}</h2>
-        <p className="text-sm text-text-secondary">
-          Manage password security, active device sessions, and authentication methods.
-        </p>
-      </div>
-
-      {message && (
-        <div className="flex items-center gap-2 rounded-lg border border-success/40 bg-success-soft px-4 py-3 text-sm text-success font-medium">
-          <Check className="size-4 shrink-0" />
-          <span>{message}</span>
-        </div>
-      )}
-
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-danger/40 bg-danger-soft px-4 py-3 text-sm text-danger font-medium">
-          <AlertCircle className="size-4 shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
-
-      {/* Password Change Form */}
-      <form onSubmit={handleChangePassword} className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-4">
-        <div className="flex items-center gap-2 border-b border-border/60 pb-3">
-          <Key className="size-4 text-brand" />
-          <h3 className="text-base font-semibold text-text-primary">Change Password</h3>
-        </div>
-
-        <div className="space-y-3 max-w-md">
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-primary">{t('currentPassword')}</label>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-            />
+    <div className="space-y-6 text-left">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Card 1: Password */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4">
+          <div className="border-b border-border/60 pb-3">
+            <h3 className="font-display text-sm font-bold text-text-primary">Password</h3>
           </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-primary">{t('newPassword')}</label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-            />
-            <span className="text-[11px] text-text-muted">{t('passwordRequirements')}</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between font-mono text-xs text-text-muted">
+              <span>••••••••••••</span>
+              <span className="font-sans text-[10px] text-text-muted font-medium">Last changed: 20 Oct 2025</span>
+            </div>
+            <button
+              type="button"
+              className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+            >
+              Change Password
+            </button>
           </div>
+        </Card>
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-primary">{t('confirmPassword')}</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-brand"
-            />
-          </div>
-        </div>
-
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={changing}
-            className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-50 transition-colors cursor-pointer"
-          >
-            {changing ? t('changing') : t('changePassword')}
-          </button>
-        </div>
-      </form>
-
-      {/* Connected Auth Methods */}
-      <div className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-4">
-        <h3 className="text-base font-semibold text-text-primary border-b border-border/60 pb-3">
-          {t('connectedAuth')}
-        </h3>
-
-        <div className="space-y-3 text-xs sm:text-sm">
-          <div className="flex items-center justify-between rounded-md border border-border/60 bg-surface-subtle p-3">
-            <span className="font-medium text-text-primary">{t('credentials')}</span>
-            <Badge variant="success" dot>{t('active')}</Badge>
-          </div>
-
-          <div className="flex items-center justify-between rounded-md border border-border/60 bg-surface-subtle p-3 opacity-70">
-            <span className="font-medium text-text-muted">{t('googleAuth')}</span>
-            <span className="text-xs text-text-muted">Not connected</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Active Sessions */}
-      <div className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-4">
-        <h3 className="text-base font-semibold text-text-primary border-b border-border/60 pb-3">
-          {t('activeSessions')}
-        </h3>
-
-        <div className="rounded-md border border-border/60 bg-surface-subtle p-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Laptop className="size-5 text-brand shrink-0" />
+        {/* Card 2: Two-Factor Authentication */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4">
+          <div className="flex items-center justify-between border-b border-border/60 pb-3">
             <div>
-              <span className="text-sm font-semibold text-text-primary block">
-                Chrome on Windows 11
-              </span>
-              <span className="text-xs text-text-muted">
-                {t('thisSession')} • Bangkok, TH • Active now
-              </span>
+              <h3 className="font-display text-sm font-bold text-text-primary">Two-Factor Authentication</h3>
+              <p className="text-[11px] text-text-secondary font-medium">Add an extra layer of security.</p>
+            </div>
+            <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1">
+              <Check className="size-3" />
+              Enabled
+            </span>
+          </div>
+          <button
+            type="button"
+            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+          >
+            Manage 2FA
+          </button>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Card 3: Recovery Email */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4">
+          <div className="flex items-center justify-between border-b border-border/60 pb-3">
+            <div>
+              <h3 className="font-display text-sm font-bold text-text-primary">Recovery Email</h3>
+              <p className="text-[11px] text-text-secondary font-medium">Add a recovery email to regain access.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEditingEmail((p) => !p)}
+              className="text-xs font-bold text-tertiary hover:underline cursor-pointer"
+            >
+              {editingEmail ? 'Save' : 'Edit'}
+            </button>
+          </div>
+          <input
+            type="email"
+            value={recoveryEmail}
+            onChange={(e) => setRecoveryEmail(e.target.value)}
+            disabled={!editingEmail}
+            className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface font-medium disabled:bg-surface-subtle disabled:text-text-muted"
+          />
+        </Card>
+
+        {/* Card 4: Security Log */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4">
+          <div className="border-b border-border/60 pb-3">
+            <h3 className="font-display text-sm font-bold text-text-primary">Security Log</h3>
+            <p className="text-[11px] text-text-secondary font-medium">Review important security events.</p>
+          </div>
+          <button
+            type="button"
+            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+          >
+            View Security Log
+          </button>
+        </Card>
+      </div>
+
+      {/* Card 5: Login Sessions */}
+      <Card className="p-5 border-border-strong bg-surface space-y-4">
+        <div className="border-b border-border/60 pb-3">
+          <h3 className="font-display text-sm font-bold text-text-primary">Login Sessions</h3>
+          <p className="text-xs text-text-secondary font-medium">You are currently logged in on these devices.</p>
+        </div>
+
+        <div className="space-y-3">
+          {/* Device 1 */}
+          <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-surface-subtle">
+            <div className="flex items-center gap-3">
+              <Laptop className="size-5 text-tertiary shrink-0" />
+              <div className="text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-text-primary">Windows • Chrome</span>
+                  <span className="px-2 py-0.5 rounded-md bg-tertiary/15 text-tertiary text-[10px] font-bold border border-tertiary/30">
+                    Current
+                  </span>
+                </div>
+                <span className="text-[11px] text-text-muted font-medium">Bangkok, Thailand • This device</span>
+              </div>
             </div>
           </div>
-          <Badge variant="info">{t('active')}</Badge>
-        </div>
-      </div>
 
-      {/* 2FA Card */}
-      <div className="rounded-lg border border-border bg-surface-subtle p-4 sm:p-6 space-y-2 opacity-80">
-        <div className="flex items-center gap-2">
-          <Shield className="size-5 text-text-muted" />
-          <h3 className="text-sm font-semibold text-text-primary">{t('twoFactorTitle')}</h3>
+          {/* Device 2 */}
+          <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-surface-subtle">
+            <div className="flex items-center gap-3">
+              <Smartphone className="size-5 text-text-muted shrink-0" />
+              <div className="text-xs">
+                <span className="font-bold text-text-primary block">iPhone 14 • Safari</span>
+                <span className="text-[11px] text-text-muted font-medium">Bangkok, Thailand • 2 hours ago</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Device 3 */}
+          <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-surface-subtle">
+            <div className="flex items-center gap-3">
+              <Monitor className="size-5 text-text-muted shrink-0" />
+              <div className="text-xs">
+                <span className="font-bold text-text-primary block">MacBook Air • Chrome</span>
+                <span className="text-[11px] text-text-muted font-medium">Chiang Mai, Thailand • 3 days ago</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-text-muted">{t('twoFactorDesc')}</p>
-      </div>
+
+        <div className="pt-2 border-t border-border/40 text-center">
+          <button type="button" className="text-xs font-bold text-tertiary hover:underline cursor-pointer">
+            View All Sessions
+          </button>
+        </div>
+      </Card>
+
+      {/* Card 6: Danger Zone */}
+      <Card className="p-5 border-rose-500/40 bg-rose-500/5 dark:bg-rose-950/10 space-y-4">
+        <div className="border-b border-rose-500/20 pb-3">
+          <h3 className="font-display text-sm font-bold text-danger">Danger Zone</h3>
+        </div>
+
+        <div className="space-y-4 text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-surface">
+            <div>
+              <h4 className="font-bold text-text-primary">Sign Out All Devices</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Sign out from all devices except this one.</p>
+            </div>
+            <button
+              type="button"
+              className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer self-start sm:self-auto"
+            >
+              Sign Out All
+            </button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-surface">
+            <div>
+              <h4 className="font-bold text-text-primary">Delete Account</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Permanently delete your account and all data.</p>
+            </div>
+            <button
+              type="button"
+              className="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-danger text-white hover:bg-danger-hover transition-colors cursor-pointer shadow-2xs self-start sm:self-auto"
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

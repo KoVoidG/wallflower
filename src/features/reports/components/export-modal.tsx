@@ -9,6 +9,7 @@ import {
   Printer,
   X,
   Download,
+  Check,
 } from 'lucide-react';
 
 interface ExportModalProps {
@@ -233,43 +234,83 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
           </label>
 
           <div className="space-y-2 text-xs font-medium text-text-primary">
-            <label className="flex items-center gap-2.5 cursor-pointer">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={includeCharts}
                 onChange={(e) => setIncludeCharts(e.target.checked)}
-                className="size-4 rounded accent-emerald-500 cursor-pointer"
+                className="sr-only peer"
               />
+              <div
+                className={cn(
+                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  includeCharts
+                    ? 'bg-tertiary border-tertiary text-on-primary'
+                    : 'border-border-strong bg-surface'
+                )}
+              >
+                {includeCharts && <Check className="size-3.5 stroke-[3]" />}
+              </div>
               <span>Include Charts & Graphs</span>
             </label>
 
-            <label className="flex items-center gap-2.5 cursor-pointer">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={includeAI}
                 onChange={(e) => setIncludeAI(e.target.checked)}
-                className="size-4 rounded accent-emerald-500 cursor-pointer"
+                className="sr-only peer"
               />
+              <div
+                className={cn(
+                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  includeAI
+                    ? 'bg-tertiary border-tertiary text-on-primary'
+                    : 'border-border-strong bg-surface'
+                )}
+              >
+                {includeAI && <Check className="size-3.5 stroke-[3]" />}
+              </div>
               <span>Include AI Insights</span>
             </label>
 
-            <label className="flex items-center gap-2.5 cursor-pointer">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={includeRisk}
                 onChange={(e) => setIncludeRisk(e.target.checked)}
-                className="size-4 rounded accent-emerald-500 cursor-pointer"
+                className="sr-only peer"
               />
+              <div
+                className={cn(
+                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  includeRisk
+                    ? 'bg-tertiary border-tertiary text-on-primary'
+                    : 'border-border-strong bg-surface'
+                )}
+              >
+                {includeRisk && <Check className="size-3.5 stroke-[3]" />}
+              </div>
               <span>Include Risk Assessment</span>
             </label>
 
-            <label className="flex items-center gap-2.5 cursor-pointer">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={includeAssumptions}
                 onChange={(e) => setIncludeAssumptions(e.target.checked)}
-                className="size-4 rounded accent-emerald-500 cursor-pointer"
+                className="sr-only peer"
               />
+              <div
+                className={cn(
+                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  includeAssumptions
+                    ? 'bg-tertiary border-tertiary text-on-primary'
+                    : 'border-border-strong bg-surface'
+                )}
+              >
+                {includeAssumptions && <Check className="size-3.5 stroke-[3]" />}
+              </div>
               <span>Include Assumptions</span>
             </label>
           </div>

@@ -27,10 +27,10 @@ export function UnitEconomicsView() {
               {/* 1. Growth & Demand */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <TrendingUp className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Growth & Demand</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Growth & Demand</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about revenue growth, customer demand and market conditions.
                   </p>
@@ -46,10 +46,10 @@ export function UnitEconomicsView() {
               {/* 2. Pricing */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <Tag className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Pricing</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Pricing</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about pricing strategy and expected price changes.
                   </p>
@@ -65,10 +65,10 @@ export function UnitEconomicsView() {
               {/* 3. Costs & Expenses */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <ShoppingCart className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Costs & Expenses</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Costs & Expenses</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about cost increases and expense behavior.
                   </p>
@@ -84,10 +84,10 @@ export function UnitEconomicsView() {
               {/* 4. Payroll & People */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <UserCheck className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Payroll & People</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Payroll & People</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about headcount, salary growth and hiring plans.
                   </p>
@@ -103,10 +103,10 @@ export function UnitEconomicsView() {
               {/* 5. Inventory & Supply */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <Box className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Inventory & Supply</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Inventory & Supply</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about inventory investment and supplier conditions.
                   </p>
@@ -122,10 +122,10 @@ export function UnitEconomicsView() {
               {/* 6. Seasonality */}
               <Card className="p-4 flex flex-col justify-between space-y-3 hover:border-tertiary/50 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md group cursor-pointer">
                 <div className="space-y-2">
-                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center">
+                  <div className="size-8 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs flex items-center justify-center group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                     <Calendar className="size-4" />
                   </div>
-                  <h4 className="font-display text-sm font-semibold text-text-primary">Seasonality</h4>
+                  <h4 className="font-display text-sm font-semibold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Seasonality</h4>
                   <p className="text-xs text-text-secondary leading-relaxed">
                     Assumptions about seasonal patterns and important periods.
                   </p>

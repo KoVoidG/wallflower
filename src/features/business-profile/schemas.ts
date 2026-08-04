@@ -132,6 +132,7 @@ export function createBusinessValue(
 // --- Normalized Onboarding Data Interface ---
 
 export interface OnboardingData {
+  setupMethod?: 'know_numbers' | 'need_guidance' | 'just_starting';
   goals: {
     selectedGoals: string[];
     mainConcern?: string;
@@ -140,13 +141,29 @@ export interface OnboardingData {
   };
   business: {
     name: string;
-    industry: string;
-    location: string;
+    category?: string;
+    industry?: string;
+    size?: 'Micro' | 'Small' | 'Medium' | string;
+    age?: string;
+    storeType?: 'Physical' | 'Online' | 'Both' | string;
+    branches?: string;
+    currency?: string;
+    language?: string;
+    location?: string;
     userRole?: string;
     revenueModel?: string;
     stage?: string;
     employeeCount?: number;
     operatingSince?: string;
+  };
+  operations?: {
+    employees: number;
+    openingHours: string;
+    operatingDays: string;
+    transactionsPerDay: number;
+    customersPerDay: number;
+    suppliersCount: number;
+    businessNotes?: string;
   };
   financials: {
     reportingPeriod?: string;
@@ -156,6 +173,14 @@ export interface OnboardingData {
     monthlyRevenue?: BusinessValue;
     typicalRevenue?: BusinessValue;
     monthlyExpenses?: BusinessValue;
+    operatingExpenses?: BusinessValue;
+    payrollExpenses?: BusinessValue;
+    rent?: BusinessValue;
+    utilities?: BusinessValue;
+    marketing?: BusinessValue;
+    cashOnHand?: BusinessValue;
+    bankBalance?: BusinessValue;
+    outstandingLoans?: BusinessValue;
     expenseBreakdown?: Record<string, BusinessValue>;
     availableCash?: BusinessValue;
     reservedCash?: BusinessValue;
@@ -164,6 +189,22 @@ export interface OnboardingData {
     upcomingPayables?: BusinessValue;
     monthlyDebtRepayment?: BusinessValue;
     totalDebt?: BusinessValue;
+  };
+  inventory?: {
+    estimatedValue: BusinessValue;
+    categories: string[];
+    restockFrequency: string;
+    shortages: 'Never' | 'Sometimes' | 'Often';
+    turnover?: string;
+    deadStockPct?: string;
+  };
+  assumptions?: {
+    demand: 'Declining' | 'Stable' | 'Growing';
+    supplierCostTrend: 'Falling' | 'Stable' | 'Rising';
+    seasonality: 'None' | 'Low' | 'Medium' | 'High';
+    competition: 'Low' | 'Medium' | 'High';
+    recordConfidence: 'Low' | 'Moderate' | 'High' | 'Very High';
+    expansionPlans?: string;
   };
   gaps?: {
     overdueReceivablesShare?: number;
@@ -195,12 +236,12 @@ export const businessProfileSchema = z.object({
     .max(100, 'Business name must be at most 100 characters'),
   industry: z.enum(INDUSTRY_VALUES, {
     invalid_type_error: 'Invalid industry value',
-  }),
+  }).optional(),
   type: z.enum(BUSINESS_TYPE_VALUES).optional(),
   stage: z.enum(STAGE_VALUES).optional(),
   size: z.enum(SIZE_VALUES).optional(),
-  location: z.string().min(1, 'Location is required'),
-  goals: z.array(z.string()).min(1, 'At least one goal is required'),
+  location: z.string().optional(),
+  goals: z.array(z.string()).optional(),
   userRole: z.string().optional(),
   revenueModel: z.string().optional(),
   employeeCount: z.number().optional(),
@@ -234,6 +275,7 @@ export const onboardingSchema = z.object({
 });
 
 export const defaultOnboardingData: OnboardingData = {
+  setupMethod: 'know_numbers',
   goals: {
     selectedGoals: ['Understand business health'],
     mainConcern: '',
@@ -241,40 +283,75 @@ export const defaultOnboardingData: OnboardingData = {
     targetTimeline: 'Short term (1–3 months)',
   },
   business: {
-    name: '',
+    name: 'Somchai Retail Store',
+    category: 'Grocery Store',
     industry: 'retail',
+    size: 'Micro',
+    age: '1–3 years',
+    storeType: 'Physical',
+    branches: '1',
+    currency: 'THB (Baht)',
+    language: 'English',
     location: 'Bangkok, Thailand',
     userRole: 'Owner / Founder',
     revenueModel: 'direct_sales',
     stage: 'growing',
-    employeeCount: 5,
+    employeeCount: 6,
     operatingSince: '2022',
+  },
+  operations: {
+    employees: 6,
+    openingHours: '8:00 AM - 8:00 PM',
+    operatingDays: '6 days',
+    transactionsPerDay: 120,
+    customersPerDay: 80,
+    suppliersCount: 5,
+    businessNotes: 'Retail grocery store focusing on fresh local food and daily essentials.',
   },
   financials: {
     reportingPeriod: new Date().toISOString().substring(0, 7),
     revenueQuality: 'actual',
     isTypicalMonth: true,
     revenueTrend: 'stable',
-    monthlyRevenue: createBusinessValue(150000, 'actual', 'manual'),
-    typicalRevenue: createBusinessValue(150000, 'actual', 'manual'),
-    monthlyExpenses: createBusinessValue(105000, 'actual', 'manual'),
+    monthlyRevenue: createBusinessValue(1200000, 'actual', 'manual'),
+    operatingExpenses: createBusinessValue(820000, 'actual', 'manual'),
+    payrollExpenses: createBusinessValue(180000, 'actual', 'manual'),
+    rent: createBusinessValue(60000, 'actual', 'manual'),
+    utilities: createBusinessValue(15000, 'actual', 'manual'),
+    marketing: createBusinessValue(20000, 'actual', 'manual'),
+    cashOnHand: createBusinessValue(150000, 'actual', 'manual'),
+    bankBalance: createBusinessValue(200000, 'actual', 'manual'),
+    outstandingLoans: createBusinessValue(300000, 'actual', 'manual'),
+    typicalRevenue: createBusinessValue(1200000, 'actual', 'manual'),
+    monthlyExpenses: createBusinessValue(820000, 'actual', 'manual'),
     expenseBreakdown: {
-      Payroll: createBusinessValue(45000, 'actual', 'manual'),
-      Rent: createBusinessValue(25000, 'actual', 'manual'),
-      Materials: createBusinessValue(20000, 'actual', 'manual'),
-      Utilities: createBusinessValue(8000, 'actual', 'manual'),
-      Marketing: createBusinessValue(7000, 'actual', 'manual'),
+      Payroll: createBusinessValue(180000, 'actual', 'manual'),
+      Rent: createBusinessValue(60000, 'actual', 'manual'),
+      Utilities: createBusinessValue(15000, 'actual', 'manual'),
+      Marketing: createBusinessValue(20000, 'actual', 'manual'),
     },
-    availableCash: createBusinessValue(240000, 'actual', 'manual'),
-    reservedCash: createBusinessValue(60000, 'actual', 'manual'),
-    receivables: createBusinessValue(35000, 'actual', 'manual'),
-    overdueReceivables: createBusinessValue(10000, 'estimate', 'manual'),
-    upcomingPayables: createBusinessValue(28000, 'actual', 'manual'),
-    monthlyDebtRepayment: createBusinessValue(12000, 'actual', 'manual'),
-    totalDebt: createBusinessValue(140000, 'actual', 'manual'),
+    availableCash: createBusinessValue(150000, 'actual', 'manual'),
+    reservedCash: createBusinessValue(200000, 'actual', 'manual'),
+    totalDebt: createBusinessValue(300000, 'actual', 'manual'),
+  },
+  inventory: {
+    estimatedValue: createBusinessValue(350000, 'actual', 'manual'),
+    categories: ['Beverages', 'Snacks', 'Daily Essentials'],
+    restockFrequency: 'Every 1-2 weeks',
+    shortages: 'Sometimes',
+    turnover: '4–6 times per year',
+    deadStockPct: '5% or less',
+  },
+  assumptions: {
+    demand: 'Stable',
+    supplierCostTrend: 'Stable',
+    seasonality: 'Low',
+    competition: 'Medium',
+    recordConfidence: 'High',
+    expansionPlans: 'Considering online order delivery expansion.',
   },
   gaps: {
-    overdueReceivablesShare: 28,
+    overdueReceivablesShare: 15,
     customerConcentration: false,
     unusualExpenses: false,
     largePaymentDue: false,

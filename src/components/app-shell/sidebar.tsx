@@ -5,7 +5,6 @@ import {
   Building2,
   GitPullRequest,
   FileText,
-  Settings,
   PanelLeftClose,
   PanelLeft,
 } from 'lucide-react';
@@ -32,7 +31,6 @@ const mainNavItems: readonly NavItem[] = [
   { key: 'business', label: 'Business', href: '/business-health', tourId: 'sidebar-business', icon: Building2 },
   { key: 'planner', label: 'Decision Planner', href: '/simulations', tourId: 'sidebar-planner', icon: GitPullRequest },
   { key: 'reports', label: 'Reports', href: '/reports', tourId: 'sidebar-reports', icon: FileText },
-  { key: 'settings', label: 'Settings', href: '/settings', tourId: 'sidebar-settings', icon: Settings },
 ] as const;
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
@@ -102,21 +100,21 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Account Control Row */}
-      <div data-tour="sidebar-account-menu" className="px-3 py-2 border-t border-border/50 shrink-0">
+      <div data-tour="sidebar-account-menu" className="p-3 my-1 border-t border-border/60 shrink-0">
         <AccountMenu collapsed={collapsed} align="top" />
       </div>
 
       {/* Collapse toggle */}
-      <div className="border-t border-border px-3 py-3 shrink-0">
+      <div className="border-t border-border/60 p-3 shrink-0">
         <button
           type="button"
           onClick={onToggle}
           className={cn(
-            'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs sm:text-sm font-medium',
-            'text-text-secondary hover:bg-surface-subtle hover:text-text-primary',
+            'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold',
+            'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
             'transition-colors duration-150',
             'motion-reduce:transition-none',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tertiary',
             'cursor-pointer'
           )}
           aria-label={collapsed ? t('expand') : t('collapse')}

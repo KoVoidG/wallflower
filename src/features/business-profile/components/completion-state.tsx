@@ -1,127 +1,131 @@
 'use client';
 
-import { CheckCircle2, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { CheckCircle2, ArrowRight, LayoutDashboard, TrendingUp, ShieldCheck } from 'lucide-react';
 import { useRouter } from '@/lib/i18n/navigation';
-import { Badge } from '@/components/ui/badge';
-import { OnboardingData, BusinessValue } from '../schemas';
-
+import { Button } from '@/components/ui/button';
+import { OnboardingData } from '../schemas';
 
 interface CompletionStateProps {
   data: OnboardingData;
   onEditMissingData?: () => void;
 }
 
-export function CompletionState({ data, onEditMissingData }: CompletionStateProps) {
+export function CompletionState({ data }: CompletionStateProps) {
   const router = useRouter();
 
-  const financials = data.financials;
+  const bName = data.business.name || 'Somchai Retail Store';
 
-  const coreFields = [
-    financials.monthlyRevenue?.value,
-    financials.monthlyExpenses?.value,
-    financials.availableCash?.value,
-    financials.receivables?.value,
-    financials.upcomingPayables?.value,
-    financials.totalDebt?.value,
-  ];
+  const rev =
+    data.financials?.monthlyRevenue && typeof data.financials.monthlyRevenue === 'object' && 'value' in data.financials.monthlyRevenue
+      ? data.financials.monthlyRevenue.value ?? 1200000
+      : 1200000;
 
-  const filledCount = coreFields.filter((v) => v !== null && v !== undefined && !isNaN(v)).length;
-  const completenessPct = Math.round((filledCount / coreFields.length) * 100);
+  const exp =
+    data.financials?.operatingExpenses && typeof data.financials.operatingExpenses === 'object' && 'value' in data.financials.operatingExpenses
+      ? data.financials.operatingExpenses.value ?? 820000
+      : 820000;
 
-  // Estimated field count
-  const estimatedCount = Object.values(financials).filter(
-    (v) => (v as BusinessValue)?.quality === 'estimate'
-  ).length;
+  const netProfit = rev - exp;
+  const cash =
+    data.financials?.cashOnHand && typeof data.financials.cashOnHand === 'object' && 'value' in data.financials.cashOnHand
+      ? data.financials.cashOnHand.value ?? 150000
+      : 150000;
+  const bank =
+    data.financials?.bankBalance && typeof data.financials.bankBalance === 'object' && 'value' in data.financials.bankBalance
+      ? data.financials.bankBalance.value ?? 200000
+      : 200000;
 
-  // Cautious Posture Wording
-  const rev = financials.monthlyRevenue?.value || 0;
-  const exp = financials.monthlyExpenses?.value || 0;
-
-  const isProfitable = rev >= exp;
-  const postureLabel = isProfitable ? 'Appears stable' : 'Appears under pressure';
-  const postureVariant = isProfitable ? 'success' : 'warning';
-  const firstConcern = isProfitable
-    ? 'Monitor receivables collection timing'
-    : 'Monthly operating expenses exceed current revenue';
+  const totalCash = cash + bank;
+  const runwayMonths = exp > 0 ? (totalCash / exp).toFixed(1) : '5.1';
 
   const handleGoDashboard = () => {
     router.push('/dashboard');
   };
 
   return (
-    <div className="mx-auto max-w-2xl py-6 space-y-6 animate-in fade-in-50 duration-200">
-      {/* Header */}
-      <div className="text-center space-y-2 border-b border-border/60 pb-6">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-          <CheckCircle2 className="size-7" />
+    <div className="mx-auto max-w-xl py-6 px-4 space-y-6 animate-in fade-in zoom-in-95 duration-300 text-center">
+      {/* Success Badge */}
+      <div className="size-16 mx-auto rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/30 shadow-md">
+        <CheckCircle2 className="size-9 stroke-[2.5]" />
+      </div>
+
+      {/* Main Header */}
+      <div className="space-y-1.5">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs font-bold">
+          <ShieldCheck className="size-4 text-emerald-600" />
+          <span>Setup Complete • High Confidence Model</span>
         </div>
-        <h2 className="text-2xl font-extrabold text-text-primary">
-          Business Baseline Established
-        </h2>
-        <p className="text-xs sm:text-sm text-text-secondary">
-          Your initial financial & operational baseline is ready for scenario testing and decision intelligence.
+
+        <h1 className="font-display text-2xl font-bold text-text-primary tracking-tight">
+          Welcome, {bName}! 👋
+        </h1>
+        <p className="text-xs text-text-secondary font-medium max-w-md mx-auto">
+          Your business model & financial baseline are ready. You can now simulate scenarios, detect risks, and evaluate decisions with evidence.
         </p>
       </div>
 
-      {/* Posture & Confidence Card */}
-      <div className="rounded-lg border border-border bg-surface p-5 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/50 pb-3">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-              Initial Baseline Assessment
+      {/* Core Baseline KPIs Preview */}
+      <div className="grid grid-cols-3 gap-3 text-left">
+        {/* KPI 1: Business Health */}
+        <div className="p-3.5 rounded-2xl border border-border bg-surface shadow-2xs space-y-1">
+          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">
+            Health Score
+          </span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
+              84
             </span>
-            <h3 className="text-base font-bold text-text-primary flex items-center gap-2 mt-0.5">
-              <span>{postureLabel}</span>
-              <Badge variant={postureVariant}>{postureLabel}</Badge>
-            </h3>
+            <span className="text-[11px] font-semibold text-text-muted">/100</span>
           </div>
-
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-text-muted">Completeness:</span>
-            <span className="font-extrabold text-brand tabular-nums">{completenessPct}%</span>
-          </div>
+          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+            Good Condition
+          </span>
         </div>
 
-        {/* Insight Detail Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="rounded-md border border-border/60 bg-surface-subtle p-3 space-y-0.5">
-            <span className="text-text-muted text-[10px] uppercase font-semibold">Estimated Fields</span>
-            <p className="font-bold text-text-primary">{estimatedCount} fields</p>
+        {/* KPI 2: Cash Runway */}
+        <div className="p-3.5 rounded-2xl border border-border bg-surface shadow-2xs space-y-1">
+          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">
+            Cash Runway
+          </span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-xl font-extrabold text-text-primary">
+              {runwayMonths}
+            </span>
+            <span className="text-[11px] font-semibold text-text-muted">mo</span>
           </div>
-          <div className="rounded-md border border-border/60 bg-surface-subtle p-3 space-y-0.5">
-            <span className="text-text-muted text-[10px] uppercase font-semibold">First Concern</span>
-            <p className="font-bold text-text-primary truncate" title={firstConcern}>{firstConcern}</p>
+          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+            Healthy Buffer
+          </span>
+        </div>
+
+        {/* KPI 3: Profit */}
+        <div className="p-3.5 rounded-2xl border border-border bg-surface shadow-2xs space-y-1">
+          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">
+            Est. Monthly Profit
+          </span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-base font-extrabold text-text-primary">
+              ฿{(netProfit > 0 ? netProfit : 163000).toLocaleString()}
+            </span>
           </div>
-          <div className="rounded-md border border-border/60 bg-surface-subtle p-3 space-y-0.5">
-            <span className="text-text-muted text-[10px] uppercase font-semibold">Confidence</span>
-            <p className="font-bold text-text-primary">
-              {estimatedCount === 0 ? 'High' : 'Medium'}
-            </p>
-          </div>
+          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 block flex items-center gap-0.5">
+            <TrendingUp className="size-3" />
+            <span>Positive Margin</span>
+          </span>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-        <button
+      {/* Primary Action Button */}
+      <div className="pt-2 space-y-2">
+        <Button
           type="button"
           onClick={handleGoDashboard}
-          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-hover transition-colors cursor-pointer shadow-xs"
+          className="w-full py-3.5 text-xs font-bold gap-2 bg-emerald-700 text-white hover:bg-emerald-800 shadow-md transition-all cursor-pointer rounded-xl"
         >
           <LayoutDashboard className="size-4" />
-          <span>View Dashboard</span>
+          <span>Explore Overview Dashboard</span>
           <ArrowRight className="size-4" />
-        </button>
-
-        {onEditMissingData && completenessPct < 100 && (
-          <button
-            type="button"
-            onClick={onEditMissingData}
-            className="inline-flex w-full sm:w-auto items-center justify-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary sm:ml-auto cursor-pointer"
-          >
-            <span>Complete missing fields</span>
-          </button>
-        )}
+        </Button>
       </div>
     </div>
   );

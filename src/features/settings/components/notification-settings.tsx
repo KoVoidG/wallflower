@@ -1,177 +1,122 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Bell, Info, Mail, Check } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 
 export function NotificationSettings() {
-  const t = useTranslations('settingsPage.notificationsPage');
-  const tCommon = useTranslations('settingsPage');
+  const [simCompleted, setSimCompleted] = useState(true);
+  const [reportsGenerated, setReportsGenerated] = useState(true);
+  const [aiRecommendations, setAiRecommendations] = useState(true);
+  const [healthAlerts, setHealthAlerts] = useState(true);
+  const [securityAlerts, setSecurityAlerts] = useState(true);
+  const [billingInvoices, setBillingInvoices] = useState(false);
 
-  const [criticalRisk, setCriticalRisk] = useState(true);
-  const [runwayWarning, setRunwayWarning] = useState(true);
-  const [staleData, setStaleData] = useState(true);
-  const [simCompletion, setSimCompletion] = useState(true);
-  const [monthlySummary, setMonthlySummary] = useState(true);
-  const [reportReady, setReportReady] = useState(true);
-  const [missingData, setMissingData] = useState(false);
-
-  const [saved, setSaved] = useState(false);
-
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
+  const [inApp, setInApp] = useState(true);
+  const [reminderFreq, setReminderFreq] = useState<'Daily' | 'Weekly' | 'Monthly' | 'Never'>('Weekly');
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-text-primary">{t('title')}</h2>
-        <p className="text-sm text-text-secondary">
-          Configure in-app alerts and notifications for risk events and summary updates.
-        </p>
-      </div>
-
-      {saved && (
-        <div className="flex items-center gap-2 rounded-lg border border-success/40 bg-success-soft px-4 py-3 text-sm text-success font-medium">
-          <Check className="size-4 shrink-0" />
-          <span>{tCommon('saveBar.saved')}</span>
+      {/* Card 1: Email Notifications */}
+      <Card className="p-5 border-border-strong bg-surface space-y-4 text-left">
+        <div className="border-b border-border/60 pb-3">
+          <h3 className="font-display text-sm font-bold text-text-primary">Email Notifications</h3>
         </div>
-      )}
 
-      {/* Prototype Notice Banner */}
-      <div className="flex items-start gap-3 rounded-lg border border-border bg-surface-subtle p-3.5 text-xs text-text-secondary">
-        <Info className="size-4 text-brand shrink-0 mt-0.5" />
-        <p>{t('emailNotice')}</p>
-      </div>
-
-      {/* Channels Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="rounded-lg border border-brand bg-brand-soft/20 p-4 space-y-1">
-          <div className="flex items-center gap-2">
-            <Bell className="size-4 text-brand" />
-            <span className="text-sm font-semibold text-text-primary">{t('inApp')}</span>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">Simulation Completed</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive email when a simulation is finished.</p>
+            </div>
+            <Switch checked={simCompleted} onCheckedChange={setSimCompleted} ariaLabel="Toggle Simulation Completed Email" />
           </div>
-          <p className="text-xs text-text-muted">Active in dashboard topbar and contextual panel.</p>
-        </div>
 
-        <div className="rounded-lg border border-border bg-surface-subtle p-4 space-y-1 opacity-70">
-          <div className="flex items-center gap-2">
-            <Mail className="size-4 text-text-muted" />
-            <span className="text-sm font-semibold text-text-muted">{t('email')}</span>
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">Reports Generated</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive email when a new report is generated.</p>
+            </div>
+            <Switch checked={reportsGenerated} onCheckedChange={setReportsGenerated} ariaLabel="Toggle Reports Generated Email" />
           </div>
-          <p className="text-xs text-text-muted">Not connected in prototype.</p>
+
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">AI Recommendations</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive email for new AI insights and recommendations.</p>
+            </div>
+            <Switch checked={aiRecommendations} onCheckedChange={setAiRecommendations} ariaLabel="Toggle AI Recommendations Email" />
+          </div>
+
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">Business Health Alerts</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive alerts when your Business Health changes.</p>
+            </div>
+            <Switch checked={healthAlerts} onCheckedChange={setHealthAlerts} ariaLabel="Toggle Business Health Alerts Email" />
+          </div>
+
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">Security Alerts</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive email for important security events.</p>
+            </div>
+            <Switch checked={securityAlerts} onCheckedChange={setSecurityAlerts} ariaLabel="Toggle Security Alerts Email" />
+          </div>
+
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
+            <div>
+              <h4 className="text-xs font-bold text-text-primary">Billing & Invoices</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Receive emails for billing updates and invoices.</p>
+            </div>
+            <Switch checked={billingInvoices} onCheckedChange={setBillingInvoices} ariaLabel="Toggle Billing & Invoices Email" />
+          </div>
         </div>
-      </div>
+      </Card>
 
-      {/* Alert Types & Switches */}
-      <div className="rounded-lg border border-border bg-surface p-4 sm:p-6 space-y-4">
-        <h3 className="text-base font-semibold text-text-primary border-b border-border/60 pb-3">
-          {t('topicsTitle')}
-        </h3>
-
-        <div className="space-y-4">
-          <label className="flex items-center justify-between gap-4 cursor-pointer">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Card 2: In-App Notifications */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4 text-left">
+          <div className="border-b border-border/60 pb-3">
+            <h3 className="font-display text-sm font-bold text-text-primary">In-App Notifications</h3>
+          </div>
+          <div className="flex items-center justify-between gap-4 p-3 rounded-xl border border-border bg-surface-subtle">
             <div>
-              <span className="block text-sm font-medium text-text-primary">{t('criticalRisk')}</span>
-              <span className="text-xs text-text-muted">Immediate alert when cash runway or liquidity risks reach critical level.</span>
+              <h4 className="text-xs font-bold text-text-primary">In-App Notifications</h4>
+              <p className="text-[11px] text-text-secondary font-medium">Show in-app notifications.</p>
             </div>
-            <input
-              type="checkbox"
-              checked={criticalRisk}
-              onChange={(e) => setCriticalRisk(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
+            <Switch checked={inApp} onCheckedChange={setInApp} ariaLabel="Toggle In-App Notifications" />
+          </div>
+        </Card>
 
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('runwayWarning')}</span>
-              <span className="text-xs text-text-muted">Alert when projected cash runway drops below configured threshold.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={runwayWarning}
-              onChange={(e) => setRunwayWarning(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('staleData')}</span>
-              <span className="text-xs text-text-muted">Notification when financial snapshot data is over 30 days old.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={staleData}
-              onChange={(e) => setStaleData(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('simCompletion')}</span>
-              <span className="text-xs text-text-muted">Notification when background scenario simulations complete.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={simCompletion}
-              onChange={(e) => setSimCompletion(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('monthlySummary')}</span>
-              <span className="text-xs text-text-muted">Monthly overview digest of business health and key metric changes.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={monthlySummary}
-              onChange={(e) => setMonthlySummary(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('reportReady')}</span>
-              <span className="text-xs text-text-muted">Alert when generated PDF decision reports are ready for review.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={reportReady}
-              onChange={(e) => setReportReady(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-
-          <label className="flex items-center justify-between gap-4 cursor-pointer border-t border-border/40 pt-3">
-            <div>
-              <span className="block text-sm font-medium text-text-primary">{t('missingData')}</span>
-              <span className="text-xs text-text-muted">Reminders when key financial snapshots or category data are missing.</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={missingData}
-              onChange={(e) => setMissingData(e.target.checked)}
-              className="rounded accent-brand size-5 cursor-pointer shrink-0"
-            />
-          </label>
-        </div>
-
-        <div className="flex justify-end pt-3">
-          <button
-            type="button"
-            onClick={handleSave}
-            className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-hover transition-colors cursor-pointer"
-          >
-            {tCommon('saveBar.save')}
-          </button>
-        </div>
+        {/* Card 3: Reminder Frequency */}
+        <Card className="p-5 border-border-strong bg-surface space-y-4 text-left">
+          <div className="border-b border-border/60 pb-3">
+            <h3 className="font-display text-sm font-bold text-text-primary">Reminder Frequency</h3>
+            <p className="text-xs text-text-secondary font-medium">Choose how often you want summary reminders.</p>
+          </div>
+          <div className="space-y-2">
+            {(['Daily', 'Weekly', 'Monthly', 'Never'] as const).map((freq) => (
+              <label
+                key={freq}
+                className={`flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
+                  reminderFreq === freq
+                    ? 'border-tertiary bg-tertiary/10 font-bold text-tertiary'
+                    : 'border-border bg-surface hover:bg-surface-hover text-text-primary'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="reminderFreq"
+                  checked={reminderFreq === freq}
+                  onChange={() => setReminderFreq(freq)}
+                  className="accent-emerald-600"
+                />
+                <span className="text-xs">{freq}</span>
+              </label>
+            ))}
+          </div>
+        </Card>
       </div>
     </div>
   );

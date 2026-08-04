@@ -291,11 +291,11 @@ export function ScenarioLibraryView({ onOpenScenario, onCompareScenario }: Scena
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="p-2.5 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0">
+                      <div className="p-2.5 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                         <Icon className="size-5" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-display text-sm font-bold text-text-primary leading-snug truncate">
+                        <h3 className="font-display text-sm font-bold text-text-primary leading-snug truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                           {scen.name}
                         </h3>
                         <p className="text-[11px] font-medium text-text-muted truncate">
@@ -449,14 +449,14 @@ export function ScenarioLibraryView({ onOpenScenario, onCompareScenario }: Scena
                   const isSimulated = scen.status === 'Simulated';
 
                   return (
-                    <tr key={scen.id} className="hover:bg-surface-hover/50 transition-colors">
+                    <tr key={scen.id} className="group hover:bg-surface-hover/50 transition-colors">
                       <td className="p-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0">
+                          <div className="p-2 rounded-lg bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                             <Icon className="size-4" />
                           </div>
                           <div>
-                            <p className="font-bold text-text-primary">{scen.name}</p>
+                            <p className="font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{scen.name}</p>
                             <p className="text-[11px] text-text-muted">{scen.strategyTag}</p>
                           </div>
                         </div>

@@ -8,14 +8,9 @@ import {
   ArrowLeft,
   X,
   LayoutDashboard,
-  HeartPulse,
-  Banknote,
-  ShieldAlert,
-  FlaskConical,
-  Bot,
-  CheckSquare,
+  Building2,
+  GitPullRequest,
   FileText,
-  Database,
   UserCheck,
   Lightbulb,
 } from 'lucide-react';
@@ -35,51 +30,23 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
   {
     id: 'dashboard',
     selector: '[data-tour="sidebar-dashboard"]',
-    title: 'Dashboard — Executive Cockpit',
+    title: 'Overview — Executive Cockpit',
     desc: 'Review overall financial posture, cash runway countdown, health scores, and recommended actions at a glance.',
     icon: LayoutDashboard,
   },
   {
-    id: 'business-health',
-    selector: '[data-tour="sidebar-business-health"]',
-    title: 'Business Health Diagnostics',
-    desc: 'Inspect financial strengths, risk vulnerabilities, liquidity ratios, and diagnostic metric trends.',
-    icon: HeartPulse,
+    id: 'business',
+    selector: '[data-tour="sidebar-business"]',
+    title: 'Business Diagnostics & Health',
+    desc: 'Inspect financial strengths, operating capacity, inventory turnover, and diagnostic metric trends.',
+    icon: Building2,
   },
   {
-    id: 'cash-flow',
-    selector: '[data-tour="sidebar-cash-flow"]',
-    title: 'Cash Flow Workspace',
-    desc: 'Track cash runway projection timelines, receivable collections, payable schedules, and liquidity pressure.',
-    icon: Banknote,
-  },
-  {
-    id: 'risks',
-    selector: '[data-tour="sidebar-risks"]',
-    title: 'Risk Investigation Center',
-    desc: 'Identify active financial & operational risks, inspect evidence, and test mitigation scenarios.',
-    icon: ShieldAlert,
-  },
-  {
-    id: 'simulations',
-    selector: '[data-tour="sidebar-simulations"]',
-    title: 'Decision Simulations',
+    id: 'planner',
+    selector: '[data-tour="sidebar-planner"]',
+    title: 'Decision Planner & Simulations',
     desc: 'Model strategic decisions like hiring, price changes, or capex loans before committing business capital.',
-    icon: FlaskConical,
-  },
-  {
-    id: 'advisor',
-    selector: '[data-tour="sidebar-advisor"]',
-    title: 'AI Advisor Workspace',
-    desc: 'Ask contextual questions and receive executive decision intelligence backed strictly by calculated business facts.',
-    icon: Bot,
-  },
-  {
-    id: 'actions',
-    selector: '[data-tour="sidebar-actions"]',
-    title: 'Action Plan & Decision Log',
-    desc: 'Track execution tasks from risks & simulations, and verify Expected versus Actual decision outcomes.',
-    icon: CheckSquare,
+    icon: GitPullRequest,
   },
   {
     id: 'reports',
@@ -89,17 +56,10 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     icon: FileText,
   },
   {
-    id: 'data-sources',
-    selector: '[data-tour="sidebar-data-sources"]',
-    title: 'Data & Connections',
-    desc: 'Manage data sources, snapshot data quality, completeness confidence, and baseline financial history.',
-    icon: Database,
-  },
-  {
     id: 'account-menu',
     selector: '[data-tour="sidebar-account-menu"]',
-    title: 'Account & Support Menu',
-    desc: 'Manage your settings, view plan details, access support documentation, or replay this tour anytime.',
+    title: 'Account & Settings Control',
+    desc: 'Manage your settings, view plan details, switch appearance themes, access support, or replay this tour anytime.',
     icon: UserCheck,
   },
 ];
@@ -260,25 +220,51 @@ export function ProductTour() {
     }
   }
 
+  const cutoutPadding = 6;
+  const clipPathStyle = targetRect
+    ? `polygon(
+        0% 0%,
+        0% 100%,
+        ${targetRect.left - cutoutPadding}px 100%,
+        ${targetRect.left - cutoutPadding}px ${targetRect.top - cutoutPadding}px,
+        ${targetRect.right + cutoutPadding}px ${targetRect.top - cutoutPadding}px,
+        ${targetRect.right + cutoutPadding}px ${targetRect.bottom + cutoutPadding}px,
+        ${targetRect.left - cutoutPadding}px ${targetRect.bottom + cutoutPadding}px,
+        ${targetRect.left - cutoutPadding}px 100%,
+        100% 100%,
+        100% 0%
+      )`
+    : undefined;
+
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
-      {/* Focus highlight ring around sidebar item */}
+    <>
+      {/* Blurred & Darkened Backdrop Overlay with cutout hole for highlighted element */}
+      <div
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-md transition-all duration-200 pointer-events-auto"
+        onClick={handleSkip}
+        style={{
+          clipPath: clipPathStyle,
+          WebkitClipPath: clipPathStyle,
+        }}
+      />
+
+      {/* Focus Highlight Border Ring around active sidebar item */}
       {targetRect && (
         <div
-          className="absolute border-2 border-brand rounded-lg shadow-[0_0_0_4px_rgba(20,184,166,0.25)] transition-all duration-200 pointer-events-none"
+          className="fixed z-40 border-2 border-tertiary rounded-xl shadow-[0_0_0_4px_rgba(16,185,129,0.25)] transition-all duration-200 pointer-events-none"
           style={{
-            top: `${targetRect.top - 4}px`,
-            left: `${targetRect.left - 4}px`,
-            width: `${targetRect.width + 8}px`,
-            height: `${targetRect.height + 8}px`,
+            top: `${targetRect.top - cutoutPadding}px`,
+            left: `${targetRect.left - cutoutPadding}px`,
+            width: `${targetRect.width + cutoutPadding * 2}px`,
+            height: `${targetRect.height + cutoutPadding * 2}px`,
           }}
         />
       )}
 
-      {/* Compact Tooltip Popover beside sidebar item */}
+      {/* Compact Tooltip Popover (Unblurred, sitting above backdrop) */}
       <div
         className={cn(
-          'pointer-events-auto fixed z-50 w-80 max-h-[calc(100vh-32px)] overflow-y-auto rounded-xl border border-brand/40 bg-surface p-4 shadow-2xl dark:shadow-black/70',
+          'pointer-events-auto fixed z-50 w-80 max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl border-2 border-tertiary/40 bg-surface p-4.5 shadow-2xl dark:shadow-black/70',
           !prefersReduced && 'animate-in fade-in-50 zoom-in-95 duration-150'
         )}
         style={{
@@ -289,12 +275,12 @@ export function ProductTour() {
         {/* Step Header */}
         <div className="flex items-start justify-between gap-2 border-b border-border/60 pb-2.5">
           <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-brand-soft text-brand shrink-0">
+            <div className="flex size-7 items-center justify-center rounded-lg bg-tertiary/15 text-tertiary border border-tertiary/30 shrink-0">
               <StepIcon className="size-4" />
             </div>
             <div>
-              <Caption className="text-[10px] font-bold text-brand uppercase tracking-wider block">
-                Sidebar Tour ({currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length})
+              <Caption className="text-[10px] font-bold text-tertiary uppercase tracking-wider block">
+                Product Tour ({currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length})
               </Caption>
               <H3 className="text-xs font-bold text-text-primary leading-snug">
                 {currentStep.title}
@@ -321,7 +307,7 @@ export function ProductTour() {
           <button
             type="button"
             onClick={handleSkip}
-            className="text-[11px] font-medium text-text-muted hover:text-text-primary cursor-pointer"
+            className="text-[11px] font-semibold text-text-muted hover:text-text-primary cursor-pointer"
           >
             Skip
           </button>
@@ -331,7 +317,7 @@ export function ProductTour() {
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-subtle cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-text-primary hover:bg-surface-subtle cursor-pointer"
               >
                 <ArrowLeft className="size-3" />
                 <span>Back</span>
@@ -341,7 +327,7 @@ export function ProductTour() {
             <button
               type="button"
               onClick={handleNext}
-              className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-semibold text-white hover:bg-brand-hover cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-tertiary px-3.5 py-1.5 text-xs font-bold text-on-primary hover:bg-tertiary-hover cursor-pointer shadow-2xs"
             >
               <span>{isLastStep ? 'Start exploring Wallflower' : 'Next'}</span>
               {!isLastStep && <ArrowRight className="size-3" />}
@@ -349,7 +335,7 @@ export function ProductTour() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

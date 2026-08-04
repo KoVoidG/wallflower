@@ -1,10 +1,10 @@
 export { SettingsView } from './settings-view';
 export { ProfileAccountSettings } from './profile-account-settings';
 export { BusinessProfileSettings } from './business-profile-settings';
-export { AnalysisPreferencesSettings } from './analysis-preferences-settings';
+export { BusinessDataSettings } from './business-data-settings';
+export { SimulationSettings } from './simulation-settings';
 export { NotificationSettings } from './notification-settings';
 export { AppearanceLanguageSettings } from './appearance-language-settings';
 export { DataPrivacySettings } from './data-privacy-settings';
 export { SecuritySettings } from './security-settings';
 export { PlanUsageSettings } from './plan-usage-settings';
-export { DangerZone } from './danger-zone';

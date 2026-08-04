@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
 import {
-  Plus,
   Search,
   SlidersHorizontal,
   FileText,
@@ -96,12 +94,11 @@ const SAMPLE_REPORTS: ReportItem[] = [
 
 interface ReportLibraryViewProps {
   onSelectReport: (report: ReportItem) => void;
-  onNewSimulation: () => void;
+  onNewSimulation?: () => void;
 }
 
 export function ReportLibraryView({
   onSelectReport,
-  onNewSimulation,
 }: ReportLibraryViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('All Types');
@@ -136,24 +133,13 @@ export function ReportLibraryView({
     <div className="space-y-6 animate-in fade-in duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-text-primary">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
             Reports
           </h1>
           <p className="text-xs text-text-secondary mt-0.5 font-medium">
             All your decision reports in one place
           </p>
         </div>
-
-        <Button
-          type="button"
-          variant="primary"
-          size="md"
-          onClick={onNewSimulation}
-          className="gap-2 font-bold text-xs cursor-pointer bg-tertiary text-on-primary hover:bg-tertiary-hover shadow-2xs self-start sm:self-auto"
-        >
-          <Plus className="size-4" />
-          <span>New Simulation</span>
-        </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -218,13 +204,13 @@ export function ReportLibraryView({
               className="group p-4 border-border-strong bg-surface transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md hover:border-tertiary/50 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs relative"
             >
               <div className="flex items-start gap-3.5 min-w-0">
-                <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0">
+                <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
                   <FileText className="size-5" />
                 </div>
 
                 <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-display text-sm font-bold text-text-primary transition-colors truncate">
+                    <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
                       {rpt.title}
                     </h3>
 
