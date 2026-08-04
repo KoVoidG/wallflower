@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Inter, Geist_Mono, Noto_Sans_Thai } from 'next/font/google';
+import { Inter, Space_Grotesk, JetBrains_Mono, Noto_Sans_Thai } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ThemeProvider } from '@/components/providers/theme-provider';
@@ -12,9 +12,16 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-space-grotesk',
   subsets: ['latin'],
+  weight: ['500', '600', '700'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-jetbrains-mono',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const notoTh = Noto_Sans_Thai({
@@ -34,8 +41,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${inter.variable} ${geistMono.variable} ${notoTh.variable} antialiased`} suppressHydrationWarning>
+    <html lang={locale} className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${notoTh.variable} antialiased bg-background text-text-primary`} suppressHydrationWarning>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             {children}

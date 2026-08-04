@@ -7,4 +7,5 @@ export { StaggerChildren, type StaggerChildrenProps, type StaggerItemProps } fro
 export { Expand, type ExpandProps } from './expand';
 export { CountUp, type CountUpProps } from './count-up';
 export { MotionButton, type MotionButtonProps } from './motion-button';
-export {ChartInView} from './chart-in-view';
+export { ChartInView } from './chart-in-view';
+export { ProgressGauge, type ProgressGaugeProps } from './progress-gauge';

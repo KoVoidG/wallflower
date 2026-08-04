@@ -1,15 +1,12 @@
-// src/components/motion/chart-in-view.tsx
-
 'use client';
 
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
-
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from './use-reduced-motion';
 
-interface ChartInViewProps {
+export interface ChartInViewProps {
   children: (shouldRenderChart: boolean) => ReactNode;
   className?: string;
   amount?: number;
@@ -27,8 +24,8 @@ export function ChartInView({
 
   const isInView = useInView(ref, {
     once: true,
-    amount,
-    margin: '0px 0px -8% 0px',
+    amount: amount ?? 0.35,
+    margin: '0px 0px -100px 0px',
   });
 
   const shouldRenderChart = prefersReducedMotion || isInView;
@@ -41,7 +38,7 @@ export function ChartInView({
           ? false
           : {
               opacity: 0,
-              y: 14,
+              y: 24,
             }
       }
       animate={
@@ -52,15 +49,15 @@ export function ChartInView({
             }
           : {
               opacity: 0,
-              y: 14,
+              y: 24,
             }
       }
       transition={{
-        duration: 0.28,
+        duration: 0.5,
         delay,
         ease: [0, 0, 0.2, 1],
       }}
-      className={cn(className)}
+      className={cn('w-full h-full min-h-[260px]', className)}
     >
       {children(shouldRenderChart)}
     </motion.div>

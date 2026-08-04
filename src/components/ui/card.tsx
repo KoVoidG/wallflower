@@ -1,7 +1,7 @@
 // src/components/ui/card.tsx
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { CardTitle as CardTitleTypography, MetricValue, Label, Caption } from './typography';
+import { CardTitle as CardTitleTypography, MetricValue, Caption } from './typography';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -15,13 +15,13 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-2xs transition-all duration-200',
-          variant === 'subtle' && 'bg-surface-subtle border-border/60',
-          variant === 'glass' && 'bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-border/80 shadow-sm',
-          variant === 'interactive' && 'hover:border-brand/40 hover:bg-surface-subtle/80 cursor-pointer select-none active:scale-[0.995]',
+          'rounded-[14px] border border-border bg-surface p-6 shadow-2xs transition-all duration-200',
+          variant === 'subtle' && 'bg-surface-hover border-border/80',
+          variant === 'glass' && 'bg-surface/90 backdrop-blur-md border-border/80 shadow-sm',
+          variant === 'interactive' && 'hover:border-tertiary/60 hover:-translate-y-1 hover:shadow-md cursor-pointer select-none active:scale-[0.995]',
           variant === 'outline' && 'bg-transparent border-border',
-          variant === 'warning' && 'border-warning/30 bg-warning-soft/20',
-          variant === 'critical' && 'border-danger/30 bg-danger-soft/20',
+          variant === 'warning' && 'border-warning/40 bg-warning-soft/20',
+          variant === 'critical' && 'border-danger/40 bg-danger-soft/20',
           className
         )}
         {...props}
@@ -39,7 +39,7 @@ export function CardHeader({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('flex flex-col space-y-1 border-b border-border/50 pb-3 mb-3', className)} {...props}>
+    <div className={cn('flex flex-col space-y-1 border-b border-border/60 pb-3 mb-4', className)} {...props}>
       {children}
     </div>
   );
@@ -63,7 +63,7 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn('text-xs text-text-muted', className)} {...props}>
+    <p className={cn('font-sans text-xs text-text-secondary', className)} {...props}>
       {children}
     </p>
   );
@@ -74,7 +74,7 @@ export function CardContent({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('space-y-3', className)} {...props}>{children}</div>;
+  return <div className={cn('space-y-4', className)} {...props}>{children}</div>;
 }
 
 export function CardFooter({
@@ -84,7 +84,7 @@ export function CardFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex items-center justify-between border-t border-border/50 pt-3 mt-3', className)}
+      className={cn('flex items-center justify-between border-t border-border/60 pt-4 mt-4', className)}
       {...props}
     >
       {children}
@@ -118,8 +118,8 @@ export function MetricCard({
     <Card className={cn('flex flex-col justify-between gap-3', className)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {icon && <span className="text-brand shrink-0">{icon}</span>}
-          <Label className="text-xs font-medium text-text-muted">{title}</Label>
+          {icon && <span className="text-tertiary shrink-0">{icon}</span>}
+          <Caption className="text-xs font-normal text-text-secondary">{title}</Caption>
         </div>
         {badge}
       </div>
@@ -135,7 +135,7 @@ export function MetricCard({
         </div>
         {subtext && (
           typeof subtext === 'string' ? (
-            <Caption className="text-text-muted block">{subtext}</Caption>
+            <Caption className="text-text-secondary block">{subtext}</Caption>
           ) : (
             subtext
           )

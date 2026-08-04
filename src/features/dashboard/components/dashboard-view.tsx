@@ -1,1156 +1,913 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'motion/react';
 import {
-  Plus,
-  AlertTriangle,
-  Sparkles,
-  ArrowRight,
-  ShieldAlert,
-  Play,
-  Banknote,
-  CheckCircle2,
-  Clock,
-  TrendingUp,
+  RotateCw,
+  Calendar,
+  ChevronDown,
+  Info,
   ChevronRight,
+  AlertTriangle,
+  CheckCircle2,
+  ShieldAlert,
+  Sparkles,
+  MessageSquare,
+  FileText,
+  Download,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  Package,
+  Layers,
+  ShoppingBag,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
-  ComposedChart,
-  Line,
+  AreaChart,
   Area,
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Cell,
 } from 'recharts';
 import { Link } from '@/lib/i18n/navigation';
-import { AppPage } from '@/components/ui/layout';
-import { Card, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Select } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ChartCard } from '@/components/charts/chart-card';
-import { KpiCard } from '@/components/metrics';
-import { FadeInView, StaggerChildren, ChartInView } from '@/components/motion';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 import {
-  FreshnessIndicator,
-  FinancialValue,
-} from '@/components/ui/domain-values';
-import { SnapshotModal } from '@/features/dashboard/components';
-import type {
-  DashboardData,
-  TrendDataPoint,
-  KpiData,
-} from '../adapters/dashboard.adapter';
-import {
-  formatThbAxis,
-  AXIS_STYLES,
-  GRID_STYLES,
-} from '@/components/charts/chart-config';
+  FadeInView,
+  ProgressGauge,
+  CountUp,
+  ChartInView,
+} from '@/components/motion';
+import type { DashboardData } from '../adapters/dashboard.adapter';
 
 interface DashboardViewProps {
-  initialData: DashboardData;
+  initialData?: DashboardData;
 }
 
-export function DashboardView({ initialData }: DashboardViewProps) {
-  const [data, setData] = useState<DashboardData>(initialData);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('2025-01');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+// Sparkline datasets for Row 2 KPI Cards
+const revenueSparkline = [
+  { val: 1100000 },
+  { val: 1150000 },
+  { val: 1120000 },
+  { val: 1180000 },
+  { val: 1210000 },
+  { val: 1250000 },
+];
 
-  const existingMonths = [
-    '2024-08',
-    '2024-09',
-    '2024-10',
-    '2024-11',
-    '2024-12',
-    '2025-01',
-  ];
+const profitSparkline = [
+  { val: 160000 },
+  { val: 168000 },
+  { val: 165000 },
+  { val: 175000 },
+  { val: 180000 },
+  { val: 186000 },
+];
 
-  const periodOptions = [
-    { value: '2025-01', label: 'Jan 2025 (Current)' },
-    { value: '2024-12', label: 'Dec 2024' },
-    { value: '2024-11', label: 'Nov 2024' },
-    { value: '2024-10', label: 'Oct 2024' },
-  ];
+const runwaySparkline = [
+  { val: 9.2 },
+  { val: 9.0 },
+  { val: 8.8 },
+  { val: 8.6 },
+  { val: 8.4 },
+  { val: 8.2 },
+];
 
-  const handleSaveSnapshot = (newSnapshot: {
-    month: string;
-    revenue: number;
-    cashReserve: number;
-    receivables: number;
-    payables: number;
-    debt: number;
-    expenseCategories: Record<string, number>;
-  }) => {
-    const monthVal = newSnapshot.month;
-    const monthNum = parseInt(monthVal.split('-')[1]);
-    const monthsShort = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    const monthName = monthsShort[monthNum - 1];
+const turnoverSparkline = [
+  { val: 3.8 },
+  { val: 3.6 },
+  { val: 3.5 },
+  { val: 3.4 },
+  { val: 3.2 },
+  { val: 3.1 },
+];
 
-    const revenue = Number(newSnapshot.revenue);
-    const cashReserve = Number(newSnapshot.cashReserve);
+// Dual-line Trend Dataset for Row 3
+const trendChartData = [
+  { date: 'Feb 20', revenue: 1050000, profit: 160000 },
+  { date: 'Mar 5', revenue: 1220000, profit: 210000 },
+  { date: 'Mar 19', revenue: 1180000, profit: 185000 },
+  { date: 'Apr 2', revenue: 1280000, profit: 240000 },
+  { date: 'Apr 16', revenue: 1150000, profit: 190000 },
+  { date: 'Apr 30', revenue: 1350000, profit: 270000 },
+  { date: 'May 14', revenue: 1250000, profit: 230000 },
+];
 
-    let totalExpenses = 0;
-    Object.values(newSnapshot.expenseCategories).forEach((val: number) => {
-      totalExpenses += Number(val);
-    });
+export function DashboardView({}: DashboardViewProps) {
+  const [selectedRange, setSelectedRange] = useState<'30D' | '90D' | '12M'>(
+    '90D',
+  );
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const netProfit = revenue - totalExpenses;
-    const runway = totalExpenses > 0 ? cashReserve / totalExpenses : 12;
-
-    const updatedTrends = [...data.trends];
-    const existingIndex = updatedTrends.findIndex((t) => t.month === monthName);
-
-    const newTrendPoint: TrendDataPoint = {
-      month: monthName,
-      revenue,
-      expenses: totalExpenses,
-      profit: netProfit,
-      cashFlow: cashReserve,
-    };
-
-    if (existingIndex > -1) {
-      updatedTrends[existingIndex] = newTrendPoint;
-    } else {
-      updatedTrends.push(newTrendPoint);
-      if (updatedTrends.length > 6) {
-        updatedTrends.shift();
-      }
-    }
-
-    const updatedKpis: KpiData[] = data.kpis.map((kpi) => {
-      if (kpi.label === 'Monthly Revenue') {
-        const prevRevenue =
-          data.kpis.find((k) => k.label === 'Monthly Revenue')?.numericValue ||
-          revenue;
-        const pctChange =
-          prevRevenue > 0 ? ((revenue - prevRevenue) / prevRevenue) * 100 : 0;
-        const trend = [...(kpi.trend || [])];
-        trend.push(revenue);
-        if (trend.length > 6) trend.shift();
-        return {
-          ...kpi,
-          value: `฿${revenue.toLocaleString()}`,
-          numericValue: revenue,
-          change: Number(pctChange.toFixed(1)),
-          trend,
-        };
-      }
-      if (kpi.label === 'Cash Runway') {
-        const prevRunway =
-          data.kpis.find((k) => k.label === 'Cash Runway')?.numericValue ||
-          runway;
-        const change = runway - prevRunway;
-        const trend = [...(kpi.trend || [])];
-        trend.push(Number(runway.toFixed(1)));
-        if (trend.length > 6) trend.shift();
-        return {
-          ...kpi,
-          value: runway.toFixed(1),
-          numericValue: Number(runway.toFixed(1)),
-          change: Number(change.toFixed(1)),
-          status:
-            runway < 3
-              ? ('danger' as const)
-              : runway < 6
-                ? ('warning' as const)
-                : ('healthy' as const),
-          trend,
-        };
-      }
-      return kpi;
-    });
-
-    const updatedHealth = {
-      ...data.health,
-      completeness: {
-        ...data.health.completeness,
-        lastUpdated: monthVal + '-01',
-        staleDays: 0,
-        hasStaleWarning: false,
-        periodCount:
-          data.health.completeness.periodCount + (existingIndex === -1 ? 1 : 0),
-      },
-    };
-
-    const updatedPulse = {
-      ...data.pulse,
-      dataAsOf: monthVal + '-01',
-      summary: `Your business has been updated with the snapshot for ${monthName}. Runway is ${runway.toFixed(1)} months.`,
-    };
-
-    setData({
-      ...data,
-      pulse: updatedPulse,
-      kpis: updatedKpis,
-      trends: updatedTrends,
-      health: updatedHealth,
-    });
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 600);
   };
 
-  const isStale =
-    data.health.completeness.staleDays > 30 ||
-    data.health.completeness.hasStaleWarning;
-
-  // Supporting Financial Summary Metrics
-  const supportingSummary = [
-    {
-      label: 'Net Cash Flow',
-      value: 12000,
-      change: '+฿12,000/mo',
-      isPositive: true,
-    },
-    {
-      label: 'Monthly Debt Repayment',
-      value: 15000,
-      change: 'On Schedule (฿15k)',
-      isPositive: true,
-    },
-  ];
-
-  // Primary Charts Datasets
-  const cashForecastData = [
-    {
-      period: 'Nov',
-      actual: 380000,
-      expected: 380000,
-      conservative: 380000,
-      threshold: 164800,
-    },
-    {
-      period: 'Dec',
-      actual: 360000,
-      expected: 360000,
-      conservative: 360000,
-      threshold: 164800,
-    },
-    {
-      period: 'Jan',
-      actual: 345000,
-      expected: 345000,
-      conservative: 345000,
-      threshold: 164800,
-    },
-    {
-      period: 'Feb',
-      expected: 332600,
-      conservative: 310000,
-      threshold: 164800,
-    },
-    {
-      period: 'Mar',
-      expected: 319600,
-      conservative: 285000,
-      threshold: 164800,
-    },
-    {
-      period: 'Apr',
-      expected: 314600,
-      conservative: 270000,
-      threshold: 164800,
-    },
-  ];
-
-  const inflowsOutflowsData = [
-    { month: 'Nov', inflows: 138000, outflows: 142000 },
-    { month: 'Dec', inflows: 145000, outflows: 138500 },
-    { month: 'Jan', inflows: 152400, outflows: 140400 },
-    { month: 'Feb (Est)', inflows: 152400, outflows: 164800 },
-  ];
-
-  const receivablesAgingData = [
-    { range: '0-30 days', amount: 32000, color: '#0F766E' },
-    { range: '31-60 days', amount: 14340, color: '#D97706' },
-    { range: '61-90 days', amount: 7000, color: '#DC2626' },
-    { range: '90+ days', amount: 0, color: '#991B1B' },
-  ];
-
-  const expenseBreakdownData = [
-    { category: 'Payroll', amount: 85000, pct: 51.6 },
-    { category: 'Rent', amount: 32000, pct: 19.4 },
-    { category: 'Supplies', amount: 28400, pct: 17.2 },
-    { category: 'Marketing', amount: 12000, pct: 7.3 },
-    { category: 'Utilities', amount: 7400, pct: 4.5 },
-  ];
-
   return (
-    <AppPage>
-      <div className="space-y-6">
-        {/* 1. Simplified Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
-                Dashboard
-              </h1>
-              <Badge variant="healthy" dot>
-                Stable Posture
-              </Badge>
-            </div>
-            <p className="text-xs text-text-secondary">
-              Decision cockpit summarizing posture, cash runway, active risks,
-              and forward actions.
-            </p>
-            <div className="text-[11px] text-text-muted pt-0.5">
-              Data through{' '}
-              <strong>{data.health.completeness.lastUpdated}</strong> ·{' '}
-              <strong>{data.health.completeness.score}% Completeness</strong> ·{' '}
-              <strong>High Confidence</strong>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            <div className="w-44">
-              <Select
-                value={selectedPeriod}
-                onChange={setSelectedPeriod}
-                options={periodOptions}
-              />
-            </div>
-            <FreshnessIndicator
-              lastUpdated={data.health.completeness.lastUpdated}
-              staleDays={data.health.completeness.staleDays}
-            />
-            <Button
-              type="button"
-              variant="secondary"
-              size="md"
-              className="text-xs"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Plus aria-hidden="true" />
-              <span>Record Snapshot</span>
-            </Button>
-          </div>
-        </div>
-
-        {/* Stale Warning Banner */}
-        {isStale && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-warning-soft border border-warning/30 rounded-xl text-text-primary">
-            <div className="flex gap-2">
-              <AlertTriangle
-                className="size-5 text-warning shrink-0"
-                aria-hidden="true"
-              />
-              <div className="text-xs">
-                <span className="font-semibold">Financial data is stale.</span>{' '}
-                Your last snapshot was recorded on{' '}
-                {data.health.completeness.lastUpdated}. Update your snapshot to
-                keep forecasts accurate.
-              </div>
-            </div>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="text-xs"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <span>Update Snapshot</span>
-            </Button>
-          </div>
-        )}
-
-        {/* 2. Business Pulse Section (Above-the-fold, immediate reveal, clear 5-level hierarchy) */}
-        <div className="rounded-xl border border-brand/30 bg-surface p-5 sm:p-6 space-y-4 shadow-2xs">
-          <div className="flex items-center justify-between border-b border-border/60 pb-3">
-            <div className="flex items-center gap-2">
-              <Sparkles
-                className="size-4 text-brand shrink-0"
-                aria-hidden="true"
-              />
-              <span className="text-xs font-semibold text-brand uppercase tracking-wider">
-                Business Pulse
-              </span>
-            </div>
-            <span className="text-xs text-text-muted">Jan 2025 Assessment</span>
-          </div>
-
-          <div className="space-y-2">
-            {/* 1. Current Posture */}
-            <h2 className="text-base sm:text-lg font-semibold text-text-primary leading-snug">
-              Your business remains stable, but cash collection is slowing.
-            </h2>
-            {/* 2. Key Change & Consequence */}
-            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed max-w-3xl">
-              Revenue improved <strong>+8.2% to ฿152,400</strong> this month.
-              However,{' '}
-              <strong>customer payment delays (฿21,340 overdue)</strong> may
-              reduce your cash buffer over the next eight weeks.
+    <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
+      {/* ── Page Header ──────────────────────────────────────────────────────── */}
+      <FadeInView offset={10}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary flex items-center gap-2">
+              Good morning, Somchai{' '}
+              <span className="inline-block animate-bounce">👋</span>
+            </h1>
+            <p className="font-sans text-sm text-text-secondary mt-1">
+              Here&apos;s what&apos;s happening with Somchai Retail today.
             </p>
           </div>
 
-          {/* 3. Concerns & Actions Strip */}
-          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-border/50">
-            <div className="text-xs space-y-0.5">
-              <span className="text-text-muted block text-[11px] uppercase tracking-wider font-medium">
-                Primary Risk Exposure
-              </span>
-              <span className="font-semibold text-danger">
-                3 client invoices over 30 days overdue
-              </span>
+          <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs text-text-secondary">
+              <span>Last updated 2 hours ago</span>
+              <button
+                type="button"
+                onClick={handleRefresh}
+                className="p-1 rounded hover:bg-surface-hover transition-colors text-text-secondary hover:text-text-primary cursor-pointer"
+                title="Refresh dashboard data"
+              >
+                <RotateCw
+                  className={`size-3.5 ${isRefreshing ? 'animate-spin text-tertiary' : ''}`}
+                />
+              </button>
             </div>
 
-            {/* Dominant Primary Action + Quieter Secondary CTA */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <Button asChild variant="primary" size="md" className="text-xs">
-                <Link href="/cash-flow">
-                  <Banknote aria-hidden="true" />
-                  <span>Review Cash Forecast</span>
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="md" className="text-xs">
-                <Link href="/simulations/new?type=payment_delay">
-                  <Play aria-hidden="true" />
-                  <span>Simulate Delay</span>
-                </Link>
-              </Button>
-            </div>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-surface text-xs font-medium text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
+            >
+              <Calendar className="size-3.5 text-text-secondary" />
+              <span>May 20, 2024</span>
+              <ChevronDown className="size-3.5 text-text-secondary" />
+            </button>
           </div>
         </div>
+      </FadeInView>
 
-        {/* 3. Four Primary KPI Cards (Above-the-fold, immediate reveal, interactive affordances) */}
-        <section aria-label="Primary Key Performance Indicators">
-          <StaggerChildren className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StaggerChildren.Item key="revenue" className="h-full">
-              <Link href="/business-health" className="block h-full group">
-                <KpiCard
-                  label="Monthly Revenue"
-                  value="฿152,400"
-                  numericValue={152400}
-                  change={8.2}
-                  changePeriod="vs last month"
-                  status="healthy"
-                  tooltip="Gross sales earned in current month — Click to open Business Health"
-                  trend={[128000, 135000, 141000, 138000, 145000, 152400]}
-                  className="group-hover:border-brand/40 transition-all"
-                />
-              </Link>
-            </StaggerChildren.Item>
-
-            <StaggerChildren.Item key="profit" className="h-full">
-              <Link href="/business-health" className="block h-full group">
-                <KpiCard
-                  label="Operating Profit"
-                  value="฿28,200"
-                  numericValue={28200}
-                  change={14.5}
-                  changePeriod="vs last month"
-                  status="healthy"
-                  tooltip="Revenue minus operating expenses — Click to open Business Health"
-                  trend={[-4000, 5000, 12500, 9000, 16400, 28200]}
-                  className="group-hover:border-brand/40 transition-all"
-                />
-              </Link>
-            </StaggerChildren.Item>
-
-            <StaggerChildren.Item key="runway" className="h-full">
-              <Link href="/cash-flow" className="block h-full group">
-                <KpiCard
-                  label="Cash Runway"
-                  value="2.1"
-                  numericValue={2.1}
-                  unit="months"
-                  change={-0.4}
-                  changePeriod="vs last month"
-                  status="warning"
-                  tooltip="Estimated months until cash reserve depletion — Click to open Cash Flow"
-                  trend={[3.2, 3.0, 2.8, 2.6, 2.4, 2.1]}
-                  className="group-hover:border-amber-500/40 transition-all"
-                />
-              </Link>
-            </StaggerChildren.Item>
-
-            <StaggerChildren.Item key="receivables" className="h-full">
-              <Link href="/risks" className="block h-full group">
-                <KpiCard
-                  label="Overdue Receivables"
-                  value="฿21,340"
-                  numericValue={21340}
-                  change={12.0}
-                  changePeriod="3 unpaid invoices"
-                  status="danger"
-                  tooltip="Uncollected customer invoices past due date — Click to open Risk Center"
-                  trend={[8000, 10500, 14000, 16000, 19000, 21340]}
-                  className="group-hover:border-rose-500/40 transition-all"
-                />
-              </Link>
-            </StaggerChildren.Item>
-          </StaggerChildren>
-        </section>
-
-        {/* Supporting Financial Summary Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {supportingSummary.map((item) => (
-            <div
-              key={item.label}
-              className="p-3.5 rounded-lg border border-border/80 bg-surface flex items-center justify-between text-xs"
-            >
-              <span className="font-medium text-text-muted">{item.label}</span>
-              <div className="flex items-center gap-2">
-                <FinancialValue
-                  value={item.value}
-                  className="font-semibold text-text-primary"
-                />
-                <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                  {item.change}
-                </span>
+      {/* ── Row 1: Business Health & Today's Priorities ─────────────────────── */}
+      <FadeInView offset={14} duration={0.35}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Business Health Card */}
+          <Card className="lg:col-span-6 flex flex-col justify-between space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <h2 className="font-display text-lg font-semibold text-text-primary">
+                  Business Health
+                </h2>
+                <Info className="size-4 text-text-secondary cursor-help" />
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* 4. Primary Analysis (Viewport-triggered reveal for below-the-fold sections) */}
-        <div className="space-y-6">
-          <ChartInView>
-            {(shouldRenderChart) => (
-              <ChartCard
-                title="Cash Balance History & 3-Month Forward Forecast"
-                description="What is our cash trajectory?"
-                action={
-                  <Link
-                    href="/cash-flow"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover"
-                  >
-                    Cash Flow Workspace
-                    <ArrowRight className="size-3" />
-                  </Link>
-                }
-                legendItems={[
-                  { label: 'Historical Cash', color: '#0F766E' },
-                  { label: 'Expected Forecast', color: '#2563EB' },
-                  { label: 'Conservative Forecast', color: '#60A5FA' },
-                  { label: 'Safe Minimum Threshold', color: '#DC2626' },
-                ]}
-              >
-                <div className="h-72 w-full pt-2">
-                  {shouldRenderChart && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart
-                        data={cashForecastData}
-                        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray={GRID_STYLES.strokeDasharray}
-                          stroke="var(--border)"
-                          opacity={0.15}
-                        />
-
-                        <XAxis
-                          dataKey="period"
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-
-                        <YAxis
-                          tickFormatter={formatThbAxis}
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-
-                        <Tooltip
-                          formatter={(value) => [
-                            typeof value === 'number'
-                              ? `฿${value.toLocaleString()}`
-                              : String(value ?? '—'),
-                            'Cash Balance',
-                          ]}
-                          contentStyle={{
-                            backgroundColor: 'var(--surface)',
-                            borderColor: 'var(--border)',
-                            borderRadius: '10px',
-                            fontSize: '12px',
-                            color: 'var(--text-primary)',
-                          }}
-                        />
-
-                        <Area
-                          type="monotone"
-                          dataKey="actual"
-                          stroke="#0F766E"
-                          fill="#0F766E"
-                          fillOpacity={0.15}
-                          strokeWidth={2.5}
-                          animationDuration={800}
-                          animationEasing="ease-out"
-                        />
-
-                        <Line
-                          type="monotone"
-                          dataKey="expected"
-                          stroke="#2563EB"
-                          strokeDasharray="5 5"
-                          strokeWidth={2.5}
-                          dot={{ r: 4, fill: '#2563EB' }}
-                          animationBegin={100}
-                          animationDuration={800}
-                          animationEasing="ease-out"
-                        />
-
-                        <Line
-                          type="monotone"
-                          dataKey="conservative"
-                          stroke="#60A5FA"
-                          strokeDasharray="3 3"
-                          strokeWidth={2}
-                          dot={{ r: 3, fill: '#60A5FA' }}
-                          animationBegin={180}
-                          animationDuration={800}
-                          animationEasing="ease-out"
-                        />
-
-                        <Line
-                          type="monotone"
-                          dataKey="threshold"
-                          stroke="#DC2626"
-                          strokeDasharray="2 2"
-                          strokeWidth={1.5}
-                          dot={false}
-                          animationBegin={240}
-                          animationDuration={600}
-                          animationEasing="ease-out"
-                        />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </ChartCard>
-            )}
-          </ChartInView>
-
-          <ChartInView>
-            {(shouldRenderChart) => (
-              <ChartCard
-                title="Revenue, Expenses & Operating Profit Trend"
-                description="Are margins expanding?"
-                action={
-                  <Link
-                    href="/business-health"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover"
-                  >
-                    <span>Business Health Diagnostic</span>
-                    <ArrowRight className="size-3" />
-                  </Link>
-                }
-                legendItems={[
-                  { label: 'Revenue', color: '#0F766E' },
-                  { label: 'Operating Expenses', color: '#D97706' },
-                  { label: 'Operating Profit', color: '#16A34A' },
-                ]}
-              >
-                <div className="h-72 w-full pt-2">
-                  {shouldRenderChart && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart
-                        data={data.trends}
-                        margin={{
-                          top: 10,
-                          right: 10,
-                          left: -10,
-                          bottom: 0,
-                        }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray={GRID_STYLES.strokeDasharray}
-                          stroke="var(--border)"
-                          opacity={0.15}
-                        />
-
-                        <XAxis
-                          dataKey="month"
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-
-                        <YAxis
-                          tickFormatter={formatThbAxis}
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-
-                        <Tooltip
-                          formatter={(value) => [
-                            typeof value === 'number'
-                              ? `฿${value.toLocaleString()}`
-                              : String(value ?? '—'),
-                            'Amount',
-                          ]}
-                          contentStyle={{
-                            backgroundColor: 'var(--surface)',
-                            borderColor: 'var(--border)',
-                            borderRadius: '10px',
-                            fontSize: '12px',
-                            color: 'var(--text-primary)',
-                          }}
-                        />
-
-                        <Bar
-                          dataKey="revenue"
-                          fill="#0F766E"
-                          radius={[4, 4, 0, 0]}
-                          maxBarSize={28}
-                          animationDuration={700}
-                          animationEasing="ease-out"
-                        />
-
-                        <Bar
-                          dataKey="expenses"
-                          fill="#D97706"
-                          radius={[4, 4, 0, 0]}
-                          maxBarSize={28}
-                          animationBegin={100}
-                          animationDuration={700}
-                          animationEasing="ease-out"
-                        />
-
-                        <Line
-                          type="monotone"
-                          dataKey="profit"
-                          stroke="#16A34A"
-                          strokeWidth={2.5}
-                          dot={{
-                            r: 4,
-                            fill: '#16A34A',
-                          }}
-                          animationBegin={180}
-                          animationDuration={750}
-                          animationEasing="ease-out"
-                        />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </ChartCard>
-            )}
-          </ChartInView>
-        </div>
-
-        {/* 5. Supporting Analysis Grid (Viewport-triggered reveal) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ChartInView delay={0}>
-            {(shouldRenderChart) => (
-              <ChartCard title="Cash Inflows vs Outflows">
-                <div className="h-48">
-                  {shouldRenderChart && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={inflowsOutflowsData}
-                        margin={{ top: 5, right: 5, left: -15, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray={GRID_STYLES.strokeDasharray}
-                          stroke="var(--border)"
-                          opacity={0.15}
-                        />
-                        <XAxis
-                          dataKey="month"
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-                        <YAxis
-                          tickFormatter={formatThbAxis}
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-                        <Tooltip
-                          formatter={(val) => [
-                            typeof val === 'number'
-                              ? `฿${val.toLocaleString()}`
-                              : String(val ?? '—'),
-                            'Cash Flow',
-                          ]}
-                        />
-                        <Bar
-                          dataKey="inflows"
-                          fill="#16A34A"
-                          radius={[3, 3, 0, 0]}
-                          maxBarSize={20}
-                          isAnimationActive
-                        />
-                        <Bar
-                          dataKey="outflows"
-                          fill="#DC2626"
-                          radius={[3, 3, 0, 0]}
-                          maxBarSize={20}
-                          isAnimationActive
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </ChartCard>
-            )}
-          </ChartInView>
-
-          {/* Receivables Aging Breakdown */}
-          <ChartInView delay={0.06}>
-            {(shouldRenderChart) => (
-              <ChartCard title="Receivables Aging">
-                <div className="h-48">
-                  {shouldRenderChart && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={receivablesAgingData}
-                        layout="vertical"
-                        margin={{ top: 5, right: 10, left: 15, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray={GRID_STYLES.strokeDasharray}
-                          stroke="var(--border)"
-                          opacity={0.15}
-                        />
-                        <XAxis
-                          type="number"
-                          tickFormatter={formatThbAxis}
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-                        <YAxis
-                          type="category"
-                          dataKey="range"
-                          {...AXIS_STYLES}
-                          stroke="var(--text-muted)"
-                        />
-                        <Tooltip
-                          formatter={(val) => [
-                            typeof val === 'number'
-                              ? `฿${val.toLocaleString()}`
-                              : String(val ?? '—'),
-                            'Overdue',
-                          ]}
-                        />
-                        <Bar
-                          dataKey="amount"
-                          radius={[0, 4, 4, 0]}
-                          maxBarSize={18}
-                          isAnimationActive
-                        >
-                          {receivablesAgingData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </ChartCard>
-            )}
-          </ChartInView>
-
-          {/* Expense Breakdown */}
-          <ChartInView delay={0.12}>
-            {(isVisible) => (
-              <ChartCard
-                title="Expense Breakdown"
-                description="Monthly operating expenditure by main category."
-              >
-                <div className="space-y-2.5 pt-1">
-                  {expenseBreakdownData.map((exp, index) => (
-                    <div key={exp.category} className="space-y-1">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-text-primary">
-                          {exp.category}
-                        </span>
-
-                        <div className="flex items-center gap-2">
-                          <FinancialValue
-                            value={exp.amount}
-                            className="font-semibold"
-                          />
-
-                          <span className="text-[11px] text-text-muted">
-                            ({exp.pct}%)
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-subtle">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: isVisible ? `${exp.pct}%` : 0,
-                          }}
-                          transition={{
-                            duration: 0.55,
-                            delay: index * 0.07,
-                            ease: [0, 0, 0.2, 1],
-                          }}
-                          className="h-full rounded-full bg-brand"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </ChartCard>
-            )}
-          </ChartInView>
-        </div>
-
-        {/* 6. Risks and Opportunities (Viewport-triggered reveal) */}
-        <FadeInView>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Risks */}
-            <Card className="border-danger/30 bg-danger-soft/10 p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ShieldAlert
-                    className="size-4 text-danger"
-                    aria-hidden="true"
-                  />
-                  <CardTitle>Active Risks & Vulnerabilities</CardTitle>
-                </div>
-                <Badge variant="critical">2 Active</Badge>
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center py-2">
+              {/* Score Ring Motion Component */}
+              <div className="sm:col-span-5 flex items-center justify-center">
+                <ProgressGauge
+                  score={84}
+                  maxScore={100}
+                  label="Healthy"
+                  size={132}
+                />
               </div>
 
-              <div className="space-y-2.5">
-                <Link href="/risks" className="block group">
-                  <div className="p-3 rounded-lg border border-danger/20 bg-surface space-y-1 group-hover:border-danger/40 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-text-primary group-hover:text-brand">
-                        Landlord 5% Rent Increase
-                      </span>
-                      <Badge variant="warning">WARNING</Badge>
-                    </div>
-                    <p className="text-xs text-text-secondary">
-                      Expected March 2025 · Exposure: ฿3,500/month burn
-                      increase.
-                    </p>
-                    <div className="pt-1 flex items-center justify-between text-[11px]">
-                      <span className="text-text-muted">
-                        Recommended: Negotiate 50% deferral
-                      </span>
-                      <span className="text-brand font-medium group-hover:underline">
-                        Inspect →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/risks" className="block group">
-                  <div className="p-3 rounded-lg border border-danger/20 bg-surface space-y-1 group-hover:border-danger/40 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-text-primary group-hover:text-brand">
-                        ฿21,340 Overdue Receivables
-                      </span>
-                      <Badge variant="critical">CRITICAL</Badge>
-                    </div>
-                    <p className="text-xs text-text-secondary">
-                      3 client invoices over 30 days overdue · Direct runway
-                      drag.
-                    </p>
-                    <div className="pt-1 flex items-center justify-between text-[11px]">
-                      <span className="text-text-muted">
-                        Recommended: Offer 2% prompt discount
-                      </span>
-                      <span className="text-brand font-medium group-hover:underline">
-                        Simulate →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-
-              <Link
-                href="/risks"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover transition-colors"
-              >
-                <span>View full risk investigation center</span>
-                <ArrowRight className="size-3" aria-hidden="true" />
-              </Link>
-            </Card>
-
-            {/* Opportunities */}
-            <Card className="border-emerald-500/30 bg-emerald-500/5 p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2
-                    className="size-4 text-emerald-600 dark:text-emerald-400"
-                    aria-hidden="true"
-                  />
-                  <CardTitle>Growth Opportunities</CardTitle>
-                </div>
-                <Badge variant="success">2 Upsides</Badge>
-              </div>
-
-              <div className="space-y-2.5">
+              {/* Health Metrics List */}
+              <div className="sm:col-span-7 space-y-3">
                 <Link
-                  href="/simulations/new?type=hire_employees"
-                  className="block group"
+                  href="/cash-flow"
+                  className="flex items-center justify-between p-2.5 rounded-md hover:bg-surface-hover transition-colors group cursor-pointer"
                 >
-                  <div className="p-3 rounded-lg border border-emerald-500/20 bg-surface space-y-1 group-hover:border-emerald-500/40 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-text-primary group-hover:text-brand">
-                        Weekend Brunch Expansion
-                      </span>
-                      <Badge variant="success">HIGH CONFIDENCE</Badge>
-                    </div>
-                    <p className="text-xs text-text-secondary">
-                      Possible Benefit: +฿18,000/month upside · Assumption:
-                      Saturday demand +40%.
-                    </p>
-                    <div className="pt-1 flex items-center justify-between text-[11px]">
-                      <span className="text-text-muted">
-                        Requires 1 part-time barista
-                      </span>
-                      <span className="text-brand font-medium group-hover:underline">
-                        Test Scenario →
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2.5">
+                    <TrendingUp className="size-4 text-tertiary shrink-0" />
+                    <span className="text-xs font-medium text-text-secondary">
+                      Cash Runway
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-mono text-xs font-semibold text-tertiary">
+                      8.2 months
+                    </span>
+                    <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </Link>
 
-                <Link href="/simulations/new" className="block group">
-                  <div className="p-3 rounded-lg border border-emerald-500/20 bg-surface space-y-1 group-hover:border-emerald-500/40 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-text-primary group-hover:text-brand">
-                        Supplier Early Settlement Discount
-                      </span>
-                      <Badge variant="success">MEDIUM CONFIDENCE</Badge>
-                    </div>
-                    <p className="text-xs text-text-secondary">
-                      Possible Benefit: Saves ฿5,600/month · Assumption: Paid
-                      within 10 days.
-                    </p>
-                    <div className="pt-1 flex items-center justify-between text-[11px]">
-                      <span className="text-text-muted">
-                        Improves gross margin by +1.4%
-                      </span>
-                      <span className="text-brand font-medium group-hover:underline">
-                        Test Scenario →
-                      </span>
-                    </div>
+                <Link
+                  href="/risks"
+                  className="flex items-center justify-between p-2.5 rounded-md hover:bg-surface-hover transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <ShieldAlert className="size-4 text-tertiary shrink-0" />
+                    <span className="text-xs font-medium text-text-secondary">
+                      Risk Level
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-mono text-xs font-semibold text-tertiary">
+                      Low
+                    </span>
+                    <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </Link>
+
+                <Link
+                  href="/advisor"
+                  className="flex items-center justify-between p-2.5 rounded-md hover:bg-surface-hover transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Sparkles className="size-4 text-tertiary shrink-0" />
+                    <span className="text-xs font-medium text-text-secondary">
+                      Decision Confidence
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-mono text-xs font-semibold text-tertiary">
+                      High
+                    </span>
+                    <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </Link>
               </div>
+            </div>
 
-              <Link
-                href="/simulations/new"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-brand-hover transition-colors"
-              >
-                <span>Test opportunities in decision lab</span>
-                <ArrowRight className="size-3" aria-hidden="true" />
-              </Link>
-            </Card>
-          </div>
-        </FadeInView>
+            {/* Bottom Banner */}
+            <div className="rounded-md bg-success-soft/20 border border-success/30 px-3.5 py-2.5 text-xs text-tertiary font-medium flex items-center gap-2">
+              <CheckCircle2 className="size-4 shrink-0" />
+              <span>
+                Your business is in a strong position. Keep an eye on inventory
+                turnover.
+              </span>
+            </div>
+          </Card>
 
-        {/* 7. Actions and Recent Decisions (Viewport-triggered reveal) */}
-        <FadeInView>
-          <Card className="p-5 space-y-3">
-            <div className="flex items-center justify-between border-b border-border/60 pb-3">
-              <div>
-                <CardTitle>Actions & Operational Decisions</CardTitle>
-                <CardDescription>
-                  Execution tasks derived from risks and simulated scenarios.
-                </CardDescription>
+          {/* Today's Priorities Card */}
+          <Card className="lg:col-span-6 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <h2 className="font-display text-lg font-semibold text-text-primary">
+                  Today&apos;s Priorities
+                </h2>
+                <Info className="size-4 text-text-secondary cursor-help" />
               </div>
               <Link
                 href="/actions"
-                className="text-xs font-semibold text-brand hover:underline inline-flex items-center gap-1"
+                className="text-xs font-medium text-tertiary hover:underline"
               >
-                <span>View Action Log</span>
-                <ChevronRight className="size-3" />
+                View all
               </Link>
             </div>
 
-            <div className="divide-y divide-border/50 text-xs">
-              <Link href="/actions" className="block py-2.5 group">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <Clock className="size-3.5 text-warning shrink-0" />
-                    <div>
-                      <span className="font-semibold text-text-primary group-hover:text-brand block">
-                        Negotiate Early Invoice Collection for Client Invoice
-                        #1042
-                      </span>
-                      <span className="text-[11px] text-text-muted">
-                        Related: OVERDUE_RECEIVABLES_DRAG · Due Feb 5, 2025
-                      </span>
-                    </div>
+            <div className="divide-y divide-border/60">
+              <Link
+                href="/business-health"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-7 rounded-full bg-warning-soft/40 text-warning flex items-center justify-center shrink-0">
+                    <AlertTriangle className="size-3.5" />
                   </div>
-                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <Badge variant="warning">In Progress</Badge>
-                    <span className="text-brand font-medium group-hover:underline">
-                      Review →
-                    </span>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      Inventory turnover decreased for 2 months
+                    </p>
+                    <p className="text-[11px] text-text-secondary">
+                      Current:{' '}
+                      <span className="font-mono font-medium">3.1x</span>{' '}
+                      (Target: 4.0x)
+                    </p>
                   </div>
+                </div>
+                <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+
+              <Link
+                href="/cash-flow"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-7 rounded-full bg-warning-soft/40 text-warning flex items-center justify-center shrink-0">
+                    <AlertTriangle className="size-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      Cash runway decreased by 0.8 months
+                    </p>
+                    <p className="text-[11px] text-text-secondary">
+                      Current:{' '}
+                      <span className="font-mono font-medium">8.2 months</span>
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+
+              <Link
+                href="/simulations"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-7 rounded-full bg-info-soft/40 text-info flex items-center justify-center shrink-0">
+                    <Info className="size-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      Supplier costs increased 5% this month
+                    </p>
+                    <p className="text-[11px] text-text-secondary">
+                      Review your scenarios
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+
+              <Link
+                href="/simulations"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-7 rounded-full bg-success-soft/40 text-tertiary flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="size-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      New simulation template available
+                    </p>
+                    <p className="text-[11px] text-text-secondary">
+                      Launch Promotion – Summer Campaign
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+
+              <Link
+                href="/business-health"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-7 rounded-full bg-surface-hover text-text-secondary flex items-center justify-center shrink-0">
+                    <Package className="size-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      Update inventory value
+                    </p>
+                    <p className="text-[11px] text-text-secondary">
+                      Last updated 18 days ago
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          </Card>
+        </div>
+      </FadeInView>
+
+      {/* ── Row 2: 4 KPI Cards ────────────────────────────────────────────────── */}
+      <FadeInView offset={16} duration={0.4}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* KPI 1: Monthly Revenue */}
+          <Card className="flex flex-col justify-between gap-2 p-5">
+            <span className="font-sans text-xs font-medium text-text-secondary">
+              Monthly Revenue
+            </span>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="font-mono text-xl sm:text-2xl font-semibold text-text-primary">
+                ฿
+                <CountUp
+                  to={1250000}
+                  duration={0.65}
+                  formatter={(val) => Math.round(val).toLocaleString()}
+                />
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-0.5 text-xs font-medium text-tertiary">
+                <ArrowUpRight className="size-3.5" /> 8.4% vs last month
+              </span>
+              <div className="h-8 w-20">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={revenueSparkline}>
+                    <Line
+                      type="monotone"
+                      dataKey="val"
+                      stroke="#00D395"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </Card>
+
+          {/* KPI 2: Net Profit */}
+          <Card className="flex flex-col justify-between gap-2 p-5">
+            <span className="font-sans text-xs font-medium text-text-secondary">
+              Net Profit
+            </span>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="font-mono text-xl sm:text-2xl font-semibold text-text-primary">
+                ฿
+                <CountUp
+                  to={186000}
+                  duration={0.65}
+                  formatter={(val) => Math.round(val).toLocaleString()}
+                />
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-0.5 text-xs font-medium text-tertiary">
+                <ArrowUpRight className="size-3.5" /> 6.7% vs last month
+              </span>
+              <div className="h-8 w-20">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={profitSparkline}>
+                    <Line
+                      type="monotone"
+                      dataKey="val"
+                      stroke="#00D395"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </Card>
+
+          {/* KPI 3: Cash Runway */}
+          <Card className="flex flex-col justify-between gap-2 p-5">
+            <span className="font-sans text-xs font-medium text-text-secondary">
+              Cash Runway
+            </span>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="font-mono text-xl sm:text-2xl font-semibold text-text-primary">
+                <CountUp to={8.2} decimals={1} duration={0.65} /> months
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-0.5 text-xs font-medium text-warning">
+                <ArrowDownRight className="size-3.5" /> -0.8 vs last month
+              </span>
+              <div className="h-8 w-20">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={runwaySparkline}>
+                    <Line
+                      type="monotone"
+                      dataKey="val"
+                      stroke="#F5B942"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </Card>
+
+          {/* KPI 4: Inventory Turnover */}
+          <Card className="flex flex-col justify-between gap-2 p-5">
+            <span className="font-sans text-xs font-medium text-text-secondary">
+              Inventory Turnover
+            </span>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="font-mono text-xl sm:text-2xl font-semibold text-text-primary">
+                <CountUp to={3.1} decimals={1} duration={0.65} />x
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-0.5 text-xs font-medium text-warning">
+                <ArrowDownRight className="size-3.5" /> -0.4 vs last month
+              </span>
+              <div className="h-8 w-20">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={turnoverSparkline}>
+                    <Line
+                      type="monotone"
+                      dataKey="val"
+                      stroke="#F5B942"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </FadeInView>
+
+      {/* ── Row 3: Revenue & Profit Trend (Full Width) ─────────────────────── */}
+      <FadeInView offset={18} duration={0.45}>
+        <Card className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary">
+                Revenue & Profit Trend
+              </h2>
+              <Info className="size-4 text-text-secondary cursor-help" />
+            </div>
+
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-3 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="size-2.5 rounded-full bg-tertiary" />
+                  <span className="text-text-secondary font-medium">
+                    Revenue (฿)
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="size-2.5 rounded-full bg-info" />
+                  <span className="text-text-secondary font-medium">
+                    Net Profit (฿)
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center bg-surface-hover rounded-md p-1 border border-border">
+                {(['30D', '90D', '12M'] as const).map((range) => (
+                  <button
+                    key={range}
+                    type="button"
+                    onClick={() => setSelectedRange(range)}
+                    className={`px-2.5 py-1 text-xs font-mono font-medium rounded transition-colors cursor-pointer ${
+                      selectedRange === range
+                        ? 'bg-surface text-text-primary border border-border shadow-xs'
+                        : 'text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {range}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-sans text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                >
+                  <span>Compare</span>
+                  <ChevronDown className="size-3" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="h-72 w-full pt-4">
+            <ChartInView className="h-full w-full">
+              {(shouldRenderChart) => (
+                <ResponsiveContainer width="100%" height="100%" minHeight={260}>
+                  <AreaChart
+                    data={trendChartData}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="#00D395"
+                          stopOpacity={0.25}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#00D395"
+                          stopOpacity={0.0}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorProfit"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#4FA8FF"
+                          stopOpacity={0.25}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#4FA8FF"
+                          stopOpacity={0.0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#98A2B3"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke="#98A2B3"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(val) => `${val / 1000}K`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#141820',
+                        borderColor: '#2A3240',
+                        borderRadius: '8px',
+                        color: '#F2F4F7',
+                        fontSize: '12px',
+                        fontFamily: 'JetBrains Mono',
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="revenue"
+                      name="Revenue"
+                      stroke="#00D395"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorRev)"
+                      isAnimationActive={shouldRenderChart}
+                      animationDuration={1200}
+                      animationEasing="ease-out"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="profit"
+                      name="Net Profit"
+                      stroke="#4FA8FF"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorProfit)"
+                      isAnimationActive={shouldRenderChart}
+                      animationDuration={1200}
+                      animationEasing="ease-out"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </ChartInView>
+          </div>
+        </Card>
+      </FadeInView>
+
+      {/* ── Row 4: AI Executive Summary (Full Width) ───────────────────────── */}
+      <FadeInView offset={20} duration={0.5}>
+        <Card className="bg-surface-hover border-l-4 border-l-info space-y-4 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary">
+                AI Executive Summary
+              </h2>
+              <Info className="size-4 text-text-secondary cursor-help" />
+            </div>
+            <Badge variant="success" dot className="mr-13">
+              High Confidence
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div className="lg:col-span-9 space-y-4">
+              <blockquote className="font-sans text-base leading-relaxed text-text-primary italic border-l-2 border-border pl-4">
+                &ldquo;Revenue remains stable with healthy growth, but inventory
+                turnover has slowed for the second consecutive month. If the
+                trend continues, working capital pressure may increase within
+                the next quarter.&rdquo;
+              </blockquote>
+
+              <div className="space-y-2 pt-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-text-secondary font-semibold">
+                  Key Takeaways
+                </span>
+                <ul className="space-y-1.5 text-xs sm:text-sm font-medium">
+                  <li className="flex items-center gap-2 text-text-primary">
+                    <CheckCircle2 className="size-4 text-tertiary shrink-0" />
+                    <span>Maintain current cash position</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-text-primary">
+                    <CheckCircle2 className="size-4 text-tertiary shrink-0" />
+                    <span>Improve inventory turnover</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-text-primary">
+                    <AlertTriangle className="size-4 text-warning shrink-0" />
+                    <span>Review slow-moving categories</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Custom SVG Bot Avatar Illustration */}
+            <div className="lg:col-span-3 flex flex-col items-center justify-center gap-3 border-t lg:border-t-0 lg:border-l border-border pt-4 lg:pt-0 lg:pl-6">
+              <BotAvatar size={80} animate />
+              <Button
+                asChild
+                variant="secondary"
+                size="sm"
+                className="w-full sm:w-auto mt-1"
+              >
+                <Link
+                  href="/advisor"
+                  className="inline-flex items-center gap-2"
+                >
+                  <MessageSquare className="size-3.5 text-info" />
+                  <span>Ask AI Advisor</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </FadeInView>
+
+      {/* ── Row 5: Recent Simulations & Recent Reports ──────────────────────── */}
+      <FadeInView offset={22} duration={0.55}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Simulations */}
+          <Card className="flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-semibold text-text-primary">
+                Recent Simulations
+              </h2>
+              <Link
+                href="/simulations"
+                className="text-xs font-medium text-tertiary hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+
+            <div className="divide-y divide-border/60">
+              <Link
+                href="/simulations"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-success-soft/40 text-tertiary flex items-center justify-center shrink-0">
+                    <TrendingUp className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Price Increase +5%
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Updated 2 days ago
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge variant="success">Recommended</Badge>
+                  <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </Link>
 
-              <Link href="/actions" className="block py-2.5 group">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <TrendingUp className="size-3.5 text-brand shrink-0" />
-                    <div>
-                      <span className="font-semibold text-text-primary group-hover:text-brand block">
-                        Request Landlord Commercial Rent Adjustment Deferral
-                      </span>
-                      <span className="text-[11px] text-text-muted">
-                        Related: LANDLORD_RENT_INCREASE · Due Feb 15, 2025
-                      </span>
-                    </div>
+              <Link
+                href="/simulations"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-info-soft/40 text-info flex items-center justify-center shrink-0">
+                    <Layers className="size-4" />
                   </div>
-                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <Badge variant="default">Not Started</Badge>
-                    <span className="text-brand font-medium group-hover:underline">
-                      Review →
-                    </span>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Hire 1 Staff
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Updated 5 days ago
+                    </p>
                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge variant="warning">Moderate Impact</Badge>
+                  <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </Link>
 
-              <Link href="/simulations" className="block py-2.5 group">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <div>
-                      <span className="font-semibold text-text-primary group-hover:text-brand block">
-                        Simulate SME Bank Loan vs Equipment Lease
-                      </span>
-                      <span className="text-[11px] text-text-muted">
-                        Outcome: Avoided ฿200,000 capex drag · Completed Jan 20,
-                        2025
-                      </span>
-                    </div>
+              <Link
+                href="/simulations"
+                className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-warning-soft/40 text-warning flex items-center justify-center shrink-0">
+                    <ShoppingBag className="size-4" />
                   </div>
-                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <Badge variant="success">Completed</Badge>
-                    <span className="text-brand font-medium group-hover:underline">
-                      View Decision →
-                    </span>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Launch Promotion
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Updated 1 week ago
+                    </p>
                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge variant="warning">Moderate Impact</Badge>
+                  <ChevronRight className="size-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </Link>
             </div>
           </Card>
-        </FadeInView>
 
-        {/* Snapshot Modal */}
-        <SnapshotModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSave={handleSaveSnapshot}
-          existingMonths={existingMonths}
-        />
-      </div>
-    </AppPage>
+          {/* Recent Reports */}
+          <Card className="flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-semibold text-text-primary">
+                Recent Reports
+              </h2>
+              <Link
+                href="/reports"
+                className="text-xs font-medium text-tertiary hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+
+            <div className="divide-y divide-border/60">
+              <div className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-surface-hover text-text-secondary flex items-center justify-center shrink-0 border border-border">
+                    <FileText className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Executive Report – May 2024
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Generated 2 days ago
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="neutral">PDF</Badge>
+                  <button
+                    type="button"
+                    className="p-1.5 text-text-secondary hover:text-text-primary rounded hover:bg-surface transition-colors cursor-pointer"
+                    title="Download report"
+                  >
+                    <Download className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-surface-hover text-text-secondary flex items-center justify-center shrink-0 border border-border">
+                    <FileText className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Cash Flow Summary – Q2 2024
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Generated 1 week ago
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="neutral">PDF</Badge>
+                  <button
+                    type="button"
+                    className="p-1.5 text-text-secondary hover:text-text-primary rounded hover:bg-surface transition-colors cursor-pointer"
+                    title="Download report"
+                  >
+                    <Download className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="py-3 flex items-center justify-between hover:bg-surface-hover px-2 rounded-md transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-md bg-surface-hover text-text-secondary flex items-center justify-center shrink-0 border border-border">
+                    <FileText className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">
+                      Business Health Report – April 2024
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      Generated 2 weeks ago
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="neutral">PDF</Badge>
+                  <button
+                    type="button"
+                    className="p-1.5 text-text-secondary hover:text-text-primary rounded hover:bg-surface transition-colors cursor-pointer"
+                    title="Download report"
+                  >
+                    <Download className="size-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </FadeInView>
+    </div>
   );
 }

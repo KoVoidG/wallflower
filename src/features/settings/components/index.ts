@@ -1,3 +1,4 @@
+export { SettingsView } from './settings-view';
 export { ProfileAccountSettings } from './profile-account-settings';
 export { BusinessProfileSettings } from './business-profile-settings';
 export { AnalysisPreferencesSettings } from './analysis-preferences-settings';

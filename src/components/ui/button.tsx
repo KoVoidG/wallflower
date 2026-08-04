@@ -5,20 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed [&>svg]:size-4 [&>svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-tertiary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       variant: {
         primary:
-          'bg-brand text-white dark:text-background border border-brand/40 hover:bg-brand-hover active:bg-brand-strong shadow-xs',
+          'bg-tertiary text-on-primary font-semibold border border-tertiary hover:bg-tertiary-hover active:bg-tertiary/90 shadow-xs',
         secondary:
-          'border border-border-strong bg-surface text-text-primary hover:border-brand/40 hover:bg-surface-subtle shadow-2xs',
+          'border border-border bg-transparent text-text-primary hover:bg-surface-hover hover:border-border-strong shadow-2xs',
         outline:
-          'border border-border bg-transparent text-text-primary hover:border-border-strong hover:bg-surface-subtle',
+          'border border-border bg-transparent text-text-primary hover:border-border-strong hover:bg-surface-hover',
         ghost:
-          'bg-transparent text-text-primary hover:bg-surface-subtle border-transparent',
+          'bg-transparent text-text-primary hover:bg-surface-hover border-transparent',
         danger:
-          'bg-danger text-white hover:bg-danger/90 active:bg-danger border border-danger/40 shadow-xs',
+          'bg-danger text-on-primary font-semibold hover:bg-danger/90 active:bg-danger border border-danger/40 shadow-xs',
       },
       size: {
         sm: 'h-8 px-3 text-xs',

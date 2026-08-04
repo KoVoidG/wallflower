@@ -87,7 +87,7 @@ export function MarketingHeader() {
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-[650] text-[18px]/[24px] text-text-primary hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="flex items-center gap-2.5 font-display font-bold text-[18px]/[24px] text-text-primary hover:opacity-90 transition-opacity whitespace-nowrap"
             aria-label="Wallflower homepage"
           >
             <FlowerMark className="size-7" />
@@ -113,13 +113,13 @@ export function MarketingHeader() {
                 className={cn(
                   'text-[14px]/[20px] font-[500] transition-colors cursor-pointer relative py-1.5 whitespace-nowrap',
                   isActive
-                    ? 'text-brand font-[600]'
+                    ? 'text-tertiary font-[600]'
                     : 'text-text-secondary hover:text-text-primary'
                 )}
               >
                 {t(item.labelKey)}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-tertiary rounded-full" />
                 )}
               </button>
             );
@@ -137,21 +137,6 @@ export function MarketingHeader() {
           >
             <Globe className="size-4 text-text-muted" aria-hidden="true" />
             <span>{locale === 'en' ? 'TH' : 'EN'}</span>
-          </button>
-
-          {/* Theme Switcher (Dark/Light) */}
-          <button
-            type="button"
-            onClick={handleThemeToggle}
-            className="flex items-center justify-center p-2 text-text-secondary hover:text-text-primary rounded-md border border-border/60 hover:border-border transition-all cursor-pointer shrink-0"
-            aria-label="Toggle dark/light theme"
-            title={mounted && resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {mounted && resolvedTheme === 'dark' ? (
-              <Sun className="size-4 text-amber-400" aria-hidden="true" />
-            ) : (
-              <Moon className="size-4 text-text-muted" aria-hidden="true" />
-            )}
           </button>
 
           {/* Sign In */}

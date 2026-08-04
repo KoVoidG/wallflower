@@ -45,7 +45,11 @@ export function CountUp({
   const rounded = useTransform(motionValue, (v) =>
     formatter ? formatter(v) : defaultFormatter(v, decimals)
   );
-  const isInView = useInView(ref, { once: true });
+  const isInView = useInView(ref, {
+    once: true,
+    amount: 0.2,
+    margin: '0px 0px -40px 0px',
+  });
   const hasAnimated = useRef(false);
 
   useEffect(() => {
