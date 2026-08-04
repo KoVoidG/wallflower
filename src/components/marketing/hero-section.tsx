@@ -1,55 +1,67 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { H1, BodyLarge } from '@/components/ui/typography';
+import { Sparkles, Play, CheckCircle2 } from 'lucide-react';
 import { ProductPreview } from './product-preview';
-import { ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
-  const t = useTranslations('landing.hero');
 
   return (
-    <section className="relative py-16 sm:py-20 lg:py-24 overflow-hidden border-b border-border bg-background">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-          {/* Copy (50% desktop width) */}
-          <div className="flex flex-col gap-5 max-w-[580px]">
+    <section className="relative py-16 sm:py-20 lg:py-24 overflow-hidden border-b border-border/60 bg-background text-left">
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Copy & Actions */}
+          <div className="flex flex-col gap-6 max-w-[620px]">
+            {/* Top Badge */}
             <div>
-              <Badge variant="brand">
-                {t('badge')}
-              </Badge>
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <Sparkles className="size-3.5" />
+                <span>AI-POWERED DECISION INTELLIGENCE</span>
+              </div>
             </div>
 
-            {/* Headline visible immediately without zero-opacity flicker */}
-            <H1 className="text-[32px]/[38px] sm:text-[40px]/[48px] lg:text-[48px]/[54px] font-[700] text-text-primary tracking-tight">
-              {t('headline')}
-            </H1>
+            {/* Main Headline */}
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight leading-[1.1]">
+              Make better business <span className="text-emerald-500 dark:text-emerald-400">decisions</span> before they cost you money.
+            </h1>
 
-            <BodyLarge className="text-text-secondary text-[16px]/[26px] sm:text-[17px]/[28px] max-w-[540px]">
-              {t('subheadline')}
-            </BodyLarge>
+            {/* Subtitle */}
+            <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed">
+              Simulate pricing, hiring, inventory, and expansion with deterministic financial models and AI insights built for retail SMEs.
+            </p>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button asChild size="lg" variant="primary">
-                <Link href="/register">
-                  {t('primaryCta')}
-                  <ArrowRight className="size-4 ml-1" aria-hidden="true" />
-                </Link>
-              </Button>
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-md hover:shadow-lg cursor-pointer"
+              >
+                Start Free
+              </Link>
 
-              <Button asChild size="lg" variant="secondary">
-                <a href="#decisions">
-                  {t('secondaryCta')}
-                </a>
-              </Button>
+              <a
+                href="#demo"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold rounded-xl border border-border-strong bg-surface text-text-primary hover:bg-surface-hover transition-all cursor-pointer shadow-2xs"
+              >
+                <Play className="size-4 fill-current text-tertiary" />
+                <span>Watch Demo</span>
+              </a>
+            </div>
+
+            {/* Bullet points subtext */}
+            <div className="flex items-center gap-6 pt-1 text-xs font-bold text-text-muted">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="size-4 text-emerald-500" />
+                <span>No credit card required</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="size-4 text-emerald-500" />
+                <span>Setup in 3 minutes</span>
+              </div>
             </div>
           </div>
 
-          {/* Product Demonstration (50% desktop width) */}
+          {/* Right Column: Dashboard Mockup */}
           <div className="w-full">
             <ProductPreview />
           </div>

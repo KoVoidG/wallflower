@@ -1,33 +1,45 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { Stethoscope, Activity, Scale, CheckCircle2 } from 'lucide-react';
+import {
+  ShoppingBag,
+  Store,
+  Shirt,
+  Utensils,
+  Pill,
+  Sparkles,
+  Laptop,
+  Building2,
+} from 'lucide-react';
 
 export function ProofStrip() {
-  const t = useTranslations('landing.proof');
-
-  const items = [
-    { icon: Stethoscope, label: t('diagnose') },
-    { icon: Activity, label: t('simulate') },
-    { icon: Scale, label: t('tradeOffs') },
-    { icon: CheckCircle2, label: t('act') },
+  const stores = [
+    { icon: ShoppingBag, name: 'Grocery Stores' },
+    { icon: Store, name: 'Convenience Stores' },
+    { icon: Shirt, name: 'Fashion Shops' },
+    { icon: Utensils, name: 'Restaurants' },
+    { icon: Pill, name: 'Pharmacies' },
+    { icon: Sparkles, name: 'Beauty Stores' },
+    { icon: Laptop, name: 'Electronics' },
+    { icon: Building2, name: 'Small Chains' },
   ];
 
   return (
-    <section className="py-6 sm:py-8 border-b border-border bg-surface-subtle">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center justify-between">
-          {items.map((item, idx) => (
+    <section className="py-12 border-b border-border/60 bg-surface-subtle">
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-8 text-center">
+        <p className="font-display text-xs font-bold uppercase tracking-wider text-text-muted">
+          Trusted by retail businesses like yours
+        </p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 items-center">
+          {stores.map((s) => (
             <div
-              key={idx}
-              className="flex items-center gap-2.5 justify-start md:justify-center"
+              key={s.name}
+              className="flex flex-col items-center justify-center p-4 rounded-xl border border-border/80 bg-surface hover:border-tertiary/40 hover:shadow-sm transition-all cursor-default space-y-2.5"
             >
-              <div className="size-7 rounded-md bg-brand-soft flex items-center justify-center shrink-0">
-                <item.icon className="size-4 text-brand" aria-hidden="true" />
+              <div className="p-2.5 rounded-lg bg-surface-subtle text-tertiary">
+                <s.icon className="size-5" />
               </div>
-              <span className="text-[13px]/[20px] sm:text-[14px]/[22px] font-[600] text-text-primary">
-                {item.label}
-              </span>
+              <span className="text-xs font-bold text-text-primary">{s.name}</span>
             </div>
           ))}
         </div>

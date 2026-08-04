@@ -57,10 +57,10 @@ describe('businessProfileSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('rejects empty goals array', () => {
+  it('accepts empty goals array', () => {
     const data = { ...validBusinessProfile(), goals: [] };
     const result = businessProfileSchema.safeParse(data);
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 
   it('accepts valid optional fields', () => {

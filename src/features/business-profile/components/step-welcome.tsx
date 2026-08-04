@@ -123,7 +123,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         <Button
           type="button"
           onClick={onNext}
-          className="w-full py-3 text-xs font-bold gap-2 bg-emerald-600 text-white hover:bg-emerald-700 shadow-md transition-all cursor-pointer rounded-xl"
+          className="w-full py-3 text-xs font-bold gap-2 bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-md transition-all cursor-pointer rounded-xl"
         >
           <span>Get Started</span>
           <ArrowRight className="size-4" />

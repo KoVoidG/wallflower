@@ -4,35 +4,54 @@ import { ProofStrip } from '@/components/marketing/proof-strip';
 import { WorkflowSection } from '@/components/marketing/workflow-section';
 import { ScenariosSection } from '@/components/marketing/scenarios-section';
 import { ExplainabilitySection } from '@/components/marketing/explainability-section';
-import { ThaiSmeSection } from '@/components/marketing/thai-sme-section';
-import { PrototypeSection } from '@/components/marketing/prototype-section';
+import { PricingSection } from '@/components/marketing/pricing-section';
+import { FaqSection } from '@/components/marketing/faq-section';
+import { TrustStrip } from '@/components/marketing/trust-strip';
 import { CtaSection } from '@/components/marketing/cta-section';
-import { HashScrollHandler } from '@/components/marketing/hash-scroll-handler';
+import { FadeInView } from '@/components/motion/fade-in-view';
 
 export const metadata: Metadata = {
-  title: 'Wallflower — Decision Intelligence for Thai SMEs',
+  title: 'Wallflower — Make Better Business Decisions Before They Cost You Money',
   description:
-    'See how a business decision affects your cash before you commit. Business diagnostics, risk detection, and decision simulations for Thai small businesses.',
-  openGraph: {
-    title: 'Wallflower — Decision Intelligence for Thai SMEs',
-    description:
-      'See how a business decision affects your cash before you commit. Business diagnostics, risk detection, and decision simulations for Thai small businesses.',
-    type: 'website',
-  },
+    'Simulate pricing, hiring, inventory, and expansion with deterministic financial models and AI insights built for retail SMEs.',
 };
 
 export default function MarketingPage() {
   return (
-    <>
-      <HashScrollHandler />
+    <div className="space-y-0 overflow-x-hidden">
       <HeroSection />
-      <ProofStrip />
-      <WorkflowSection />
-      <ScenariosSection />
-      <ExplainabilitySection />
-      <ThaiSmeSection />
-      <PrototypeSection />
-      <CtaSection />
-    </>
+
+      <FadeInView offset={20} duration={0.4}>
+        <ProofStrip />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <WorkflowSection />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <ScenariosSection />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <ExplainabilitySection />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <PricingSection />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <FaqSection />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <TrustStrip />
+      </FadeInView>
+
+      <FadeInView offset={24} duration={0.45}>
+        <CtaSection />
+      </FadeInView>
+    </div>
   );
 }

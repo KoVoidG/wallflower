@@ -1,248 +1,181 @@
 'use client';
 
-import { ReactNode, useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { usePathname } from '@/lib/i18n/navigation';
-import { useReducedMotion } from '@/components/motion';
-import { Badge } from '@/components/ui/badge';
-import { Shield, AlertTriangle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ReactNode, useSyncExternalStore } from 'react';
+import { usePathname, Link } from '@/lib/i18n/navigation';
+import { useTheme } from 'next-themes';
+import { Sun, Moon, Globe, Shield, Sparkles } from 'lucide-react';
+import { useLocale } from 'next-intl';
+import { useRouter } from '@/lib/i18n/navigation';
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-const PANEL_DURATION = 0.46;
-const CONTENT_FADE_IN = 0.24;
-
-type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
-
-function getMode(pathname: string): AuthMode {
-  if (pathname.includes('/register')) return 'register';
-  if (pathname.includes('/forgot-password')) return 'forgot-password';
-  if (pathname.includes('/reset-password')) return 'reset-password';
-  return 'login';
-}
-
-// Direction: login is "left", register is "right"
-function getDirection(from: AuthMode, to: AuthMode): 'left' | 'right' | 'none' {
-  if (from === 'login' && to === 'register') return 'right';
-  if (from === 'register' && to === 'login') return 'left';
-  return 'none';
-}
-
-const productCopy: Record<AuthMode, { headline: string; body: string }> = {
-  login: {
-    headline: 'Understand the business before making the next move.',
-    body: 'Continue reviewing your business health, risks, and decisions.',
-  },
-  register: {
-    headline: 'Build your business baseline.',
-    body: 'Create an account, then add the financial data Wallflower uses to identify risks and simulate decisions.',
-  },
-  'forgot-password': {
-    headline: 'Understand the business before making the next move.',
-    body: 'Wallflower helps SMEs identify financial pressure, test business decisions, and understand how cash position, profit, and risk may change before acting.',
-  },
-  'reset-password': {
-    headline: 'Understand the business before making the next move.',
-    body: 'Wallflower helps SMEs identify financial pressure, test business decisions, and understand how cash position, profit, and risk may change before acting.',
-  },
-};
+const emptySubscribe = () => () => {};
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const mode = getMode(pathname);
-  const prefersReduced = useReducedMotion();
-  const formContainerRef = useRef<HTMLDivElement>(null);
+  const locale = useLocale();
+  const router = useRouter();
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
-  const isSwapped = mode === 'register';
+  const isRegister = pathname.includes('/register');
 
-  // Track direction for content offset using state (avoids ref-during-render)
-  const [contentOffset, setContentOffset] = useState(0);
-  const prevModeForOffset = useRef<AuthMode>(mode);
-  useEffect(() => {
-    const dir = getDirection(prevModeForOffset.current, mode);
-    setContentOffset(dir === 'right' ? -16 : dir === 'left' ? 16 : 0);
-    prevModeForOffset.current = mode;
-  }, [mode]);
+  const handleLanguageToggle = () => {
+    const nextLocale = locale === 'en' ? 'th' : 'en';
+    router.replace(pathname, { locale: nextLocale });
+  };
 
-  // Focus first input after transition
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const firstInput = formContainerRef.current?.querySelector<HTMLInputElement>(
-        'input:not([type="hidden"])'
-      );
-      firstInput?.focus();
-    }, prefersReduced ? 50 : 500);
-    return () => clearTimeout(timer);
-  }, [mode, prefersReduced]);
-
-  const copy = productCopy[mode];
+  const handleThemeToggle = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
-    <div className="flex min-h-screen overflow-hidden">
-      {/* Desktop split layout with animated panel positions */}
-      <div className="hidden lg:flex lg:flex-1 relative">
-        {/* Product panel */}
-        <motion.div
-          className={cn(
-            'absolute inset-y-0 w-[58%] bg-surface-subtle overflow-hidden',
-          )}
-          animate={{
-            left: isSwapped ? '42%' : '0%',
-            right: isSwapped ? '0%' : '42%',
-          }}
-          transition={prefersReduced ? { duration: 0 } : { duration: PANEL_DURATION, ease: EASE }}
+    <div className="flex min-h-screen bg-background text-text-primary overflow-hidden">
+      {/* Top Floating Controls */}
+      <div className="fixed top-5 right-5 z-50 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleThemeToggle}
+          className="p-2.5 rounded-xl border border-border bg-surface text-text-secondary hover:text-text-primary shadow-sm transition-colors cursor-pointer"
+          aria-label="Toggle dark/light theme"
         >
-          <div className={cn(
-            'flex flex-col justify-center h-full px-12 xl:px-16 py-12 w-full max-w-[640px]',
-            isSwapped ? 'mr-auto' : 'ml-auto'
-          )}>
-            {/* Brand */}
-            <div className="flex items-center gap-2.5 mb-10">
-              <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-brand">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          {mounted && resolvedTheme === 'dark' ? (
+            <Sun className="size-4 text-amber-400" />
+          ) : (
+            <Moon className="size-4 text-text-muted" />
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleLanguageToggle}
+          className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-text-secondary hover:text-text-primary rounded-xl border border-border bg-surface shadow-sm transition-colors cursor-pointer"
+        >
+          <Globe className="size-3.5 text-text-muted" />
+          <span>{locale === 'en' ? 'TH' : 'EN'}</span>
+        </button>
+      </div>
+
+      {/* Main Split Grid (50 / 50) */}
+      <div className="w-full flex flex-col lg:flex-row min-h-screen">
+        {/* Left Panel: Form Container (50% desktop width) */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 lg:p-14 bg-background z-10 min-h-screen">
+          {/* Logo */}
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 font-display font-extrabold text-xl text-text-primary tracking-tight"
+            >
+              <div className="size-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-2xs">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="text-[18px] font-[650] text-text-primary">Wallflower</span>
-            </div>
-
-            {/* Animated product copy */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={mode}
-                initial={prefersReduced ? {} : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={prefersReduced ? {} : { opacity: 0, y: -8 }}
-                transition={{ duration: CONTENT_FADE_IN, ease: EASE }}
-              >
-                <h2 className="text-[28px]/[36px] font-[650] text-text-primary mb-3">
-                  {copy.headline}
-                </h2>
-                <p className="text-[15px]/[24px] text-text-secondary mb-10 max-w-[480px]">
-                  {copy.body}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Product preview */}
-            <div className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 max-w-[420px]">
-              <div className="flex items-center gap-2 mb-4">
-                <Badge variant="brand">Decision Simulation</Badge>
-                <span className="text-[12px] text-text-muted">Sample preview</span>
-              </div>
-              <p className="text-[14px]/[20px] font-[550] text-text-primary mb-4">
-                What if you hire two employees?
-              </p>
-              <div className="flex flex-col gap-2.5 text-[13px]">
-                <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-                  <span className="text-text-muted">Cash runway</span>
-                  <span className="tabular-nums text-text-primary">
-                    8.2 → <span className="text-warning font-[550]">5.1 months</span>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-                  <span className="text-text-muted">Monthly profit</span>
-                  <span className="tabular-nums text-text-primary">
-                    ฿35,000 → <span className="text-danger font-[550]">-฿12,400</span>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-                  <span className="text-text-muted">Working capital needed</span>
-                  <span className="tabular-nums font-[550] text-text-primary">฿180,000</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <span className="text-text-muted">Recommendation</span>
-                  <Badge variant="warning">Proceed cautiously</Badge>
-                </div>
-              </div>
-              <div className="mt-4 pt-3 border-t border-border/50 flex items-start gap-2">
-                <AlertTriangle className="size-3.5 mt-0.5 shrink-0 text-text-muted" aria-hidden="true" />
-                <span className="text-[11px]/[16px] text-text-muted">
-                  Sensitivity: payroll above ฿120,000/month changes recommendation to &ldquo;Delay&rdquo;
-                </span>
-              </div>
-            </div>
-
-            {/* Trust */}
-            <div className="flex items-start gap-2 mt-8">
-              <Shield className="size-4 mt-0.5 shrink-0 text-text-muted" aria-hidden="true" />
-              <p className="text-[13px]/[20px] text-text-muted max-w-[400px]">
-                Wallflower separates calculated results from AI interpretation. Every recommendation shows its assumptions and confidence level.
-              </p>
-            </div>
+              <span>Wallflower</span>
+            </Link>
           </div>
 
-          {/* Background pattern */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.03]" aria-hidden="true">
-            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="auth-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <circle cx="20" cy="20" r="1" fill="currentColor" className="text-brand" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#auth-grid)" />
-            </svg>
+          {/* Dynamic Form Content */}
+          <div className="w-full max-w-[420px] mx-auto py-8">
+            {children}
           </div>
-        </motion.div>
 
-        {/* Form panel */}
-        <motion.div
-          className="absolute inset-y-0 w-[42%] flex flex-col items-center justify-center bg-background"
-          animate={{
-            left: isSwapped ? '0%' : '58%',
-            right: isSwapped ? '58%' : '0%',
-          }}
-          transition={prefersReduced ? { duration: 0 } : { duration: PANEL_DURATION, ease: EASE }}
-        >
-          <div ref={formContainerRef} className="w-full max-w-[420px] px-8">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={pathname}
-                initial={prefersReduced ? {} : { opacity: 0, x: contentOffset }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={prefersReduced ? {} : { opacity: 0, x: -contentOffset }}
-                transition={{
-                  duration: CONTENT_FADE_IN,
-                  ease: EASE,
-                }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
+          {/* Form Footer Links */}
+          <div className="flex items-center justify-center gap-4 text-xs font-semibold text-text-muted">
+            <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:underline">Terms of Service</Link>
           </div>
-        </motion.div>
-      </div>
-
-      {/* Mobile layout - single column with content transitions */}
-      <div className="flex flex-col flex-1 lg:hidden min-h-screen bg-background">
-        {/* Mobile brand */}
-        <div className="flex items-center gap-2 px-5 pt-8 mb-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-brand">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <span className="text-[18px] font-[650] text-text-primary">Wallflower</span>
         </div>
 
-        {/* Mobile form content with directional transition */}
-        <div className="flex-1 flex flex-col justify-center px-5 sm:px-8 pb-8">
-          <div ref={formContainerRef} className="w-full max-w-[420px] mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={pathname}
-                initial={prefersReduced ? {} : { opacity: 0, x: contentOffset * 0.8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={prefersReduced ? {} : { opacity: 0, x: contentOffset * -0.8 }}
-                transition={{ duration: CONTENT_FADE_IN, ease: EASE }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
+        {/* Right Panel: Product Preview Panel (50% desktop width) */}
+        <div className="hidden lg:flex w-1/2 bg-surface-subtle text-text-primary p-12 lg:p-16 flex-col justify-between relative overflow-hidden border-l border-border transition-colors">
+          {/* Ambient Glow */}
+          <div className="absolute -top-20 -right-20 size-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 size-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 space-y-2 text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <Sparkles className="size-3.5" />
+              <span>DECISION INTELLIGENCE</span>
+            </div>
+            <h3 className="font-display text-2xl font-extrabold text-text-primary tracking-tight">
+              {isRegister ? 'Start your journey to better business decisions.' : 'Welcome back to your financial intelligence workspace.'}
+            </h3>
+          </div>
+
+          {/* Floating Realistic Product Mockup */}
+          <div className="relative z-10 my-auto py-6">
+            {!isRegister ? (
+              /* Login Dashboard Mockup Card */
+              <div className="rounded-2xl border-2 border-border-strong bg-surface p-6 shadow-2xl space-y-4 max-w-[440px] mx-auto text-left transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="size-2.5 rounded-full bg-emerald-500" />
+                    <span className="font-display text-xs font-bold text-text-primary">Overview</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-text-muted">Wallflower SME Engine</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-border space-y-1">
+                    <span className="text-[10px] font-bold text-text-muted block uppercase tracking-wider">Business Health</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">84</span>
+                      <span className="text-[10px] text-text-muted">/100</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block">Good</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-border space-y-1">
+                    <span className="text-[10px] font-bold text-text-muted block uppercase tracking-wider">Cash Runway</span>
+                    <span className="font-display text-xl font-extrabold text-text-primary block">5.1 months</span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block">+0.9 vs last month</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-surface-subtle border border-border flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-text-muted block">Revenue (This Month)</span>
+                    <span className="font-display text-lg font-extrabold text-text-primary">฿1,280,000</span>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md">+12.5%</span>
+                </div>
+              </div>
+            ) : (
+              /* Register Scenario & Report Mockup Card */
+              <div className="space-y-4 max-w-[440px] mx-auto text-left">
+                <div className="p-5 rounded-2xl border-2 border-border-strong bg-surface shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Scenario Preview</span>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Increase Prices +5%</span>
+                  </div>
+                  <div className="flex items-baseline justify-between pt-1">
+                    <div>
+                      <span className="text-[10px] text-text-muted block">Projected Profit</span>
+                      <span className="font-display text-xl font-extrabold text-emerald-600 dark:text-emerald-400">+18% (฿163,000)</span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">★ Recommended</span>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl border-2 border-border-strong bg-surface shadow-2xl space-y-2">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                    <Sparkles className="size-4" />
+                    <span className="font-display text-xs font-bold">Executive Report Summary</span>
+                  </div>
+                  <p className="text-xs text-text-secondary font-medium leading-snug">
+                    Simulates pricing, cash runway, and risk sensitivity with 100% deterministic financial calculations.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Trust Badge */}
+          <div className="relative z-10 flex items-center gap-3 pt-4 border-t border-border/60 text-xs font-bold text-text-muted text-left">
+            <Shield className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>Deterministic math engine & encrypted SME business records.</span>
           </div>
         </div>
       </div>

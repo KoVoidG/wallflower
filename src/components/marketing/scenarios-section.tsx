@@ -1,217 +1,271 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/lib/i18n/navigation';
-import { H2, BodyLarge } from '@/components/ui/typography';
-import { Surface } from '@/components/ui/surface';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Select } from '@/components/ui/select';
 import {
-  UserPlus,
-  Tag,
-  Megaphone,
-  Wrench,
-  Clock,
-  AlertTriangle,
+  Activity,
+  ShieldAlert,
+  Sliders,
+  PackageCheck,
+  Sparkles,
+  FileSpreadsheet,
+  User,
   CheckCircle2,
-  ArrowRight,
+  TrendingUp,
 } from 'lucide-react';
 
-type ScenarioKey = 'hire' | 'pricing' | 'marketing' | 'equipment' | 'paymentDelay';
-
-const scenarioKeys: { key: ScenarioKey; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: 'hire', icon: UserPlus },
-  { key: 'pricing', icon: Tag },
-  { key: 'marketing', icon: Megaphone },
-  { key: 'equipment', icon: Wrench },
-  { key: 'paymentDelay', icon: Clock },
-];
-
 export function ScenariosSection() {
-  const t = useTranslations('landing.scenarios');
-  const [selectedKey, setSelectedKey] = useState<ScenarioKey>('hire');
+  const [priceChange, setPriceChange] = useState(5);
 
-  const activeIcon = scenarioKeys.find((s) => s.key === selectedKey)?.icon || UserPlus;
-  const ActiveIconComp = activeIcon;
+  // Dynamic values calculated from slider
+  const profitBoost = 13 + Math.round((priceChange - 5) * 1.2);
+  const projectedProfit = 150000 + Math.round(priceChange * 2600);
+  const runwayBoost = (0.5 + priceChange * 0.08).toFixed(1);
 
-  const selectOptions = scenarioKeys.map((s) => ({
-    value: s.key,
-    label: t(`items.${s.key}.title`),
-  }));
+  const features = [
+    {
+      icon: Activity,
+      title: 'Business Health',
+      desc: 'Understand your overall performance at a glance.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Health Score</span>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">84</span>
+              <span className="text-[10px] font-bold text-text-muted">/100</span>
+            </div>
+          </div>
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md">Good</span>
+        </div>
+      ),
+    },
+    {
+      icon: ShieldAlert,
+      title: 'Risk Detection',
+      desc: 'Identify financial, operational, and inventory risks early.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle space-y-1">
+          <div className="flex justify-between text-[11px] font-bold">
+            <span className="text-text-secondary">Cash Flow Risk</span>
+            <span className="text-rose-500">High</span>
+          </div>
+          <div className="flex justify-between text-[11px] font-bold">
+            <span className="text-text-secondary">Inventory Risk</span>
+            <span className="text-amber-500">Medium</span>
+          </div>
+          <div className="flex justify-between text-[11px] font-bold">
+            <span className="text-text-secondary">Profitability Risk</span>
+            <span className="text-emerald-500">Low</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      icon: Sliders,
+      title: 'Decision Planner',
+      desc: 'Simulate scenarios and see the impact before you decide.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle space-y-2">
+          <span className="text-[11px] font-bold text-text-secondary block">What if we increase prices by 5%?</span>
+          <span className="inline-block px-3 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold shadow-2xs">
+            Simulate →
+          </span>
+        </div>
+      ),
+    },
+    {
+      icon: PackageCheck,
+      title: 'Inventory Analysis',
+      desc: 'Track inventory health, turnover, and potential stock issues.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Turnover Rate</span>
+            <span className="font-display text-xl font-extrabold text-text-primary block mt-0.5">4.2x</span>
+          </div>
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md">Good</span>
+        </div>
+      ),
+    },
+    {
+      icon: Sparkles,
+      title: 'AI Advisor',
+      desc: 'Get AI-powered insights and strategic recommendations.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-tertiary uppercase tracking-wider block">AI Recommendation</span>
+            <span className="text-xs font-bold text-text-primary block mt-0.5">★ Recommended</span>
+          </div>
+          <span className="text-[10px] font-bold text-tertiary bg-tertiary/10 px-2 py-1 rounded-md">High Confidence</span>
+        </div>
+      ),
+    },
+    {
+      icon: FileSpreadsheet,
+      title: 'Decision Reports',
+      desc: 'Export professional reports to share with your team or bank.',
+      widget: (
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle flex items-center justify-between">
+          <span className="text-xs font-bold text-text-primary">Executive Summary</span>
+          <span className="text-[10px] font-bold text-tertiary">Report Preview</span>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <section id="decisions" className="py-16 sm:py-20 lg:py-24 border-b border-border bg-surface-subtle">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <H2 className="text-[26px]/[34px] sm:text-[32px]/[40px] font-[700] text-text-primary tracking-tight">
-            {t('title')}
-          </H2>
-          <BodyLarge className="mt-3 text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
-            {t('subtitle')}
-          </BodyLarge>
+    <section id="features" className="py-20 border-b border-border/60 bg-surface-subtle space-y-24 text-left">
+      {/* 1. Features Grid Header & Cards */}
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12 text-center">
+        <div className="max-w-3xl mx-auto space-y-3">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
+            Powerful features for smarter decisions
+          </h2>
+          <p className="text-xs sm:text-sm text-text-secondary font-medium">
+            Everything you need to analyze, simulate, and grow your business.
+          </p>
         </div>
 
-        {/* Mobile Scenario Selector */}
-        <div className="block md:hidden mb-6">
-          <Select
-            value={selectedKey}
-            onChange={(val) => setSelectedKey(val as ScenarioKey)}
-            options={selectOptions}
-            placeholder={t('selectPlaceholder')}
-          />
-        </div>
-
-        {/* Desktop Scenario Selector Tabs */}
-        <div className="hidden md:flex items-center justify-center gap-2 mb-8 flex-wrap">
-          {scenarioKeys.map((item) => {
-            const isSelected = selectedKey === item.key;
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => setSelectedKey(item.key)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px]/[20px] font-[600] transition-all cursor-pointer border ${
-                  isSelected
-                    ? 'bg-surface border-brand text-brand shadow-xs'
-                    : 'bg-transparent border-transparent text-text-secondary hover:text-text-primary hover:bg-surface/50'
-                }`}
-              >
-                <Icon
-                  className={`size-4 ${isSelected ? 'text-brand' : 'text-text-muted'}`}
-                  aria-hidden="true"
-                />
-                <span>{t(`items.${item.key}.title`)}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Interactive Scenario Inspector Detail Card */}
-        <Surface border className="p-6 sm:p-8 rounded-[var(--radius-xl)] bg-surface shadow-xs max-w-4xl mx-auto">
-          {/* Header row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
-            <div className="flex items-center gap-3">
-              <div className="size-10 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <ActiveIconComp className="size-5 text-brand" aria-hidden="true" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          {features.map((f) => (
+            <div
+              key={f.title}
+              className="p-6 rounded-2xl border-2 border-border-strong bg-surface space-y-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="p-3 rounded-xl bg-surface-subtle text-emerald-600 dark:text-emerald-400 border border-border/60 size-11 flex items-center justify-center">
+                  <f.icon className="size-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-text-primary">{f.title}</h3>
+                  <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">{f.desc}</p>
+                </div>
               </div>
-              <div>
-                <span className="text-[12px]/[18px] font-[650] text-brand uppercase tracking-wider block">
-                  {t(`items.${selectedKey}.category`)}
-                </span>
-                <h3 className="text-[20px]/[28px] font-[700] text-text-primary">
-                  {t(`items.${selectedKey}.title`)}
-                </h3>
-              </div>
+              {f.widget}
             </div>
-            <Badge variant="neutral">
-              {t('decisionTested')}
-            </Badge>
+          ))}
+        </div>
+      </div>
+
+      {/* 2. Interactive Simulation Showcase */}
+      <div id="decisions" className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12 text-center">
+        <div className="max-w-3xl mx-auto space-y-2">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
+            See the impact before you make a move
+          </h2>
+          <p className="text-xs sm:text-sm text-text-secondary font-medium">
+            Try a quick scenario simulation
+          </p>
+        </div>
+
+        <div className="p-6 sm:p-8 rounded-2xl border-2 border-border-strong bg-surface max-w-4xl mx-auto text-left shadow-xl space-y-6">
+          <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Scenario</span>
+              <span className="font-display text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                Increase Prices: +{priceChange}%
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min="-10"
+              max="20"
+              value={priceChange}
+              onChange={(e) => setPriceChange(Number(e.target.value))}
+              className="w-full accent-emerald-500 cursor-pointer"
+            />
           </div>
 
-          {/* Decision description */}
-          <div className="p-4 rounded-lg bg-surface-subtle border border-border mb-6">
-            <span className="text-[12px]/[18px] font-[600] text-text-muted block mb-1">
-              {t('decisionTested')}:
+          <div className="space-y-3">
+            <span className="text-xs font-bold text-text-muted uppercase tracking-wider block">
+              Projected Monthly Impact
             </span>
-            <p className="text-[14px]/[22px] font-[550] text-text-primary">
-              {t(`items.${selectedKey}.decision`)}
-            </p>
-          </div>
 
-          {/* Current vs Projected metrics */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-6">
-            {/* Current state */}
-            <div className="p-4 rounded-lg border border-border bg-surface flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[13px]/[18px] font-[600] text-text-muted">
-                  {t('currentState')}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 space-y-1">
+                <span className="text-xs font-bold text-text-muted block">Projected Profit</span>
+                <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                  +{profitBoost}%
                 </span>
-                <Badge variant="neutral">{t('currentState')}</Badge>
+                <span className="text-xs font-bold text-text-primary block">
+                  ฿{projectedProfit.toLocaleString()}
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <div>
-                  <span className="text-[11px]/[16px] text-text-muted block">Runway</span>
-                  <span className="text-[18px]/[24px] font-[700] text-text-primary tabular-nums">
-                    {t(`items.${selectedKey}.currentRunway`)}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[11px]/[16px] text-text-muted block">Profit</span>
-                  <span className="text-[15px]/[22px] font-[600] text-success tabular-nums">
-                    {t(`items.${selectedKey}.currentProfit`)}
-                  </span>
-                </div>
-              </div>
-            </div>
 
-            {/* Projected state */}
-            <div className="p-4 rounded-lg border border-brand/30 bg-brand-soft/20 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[13px]/[18px] font-[600] text-brand">
-                  {t('projectedState')}
-                </span>
-                <Badge variant="brand">{t('projectedState')}</Badge>
+              <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-1">
+                <span className="text-xs font-bold text-text-muted block">Business Health</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">84</span>
+                  <span className="text-xs font-bold text-text-muted">/100</span>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">Good</span>
               </div>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <div>
-                  <span className="text-[11px]/[16px] text-text-muted block">Runway</span>
-                  <span className="text-[18px]/[24px] font-[700] text-text-primary tabular-nums">
-                    {t(`items.${selectedKey}.projectedRunway`)}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[11px]/[16px] text-text-muted block">Profit</span>
-                  <span className="text-[15px]/[22px] font-[600] text-text-primary tabular-nums">
-                    {t(`items.${selectedKey}.projectedProfit`)}
-                  </span>
-                </div>
+
+              <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-1">
+                <span className="text-xs font-bold text-text-muted block">Cash Runway</span>
+                <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                  +{runwayBoost} months
+                </span>
+                <span className="text-xs font-bold text-text-secondary block">Now 5.1 months</span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Risk & Recommendation Grid */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-6">
-            {/* Risk warning */}
-            <div className="p-4 rounded-lg border border-amber-300 dark:border-amber-900/60 bg-warning-soft/40 flex items-start gap-3">
-              <AlertTriangle className="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true" />
+      {/* 3. AI Advisor Section */}
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12 text-center">
+        <div className="max-w-3xl mx-auto space-y-2">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
+            Your AI advisor for everyday decisions
+          </h2>
+        </div>
+
+        <div className="p-6 sm:p-8 rounded-2xl border-2 border-border-strong bg-surface max-w-4xl mx-auto text-left shadow-xl space-y-5">
+          {/* User Question */}
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-subtle border border-border">
+            <div className="size-8 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold">
+              <User className="size-4" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block">You</span>
+              <p className="text-xs font-bold text-text-primary mt-0.5">Should I hire another employee?</p>
+            </div>
+          </div>
+
+          {/* AI Response Box */}
+          <div className="flex items-start gap-3 p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+            <div className="size-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+              <Sparkles className="size-4" />
+            </div>
+            <div className="space-y-3">
               <div>
-                <span className="text-[12px]/[18px] font-[650] text-warning uppercase tracking-wider block">
-                  {t('primaryRisk')}
-                </span>
-                <p className="text-[13px]/[20px] text-text-secondary mt-1">
-                  {t(`items.${selectedKey}.risk`)}
+                <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 block">AI Advisor</span>
+                <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
+                  Based on your current cash runway (5.1 months) and projected sales, hiring 1 employee is feasible. It could increase capacity by 12–15% but will increase monthly expenses by ~฿18,000. I recommend proceeding if you secure at least 10–15% more sales.
                 </p>
               </div>
-            </div>
 
-            {/* Recommendation */}
-            <div className="p-4 rounded-lg border border-brand/40 bg-brand-soft/30 flex items-start gap-3">
-              <CheckCircle2 className="size-5 text-brand shrink-0 mt-0.5" aria-hidden="true" />
-              <div>
-                <span className="text-[12px]/[18px] font-[650] text-brand uppercase tracking-wider block">
-                  {t('recommendation')}
+              {/* Tag Badges */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                  <CheckCircle2 className="size-3" /> Feasible
                 </span>
-                <p className="text-[13px]/[20px] font-[550] text-text-primary mt-1">
-                  {t(`items.${selectedKey}.recommendation`)}
-                </p>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                  <CheckCircle2 className="size-3" /> Low Risk
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                  <TrendingUp className="size-3" /> Positive Impact
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-tertiary/20 text-tertiary text-[10px] font-bold">
+                  Confidence: High
+                </span>
               </div>
             </div>
           </div>
-
-          {/* Action button */}
-          <div className="flex justify-end pt-2">
-            <Button asChild size="md" variant="primary">
-              <Link href="/simulation">
-                {t('exploreCta')}
-                <ArrowRight className="size-4 ml-1" aria-hidden="true" />
-              </Link>
-            </Button>
-          </div>
-        </Surface>
+        </div>
       </div>
     </section>
   );

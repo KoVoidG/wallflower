@@ -1,77 +1,136 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { H2, Body, BodyLarge } from '@/components/ui/typography';
-import { Stethoscope, Sliders, CheckCircle2 } from 'lucide-react';
+import {
+  HelpCircle,
+  FileSpreadsheet,
+  Clock,
+  AlertTriangle,
+  ArrowRight,
+  Database,
+  Activity,
+  Sliders,
+  Sparkles,
+  FileText,
+} from 'lucide-react';
 
 export function WorkflowSection() {
-  const t = useTranslations('landing.workflow');
+  const problemCards = [
+    {
+      icon: HelpCircle,
+      title: 'Guesswork',
+      desc: 'Relying on intuition can be expensive.',
+    },
+    {
+      icon: FileSpreadsheet,
+      title: 'Manual Spreadsheets',
+      desc: 'Time-consuming and prone to errors.',
+    },
+    {
+      icon: Clock,
+      title: 'Delayed Decisions',
+      desc: 'Miss opportunities while analyzing data.',
+    },
+    {
+      icon: AlertTriangle,
+      title: 'Unexpected Issues',
+      desc: 'Cash flow problems appear out of nowhere.',
+    },
+  ];
 
   const steps = [
     {
-      number: '01',
-      icon: Stethoscope,
-      title: t('step01Title'),
-      description: t('step01Desc'),
+      num: 1,
+      icon: Database,
+      title: 'Business Data',
+      desc: 'You provide your financial and operational data.',
     },
     {
-      number: '02',
+      num: 2,
+      icon: Activity,
+      title: 'Business Health',
+      desc: 'We analyze your business and detect risks & opportunities.',
+    },
+    {
+      num: 3,
       icon: Sliders,
-      title: t('step02Title'),
-      description: t('step02Desc'),
+      title: 'Decision Planner',
+      desc: 'Simulate different scenarios and potential outcomes.',
     },
     {
-      number: '03',
-      icon: CheckCircle2,
-      title: t('step03Title'),
-      description: t('step03Desc'),
+      num: 4,
+      icon: Sparkles,
+      title: 'AI Insights',
+      desc: 'AI explains the results and recommends the best actions.',
+    },
+    {
+      num: 5,
+      icon: FileText,
+      title: 'Decision Report',
+      desc: 'Get a professional report you can share and act on.',
     },
   ];
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 border-b border-border bg-background">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <H2 className="text-[26px]/[34px] sm:text-[32px]/[40px] font-[700] text-text-primary tracking-tight">
-            {t('title')}
-          </H2>
-          <BodyLarge className="mt-3 text-text-secondary text-[15px]/[24px] sm:text-[16px]/[26px]">
-            {t('subtitle')}
-          </BodyLarge>
+    <section id="how-it-works" className="py-20 border-b border-border/60 bg-background space-y-24">
+      {/* Part 1: Problem Section */}
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-10 text-center">
+        <div className="max-w-2xl mx-auto space-y-3">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
+            Running a business shouldn&apos;t rely on guesswork.
+          </h2>
         </div>
 
-        {/* Connected Process Layout */}
-        <div className="relative">
-          {/* Desktop horizontal connecting line */}
-          <div
-            className="hidden md:block absolute top-[28px] left-[15%] right-[15%] h-[2px] bg-border z-0"
-            aria-hidden="true"
-          />
-
-          <div className="grid md:grid-cols-3 gap-8 md:gap-6 relative z-10">
-            {steps.map((step) => (
-              <div key={step.number} className="flex flex-col items-center text-center group">
-                {/* Step Icon Badge */}
-                <div className="size-14 rounded-full bg-surface border-2 border-brand text-brand font-[700] text-[16px] flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-105 mb-5 shrink-0">
-                  <step.icon className="size-6 text-brand" aria-hidden="true" />
-                </div>
-
-                {/* Step Content */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[12px]/[18px] font-[700] text-brand uppercase tracking-wider">
-                    Step {step.number}
-                  </span>
-                  <h3 className="text-[18px]/[26px] font-[650] text-text-primary">
-                    {step.title}
-                  </h3>
-                  <Body className="text-[14px]/[22px] text-text-secondary max-w-[320px] mx-auto">
-                    {step.description}
-                  </Body>
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+          {problemCards.map((card) => (
+            <div
+              key={card.title}
+              className="p-6 rounded-2xl border-2 border-border-strong bg-surface space-y-3 shadow-2xs hover:shadow-md transition-all"
+            >
+              <div className="size-10 rounded-xl bg-surface-subtle text-text-muted border border-border/60 flex items-center justify-center">
+                <card.icon className="size-5" />
               </div>
-            ))}
-          </div>
+              <h3 className="font-display text-base font-bold text-text-primary">{card.title}</h3>
+              <p className="text-xs text-text-secondary font-medium leading-relaxed">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Highlight Banner */}
+        <div className="p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 max-w-3xl mx-auto shadow-2xs">
+          <p className="font-display text-sm sm:text-base font-bold">
+            Wallflower helps you predict outcomes before making decisions.
+          </p>
+        </div>
+      </div>
+
+      {/* Part 2: How Wallflower Works (5 Steps) */}
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12 text-center">
+        <div className="max-w-2xl mx-auto space-y-3">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
+            How Wallflower Works
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center items-start">
+          {steps.map((s, idx) => (
+            <div key={s.title} className="flex flex-col items-center space-y-3 relative group">
+              {/* Step Number Circle */}
+              <div className="size-12 rounded-full border-2 border-tertiary bg-surface text-tertiary font-display text-base font-extrabold flex items-center justify-center shadow-2xs group-hover:bg-tertiary group-hover:text-on-primary transition-all">
+                {s.num}
+              </div>
+
+              <h3 className="font-display text-sm font-bold text-text-primary flex items-center gap-1.5">
+                <span>{s.title}</span>
+                {idx < steps.length - 1 && (
+                  <ArrowRight className="size-3.5 text-text-muted hidden lg:inline-block ml-1" />
+                )}
+              </h3>
+
+              <p className="text-xs text-text-secondary font-medium leading-relaxed max-w-[200px]">
+                {s.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

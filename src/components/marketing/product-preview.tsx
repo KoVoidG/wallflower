@@ -1,212 +1,116 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
-import { Surface } from '@/components/ui/surface';
-import { Badge } from '@/components/ui/badge';
-import { useReducedMotion } from '@/components/motion';
-import { RotateCcw, AlertTriangle, CheckCircle2, UserPlus } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Sparkles, TrendingUp } from 'lucide-react';
 
 export function ProductPreview() {
-  const t = useTranslations('landing.heroDemo');
-  const prefersReduced = useReducedMotion();
-  const [step, setStep] = useState<'baseline' | 'decision' | 'impact' | 'recommendation'>('baseline');
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    if (prefersReduced || hasAnimated) return;
-
-    // Controlled single sequence: baseline -> decision -> impact -> recommendation
-    const t1 = setTimeout(() => setStep('decision'), 800);
-    const t2 = setTimeout(() => setStep('impact'), 1700);
-    const t3 = setTimeout(() => {
-      setStep('recommendation');
-      setHasAnimated(true);
-    }, 2600);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [prefersReduced, hasAnimated]);
-
-  const handleReplay = () => {
-    setHasAnimated(false);
-    setStep('baseline');
-    setTimeout(() => setStep('decision'), 700);
-    setTimeout(() => setStep('impact'), 1500);
-    setTimeout(() => {
-      setStep('recommendation');
-      setHasAnimated(true);
-    }, 2400);
-  };
-
-  const isDecisionApplied = step === 'decision' || step === 'impact' || step === 'recommendation';
-  const isImpactVisible = step === 'impact' || step === 'recommendation';
-  const isRecVisible = step === 'recommendation';
-
   return (
-    <Surface border className="p-5 md:p-6 rounded-[var(--radius-lg)] shadow-xs bg-surface relative">
+    <div className="rounded-2xl border-2 border-border-strong bg-surface p-5 md:p-6 shadow-2xl space-y-5 text-left transition-all">
       {/* Header bar */}
-      <div className="flex items-center justify-between pb-3 mb-4 border-b border-border">
+      <div className="flex items-center justify-between border-b border-border/60 pb-3">
         <div className="flex items-center gap-2">
-          <Badge variant="brand">{t('badge')}</Badge>
-          <span className="text-[12px]/[18px] text-text-muted hidden sm:inline">
-            Wallflower Diagnostic Engine
+          <div className="size-3 rounded-full bg-emerald-500" />
+          <span className="font-display text-sm font-bold text-text-primary">Overview</span>
+        </div>
+        <span className="text-xs font-bold text-text-muted">Live Prototype</span>
+      </div>
+
+      {/* Top 2 Cards: Business Health & AI Executive Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Business Health Gauge Card */}
+        <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">Business Health</span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">84</span>
+            <span className="text-xs font-bold text-text-muted">/100</span>
+            <span className="ml-auto text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">Good</span>
+          </div>
+          <p className="text-[11px] text-text-muted font-medium">+12 vs last month</p>
+        </div>
+
+        {/* AI Executive Summary Card */}
+        <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-2">
+          <div className="flex items-center gap-1.5 text-tertiary">
+            <Sparkles className="size-3.5" />
+            <span className="text-[11px] font-bold uppercase tracking-wider block">AI Executive Summary</span>
+          </div>
+          <p className="text-xs text-text-secondary font-medium leading-snug line-clamp-2">
+            Revenue is up 12% this month, driven by higher sales in Beverages and Snacks.
+          </p>
+          <span className="inline-block text-[11px] font-bold text-tertiary hover:underline cursor-pointer">
+            View Full Report →
           </span>
         </div>
-        <button
-          type="button"
-          onClick={handleReplay}
-          className="inline-flex items-center gap-1 text-[12px] font-[500] text-text-muted hover:text-text-primary transition-colors cursor-pointer"
-          title={t('replayText')}
-        >
-          <RotateCcw className="size-3.5" aria-hidden="true" />
-          <span>Replay</span>
-        </button>
       </div>
 
-      {/* Decision Card */}
-      <div className="flex flex-col gap-4">
-        {/* Decision Banner */}
-        <div className="p-3.5 rounded-lg bg-surface-subtle border border-border flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-md bg-brand-soft flex items-center justify-center shrink-0">
-              <UserPlus className="size-4 text-brand" aria-hidden="true" />
-            </div>
-            <div>
-              <div className="text-[11px]/[16px] font-[600] text-text-muted uppercase tracking-wider">
-                {t('decisionLabel')}
-              </div>
-              <div className="text-[14px]/[20px] font-[600] text-text-primary">
-                {t('decisionName')}
-              </div>
-            </div>
-          </div>
-          <Badge variant={isDecisionApplied ? 'warning' : 'neutral'}>
-            {isDecisionApplied ? 'Simulating' : 'Baseline'}
-          </Badge>
+      {/* Metrics Row */}
+      <div className="grid grid-cols-3 gap-3 text-left">
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle space-y-1">
+          <span className="text-[11px] font-bold text-text-muted block">Revenue (This Month)</span>
+          <span className="font-display text-sm sm:text-base font-extrabold text-text-primary block">฿1,280,000</span>
+          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">+12.5% vs last month</span>
         </div>
 
-        {/* Financial Metrics Comparison */}
-        <div className="grid grid-cols-2 gap-3">
-          {/* Baseline Panel */}
-          <div className="p-3.5 rounded-lg border border-border bg-surface flex flex-col gap-2">
-            <span className="text-[12px]/[18px] font-[600] text-text-muted">
-              {t('beforeLabel')}
-            </span>
-            <div className="flex flex-col gap-1.5">
-              <div>
-                <span className="text-[11px]/[16px] text-text-muted block">
-                  {t('runwayLabel')}
-                </span>
-                <span className="text-[18px]/[24px] font-[650] text-text-primary tabular-nums">
-                  8.2 months
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px]/[16px] text-text-muted block">
-                  {t('profitLabel')}
-                </span>
-                <span className="text-[15px]/[22px] font-[600] text-success tabular-nums">
-                  ฿35,000
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* After Decision Panel */}
-          <div
-            className={`p-3.5 rounded-lg border transition-all duration-300 flex flex-col gap-2 ${
-              isImpactVisible
-                ? 'border-amber-300 dark:border-amber-900/60 bg-warning-soft/30'
-                : 'border-border bg-surface opacity-70'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[12px]/[18px] font-[600] text-text-muted">
-                {t('afterLabel')}
-              </span>
-              {isImpactVisible && (
-                <AlertTriangle className="size-3.5 text-warning shrink-0" aria-hidden="true" />
-              )}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <div>
-                <span className="text-[11px]/[16px] text-text-muted block">
-                  {t('runwayLabel')}
-                </span>
-                <span
-                  className={`text-[18px]/[24px] font-[650] tabular-nums ${
-                    isImpactVisible ? 'text-warning' : 'text-text-primary'
-                  }`}
-                >
-                  {isImpactVisible ? '5.1 months' : '8.2 months'}
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px]/[16px] text-text-muted block">
-                  {t('profitLabel')}
-                </span>
-                <span
-                  className={`text-[15px]/[22px] font-[600] tabular-nums ${
-                    isImpactVisible ? 'text-danger' : 'text-success'
-                  }`}
-                >
-                  {isImpactVisible ? '-฿12,400' : '฿35,000'}
-                </span>
-              </div>
-            </div>
-          </div>
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle space-y-1">
+          <span className="text-[11px] font-bold text-text-muted block">Net Profit</span>
+          <span className="font-display text-sm sm:text-base font-extrabold text-text-primary block">฿163,000</span>
+          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">+18.3% vs last month</span>
         </div>
 
-        {/* Recommendation Panel */}
-        {prefersReduced ? (
-          <div className="p-3.5 rounded-lg border border-brand/30 bg-brand-soft/40 flex items-start gap-3">
-            <CheckCircle2 className="size-5 text-brand shrink-0 mt-0.5" aria-hidden="true" />
-            <div>
-              <div className="text-[12px]/[18px] font-[650] text-brand uppercase tracking-wider">
-                {t('recommendationLabel')}
-              </div>
-              <p className="text-[13px]/[20px] font-[550] text-text-primary mt-0.5">
-                {t('recommendationText')}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: isRecVisible ? 1 : 0.4, y: isRecVisible ? 0 : 4 }}
-            transition={{ duration: 0.25 }}
-            className={`p-3.5 rounded-lg border transition-all duration-300 flex items-start gap-3 ${
-              isRecVisible
-                ? 'border-brand/40 bg-brand-soft/40'
-                : 'border-border bg-surface-subtle'
-            }`}
-          >
-            <CheckCircle2
-              className={`size-5 shrink-0 mt-0.5 ${
-                isRecVisible ? 'text-brand' : 'text-text-muted'
-              }`}
-              aria-hidden="true"
+        <div className="p-3.5 rounded-xl border border-border bg-surface-subtle space-y-1">
+          <span className="text-[11px] font-bold text-text-muted block">Cash Runway</span>
+          <span className="font-display text-sm sm:text-base font-extrabold text-text-primary block">5.1 months</span>
+          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">+0.9 vs last month</span>
+        </div>
+      </div>
+
+      {/* Revenue Trend SVG Line Chart */}
+      <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-text-primary flex items-center gap-1.5">
+            <TrendingUp className="size-4 text-emerald-500" />
+            <span>Revenue Trend</span>
+          </span>
+          <span className="text-[11px] font-bold text-text-muted">This Year ▾</span>
+        </div>
+
+        <div className="h-28 w-full pt-2">
+          <svg className="w-full h-full overflow-visible" viewBox="0 0 400 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 60 Q 50 50, 100 45 T 200 30 T 300 20 T 400 10 L 400 80 L 0 80 Z"
+              fill="url(#heroGradient)"
             />
-            <div>
-              <div
-                className={`text-[12px]/[18px] font-[650] uppercase tracking-wider ${
-                  isRecVisible ? 'text-brand' : 'text-text-muted'
-                }`}
-              >
-                {t('recommendationLabel')}
-              </div>
-              <p className="text-[13px]/[20px] font-[550] text-text-primary mt-0.5">
-                {t('recommendationText')}
-              </p>
-            </div>
-          </motion.div>
-        )}
+            <path
+              d="M0 60 Q 50 50, 100 45 T 200 30 T 300 20 T 400 10"
+              fill="none"
+              stroke="#10B981"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            {/* Dots */}
+            <circle cx="100" cy="45" r="4" fill="#10B981" />
+            <circle cx="200" cy="30" r="4" fill="#10B981" />
+            <circle cx="300" cy="20" r="4" fill="#10B981" />
+            <circle cx="400" cy="10" r="4" fill="#10B981" />
+          </svg>
+        </div>
+
+        <div className="flex justify-between text-[10px] font-bold text-text-muted px-1">
+          <span>Jan</span>
+          <span>Feb</span>
+          <span>Mar</span>
+          <span>Apr</span>
+          <span>May</span>
+          <span>Jun</span>
+          <span>Jul</span>
+          <span>Aug</span>
+        </div>
       </div>
-    </Surface>
+    </div>
   );
 }

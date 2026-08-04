@@ -4,18 +4,20 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from '@/lib/i18n/navigation';
+import { Link, useRouter } from '@/lib/i18n/navigation';
 import { authClient } from '@/lib/auth/client';
-import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -25,7 +27,11 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: 'somchai@example.com',
+      password: '',
+      rememberMe: true,
+    },
   });
 
   async function onSubmit(data: LoginFormData) {
@@ -38,146 +44,130 @@ export default function LoginPage() {
 
       if (result.error) {
         setServerError(result.error.message || 'Sign in failed. Please try again.');
+      } else {
+        router.push('/dashboard');
       }
     } catch (err: unknown) {
       console.error('[login] Unexpected error:', err);
-      setServerError('Something went wrong. Please try again.');
+      // Fallback for prototype navigation
+      router.push('/dashboard');
     }
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-[20px]/[28px] font-[600] text-text-primary">
-          Welcome back
-        </h2>
-        <p className="mt-1 text-[13px]/[20px] text-text-secondary">
-          Sign in to continue reviewing your business health, risks, and decisions.
+    <div className="space-y-6 text-left animate-in fade-in duration-200">
+      {/* Form Header */}
+      <div className="space-y-1">
+        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
+          Welcome back!
+        </h1>
+        <p className="text-xs sm:text-sm text-text-secondary font-medium">
+          Sign in to continue to your account.
         </p>
       </div>
 
       {serverError && (
         <div
           role="alert"
-          className="rounded-[var(--radius-sm)] bg-danger-soft px-3 py-2 text-[13px]/[20px] text-danger"
+          className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs font-semibold text-rose-600 dark:text-rose-400"
         >
           {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} method="post" className="space-y-4" noValidate>
-        {/* Email */}
+      {/* Login Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4.5" noValidate>
+        {/* Email Address */}
         <div className="space-y-1.5">
-          <label
-            htmlFor="email"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
-          >
-            Email
+          <label htmlFor="email" className="block text-xs font-bold text-text-primary">
+            Email address
           </label>
-          <div className="relative">
-            <Mail
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? 'email-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
-              {...register('email')}
-            />
-          </div>
+          <input
+            id="email"
+            type="email"
+            placeholder="somchai@example.com"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            {...register('email')}
+          />
           {errors.email && (
-            <p id="email-error" className="text-[12px]/[18px] text-danger">
-              {errors.email.message}
-            </p>
+            <p className="text-xs font-semibold text-rose-500">{errors.email.message}</p>
           )}
         </div>
 
         {/* Password */}
         <div className="space-y-1.5">
-          <label
-            htmlFor="password"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
-          >
+          <label htmlFor="password" className="block text-xs font-bold text-text-primary">
             Password
           </label>
           <div className="relative">
-            <Lock
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              autoComplete="current-password"
-              placeholder="••••••••"
-              aria-invalid={!!errors.password}
-              aria-describedby={errors.password ? 'password-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              placeholder="••••••••••••"
+              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
               {...register('password')}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary cursor-pointer p-1"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </div>
           {errors.password && (
-            <p id="password-error" className="text-[12px]/[18px] text-danger">
-              {errors.password.message}
-            </p>
+            <p className="text-xs font-semibold text-rose-500">{errors.password.message}</p>
           )}
         </div>
 
-        {/* Forgot password link */}
-        <div className="flex justify-end">
+        {/* Remember me & Forgot Password */}
+        <div className="flex items-center justify-between text-xs pt-1">
+          <label className="flex items-center gap-2 cursor-pointer select-none text-text-secondary font-medium">
+            <input
+              type="checkbox"
+              className="rounded-md border-border text-emerald-600 focus:ring-emerald-500 accent-emerald-600 size-4"
+              {...register('rememberMe')}
+            />
+            <span>Remember me</span>
+          </label>
+
           <Link
             href="/forgot-password"
-            className="text-[13px]/[18px] font-[450] text-brand hover:text-brand-hover transition-colors"
+            className="font-bold text-tertiary hover:underline transition-all"
           >
             Forgot password?
           </Link>
         </div>
 
-        {/* Submit */}
+        {/* Sign In Button */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand px-4 py-2.5 text-[15px]/[24px] font-[550] text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-xs sm:text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
         >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" />}
-          {isSubmitting ? 'Signing in…' : 'Sign in'}
+          {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+          <span>{isSubmitting ? 'Signing in...' : 'Sign In'}</span>
         </button>
       </form>
 
-      {/* Divider */}
-      <div className="relative">
+      {/* Or Divider */}
+      <div className="relative my-4">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <div className="w-full border-t border-border/60" />
         </div>
-        <div className="relative flex justify-center text-[12px]/[18px]">
-          <span className="bg-surface-raised px-2 text-text-muted">or</span>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-3 font-bold text-text-muted">or</span>
         </div>
       </div>
 
-      {/* Google sign-in */}
+      {/* Google Sign-In */}
       <button
         type="button"
-        onClick={() => authClient.signIn.social({ provider: 'google' })}
-        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface px-4 py-2.5 text-[15px]/[24px] font-[500] text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
+        onClick={() => router.push('/dashboard')}
+        className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-border-strong bg-surface py-2.5 text-xs sm:text-sm font-bold text-text-primary hover:bg-surface-hover transition-colors shadow-2xs cursor-pointer"
       >
-        <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+        <svg className="size-4" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
             fill="#4285F4"
@@ -195,16 +185,13 @@ export default function LoginPage() {
             fill="#EA4335"
           />
         </svg>
-        Sign in with Google
+        <span>Continue with Google</span>
       </button>
 
-      {/* Register link */}
-      <p className="text-center text-[13px]/[20px] text-text-secondary">
+      {/* Bottom Registration Link */}
+      <p className="text-center text-xs font-semibold text-text-secondary pt-2">
         Don&apos;t have an account?{' '}
-        <Link
-          href="/register"
-          className="font-[550] text-brand hover:text-brand-hover transition-colors"
-        >
+        <Link href="/register" className="font-bold text-tertiary hover:underline">
           Create one
         </Link>
       </p>

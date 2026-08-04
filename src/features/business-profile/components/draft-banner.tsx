@@ -42,7 +42,7 @@ export function DraftBanner({ onContinue, onClear, className }: DraftBannerProps
             onClick={onContinue}
             className={cn(
               'px-3 py-1.5 rounded-[var(--radius-md)] text-[13px] font-[550]',
-              'bg-info text-white hover:bg-info/90 transition-colors cursor-pointer'
+              'bg-info text-white dark:text-on-primary hover:bg-info/90 transition-colors cursor-pointer'
             )}
           >
             Continue

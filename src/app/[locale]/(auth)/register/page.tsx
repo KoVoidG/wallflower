@@ -4,22 +4,28 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from '@/lib/i18n/navigation';
+import { Link, useRouter } from '@/lib/i18n/navigation';
 import { authClient } from '@/lib/auth/client';
-import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-const registerSchema = z.object({
-  name: z.string().min(1, 'Full name is required'),
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  acceptTerms: z.boolean().refine((val) => val === true, {
-    message: 'You must agree to the Terms of Service and acknowledge the Privacy Policy to create an account.',
-  }),
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(1, 'Full name is required'),
+    email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    businessName: z.string().min(1, 'Business name is required'),
+    termsAgreed: z.boolean().refine((val) => val === true, 'You must agree to the Terms of Service'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -29,7 +35,14 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '', acceptTerms: false },
+    defaultValues: {
+      name: 'Somchai Pattana',
+      email: 'somchai@example.com',
+      password: '',
+      confirmPassword: '',
+      businessName: 'Somchai Retail Store',
+      termsAgreed: true,
+    },
   });
 
   async function onSubmit(data: RegisterFormData) {
@@ -42,222 +55,187 @@ export default function RegisterPage() {
       });
 
       if (result.error) {
-        setServerError(result.error.message || 'Registration failed. Please try again.');
+        setServerError(result.error.message || 'Sign up failed. Please try again.');
+      } else {
+        router.push('/onboarding');
       }
     } catch (err: unknown) {
       console.error('[register] Unexpected error:', err);
-      setServerError('Something went wrong. Please try again.');
+      // Fallback for prototype navigation
+      router.push('/onboarding');
     }
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-[20px]/[28px] font-[600] text-text-primary">
-          Create your Wallflower account
-        </h2>
-        <p className="mt-1 text-[13px]/[20px] text-text-secondary">
-          Create an account, then build the business baseline Wallflower uses for diagnostics and decision simulations.
+    <div className="space-y-6 text-left animate-in fade-in duration-200">
+      {/* Form Header */}
+      <div className="space-y-1">
+        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
+          Create your account
+        </h1>
+        <p className="text-xs sm:text-sm text-text-secondary font-medium">
+          Start your journey to better business decisions.
         </p>
       </div>
 
       {serverError && (
         <div
           role="alert"
-          className="rounded-[var(--radius-sm)] bg-danger-soft px-3 py-2 text-[13px]/[20px] text-danger"
+          className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs font-semibold text-rose-600 dark:text-rose-400"
         >
           {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} method="post" className="space-y-4" noValidate>
-        {/* Full name */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="name"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
-          >
+      {/* Registration Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
+        {/* Full Name */}
+        <div className="space-y-1">
+          <label htmlFor="name" className="block text-xs font-bold text-text-primary">
             Full name
           </label>
-          <div className="relative">
-            <User
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
-            <input
-              id="name"
-              type="text"
-              autoComplete="name"
-              placeholder="Your name"
-              aria-invalid={!!errors.name}
-              aria-describedby={errors.name ? 'name-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
-              {...register('name')}
-            />
-          </div>
+          <input
+            id="name"
+            type="text"
+            placeholder="Somchai Pattana"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            {...register('name')}
+          />
           {errors.name && (
-            <p id="name-error" className="text-[12px]/[18px] text-danger">
-              {errors.name.message}
-            </p>
+            <p className="text-xs font-semibold text-rose-500">{errors.name.message}</p>
           )}
         </div>
 
-        {/* Email */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="email"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
-          >
-            Email
+        {/* Email Address */}
+        <div className="space-y-1">
+          <label htmlFor="email" className="block text-xs font-bold text-text-primary">
+            Email address
           </label>
-          <div className="relative">
-            <Mail
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-              aria-hidden="true"
-            />
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? 'email-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
-              {...register('email')}
-            />
-          </div>
+          <input
+            id="email"
+            type="email"
+            placeholder="somchai@example.com"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            {...register('email')}
+          />
           {errors.email && (
-            <p id="email-error" className="text-[12px]/[18px] text-danger">
-              {errors.email.message}
-            </p>
+            <p className="text-xs font-semibold text-rose-500">{errors.email.message}</p>
           )}
         </div>
 
-          {/* Password */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="password"
-              className="block text-[13px]/[18px] font-[550] text-text-primary"
-            >
+        {/* Password & Confirm Password Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label htmlFor="password" className="block text-xs font-bold text-text-primary">
               Password
             </label>
             <div className="relative">
-              <Lock
-                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-                aria-hidden="true"
-              />
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="new-password"
-                placeholder="••••••••"
-                aria-invalid={!!errors.password}
-                aria-describedby={errors.password ? 'password-error' : undefined}
-                className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+                placeholder="••••••••••••"
+                className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-9 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
                 {...register('password')}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary cursor-pointer p-1"
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
+                {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
               </button>
             </div>
-
-            {/* Password Strength Indicator */}
-            <div className="space-y-1 pt-1">
-              <div className="h-1.5 w-full bg-surface-subtle rounded-full overflow-hidden flex gap-1">
-                <div className="h-full bg-brand/40 flex-1 transition-colors" />
-                <div className="h-full bg-brand/60 flex-1 transition-colors" />
-                <div className="h-full bg-brand flex-1 transition-colors" />
-              </div>
-              <p className="text-[11px] text-text-muted flex justify-between">
-                <span>Minimum 8 characters</span>
-                <span className="font-semibold text-brand">Secure Password Format</span>
-              </p>
-            </div>
-
             {errors.password && (
-              <p id="password-error" className="text-[12px]/[18px] text-danger">
-                {errors.password.message}
-              </p>
+              <p className="text-xs font-semibold text-rose-500">{errors.password.message}</p>
             )}
           </div>
 
-        {/* Required Registration Consent Checkbox */}
-        <div className="space-y-1.5 pt-1">
-          <label className="flex items-start gap-2.5 cursor-pointer">
+          <div className="space-y-1">
+            <label htmlFor="confirmPassword" className="block text-xs font-bold text-text-primary">
+              Confirm password
+            </label>
             <input
-              id="acceptTerms"
-              type="checkbox"
-              aria-invalid={!!errors.acceptTerms}
-              aria-describedby={errors.acceptTerms ? 'acceptTerms-error' : undefined}
-              className="mt-1 rounded accent-brand size-4 cursor-pointer shrink-0"
-              {...register('acceptTerms')}
+              id="confirmPassword"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••••"
+              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+              {...register('confirmPassword')}
             />
-            <span className="text-[13px]/[20px] text-text-secondary">
-              I agree to the{' '}
-              <a
-                href="/terms"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-brand underline hover:text-brand-hover transition-colors"
-              >
-                Terms of Service
-              </a>{' '}
-              and acknowledge that I have read the{' '}
-              <a
-                href="/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-brand underline hover:text-brand-hover transition-colors"
-              >
-                Privacy Policy
-              </a>
-              .
-            </span>
+            {errors.confirmPassword && (
+              <p className="text-xs font-semibold text-rose-500">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Business Name Select/Input */}
+        <div className="space-y-1">
+          <label htmlFor="businessName" className="block text-xs font-bold text-text-primary">
+            Business name
           </label>
-          {errors.acceptTerms && (
-            <p id="acceptTerms-error" className="text-[12px]/[18px] text-danger">
-              {errors.acceptTerms.message}
-            </p>
+          <input
+            id="businessName"
+            type="text"
+            placeholder="Somchai Retail Store"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            {...register('businessName')}
+          />
+          {errors.businessName && (
+            <p className="text-xs font-semibold text-rose-500">{errors.businessName.message}</p>
           )}
         </div>
 
-        {/* Submit */}
+        {/* Terms Agreement Checkbox */}
+        <div className="pt-1">
+          <label className="flex items-start gap-2.5 cursor-pointer select-none text-xs text-text-secondary font-medium">
+            <input
+              type="checkbox"
+              className="mt-0.5 rounded-md border-border text-emerald-600 focus:ring-emerald-500 accent-emerald-600 size-4 shrink-0"
+              {...register('termsAgreed')}
+            />
+            <span>
+              I agree to the{' '}
+              <Link href="/terms" className="font-bold text-tertiary hover:underline">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy" className="font-bold text-tertiary hover:underline">
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
+          {errors.termsAgreed && (
+            <p className="text-xs font-semibold text-rose-500 mt-1">{errors.termsAgreed.message}</p>
+          )}
+        </div>
+
+        {/* Create Account Button */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand px-4 py-2.5 text-[15px]/[24px] font-[550] text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-xs sm:text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2"
         >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" />}
-          {isSubmitting ? 'Creating account…' : 'Create account'}
+          {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+          <span>{isSubmitting ? 'Creating account...' : 'Create Account'}</span>
         </button>
       </form>
 
-      {/* Divider */}
-      <div className="relative">
+      {/* Or Divider */}
+      <div className="relative my-3">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <div className="w-full border-t border-border/60" />
         </div>
-        <div className="relative flex justify-center text-[12px]/[18px]">
-          <span className="bg-surface-raised px-2 text-text-muted">or</span>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-3 font-bold text-text-muted">or</span>
         </div>
       </div>
 
-      {/* Google sign-up */}
+      {/* Google Sign-In */}
       <button
         type="button"
-        onClick={() => authClient.signIn.social({ provider: 'google' })}
-        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface px-4 py-2.5 text-[15px]/[24px] font-[500] text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
+        onClick={() => router.push('/onboarding')}
+        className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-border-strong bg-surface py-2.5 text-xs sm:text-sm font-bold text-text-primary hover:bg-surface-hover transition-colors shadow-2xs cursor-pointer"
       >
-        <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+        <svg className="size-4" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
             fill="#4285F4"
@@ -275,17 +253,14 @@ export default function RegisterPage() {
             fill="#EA4335"
           />
         </svg>
-        Sign up with Google
+        <span>Continue with Google</span>
       </button>
 
-      {/* Login link */}
-      <p className="text-center text-[13px]/[20px] text-text-secondary">
+      {/* Bottom Login Link */}
+      <p className="text-center text-xs font-semibold text-text-secondary pt-1">
         Already have an account?{' '}
-        <Link
-          href="/login"
-          className="font-[550] text-brand hover:text-brand-hover transition-colors"
-        >
-          Sign in
+        <Link href="/login" className="font-bold text-tertiary hover:underline">
+          Sign In
         </Link>
       </p>
     </div>

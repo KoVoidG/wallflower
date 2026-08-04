@@ -120,7 +120,7 @@ export function CompletionState({ data }: CompletionStateProps) {
         <Button
           type="button"
           onClick={handleGoDashboard}
-          className="w-full py-3.5 text-xs font-bold gap-2 bg-emerald-700 text-white hover:bg-emerald-800 shadow-md transition-all cursor-pointer rounded-xl"
+          className="w-full py-3.5 text-xs font-bold gap-2 bg-emerald-700 text-white dark:text-on-primary hover:bg-emerald-800 shadow-md transition-all cursor-pointer rounded-xl"
         >
           <LayoutDashboard className="size-4" />
           <span>Explore Overview Dashboard</span>
