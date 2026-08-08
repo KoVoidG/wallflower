@@ -1,4 +1,5 @@
 import { Link } from '@/lib/i18n/navigation';
+import { Logo } from '@/components/ui/logo';
 
 export function MarketingFooter() {
 
@@ -9,23 +10,9 @@ export function MarketingFooter() {
           {/* Brand */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-display font-extrabold text-lg text-text-primary tracking-tight"
+            className="flex items-center group transition-opacity hover:opacity-95"
           >
-            <div className="size-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white shadow-2xs">
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <span>Wallflower</span>
+            <Logo size="sm" />
           </Link>
 
           {/* Navigation Links (Public Marketing Only) */}

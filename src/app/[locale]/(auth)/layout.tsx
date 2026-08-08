@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes';
 import { Sun, Moon, Globe, Shield, Sparkles } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { useRouter } from '@/lib/i18n/navigation';
+import { Logo } from '@/components/ui/logo';
 
 const emptySubscribe = () => () => {};
 
@@ -62,16 +63,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="flex items-center gap-2.5 font-display font-extrabold text-xl text-text-primary tracking-tight"
+              className="flex items-center group transition-opacity hover:opacity-95"
             >
-              <div className="size-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-2xs">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-              </div>
-              <span>Wallflower</span>
+              <Logo size="md" />
             </Link>
           </div>
 
@@ -91,12 +85,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Right Panel: Product Preview Panel (50% desktop width) */}
         <div className="hidden lg:flex w-1/2 bg-surface-subtle text-text-primary p-12 lg:p-16 flex-col justify-between relative overflow-hidden border-l border-border transition-colors">
           {/* Ambient Glow */}
-          <div className="absolute -top-20 -right-20 size-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-20 -left-20 size-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -top-20 -right-20 size-96 rounded-full bg-brand/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 size-96 rounded-full bg-ai/10 blur-3xl pointer-events-none" />
 
           <div className="relative z-10 space-y-2 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <Sparkles className="size-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand/30 bg-brand-soft text-xs font-bold text-brand">
+              <Sparkles className="size-3.5 text-ai" />
               <span>DECISION INTELLIGENCE</span>
             </div>
             <h3 className="font-display text-2xl font-extrabold text-text-primary tracking-tight">

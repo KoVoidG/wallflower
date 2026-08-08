@@ -9,6 +9,7 @@ import { useRouter, usePathname } from '@/lib/i18n/navigation';
 import { AccountMenu } from './account-menu';
 import { BotAvatar } from '@/components/ui/bot-avatar';
 import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
+import { Logo } from '@/components/ui/logo';
 
 interface TopbarProps {
   title?: string;
@@ -48,12 +49,7 @@ export function Topbar({ title }: TopbarProps) {
     >
       {/* Mobile logo */}
       <div className="flex items-center gap-2 md:hidden">
-        <div className="flex size-7 items-center justify-center rounded-md bg-tertiary text-on-primary font-bold text-xs">
-          W
-        </div>
-        <span className="font-display text-sm font-bold text-text-primary">
-          Wallflower
-        </span>
+        <Logo size="xs" />
       </div>
 
       {/* Page title */}

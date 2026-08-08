@@ -60,17 +60,17 @@ export function BotAvatar({
           className="size-full"
         >
           {/* Side Ears / Antenna Pegs */}
-          <rect x="6" y="40" width="10" height="18" rx="4" fill="#00D395" />
-          <rect x="84" y="40" width="10" height="18" rx="4" fill="#00D395" />
+          <rect x="6" y="40" width="10" height="18" rx="4" fill="#8B5CF6" />
+          <rect x="84" y="40" width="10" height="18" rx="4" fill="#8B5CF6" />
 
           {/* Top Antenna Bulb */}
-          <circle cx="50" cy="10" r="5" fill="#4FA8FF" />
+          <circle cx="50" cy="10" r="5" fill="#A78BFA" />
           <line
             x1="50"
             y1="15"
             x2="50"
             y2="22"
-            stroke="#4FA8FF"
+            stroke="#A78BFA"
             strokeWidth="4"
             strokeLinecap="round"
           />
@@ -82,9 +82,9 @@ export function BotAvatar({
             width="76"
             height="64"
             rx="20"
-            fill="#1B202A"
-            stroke="#00D395"
-            strokeWidth="4"
+            fill="#131823"
+            stroke="#6366F1"
+            strokeWidth="3.5"
           />
 
           {/* Visor Screen */}
@@ -94,22 +94,22 @@ export function BotAvatar({
             width="60"
             height="38"
             rx="12"
-            fill="#0B0E13"
-            stroke="#2A3240"
+            fill="#0B0E14"
+            stroke="#263042"
             strokeWidth="3"
           />
 
           {/* Glowing Big Eyes */}
-          <circle cx="37" cy="48" r="7" fill="#00D395" />
+          <circle cx="37" cy="48" r="7" fill="#A78BFA" />
           <circle cx="36" cy="46.5" r="2.5" fill="#FFFFFF" />
 
-          <circle cx="63" cy="48" r="7" fill="#00D395" />
+          <circle cx="63" cy="48" r="7" fill="#A78BFA" />
           <circle cx="62" cy="46.5" r="2.5" fill="#FFFFFF" />
 
           {/* Friendly Smile Curve */}
           <path
             d="M43 59 Q50 64 57 59"
-            stroke="#00D395"
+            stroke="#8B5CF6"
             strokeWidth="3.5"
             strokeLinecap="round"
           />

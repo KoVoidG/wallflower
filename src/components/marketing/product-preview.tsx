@@ -8,7 +8,7 @@ export function ProductPreview() {
       {/* Header bar */}
       <div className="flex items-center justify-between border-b border-border/60 pb-3">
         <div className="flex items-center gap-2">
-          <div className="size-3 rounded-full bg-emerald-500" />
+          <div className="size-3 rounded-full bg-brand animate-pulse" />
           <span className="font-display text-sm font-bold text-text-primary">Overview</span>
         </div>
         <span className="text-xs font-bold text-text-muted">Live Prototype</span>
@@ -29,14 +29,14 @@ export function ProductPreview() {
 
         {/* AI Executive Summary Card */}
         <div className="p-4 rounded-xl border border-border bg-surface-subtle space-y-2">
-          <div className="flex items-center gap-1.5 text-tertiary">
+          <div className="flex items-center gap-1.5 text-ai">
             <Sparkles className="size-3.5" />
             <span className="text-[11px] font-bold uppercase tracking-wider block">AI Executive Summary</span>
           </div>
           <p className="text-xs text-text-secondary font-medium leading-snug line-clamp-2">
             Revenue is up 12% this month, driven by higher sales in Beverages and Snacks.
           </p>
-          <span className="inline-block text-[11px] font-bold text-tertiary hover:underline cursor-pointer">
+          <span className="inline-block text-[11px] font-bold text-brand hover:underline cursor-pointer">
             View Full Report →
           </span>
         </div>

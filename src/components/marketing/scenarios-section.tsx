@@ -174,7 +174,7 @@ export function ScenariosSection() {
               max="20"
               value={priceChange}
               onChange={(e) => setPriceChange(Number(e.target.value))}
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full accent-brand cursor-pointer"
             />
           </div>
 

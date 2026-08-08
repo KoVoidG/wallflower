@@ -14,15 +14,15 @@ export function HeroSection() {
           <div className="flex flex-col gap-6 max-w-[620px]">
             {/* Top Badge */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                <Sparkles className="size-3.5" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand">
+                <Sparkles className="size-3.5 text-ai" />
                 <span>AI-POWERED DECISION INTELLIGENCE</span>
               </div>
             </div>
 
             {/* Main Headline */}
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight leading-[1.1]">
-              Make better business <span className="text-emerald-500 dark:text-emerald-400">decisions</span> before they cost you money.
+              Make better business <span className="text-brand">decisions</span> before they cost you money.
             </h1>
 
             {/* Subtitle */}
@@ -34,7 +34,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-md hover:shadow-lg cursor-pointer"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold rounded-xl bg-brand hover:bg-brand-hover text-on-primary transition-all shadow-md hover:shadow-lg cursor-pointer"
               >
                 Start Free
               </Link>

@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/lib/i18n/navigation';
 import { Printer, Globe, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/ui/logo';
 
 export interface TocItem {
   id: string;
@@ -57,9 +58,7 @@ export function LegalLayout({
             className="flex items-center gap-3 shrink-0 group hover:opacity-90 transition-opacity"
             title="Go to Wallflower Homepage"
           >
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand text-white font-bold text-xs">
-              W
-            </div>
+            <Logo size="sm" showWordmark={false} />
             <span className="text-base sm:text-lg font-bold text-text-primary group-hover:text-brand transition-colors whitespace-nowrap">
               Wallflower Legal
             </span>

@@ -81,16 +81,16 @@ export function PlanModal({ open, onClose }: PlanModalProps) {
           </div>
 
           {/* Pro Plan (Highlighted Card) */}
-          <div className="flex flex-col justify-between rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/15 relative shadow-md">
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-brand bg-brand-soft/40 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand/15 relative shadow-md">
             {/* Top Recommended Tag */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[9px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand text-on-primary text-[9px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
               Recommended
             </div>
 
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1.5 font-display text-base font-bold text-text-primary">
-                  <Sparkles className="size-4 text-emerald-600 dark:text-emerald-400" />
+                  <Sparkles className="size-4 text-ai" />
                   <span>{t('proTier')}</span>
                 </div>
               </div>
@@ -99,25 +99,25 @@ export function PlanModal({ open, onClose }: PlanModalProps) {
               </p>
               <ul className="space-y-2.5 text-xs text-text-secondary">
                 <li className="flex items-center gap-2 font-bold text-text-primary">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>{t('featureValues.proSnapshots')}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span className="font-medium text-text-primary">
                     {t('features.riskDetection')}
                   </span>
                 </li>
                 <li className="flex items-center gap-2 font-bold text-text-primary">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>{t('featureValues.proSimulations')}</span>
                 </li>
                 <li className="flex items-center gap-2 font-bold text-text-primary">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>{t('featureValues.proAi')}</span>
                 </li>
                 <li className="flex items-center gap-2 font-bold text-text-primary">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>{t('features.reports')}</span>
                 </li>
               </ul>

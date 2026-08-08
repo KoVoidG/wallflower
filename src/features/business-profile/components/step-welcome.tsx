@@ -2,6 +2,7 @@
 
 import { ArrowRight, BarChart3, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 
 interface StepWelcomeProps {
   onNext: () => void;
@@ -11,30 +12,25 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
   return (
     <div className="max-w-md mx-auto py-6 px-4 text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
       {/* Brand Logo Header */}
-      <div className="flex items-center justify-center gap-2">
-        <div className="size-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
-          W
-        </div>
-        <span className="font-display text-xl font-bold tracking-tight text-text-primary">
-          Wallflower
-        </span>
+      <div className="flex items-center justify-center">
+        <Logo size="lg" />
       </div>
 
       {/* Hero Illustration */}
-      <div className="relative mx-auto w-48 h-40 flex items-center justify-center bg-gradient-to-b from-emerald-500/10 to-transparent rounded-3xl p-4">
+      <div className="relative mx-auto w-48 h-40 flex items-center justify-center bg-gradient-to-b from-brand/10 to-transparent rounded-3xl p-4">
         <svg
-          className="w-full h-full text-emerald-600"
+          className="w-full h-full text-brand"
           viewBox="0 0 200 160"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* Store roof awning */}
-          <path d="M30 65 L170 65 L160 40 L40 40 Z" fill="#059669" />
+          <path d="M30 65 L170 65 L160 40 L40 40 Z" fill="#4C23FC" />
           <path
             d="M35 65 C40 75 50 75 55 65 C60 75 70 75 75 65 C80 75 90 75 95 65 C100 75 110 75 115 65 C120 75 130 75 135 65 C140 75 150 75 155 65 C160 75 165 75 165 65"
-            stroke="#047857"
+            stroke="#3512CC"
             strokeWidth="4"
-            fill="#10B981"
+            fill="#6366F1"
           />
           {/* Store front base */}
           <rect
@@ -42,8 +38,8 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
             y="65"
             width="116"
             height="65"
-            fill="#ECFDF5"
-            stroke="#059669"
+            fill="#EEF2FF"
+            stroke="#4C23FC"
             strokeWidth="3"
             rx="4"
           />
@@ -54,22 +50,22 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
             width="40"
             height="35"
             rx="3"
-            fill="#A7F3D0"
-            stroke="#059669"
+            fill="#C7D2FE"
+            stroke="#4C23FC"
             strokeWidth="2"
           />
-          <rect x="108" y="78" width="35" height="52" rx="3" fill="#047857" />
+          <rect x="108" y="78" width="35" height="52" rx="3" fill="#3512CC" />
           {/* Person silhouette */}
-          <circle cx="158" cy="95" r="10" fill="#10B981" />
+          <circle cx="158" cy="95" r="10" fill="#6366F1" />
           <path
             d="M148 125 C148 110 168 110 168 125"
-            stroke="#10B981"
+            stroke="#6366F1"
             strokeWidth="4"
             strokeLinecap="round"
           />
           {/* Trees */}
-          <circle cx="25" cy="115" r="14" fill="#10B981" />
-          <rect x="23" y="125" width="4" height="15" fill="#047857" />
+          <circle cx="25" cy="115" r="14" fill="#6366F1" />
+          <rect x="23" y="125" width="4" height="15" fill="#3512CC" />
         </svg>
       </div>
 
@@ -86,7 +82,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
       {/* 3 Key Benefits */}
       <div className="space-y-2.5 text-left bg-surface/60 border border-border/70 rounded-2xl p-4">
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-600 shrink-0">
+          <div className="p-1.5 rounded-lg bg-brand-soft text-brand shrink-0">
             <BarChart3 className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -95,7 +91,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-600 shrink-0">
+          <div className="p-1.5 rounded-lg bg-success-soft text-success shrink-0">
             <TrendingUp className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -104,7 +100,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-600 shrink-0">
+          <div className="p-1.5 rounded-lg bg-ai-soft text-ai shrink-0">
             <Sparkles className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -123,7 +119,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         <Button
           type="button"
           onClick={onNext}
-          className="w-full py-3 text-xs font-bold gap-2 bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-md transition-all cursor-pointer rounded-xl"
+          className="w-full py-3 text-xs font-bold gap-2 bg-brand text-on-primary hover:bg-brand-hover shadow-md transition-all cursor-pointer rounded-xl"
         >
           <span>Get Started</span>
           <ArrowRight className="size-4" />
@@ -135,7 +131,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
 
       {/* Carousel dots pagination */}
       <div className="flex items-center justify-center gap-1.5 pt-2">
-        <span className="size-2 rounded-full bg-emerald-600" />
+        <span className="size-2 rounded-full bg-brand" />
         <span className="size-1.5 rounded-full bg-border" />
         <span className="size-1.5 rounded-full bg-border" />
         <span className="size-1.5 rounded-full bg-border" />

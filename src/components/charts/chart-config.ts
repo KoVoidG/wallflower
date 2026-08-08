@@ -6,20 +6,20 @@
  */
 
 export const CHART_PALETTE_LIGHT = [
-  '#0F766E', // Teal
-  '#2563EB', // Blue
-  '#16A34A', // Green
-  '#D97706', // Amber
-  '#E85D5D', // Coral
-  '#64748B', // Slate
+  '#4C23FC', // Electric Indigo (Primary Scenario / Brand)
+  '#0040FC', // Royal Cobalt (Alternative / Cash Flow)
+  '#059669', // Emerald Green (Net Profit / Gain)
+  '#D97706', // Amber (Expenses / Cost)
+  '#8B5CF6', // Violet (AI Projected Baseline)
+  '#64748B', // Slate (Reference / Inactive)
 ] as const;
 
 export const CHART_PALETTE_DARK = [
-  '#2DD4BF', // Teal
-  '#60A5FA', // Blue
-  '#4ADE80', // Green
-  '#FBBF24', // Amber
-  '#F87171', // Coral
+  '#818CF8', // Luminous Indigo
+  '#38BDF8', // Electric Cyan-Cobalt
+  '#34D399', // Neon Emerald
+  '#FBBF24', // Radiant Amber
+  '#C084FC', // Glow Violet
   '#94A3B8', // Slate
 ] as const;
 
@@ -28,14 +28,14 @@ export const CHART_PALETTE_DARK = [
  * Each metric has a fixed position in the palette.
  */
 export const SEMANTIC_COLORS = {
-  revenue: { light: '#0F766E', dark: '#2DD4BF' },
+  revenue: { light: '#4C23FC', dark: '#818CF8' },
   expenses: { light: '#D97706', dark: '#FBBF24' },
-  profit: { light: '#16A34A', dark: '#4ADE80' },
-  cashFlow: { light: '#2563EB', dark: '#60A5FA' },
+  profit: { light: '#059669', dark: '#34D399' },
+  cashFlow: { light: '#0040FC', dark: '#38BDF8' },
   baseline: { light: '#64748B', dark: '#94A3B8' },
-  expected: { light: '#0F766E', dark: '#2DD4BF' },
-  bestCase: { light: '#16A34A', dark: '#4ADE80' },
-  worstCase: { light: '#E85D5D', dark: '#F87171' },
+  expected: { light: '#4C23FC', dark: '#818CF8' },
+  bestCase: { light: '#059669', dark: '#34D399' },
+  worstCase: { light: '#DC2626', dark: '#F87171' },
 } as const;
 
 export type SemanticColorKey = keyof typeof SEMANTIC_COLORS;

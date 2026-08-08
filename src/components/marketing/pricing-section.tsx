@@ -69,16 +69,16 @@ export function PricingSection() {
           </div>
 
           {/* Tier 2: Starter (Highlighted / MOST POPULAR) */}
-          <div className="flex flex-col justify-between rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 p-6 md:p-8 transition-all duration-200 hover:shadow-2xl hover:shadow-emerald-500/15 hover:-translate-y-1 relative shadow-xl">
+          <div className="flex flex-col justify-between rounded-2xl border-2 border-brand bg-brand-soft/40 p-6 md:p-8 transition-all duration-200 hover:shadow-2xl hover:shadow-brand/15 hover:-translate-y-1 relative shadow-xl">
             {/* Top Badge */}
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand text-on-primary text-[10px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
               MOST POPULAR
             </div>
 
             <div>
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-xl font-bold text-text-primary">Starter</h3>
-                <Sparkles className="size-5 text-emerald-600 dark:text-emerald-400" />
+                <Sparkles className="size-5 text-ai" />
               </div>
               <p className="text-xs text-text-secondary font-medium mt-1">For growing retail businesses</p>
               
@@ -89,23 +89,23 @@ export function PricingSection() {
 
               <ul className="space-y-3.5 text-xs font-medium text-text-secondary">
                 <li className="flex items-center gap-2.5">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span className="text-text-primary font-bold">1 Business</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span className="text-text-primary font-bold">30 Simulations / month</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>All Reports</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span className="text-text-primary font-bold">AI Insights (Full)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Check className="size-4 text-brand shrink-0" />
                   <span>Export to Excel</span>
                 </li>
               </ul>
@@ -114,7 +114,7 @@ export function PricingSection() {
             <div className="mt-8 pt-4 border-t border-border/60">
               <Link
                 href="/register"
-                className="flex w-full items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-md"
+                className="flex w-full items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold bg-brand hover:bg-brand-hover text-on-primary transition-colors shadow-md"
               >
                 Start Free Trial
               </Link>

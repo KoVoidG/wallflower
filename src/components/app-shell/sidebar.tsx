@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import { AccountMenu } from './account-menu';
+import { Logo } from '@/components/ui/logo';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -47,15 +48,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       )}
     >
       {/* Brand */}
-      <div className="flex h-16 items-center gap-3 border-b border-border px-4 shrink-0">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-tertiary text-on-primary font-bold text-sm">
-          W
-        </div>
-        {!collapsed && (
-          <span className="font-display text-lg font-bold text-text-primary truncate">
-            Wallflower
-          </span>
-        )}
+      <div className="flex h-16 items-center border-b border-border px-4 shrink-0 overflow-hidden">
+        <Logo size="sm" showWordmark={!collapsed} />
       </div>
 
       {/* Navigation Groups */}

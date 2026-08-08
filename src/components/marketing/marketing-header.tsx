@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { useRouter, usePathname, Link } from '@/lib/i18n/navigation';
 import { Menu, X, Sun, Moon, Globe } from 'lucide-react';
+import { Logo } from '@/components/ui/logo';
 
 const emptySubscribe = () => () => {};
 
@@ -39,16 +40,9 @@ export function MarketingHeader() {
         {/* Left: Brand Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-display font-extrabold text-xl text-text-primary tracking-tight"
+          className="flex items-center group transition-opacity hover:opacity-95"
         >
-          <div className="size-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-2xs">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <span>Wallflower</span>
+          <Logo size="md" />
         </Link>
 
         {/* Center: Navigation Links */}
@@ -93,7 +87,7 @@ export function MarketingHeader() {
           {/* Log In */}
           <Link
             href="/login"
-            className="text-xs font-bold text-text-primary hover:text-emerald-500 transition-colors px-3 py-2"
+            className="text-xs font-bold text-text-primary hover:text-brand transition-colors px-3 py-2"
           >
             Log in
           </Link>
@@ -101,7 +95,7 @@ export function MarketingHeader() {
           {/* Start Free CTA */}
           <Link
             href="/register"
-            className="px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs cursor-pointer"
+            className="px-4 py-2 text-xs font-bold rounded-xl bg-brand hover:bg-brand-hover text-on-primary transition-colors shadow-2xs cursor-pointer"
           >
             Start Free
           </Link>
@@ -136,7 +130,7 @@ export function MarketingHeader() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="py-1 hover:text-emerald-500"
+                className="py-1 hover:text-brand"
               >
                 {link.label}
               </Link>
@@ -154,7 +148,7 @@ export function MarketingHeader() {
             <Link
               href="/register"
               onClick={() => setMobileOpen(false)}
-              className="w-1/2 py-2 text-center text-xs font-bold bg-emerald-600 text-white rounded-xl"
+              className="w-1/2 py-2 text-center text-xs font-bold bg-brand hover:bg-brand-hover text-on-primary rounded-xl"
             >
               Start Free
             </Link>
