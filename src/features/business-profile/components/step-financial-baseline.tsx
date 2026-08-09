@@ -1,7 +1,8 @@
+// src/features/business-profile/components/step-financial-baseline.tsx
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Lightbulb, HelpCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, DollarSign, Lightbulb, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { OnboardingData } from '../schemas';
 import { createBusinessValue } from '../schemas';
@@ -41,269 +42,202 @@ export function StepFinancialBaseline({
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-4 px-4 space-y-6 animate-in fade-in zoom-in-95 duration-200">
-      {/* Header */}
-      <div className="space-y-1 text-left">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-text-primary tracking-tight">
-            Let&apos;s capture your current financial baseline
-          </h2>
-        </div>
-        <div className="text-xs text-text-secondary font-medium flex items-center gap-1.5 flex-wrap">
-          <span>Enter your average monthly figures.</span>
-
-          {/* Interactive Tooltip Component */}
-          <div className="relative inline-block">
-            <button
-              type="button"
-              onClick={() => setShowTooltip((prev) => !prev)}
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-              className="inline-flex items-center gap-1 text-[#4F46E5] dark:text-[#A5B4FC] font-bold cursor-pointer hover:underline focus:outline-hidden"
-            >
-              <HelpCircle className="size-3.5" />
-              <span>Why we ask this?</span>
-            </button>
-
-            {showTooltip && (
-              <div className="absolute left-0 sm:left-auto sm:-right-4 top-full mt-2 z-50 w-72 p-3.5 rounded-2xl border border-border bg-surface shadow-xl space-y-1.5 animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center gap-1.5 text-[#4F46E5] dark:text-[#A5B4FC] font-bold text-xs">
-                  <Lightbulb className="size-4 shrink-0" />
-                  <span>Why we need this data</span>
-                </div>
-                <p className="text-xs text-text-secondary font-normal leading-relaxed">
-                  These numbers help us calculate your business health, cash runway, and risk exposure.
-                </p>
+    <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
+      {/* ── Fixed White Box Card (Zero Scroll Canvas) ──────────────────── */}
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+        {/* Header */}
+        <div className="space-y-1 text-center sm:text-left border-b border-slate-100 dark:border-[#1E2638] pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="size-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center border border-slate-200 dark:border-slate-700 shrink-0">
+                <DollarSign className="size-4" />
               </div>
-            )}
+              <div>
+                <h2 className="font-display text-lg sm:text-xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+                  Financial Baseline Calibration
+                </h2>
+                <div className="text-xs text-[#64748B] dark:text-[#94A3B8] font-medium flex items-center gap-1.5 flex-wrap">
+                  <span>Enter your average monthly figures.</span>
+                  {/* Tooltip trigger */}
+                  <button
+                    type="button"
+                    onClick={() => setShowTooltip((prev) => !prev)}
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                    className="inline-flex items-center gap-1 text-slate-900 dark:text-white font-bold cursor-pointer hover:underline"
+                  >
+                    <HelpCircle className="size-3" />
+                    <span>Why we ask this?</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Form Fields Grid (2 Columns) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-        {/* Average Monthly Revenue */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Average Monthly Revenue
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('monthlyRevenue')}
-              onChange={(e) =>
-                updateFinValue('monthlyRevenue', parseFloat(e.target.value) || 0)
-              }
-              placeholder="1,200,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
-          </div>
-        </div>
-
-        {/* Operating Expenses */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Operating Expenses
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('operatingExpenses')}
-              onChange={(e) =>
-                updateFinValue('operatingExpenses', parseFloat(e.target.value) || 0)
-              }
-              placeholder="820,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
-          </div>
+          {showTooltip && (
+            <div className="mt-2 p-3 rounded-xl border border-slate-200 dark:border-[#2A344A] bg-slate-50 dark:bg-[#182032] flex items-center gap-2 text-xs text-[#64748B] dark:text-[#94A3B8] animate-in fade-in-50">
+              <Lightbulb className="size-4 text-amber-500 shrink-0" />
+              <span>These figures calibrate your health score, cash runway stress test, and simulations.</span>
+            </div>
+          )}
         </div>
 
-        {/* Payroll Expenses */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Payroll Expenses
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('payrollExpenses')}
-              onChange={(e) =>
-                updateFinValue('payrollExpenses', parseFloat(e.target.value) || 0)
-              }
-              placeholder="180,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+        {/* Form Fields Grid (2 Columns) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+          {/* Average Monthly Revenue */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Average Monthly Revenue
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('monthlyRevenue')}
+                onChange={(e) =>
+                  updateFinValue('monthlyRevenue', parseFloat(e.target.value) || 0)
+                }
+                placeholder="1,200,000"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Rent */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Rent
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('rent')}
-              onChange={(e) =>
-                updateFinValue('rent', parseFloat(e.target.value) || 0)
-              }
-              placeholder="60,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+          {/* Average Operating Expenses (OPEX) */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Monthly Operating Expenses (OPEX)
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('operatingExpenses')}
+                onChange={(e) =>
+                  updateFinValue('operatingExpenses', parseFloat(e.target.value) || 0)
+                }
+                placeholder="820,000"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Utilities */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Utilities
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('utilities')}
-              onChange={(e) =>
-                updateFinValue('utilities', parseFloat(e.target.value) || 0)
-              }
-              placeholder="15,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+          {/* Payroll Expenses */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Monthly Payroll Expenses
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('payrollExpenses')}
+                onChange={(e) =>
+                  updateFinValue('payrollExpenses', parseFloat(e.target.value) || 0)
+                }
+                placeholder="250,000"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Marketing Expenses */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Marketing Expenses
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('marketing')}
-              onChange={(e) =>
-                updateFinValue('marketing', parseFloat(e.target.value) || 0)
-              }
-              placeholder="20,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+          {/* Total Liquid Cash on Hand */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Total Cash on Hand
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('cashOnHand')}
+                onChange={(e) =>
+                  updateFinValue('cashOnHand', parseFloat(e.target.value) || 0)
+                }
+                placeholder="150,000"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Cash on Hand */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Cash on Hand
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('cashOnHand')}
-              onChange={(e) =>
-                updateFinValue('cashOnHand', parseFloat(e.target.value) || 0)
-              }
-              placeholder="150,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+          {/* Total Outstanding Debt */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Total Outstanding Debt
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('totalDebt')}
+                onChange={(e) =>
+                  updateFinValue('totalDebt', parseFloat(e.target.value) || 0)
+                }
+                placeholder="0"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Bank Balance */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Bank Balance
-          </label>
-          <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('bankBalance')}
-              onChange={(e) =>
-                updateFinValue('bankBalance', parseFloat(e.target.value) || 0)
-              }
-              placeholder="200,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
+          {/* Monthly Loan / Debt Payment */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              Monthly Debt Payment
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+                ฿
+              </span>
+              <input
+                type="number"
+                min="0"
+                value={getNum('monthlyDebtRepayment')}
+                onChange={(e) =>
+                  updateFinValue('monthlyDebtRepayment', parseFloat(e.target.value) || 0)
+                }
+                placeholder="0"
+                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Outstanding Loans */}
-        <div className="space-y-1 sm:col-span-2">
-          <label className="text-xs font-bold text-text-primary block">
-            Outstanding Loans
-          </label>
-          <div className="relative max-w-sm">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">
-              ฿
-            </span>
-            <input
-              type="number"
-              min="0"
-              value={getNum('outstandingLoans')}
-              onChange={(e) =>
-                updateFinValue(
-                  'outstandingLoans',
-                  parseFloat(e.target.value) || 0
-                )
-              }
-              placeholder="300,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
-            />
-          </div>
+        {/* Bottom Navigation Inside Card */}
+        <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-[#1E2638]">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onPrev}
+            className="text-xs font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638]"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>Go back</span>
+          </Button>
+
+          <Button
+            type="button"
+            onClick={onNext}
+            className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2 rounded-xl transition-all border-0"
+          >
+            <span>Continue</span>
+            <ArrowRight className="size-3.5" />
+          </Button>
         </div>
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-between gap-3 pt-4 border-t border-border/60">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onPrev}
-          className="text-xs font-semibold gap-1.5 cursor-pointer px-4"
-        >
-          <ArrowLeft className="size-3.5" />
-          <span>Back</span>
-        </Button>
-
-        <Button
-          type="button"
-          onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
-        >
-          <span>Continue</span>
-          <ArrowRight className="size-3.5" />
-        </Button>
       </div>
     </div>
   );

@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { OnboardingForm } from '@/features/business-profile/components/onboarding-form';
-import { PrivacyNotice } from '@/features/business-profile/components/privacy-notice';
 import { onboardingService } from '@/features/business-profile/services/onboarding.service';
 import { Skeleton, SkeletonText } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/ui/error-state';
@@ -85,8 +84,8 @@ export default function OnboardingPage() {
   );
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-background flex flex-col justify-center py-4 sm:py-6 px-3 sm:px-6">
+      <div className="mx-auto w-full max-w-5xl">
         {pageState.status === 'loading' && (
           <FadeIn>
             <OnboardingLoadingSkeleton />
@@ -133,9 +132,6 @@ export default function OnboardingPage() {
                 initialData={formData || onboardingService.getOnboardingData()}
                 onSubmitComplete={handleSubmitComplete}
               />
-
-              {/* Footer Privacy Notice */}
-              <PrivacyNotice className="mt-6 border-t border-border/60 pt-4" />
             </div>
           </FadeIn>
         )}

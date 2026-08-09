@@ -1,6 +1,7 @@
+// src/features/business-profile/components/step-business-operations.tsx
 'use client';
 
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import type { OnboardingData } from '../schemas';
@@ -52,137 +53,139 @@ export function StepBusinessOperations({
   ];
 
   return (
-    <div className="max-w-xl mx-auto py-4 px-4 space-y-6 animate-in fade-in zoom-in-95 duration-200">
-      {/* Header */}
-      <div className="space-y-1">
-        <h2 className="font-display text-xl font-bold text-text-primary tracking-tight">
-          How does your business operate?
-        </h2>
-        <p className="text-xs text-text-secondary font-medium">
-          Help us understand your day-to-day operations.
-        </p>
-      </div>
-
-      {/* Form Fields Grid */}
-      <div className="space-y-4 text-left">
-        {/* Employees & Hours */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Number of Employees
-            </label>
-            <input
-              type="number"
-              min="0"
-              value={ops.employees}
-              onChange={(e) => updateOps({ employees: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Opening Hours
-            </label>
-            <Select
-              value={ops.openingHours}
-              onChange={(val) => updateOps({ openingHours: val })}
-              options={hoursOptions}
-            />
+    <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
+      {/* ── Fixed White Box Card (Zero Scroll Canvas) ──────────────────── */}
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+        {/* Header */}
+        <div className="space-y-1 text-center sm:text-left border-b border-slate-100 dark:border-[#1E2638] pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="size-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center border border-slate-200 dark:border-slate-700 shrink-0">
+              <Activity className="size-4" />
+            </div>
+            <div>
+              <h2 className="font-display text-lg sm:text-xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+                How does your business operate?
+              </h2>
+              <p className="text-xs text-[#64748B] dark:text-[#94A3B8] font-medium">
+                Help us understand your day-to-day operational capacity.
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Operating Days & Transactions Per Day */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Operating Days per Week
-            </label>
-            <Select
-              value={ops.operatingDays}
-              onChange={(val) => updateOps({ operatingDays: val })}
-              options={daysOptions}
-            />
+        {/* Form Fields Grid */}
+        <div className="space-y-4 text-left">
+          {/* Row 1: Employees & Hours */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Number of Employees
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={ops.employees}
+                onChange={(e) => updateOps({ employees: parseInt(e.target.value) || 0 })}
+                className="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Opening Hours
+              </label>
+              <Select
+                value={ops.openingHours}
+                onChange={(val) => updateOps({ openingHours: val })}
+                options={hoursOptions}
+              />
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Average Transactions per Day
-            </label>
-            <input
-              type="number"
-              min="0"
-              value={ops.transactionsPerDay}
-              onChange={(e) => updateOps({ transactionsPerDay: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
-            />
+          {/* Row 2: Operating Days & Transactions Per Day */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Operating Days per Week
+              </label>
+              <Select
+                value={ops.operatingDays}
+                onChange={(val) => updateOps({ operatingDays: val })}
+                options={daysOptions}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Average Transactions per Day
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={ops.transactionsPerDay}
+                onChange={(e) =>
+                  updateOps({ transactionsPerDay: parseInt(e.target.value) || 0 })
+                }
+                className="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Row 3: Customers Per Day & Key Suppliers Count */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Average Daily Customers
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={ops.customersPerDay}
+                onChange={(e) =>
+                  updateOps({ customersPerDay: parseInt(e.target.value) || 0 })
+                }
+                className="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+                Number of Key Suppliers
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={ops.suppliersCount}
+                onChange={(e) =>
+                  updateOps({ suppliersCount: parseInt(e.target.value) || 0 })
+                }
+                className="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Customers Per Day & Number of Suppliers */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Average Customers per Day
-            </label>
-            <input
-              type="number"
-              min="0"
-              value={ops.customersPerDay}
-              onChange={(e) => updateOps({ customersPerDay: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
-            />
-          </div>
+        {/* Bottom Navigation Inside Card */}
+        <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-[#1E2638]">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onPrev}
+            className="text-xs font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638]"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>Go back</span>
+          </Button>
 
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">
-              Number of Suppliers
-            </label>
-            <input
-              type="number"
-              min="0"
-              value={ops.suppliersCount}
-              onChange={(e) => updateOps({ suppliersCount: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
-            />
-          </div>
+          <Button
+            type="button"
+            onClick={onNext}
+            className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2 rounded-xl transition-all border-0"
+          >
+            <span>Continue</span>
+            <ArrowRight className="size-3.5" />
+          </Button>
         </div>
-
-        {/* Business Notes (Optional) */}
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-text-primary block">
-            Business Notes <span className="text-text-muted font-normal">(Optional)</span>
-          </label>
-          <textarea
-            rows={3}
-            value={ops.businessNotes || ''}
-            onChange={(e) => updateOps({ businessNotes: e.target.value })}
-            placeholder="e.g. Business highlights, special services, target customers..."
-            className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors resize-none"
-          />
-        </div>
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-between gap-3 pt-4 border-t border-border/60">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onPrev}
-          className="text-xs font-semibold gap-1.5 cursor-pointer px-4"
-        >
-          <ArrowLeft className="size-3.5" />
-          <span>Back</span>
-        </Button>
-
-        <Button
-          type="button"
-          onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
-        >
-          <span>Continue</span>
-          <ArrowRight className="size-3.5" />
-        </Button>
       </div>
     </div>
   );

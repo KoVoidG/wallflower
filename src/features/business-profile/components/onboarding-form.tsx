@@ -1,14 +1,15 @@
+// src/features/business-profile/components/onboarding-form.tsx
 'use client';
 
 import { useState, useCallback } from 'react';
 import { AlertCircle } from 'lucide-react';
+import { useRouter } from '@/lib/i18n/navigation';
 import { OnboardingData, defaultOnboardingData } from '../schemas';
 import { useOnboardingAutosave } from '../hooks/use-onboarding-autosave';
 import { onboardingService } from '../services/onboarding.service';
 
 // Modular 1-File-Per-Step Components
 import { OnboardingStepper } from './onboarding-stepper';
-import { StepWelcome } from './step-welcome';
 import { StepSetupMethod, SetupMethod } from './step-setup-method';
 import { StepBusinessProfile } from './step-business-profile';
 import { StepBusinessOperations } from './step-business-operations';
@@ -18,7 +19,6 @@ import { StepAssumptions } from './step-assumptions';
 import { StepReview } from './step-review';
 
 import { ProcessingState } from './processing-state';
-import { CompletionState } from './completion-state';
 
 interface OnboardingFormProps {
   initialData?: OnboardingData | null;
@@ -29,10 +29,10 @@ export function OnboardingForm({
   initialData,
   onSubmitComplete,
 }: OnboardingFormProps) {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [maxStepReached, setMaxStepReached] = useState<number>(1);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [stepError, setStepError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<OnboardingData>(
@@ -58,16 +58,16 @@ export function OnboardingForm({
   };
 
   const handleNextStep = () => {
-    // Basic Step Validation
-    if (currentStep === 3 && !formData.business.name?.trim()) {
+    // Basic Step Validation on Step 2 (Profile)
+    if (currentStep === 2 && !formData.business.name?.trim()) {
       setStepError('Please enter your Business Name before continuing.');
       return;
     }
 
-    if (currentStep < 8) {
+    if (currentStep < 7) {
       goToStep(currentStep + 1);
     } else {
-      // Step 8 Review -> Trigger Baseline Generation (Processing State)
+      // Step 7 Review -> Trigger Baseline Generation (Processing State)
       handleGenerateBaseline();
     }
   };
@@ -84,40 +84,32 @@ export function OnboardingForm({
   };
 
   const handleGenerateBaseline = () => {
+    // Pre-save baseline data immediately so no async lag happens at redirect time
+    onboardingService.completeOnboarding(formData);
     setIsProcessing(true);
   };
 
-  const handleProcessingFinish = async () => {
-    setIsProcessing(false);
-    setIsCompleted(true);
+  const handleProcessingFinish = useCallback(async () => {
+    // Keep isProcessing active so it NEVER flashes the previous step while routing
     if (onSubmitComplete) {
       await onSubmitComplete(formData);
-    } else {
-      await onboardingService.completeOnboarding(formData);
     }
-  };
+    router.push('/dashboard');
+  }, [formData, onSubmitComplete, router]);
 
-  // 1. Render Staged Processing Animation (Data Quality Check & Baseline Generation)
+  // 1. Render Staged Processing Animation (Data Quality Check, All Set Speech, & Auto-Redirect)
   if (isProcessing) {
-    return <ProcessingState onComplete={handleProcessingFinish} />;
-  }
-
-  // 2. Render Final Completion State
-  if (isCompleted) {
     return (
-      <CompletionState
-        data={formData}
-        onEditMissingData={() => {
-          setIsCompleted(false);
-          goToStep(3);
-        }}
+      <ProcessingState
+        businessName={formData.business.name || 'Your Business'}
+        onComplete={handleProcessingFinish}
       />
     );
   }
 
   return (
-    <div className="space-y-4 pb-12">
-      {/* Top Stepper Bar for Steps 3 through 8 */}
+    <div className="w-full space-y-3">
+      {/* Top Stepper Bar for Steps 2 through 7 (hidden on Step 1 Welcome/Setup) */}
       <OnboardingStepper
         currentStep={currentStep}
         maxStepReached={maxStepReached}
@@ -132,21 +124,16 @@ export function OnboardingForm({
         </div>
       )}
 
-      {/* Render Current Step Component (1 File per Step) */}
+      {/* Render Current Step Component */}
       {currentStep === 1 && (
-        <StepWelcome onNext={() => goToStep(2)} />
-      )}
-
-      {currentStep === 2 && (
         <StepSetupMethod
           selectedMethod={formData.setupMethod || 'know_numbers'}
           onSelectMethod={handleSelectSetupMethod}
-          onNext={() => goToStep(3)}
-          onPrev={() => goToStep(1)}
+          onNext={() => goToStep(2)}
         />
       )}
 
-      {currentStep === 3 && (
+      {currentStep === 2 && (
         <StepBusinessProfile
           data={formData}
           onChange={updateFormData}
@@ -155,7 +142,7 @@ export function OnboardingForm({
         />
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 3 && (
         <StepBusinessOperations
           data={formData}
           onChange={updateFormData}
@@ -164,7 +151,7 @@ export function OnboardingForm({
         />
       )}
 
-      {currentStep === 5 && (
+      {currentStep === 4 && (
         <StepFinancialBaseline
           data={formData}
           onChange={updateFormData}
@@ -173,7 +160,7 @@ export function OnboardingForm({
         />
       )}
 
-      {currentStep === 6 && (
+      {currentStep === 5 && (
         <StepInventory
           data={formData}
           onChange={updateFormData}
@@ -182,7 +169,7 @@ export function OnboardingForm({
         />
       )}
 
-      {currentStep === 7 && (
+      {currentStep === 6 && (
         <StepAssumptions
           data={formData}
           onChange={updateFormData}
@@ -191,7 +178,7 @@ export function OnboardingForm({
         />
       )}
 
-      {currentStep === 8 && (
+      {currentStep === 7 && (
         <StepReview
           data={formData}
           onEditStep={goToStep}

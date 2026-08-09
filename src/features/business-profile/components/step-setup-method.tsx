@@ -1,145 +1,156 @@
+// src/features/business-profile/components/step-setup-method.tsx
 'use client';
 
 import {
-  BarChart3,
-  FileText,
+  Clock,
+  TrendingUp,
+  HelpCircle,
   Sprout,
-  Check,
-  ArrowLeft,
-  ArrowRight,
-  Lock,
+  CheckCircle2,
 } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 
 export type SetupMethod = 'know_numbers' | 'need_guidance' | 'just_starting';
 
 interface StepSetupMethodProps {
-  selectedMethod: SetupMethod;
+  selectedMethod?: SetupMethod;
   onSelectMethod: (method: SetupMethod) => void;
   onNext: () => void;
-  onPrev: () => void;
+  onPrev?: () => void;
 }
 
 export function StepSetupMethod({
-  selectedMethod,
   onSelectMethod,
   onNext,
-  onPrev,
 }: StepSetupMethodProps) {
+  const locale = useLocale();
+  const isThai = locale === 'th';
+
+  const handleSelect = (methodId: SetupMethod) => {
+    onSelectMethod(methodId);
+    onNext();
+  };
+
   const options = [
     {
       id: 'know_numbers' as SetupMethod,
-      icon: BarChart3,
-      title: 'I already know my business numbers',
-      description: 'I have my financial records ready.',
+      title: isThai
+        ? 'ฉันรู้ตัวเลขธุรกิจของฉันอยู่แล้ว'
+        : 'I already know my business numbers',
+      description: isThai
+        ? 'ฉันมีบันทึกและตัวเลขทางการเงินพร้อมแล้ว'
+        : 'I have my financial records ready.',
       badge: '~5 min',
+      icon: TrendingUp,
     },
     {
       id: 'need_guidance' as SetupMethod,
-      icon: FileText,
-      title: 'I have some records but need guidance',
-      description:
-        "I'll provide what I have and you'll guide me through the rest.",
+      title: isThai
+        ? 'มีข้อมูลบางส่วนแต่ต้องการคำแนะนำ'
+        : 'I have some records but need guidance',
+      description: isThai
+        ? 'ฉันจะกรอกเท่าที่มี และให้ระบบช่วยแนะนำส่วนที่เหลือ'
+        : "I'll provide what I have and you'll guide me through the rest.",
       badge: '~6-8 min',
+      icon: HelpCircle,
     },
     {
       id: 'just_starting' as SetupMethod,
-      icon: Sprout,
-      title: "I'm just starting or don't keep financial records",
-      description: "I'll start with basic info and estimate the rest.",
+      title: isThai
+        ? 'เพิ่งเริ่มต้นหรือไม่เคยทำบัญชี'
+        : "I'm just starting or don't keep financial records",
+      description: isThai
+        ? 'เริ่มจากข้อมูลพื้นฐาน แล้วประมาณการตัวเลขไปด้วยกัน'
+        : "I'll start with basic info and estimate the rest.",
       badge: '~3-4 min',
+      icon: Sprout,
     },
   ];
 
   return (
-    <div className="max-w-md mx-auto py-6 px-4 space-y-6 animate-in fade-in zoom-in-95 duration-200">
-      {/* Header */}
-      <div className="space-y-1 text-left">
-        <h2 className="font-display text-xl font-bold text-text-primary tracking-tight">
-          How would you like to set up your business?
-        </h2>
-        <p className="text-xs text-text-secondary font-medium">
-          We&apos;ll customize the experience based on your needs.
-        </p>
-      </div>
+    <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
+      {/* ── Fixed Dimensions White Card Container (Zero Scroll Canvas) ──── */}
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+        {/* ── Top Bar: Monochrome Logo & Clean Header ─────────────────── */}
+        <div className="flex flex-col items-center justify-center border-b border-slate-100 dark:border-[#1E2638] pb-4 space-y-2">
+          <Logo size="lg" showWordmark={true} />
+        </div>
 
-      {/* Cards List */}
-      <div className="space-y-3">
-        {options.map((opt) => {
-          const isSelected = selectedMethod === opt.id;
-          const Icon = opt.icon;
+        {/* ── Mascot & Speech Bubble Section ──────────────────────────── */}
+        <div className="flex items-center gap-4 sm:gap-5 px-1 sm:px-2">
+          {/* CapyBot Avatar */}
+          <div className="relative shrink-0">
+            <BotAvatar size={56} animate={false} />
+            <div className="absolute -bottom-1 -right-1 size-5 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-white dark:border-[#111622] shadow-xs">
+              <CheckCircle2 className="size-3 stroke-[3]" />
+            </div>
+          </div>
 
-          return (
-            <div
-              key={opt.id}
-              onClick={() => onSelectMethod(opt.id)}
-              className={cn(
-                'relative flex items-start gap-3.5 p-4 rounded-2xl border transition-all cursor-pointer select-none',
-                isSelected
-                  ? 'border-[#6366F1] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 shadow-xs'
-                  : 'border-border bg-surface hover:border-border-strong hover:bg-surface-hover',
-              )}
-            >
+          {/* Speech Bubble */}
+          <div className="relative flex-1 bg-slate-50 dark:bg-[#182032] border border-slate-200/90 dark:border-[#2A344A] rounded-2xl px-4 sm:px-5 py-3 shadow-xs">
+            {/* Speech Bubble Pointer Arrow */}
+            <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-0 h-0 border-t-6 border-t-transparent border-b-6 border-b-transparent border-r-8 border-r-slate-200/90 dark:border-r-[#2A344A]" />
+            <div className="absolute top-1/2 -left-[7px] -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-r-7 border-r-slate-50 dark:border-r-[#182032]" />
+
+            <h1 className="font-display text-sm sm:text-base font-bold text-[#0F172A] dark:text-white leading-tight">
+              {isThai
+                ? 'ยินดีต้อนรับ! คุณต้องการตั้งค่าธุรกิจอย่างไร?'
+                : 'Welcome! How would you like to set up your business?'}
+            </h1>
+            <p className="text-[11px] sm:text-xs text-[#64748B] dark:text-[#94A3B8] font-medium mt-0.5">
+              {isThai
+                ? 'เราจะปรับแต่งขั้นตอนตามความต้องการของคุณ'
+                : "We'll customize the experience based on your needs."}
+            </p>
+          </div>
+        </div>
+
+        {/* ── Interactive Choice Pill Cards (Black & White Minimalist) ──── */}
+        <div className="space-y-3">
+          {options.map((opt) => {
+            const Icon = opt.icon;
+
+            return (
               <div
+                key={opt.id}
+                onClick={() => handleSelect(opt.id)}
                 className={cn(
-                  'p-2.5 rounded-xl shrink-0 mt-0.5 transition-colors',
-                  isSelected
-                    ? 'bg-[#6366F1]/15 text-[#4F46E5] dark:text-[#A5B4FC] border border-[#6366F1]/25'
-                    : 'bg-surface-subtle text-text-primary border border-border/60'
+                  'group relative flex items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-2xl border-2 transition-all duration-150 cursor-pointer select-none',
+                  'border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622]',
+                  'hover:border-[#6366F1] dark:hover:border-[#6366F1] hover:bg-purple-50/20 dark:hover:bg-purple-950/20 hover:scale-[1.01] active:scale-[0.99] hover:shadow-md',
                 )}
               >
-                <Icon className="size-5" />
-              </div>
+                {/* Left Side: Monochrome Icon + Text */}
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="size-11 rounded-xl flex items-center justify-center shrink-0 transition-colors border bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 group-hover:bg-[#6366F1]/10 group-hover:text-[#6366F1] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/30">
+                    <Icon className="size-5" />
+                  </div>
 
-              <div className="flex-1 min-w-0 pr-6 space-y-1">
-                <h3 className="text-xs font-bold text-text-primary leading-tight">
-                  {opt.title}
-                </h3>
-                <p className="text-[11px] text-text-secondary font-medium leading-normal">
-                  {opt.description}
-                </p>
-                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface-subtle text-text-muted border border-border/60">
-                  {opt.badge}
-                </span>
-              </div>
-
-              {isSelected && (
-                <div className="absolute top-4 right-4 size-5 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white flex items-center justify-center shadow-xs">
-                  <Check className="size-3.5 stroke-[3]" />
+                  {/* Title & Description */}
+                  <div className="space-y-0.5 min-w-0">
+                    <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white group-hover:text-[#6366F1] dark:group-hover:text-[#A5B4FC] transition-colors leading-snug truncate">
+                      {opt.title}
+                    </h2>
+                    <p className="text-[11px] sm:text-xs text-[#64748B] dark:text-[#94A3B8] font-medium leading-tight line-clamp-1">
+                      {opt.description}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
 
-      {/* Footer Lock info */}
-      <div className="flex items-center justify-center gap-1.5 text-[11px] text-text-muted font-medium pt-1">
-        <Lock className="size-3" />
-        <span>You can always update your information later.</span>
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-between gap-3 pt-4 border-t border-border/60">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onPrev}
-          className="text-xs font-semibold gap-1.5 cursor-pointer px-4"
-        >
-          <ArrowLeft className="size-3.5" />
-          <span>Back</span>
-        </Button>
-
-        <Button
-          type="button"
-          onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
-        >
-          <span>Continue</span>
-          <ArrowRight className="size-3.5" />
-        </Button>
+                {/* Right Side: Monochrome Estimated Time Badge */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border flex items-center gap-1 shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
+                    <Clock className="size-3" />
+                    <span>{opt.badge}</span>
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
