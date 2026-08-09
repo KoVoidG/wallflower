@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback, useSyncExternalStore } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useSyncExternalStore,
+} from 'react';
 import { usePathname, useRouter } from '@/lib/i18n/navigation';
 import {
   Sparkles,
-  ArrowRight,
   ArrowLeft,
   X,
   LayoutDashboard,
@@ -13,10 +18,11 @@ import {
   FileText,
   UserCheck,
   Lightbulb,
+  ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/components/motion/use-reduced-motion';
-import { H3, Label, Caption, BodySmall } from '@/components/ui/typography';
+import { H3, Label, BodySmall } from '@/components/ui/typography';
 
 export interface SidebarTourStep {
   id: string;
@@ -24,6 +30,7 @@ export interface SidebarTourStep {
   title: string;
   desc: string;
   icon: React.ComponentType<{ className?: string }>;
+  accent: string; // Tailwind color class for per-step accent variety
 }
 
 const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
@@ -33,6 +40,7 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     title: 'Overview — Executive Cockpit',
     desc: 'Review overall financial posture, cash runway countdown, health scores, and recommended actions at a glance.',
     icon: LayoutDashboard,
+    accent: 'from-[#6366F1] to-[#8B5CF6]',
   },
   {
     id: 'business',
@@ -40,6 +48,7 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     title: 'Business Diagnostics & Health',
     desc: 'Inspect financial strengths, operating capacity, inventory turnover, and diagnostic metric trends.',
     icon: Building2,
+    accent: 'from-[#6366F1] to-[#A78BFA]',
   },
   {
     id: 'planner',
@@ -47,6 +56,7 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     title: 'Decision Planner & Simulations',
     desc: 'Model strategic decisions like hiring, price changes, or capex loans before committing business capital.',
     icon: GitPullRequest,
+    accent: 'from-[#7C3AED] to-[#6366F1]',
   },
   {
     id: 'reports',
@@ -54,6 +64,7 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     title: 'Decision Intelligence Reports',
     desc: 'Generate, review, and export formal decision memos and executive reports to share with partners or lenders.',
     icon: FileText,
+    accent: 'from-[#6366F1] to-[#818CF8]',
   },
   {
     id: 'account-menu',
@@ -61,6 +72,7 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     title: 'Account & Settings Control',
     desc: 'Manage your settings, view plan details, switch appearance themes, access support, or replay this tour anytime.',
     icon: UserCheck,
+    accent: 'from-[#8B5CF6] to-[#6366F1]',
   },
 ];
 
@@ -71,6 +83,13 @@ const STORAGE_KEYS = {
   SKIPPED: 'wallflower_tour_skipped',
 };
 
+// Size of the pointing arrow (triangle)
+const ARROW_SIZE = 10;
+const TOOLTIP_GAP = 16; // gap between target and tooltip
+const CUTOUT_PADDING = 6;
+const POPOVER_WIDTH = 340;
+const POPOVER_EST_HEIGHT = 260;
+
 export function ProductTour() {
   const pathname = usePathname();
   const router = useRouter();
@@ -80,6 +99,17 @@ export function ProductTour() {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [showSkipToast, setShowSkipToast] = useState(false);
+  const [animKey, setAnimKey] = useState(0); // forces re-mount for animation
+  const [cardHeight, setCardHeight] = useState(POPOVER_EST_HEIGHT);
+  const cardRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node) {
+        // Measure actual rendered card height
+        setCardHeight(node.getBoundingClientRect().height);
+      }
+    },
+    [currentStepIdx],
+  ); // re-measure when step changes
 
   // Initialize tour check on Dashboard mount
   useEffect(() => {
@@ -89,8 +119,10 @@ export function ProductTour() {
     const isCompleted = localStorage.getItem(STORAGE_KEYS.COMPLETED) === 'true';
     const isSkipped = localStorage.getItem(STORAGE_KEYS.SKIPPED) === 'true';
 
-    // Auto-trigger sidebar tour when user enters dashboard for the first time
-    if ((tourActive || (!isCompleted && !isSkipped)) && pathname.endsWith('/dashboard')) {
+    if (
+      (tourActive || (!isCompleted && !isSkipped)) &&
+      pathname.endsWith('/dashboard')
+    ) {
       const timer = setTimeout(() => {
         setActive(true);
         setCurrentStepIdx(0);
@@ -114,6 +146,7 @@ export function ProductTour() {
       localStorage.removeItem(STORAGE_KEYS.COMPLETED);
       setActive(true);
       setCurrentStepIdx(0);
+      setAnimKey((k) => k + 1);
 
       if (!pathname.endsWith('/dashboard')) {
         router.push('/dashboard');
@@ -121,10 +154,12 @@ export function ProductTour() {
     };
 
     window.addEventListener('wallflower_start_tour', handleReplay);
-    return () => window.removeEventListener('wallflower_start_tour', handleReplay);
+    return () =>
+      window.removeEventListener('wallflower_start_tour', handleReplay);
   }, [pathname, router]);
 
-  const currentStep = SIDEBAR_TOUR_STEPS[currentStepIdx] || SIDEBAR_TOUR_STEPS[0];
+  const currentStep =
+    SIDEBAR_TOUR_STEPS[currentStepIdx] || SIDEBAR_TOUR_STEPS[0];
 
   // Measure target sidebar item bounding rect
   useEffect(() => {
@@ -150,9 +185,9 @@ export function ProductTour() {
     if (currentStepIdx < SIDEBAR_TOUR_STEPS.length - 1) {
       const next = currentStepIdx + 1;
       setCurrentStepIdx(next);
+      setAnimKey((k) => k + 1);
       localStorage.setItem(STORAGE_KEYS.STEP, String(next));
     } else {
-      // Finish
       setActive(false);
       localStorage.setItem(STORAGE_KEYS.ACTIVE, 'false');
       localStorage.setItem(STORAGE_KEYS.COMPLETED, 'true');
@@ -163,6 +198,7 @@ export function ProductTour() {
     if (currentStepIdx > 0) {
       const prev = currentStepIdx - 1;
       setCurrentStepIdx(prev);
+      setAnimKey((k) => k + 1);
       localStorage.setItem(STORAGE_KEYS.STEP, String(prev));
     }
   }, [currentStepIdx]);
@@ -187,13 +223,46 @@ export function ProductTour() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [active, handleNext, handleBack, handleSkip]);
 
+  // Calculate tooltip positioning and arrow offset
+  const layout = useMemo(() => {
+    const windowH = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const h = cardHeight || POPOVER_EST_HEIGHT;
+
+    let tooltipTop = 100;
+    let tooltipLeft = 260;
+    let arrowTop = 30;
+
+    if (targetRect) {
+      tooltipLeft = targetRect.right + TOOLTIP_GAP + ARROW_SIZE;
+
+      // Center tooltip vertically on target, clamped to viewport
+      const targetCenterY = targetRect.top + targetRect.height / 2;
+      const idealTop = targetCenterY - h / 2;
+
+      if (idealTop + h > windowH - 20) {
+        tooltipTop = Math.max(16, windowH - h - 20);
+      } else {
+        tooltipTop = Math.max(16, idealTop);
+      }
+
+      // Arrow should point at target center, relative to tooltip top
+      arrowTop = targetCenterY - tooltipTop;
+      // Clamp arrow so it stays well within the card (30px from edges for rounded corners)
+      arrowTop = Math.max(30, Math.min(arrowTop, h - 30));
+    }
+
+    return { tooltipTop, tooltipLeft, arrowTop };
+  }, [targetRect, cardHeight]);
+
   if (!active) {
     if (showSkipToast) {
       return (
-        <div className="fixed bottom-6 right-6 z-50 rounded-lg border border-brand/40 bg-surface p-4 shadow-xl flex items-center gap-3 animate-in fade-in-50 slide-in-from-bottom-5">
-          <Sparkles className="size-5 text-brand shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 rounded-xl border border-[#6366F1]/30 bg-white dark:bg-[#111622] p-4 shadow-2xl flex items-center gap-3 animate-in fade-in-50 slide-in-from-bottom-5">
+          <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6]">
+            <Sparkles className="size-4 text-white" />
+          </div>
           <BodySmall className="font-medium text-text-primary">
-            Sidebar tour completed. Replay anytime from <strong>Help & Support</strong> or the account menu.
+            Tour paused. Replay anytime from <strong>Help & Support</strong>.
           </BodySmall>
         </div>
       );
@@ -204,33 +273,16 @@ export function ProductTour() {
   const StepIcon = currentStep.icon;
   const isLastStep = currentStepIdx === SIDEBAR_TOUR_STEPS.length - 1;
 
-  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const popoverHeight = 220;
-
-  let tooltipTop = 100;
-  let tooltipLeft = 260;
-
-  if (targetRect) {
-    tooltipLeft = targetRect.right + 12;
-
-    if (targetRect.top + popoverHeight > windowHeight - 20) {
-      tooltipTop = Math.max(16, targetRect.bottom - popoverHeight);
-    } else {
-      tooltipTop = Math.max(16, targetRect.top - 8);
-    }
-  }
-
-  const cutoutPadding = 6;
   const clipPathStyle = targetRect
     ? `polygon(
         0% 0%,
         0% 100%,
-        ${targetRect.left - cutoutPadding}px 100%,
-        ${targetRect.left - cutoutPadding}px ${targetRect.top - cutoutPadding}px,
-        ${targetRect.right + cutoutPadding}px ${targetRect.top - cutoutPadding}px,
-        ${targetRect.right + cutoutPadding}px ${targetRect.bottom + cutoutPadding}px,
-        ${targetRect.left - cutoutPadding}px ${targetRect.bottom + cutoutPadding}px,
-        ${targetRect.left - cutoutPadding}px 100%,
+        ${targetRect.left - CUTOUT_PADDING}px 100%,
+        ${targetRect.left - CUTOUT_PADDING}px ${targetRect.top - CUTOUT_PADDING}px,
+        ${targetRect.right + CUTOUT_PADDING}px ${targetRect.top - CUTOUT_PADDING}px,
+        ${targetRect.right + CUTOUT_PADDING}px ${targetRect.bottom + CUTOUT_PADDING}px,
+        ${targetRect.left - CUTOUT_PADDING}px ${targetRect.bottom + CUTOUT_PADDING}px,
+        ${targetRect.left - CUTOUT_PADDING}px 100%,
         100% 100%,
         100% 0%
       )`
@@ -238,9 +290,9 @@ export function ProductTour() {
 
   return (
     <>
-      {/* Blurred & Darkened Backdrop Overlay with cutout hole for highlighted element */}
+      {/* Backdrop Overlay with cutout */}
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-md transition-all duration-200 pointer-events-auto"
+        className="fixed inset-0 z-40 bg-black/55 backdrop-blur-lg transition-all duration-300 pointer-events-auto"
         onClick={handleSkip}
         style={{
           clipPath: clipPathStyle,
@@ -248,90 +300,166 @@ export function ProductTour() {
         }}
       />
 
-      {/* Focus Highlight Border Ring around active sidebar item */}
+      {/* Highlight Ring around active sidebar item — z-[51] to sit above sidebar (z-50) */}
       {targetRect && (
         <div
-          className="fixed z-40 border-2 border-tertiary rounded-xl shadow-[0_0_0_4px_rgba(16,185,129,0.25)] transition-all duration-200 pointer-events-none"
+          className="fixed z-[51] rounded-xl pointer-events-none transition-all duration-300"
           style={{
-            top: `${targetRect.top - cutoutPadding}px`,
-            left: `${targetRect.left - cutoutPadding}px`,
-            width: `${targetRect.width + cutoutPadding * 2}px`,
-            height: `${targetRect.height + cutoutPadding * 2}px`,
+            top: `${targetRect.top - CUTOUT_PADDING}px`,
+            left: `${targetRect.left - CUTOUT_PADDING}px`,
+            width: `${targetRect.width + CUTOUT_PADDING * 2}px`,
+            height: `${targetRect.height + CUTOUT_PADDING * 2}px`,
+            boxShadow:
+              '0 0 0 2px var(--tertiary), 0 0 0 5px rgba(99,102,241,0.20)',
           }}
         />
       )}
 
-      {/* Compact Tooltip Popover (Unblurred, sitting above backdrop) */}
+      {/* Tooltip Popover with Pointing Arrow */}
       <div
+        key={animKey}
         className={cn(
-          'pointer-events-auto fixed z-50 w-80 max-h-[calc(100vh-32px)] overflow-y-auto rounded-2xl border-2 border-tertiary/40 bg-surface p-4.5 shadow-2xl dark:shadow-black/70',
-          !prefersReduced && 'animate-in fade-in-50 zoom-in-95 duration-150'
+          'pointer-events-auto fixed z-50 overflow-visible',
+          !prefersReduced &&
+            'animate-in fade-in-0 slide-in-from-left-3 zoom-in-95 duration-200',
         )}
         style={{
-          top: `${tooltipTop}px`,
-          left: `${tooltipLeft}px`,
+          top: `${layout.tooltipTop}px`,
+          left: `${layout.tooltipLeft}px`,
+          width: `${POPOVER_WIDTH}px`,
         }}
       >
-        {/* Step Header */}
-        <div className="flex items-start justify-between gap-2 border-b border-border/60 pb-2.5">
-          <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-tertiary/15 text-tertiary border border-tertiary/30 shrink-0">
-              <StepIcon className="size-4" />
-            </div>
-            <div>
-              <Caption className="text-[10px] font-bold text-tertiary uppercase tracking-wider block">
-                Product Tour ({currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length})
-              </Caption>
-              <H3 className="text-xs font-bold text-text-primary leading-snug">
-                {currentStep.title}
-              </H3>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="rounded-md p-1 text-text-muted hover:bg-surface-subtle hover:text-text-primary transition-colors cursor-pointer"
-            title="Close tour (Escape)"
-          >
-            <X className="size-3.5" />
-          </button>
-        </div>
+        {/* ─── Left-Pointing Arrow (emerges from the box) ─── */}
+        {/* Outer border arrow (behind) */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+            left: `-${ARROW_SIZE + 1}px`,
+            width: 0,
+            height: 0,
+            borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+            borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+            borderRight: `${ARROW_SIZE + 1}px solid rgba(99,102,241,0.3)`,
+            zIndex: 1,
+          }}
+        />
+        {/* Inner fill arrow (covers the border where it meets the card) */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+            left: `-${ARROW_SIZE - 2}px`,
+            width: 0,
+            height: 0,
+            borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+            borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+            borderRight: `${ARROW_SIZE + 1}px solid var(--surface)`,
+            zIndex: 2,
+            filter: 'drop-shadow(-3px 0 3px rgba(99,102,241,0.12))',
+          }}
+        />
 
-        {/* Description */}
-        <BodySmall className="text-xs text-text-secondary leading-relaxed py-3">
-          {currentStep.desc}
-        </BodySmall>
-
-        {/* Controls */}
-        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/60">
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="text-[11px] font-semibold text-text-muted hover:text-text-primary cursor-pointer"
-          >
-            Skip
-          </button>
-
-          <div className="flex items-center gap-1.5">
-            {currentStepIdx > 0 && !isLastStep && (
-              <button
-                type="button"
-                onClick={handleBack}
-                className="inline-flex items-center gap-1 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-text-primary hover:bg-surface-subtle cursor-pointer"
-              >
-                <ArrowLeft className="size-3" />
-                <span>Back</span>
-              </button>
+        {/* ─── Card Body ─── */}
+        <div
+          ref={cardRef}
+          className="relative rounded-2xl border border-[#6366F1]/30 dark:border-[#6366F1]/25 bg-white dark:bg-[#111622] shadow-2xl dark:shadow-black/60 overflow-hidden"
+        >
+          {/* Gradient Header Bar */}
+          <div
+            className={cn(
+              'bg-gradient-to-r px-4 py-3 flex items-center justify-between',
+              currentStep.accent,
             )}
-
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm border border-white/20">
+                <StepIcon className="size-4 text-white" />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest block leading-none">
+                  Step {currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length}
+                </span>
+                <H3 className="text-[13px] font-bold text-white leading-snug mt-0.5">
+                  {currentStep.title}
+                </H3>
+              </div>
+            </div>
             <button
               type="button"
-              onClick={handleNext}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-tertiary px-3.5 py-1.5 text-xs font-bold text-on-primary hover:bg-tertiary-hover cursor-pointer shadow-2xs"
+              onClick={handleSkip}
+              className="rounded-lg p-1 text-white/60 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+              title="Close tour (Esc)"
             >
-              <span>{isLastStep ? 'Start exploring Wallflower' : 'Next'}</span>
-              {!isLastStep && <ArrowRight className="size-3" />}
+              <X className="size-4" />
             </button>
+          </div>
+
+          {/* Content Area */}
+          <div className="px-4 py-3.5">
+            <BodySmall className="text-[12.5px] text-[#475569] dark:text-[#94A3B8] leading-relaxed">
+              {currentStep.desc}
+            </BodySmall>
+          </div>
+
+          {/* Step Dots + Progress Bar */}
+          <div className="px-4 pb-2">
+            <div className="flex items-center gap-1.5 mb-2">
+              {SIDEBAR_TOUR_STEPS.map((step, i) => (
+                <div
+                  key={step.id}
+                  className={cn(
+                    'h-1 rounded-full transition-all duration-300',
+                    i === currentStepIdx
+                      ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] flex-[2]'
+                      : i < currentStepIdx
+                        ? 'bg-[#6366F1]/40 flex-1'
+                        : 'bg-slate-200 dark:bg-[#1E2638] flex-1',
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Controls Footer */}
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t border-slate-100 dark:border-[#1E2638] bg-slate-50/50 dark:bg-[#0B0F17]/50">
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="text-[11px] font-semibold text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white transition-colors cursor-pointer"
+            >
+              Skip tour
+            </button>
+
+            <div className="flex items-center gap-2">
+              {currentStepIdx > 0 && (
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1A2232] cursor-pointer transition-colors"
+                >
+                  <ArrowLeft className="size-3" />
+                  <span>Back</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleNext}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[11px] font-bold text-white cursor-pointer shadow-md transition-all hover:shadow-lg active:scale-[0.98]',
+                  'bg-gradient-to-r',
+                  currentStep.accent,
+                )}
+              >
+                <span>{isLastStep ? 'Start Exploring' : 'Next'}</span>
+                {!isLastStep ? (
+                  <ChevronRight className="size-3.5" />
+                ) : (
+                  <Sparkles className="size-3.5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -354,7 +482,12 @@ interface PageContextualHintProps {
   className?: string;
 }
 
-export function PageContextualHint({ hintKey, title, message, className }: PageContextualHintProps) {
+export function PageContextualHint({
+  hintKey,
+  title,
+  message,
+  className,
+}: PageContextualHintProps) {
   const storageKey = `wallflower_hint_dismissed_${hintKey}`;
 
   const isDismissedInStorage = useSyncExternalStore(
@@ -362,8 +495,11 @@ export function PageContextualHint({ hintKey, title, message, className }: PageC
       window.addEventListener('storage', callback);
       return () => window.removeEventListener('storage', callback);
     },
-    () => (typeof window !== 'undefined' ? localStorage.getItem(storageKey) === 'true' : true),
-    () => true
+    () =>
+      typeof window !== 'undefined'
+        ? localStorage.getItem(storageKey) === 'true'
+        : true,
+    () => true,
   );
 
   const [dismissedLocally, setDismissedLocally] = useState<boolean>(false);
@@ -385,14 +521,18 @@ export function PageContextualHint({ hintKey, title, message, className }: PageC
     <div
       className={cn(
         'rounded-lg border border-brand/30 bg-brand-soft/20 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs',
-        className
+        className,
       )}
     >
       <div className="flex items-start gap-2.5">
         <Lightbulb className="size-4 text-brand shrink-0 mt-0.5" />
         <div className="space-y-0.5">
-          <Label className="font-semibold text-text-primary block">{title}</Label>
-          <BodySmall className="text-text-secondary leading-relaxed">{message}</BodySmall>
+          <Label className="font-semibold text-text-primary block">
+            {title}
+          </Label>
+          <BodySmall className="text-text-secondary leading-relaxed">
+            {message}
+          </BodySmall>
         </div>
       </div>
 

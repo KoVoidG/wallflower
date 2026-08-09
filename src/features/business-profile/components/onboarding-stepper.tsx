@@ -43,7 +43,7 @@ export function OnboardingStepper({
           {/* Connecting line track bounded exactly between node 1 and node 6 */}
           <div className="absolute top-[14px] left-4 right-4 -translate-y-1/2 h-[2px] bg-border z-0 overflow-hidden">
             <div
-              className="h-full bg-emerald-600 transition-all duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ease-out"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -65,9 +65,9 @@ export function OnboardingStepper({
                   className={cn(
                     'size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 cursor-pointer',
                     isCompleted
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-2xs'
                       : isActive
-                      ? 'bg-emerald-600 text-white ring-4 ring-emerald-500/20 shadow-2xs scale-105'
+                      ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white ring-4 ring-[#6366F1]/20 shadow-2xs scale-105'
                       : 'bg-surface border-2 border-border text-text-muted hover:border-text-muted'
                   )}
                 >
@@ -81,7 +81,7 @@ export function OnboardingStepper({
                   className={cn(
                     'text-[11px] font-semibold mt-1.5 transition-colors hidden sm:block',
                     isActive
-                      ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+                      ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
                       : isCompleted
                       ? 'text-text-primary font-medium'
                       : 'text-text-muted'

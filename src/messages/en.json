@@ -73,7 +73,20 @@
     "whyWeAsk": "Why do we ask this?",
     "success": "Business profile created successfully!",
     "error": "Something went wrong. Please try again.",
-    "duplicateGuard": "Your submission is being processed..."
+    "duplicateGuard": "Your submission is being processed...",
+    "completionBadge": "Setup Complete • High Confidence Model",
+    "completionWelcome": "Welcome, {name}! 👋",
+    "completionDescription": "Your business model & financial baseline are ready. You can now simulate scenarios, detect risks, and evaluate decisions with evidence.",
+    "healthScore": "Health Score",
+    "goodCondition": "Good Condition",
+    "cashRunway": "Cash Runway",
+    "healthyBuffer": "Healthy Buffer",
+    "estMonthlyProfit": "Est. Monthly Profit",
+    "positiveMargin": "Positive Margin",
+    "exploreDashboard": "Explore Overview Dashboard",
+    "prototypeMode": "Development Prototype Mode",
+    "prototypeNotice": "You have already set up a business baseline. You can re-run onboarding or edit fields anytime.",
+    "resetStartFresh": "Reset & Start Fresh"
   },
   "risks": {
     "pageTitle": "Risk Center",

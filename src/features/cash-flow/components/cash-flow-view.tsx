@@ -41,6 +41,7 @@ import { CashFlowSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ErrorState } from '@/components/ui/error-state';
 import { FadeInView, ChartInView } from '@/components/motion';
+import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
 import {
   CashFlowService,
   type CashFlowServiceResponse,
@@ -48,6 +49,7 @@ import {
 import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/chart-config';
 
 export function CashFlowView() {
+  const { openDrawer } = useAdvisorDrawer();
   const [data, setData] = useState<CashFlowServiceResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -847,11 +849,18 @@ export function CashFlowView() {
                 </Link>
               </Button>
 
-              <Button asChild variant="outline" size="md" className="cursor-pointer">
-                <Link href="/advisor">
-                  <Sparkles aria-hidden="true" />
-                  <span>Ask AI Advisor for Cost Reduction</span>
-                </Link>
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() =>
+                  openDrawer(
+                    'How can I optimize cash flow and reduce fixed operating expenses?',
+                  )
+                }
+                className="cursor-pointer"
+              >
+                <Sparkles aria-hidden="true" />
+                <span>Ask AI Advisor for Cost Reduction</span>
               </Button>
             </div>
           </div>

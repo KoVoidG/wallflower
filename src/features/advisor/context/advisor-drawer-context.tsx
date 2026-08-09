@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 interface AdvisorDrawerContextType {
   isOpen: boolean;
   openAdvisor: (initialQuery?: string) => void;
+  openDrawer: (initialQuery?: string) => void;
   closeAdvisor: () => void;
   toggleAdvisor: () => void;
   pendingQuery: string | null;
@@ -53,6 +54,7 @@ export function AdvisorDrawerProvider({ children }: { children: ReactNode }) {
       value={{
         isOpen,
         openAdvisor,
+        openDrawer: openAdvisor,
         closeAdvisor,
         toggleAdvisor,
         pendingQuery,

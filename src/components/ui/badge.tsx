@@ -5,6 +5,10 @@ import { cn } from '@/lib/utils';
 export type BadgeVariant =
   | 'default'
   | 'brand'
+  | 'simulated'
+  | 'recommended'
+  | 'purple'
+  | 'selected'
   | 'success'
   | 'warning'
   | 'danger'
@@ -19,7 +23,9 @@ export type BadgeVariant =
   | 'imported'
   | 'sample'
   | 'missing'
-  | 'coming_later';
+  | 'coming_later'
+  | 'up'
+  | 'down';
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
@@ -34,42 +40,54 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'bg-brand-soft text-brand border-brand/20',
-  brand: 'bg-brand-soft text-brand border-brand/20',
-  success: 'bg-success-soft text-success border-success/20',
-  healthy: 'bg-success-soft text-success border-success/20',
-  stable: 'bg-success-soft text-success border-success/20',
-  warning: 'bg-warning-soft text-warning border-warning/20',
-  danger: 'bg-danger-soft text-danger border-danger/20',
-  critical: 'bg-danger-soft text-danger border-danger/20',
+  default: 'bg-brand-soft text-brand-text border-brand-border',
+  brand: 'bg-brand-soft text-brand-text border-brand-border',
+  simulated: 'bg-badge-simulated-bg text-badge-simulated-text border-badge-simulated-border',
+  recommended: 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white border-transparent shadow-xs',
+  purple: 'bg-purple-soft text-purple-text border-purple-border',
+  selected: 'bg-selection-bg text-selection-text border-selection-border',
+  success: 'bg-status-up-soft text-status-up border-status-up-border',
+  healthy: 'bg-status-up-soft text-status-up border-status-up-border',
+  stable: 'bg-status-up-soft text-status-up border-status-up-border',
+  up: 'bg-status-up-soft text-status-up border-status-up-border',
+  warning: 'bg-status-warning-soft text-status-warning border-status-warning-border',
+  danger: 'bg-status-down-soft text-status-down border-status-down-border',
+  critical: 'bg-status-down-soft text-status-down border-status-down-border',
+  down: 'bg-status-down-soft text-status-down border-status-down-border',
   info: 'bg-info-soft text-info border-info/20',
-  ai: 'bg-ai-soft text-ai border-ai/20',
+  ai: 'bg-ai-soft text-ai-text border-ai-border',
   neutral: 'bg-surface-subtle text-text-secondary border-border',
-  actual: 'bg-success-soft text-success border-success/20',
-  estimated: 'bg-warning-soft text-warning border-warning/20',
-  imported: 'bg-ai-soft text-ai border-ai/20',
+  actual: 'bg-status-up-soft text-status-up border-status-up-border',
+  estimated: 'bg-status-warning-soft text-status-warning border-status-warning-border',
+  imported: 'bg-ai-soft text-ai-text border-ai-border',
   sample: 'bg-info-soft text-info border-info/20',
-  missing: 'bg-danger-soft text-danger border-danger/20',
+  missing: 'bg-status-down-soft text-status-down border-status-down-border',
   coming_later: 'bg-surface-subtle text-text-muted border-border',
 };
 
 const dotColorClasses: Record<BadgeVariant, string> = {
   default: 'bg-brand',
   brand: 'bg-brand',
-  success: 'bg-success',
-  healthy: 'bg-success',
-  stable: 'bg-success',
-  warning: 'bg-warning',
-  danger: 'bg-danger',
-  critical: 'bg-danger',
+  simulated: 'bg-[#8B5CF6]',
+  recommended: 'bg-white',
+  purple: 'bg-purple-accent',
+  selected: 'bg-brand',
+  success: 'bg-status-up',
+  healthy: 'bg-status-up',
+  stable: 'bg-status-up',
+  up: 'bg-status-up',
+  warning: 'bg-status-warning',
+  danger: 'bg-status-down',
+  critical: 'bg-status-down',
+  down: 'bg-status-down',
   info: 'bg-info',
   ai: 'bg-ai',
   neutral: 'bg-text-muted',
-  actual: 'bg-success',
-  estimated: 'bg-warning',
+  actual: 'bg-status-up',
+  estimated: 'bg-status-warning',
   imported: 'bg-ai',
   sample: 'bg-info',
-  missing: 'bg-danger',
+  missing: 'bg-status-down',
   coming_later: 'bg-text-muted',
 };
 

@@ -73,31 +73,31 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
     <AppPage>
       <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
         {/* ── 1. Page Header Bar with Credits & Upgrade Button ──────────── */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-border/60">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-[#1E2638]">
           <div className="space-y-1">
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white">
               Decision Planner
             </h1>
-            <p className="font-sans text-xs sm:text-sm text-text-secondary">
-              Plan, simulate, and make smarter business decisions.
+            <p className="font-sans text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8]">
+              Plan, simulate, and make smarter business decisions with predictive intelligence.
             </p>
           </div>
 
           <div className="flex items-center gap-4 flex-wrap self-start lg:self-auto">
             {/* Simulation Credits Badge inside Decision Planner */}
-            <div className="px-3.5 py-2 rounded-xl border border-border-strong bg-surface flex items-center gap-3 shadow-2xs">
+            <div className="px-3.5 py-2 rounded-2xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] flex items-center gap-3 shadow-xs">
               <div className="space-y-0.5">
-                <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wider block">
+                <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
                   Simulation Credits
                 </span>
-                <p className="text-xs font-mono font-bold text-text-primary">
-                  <span className="text-emerald-500 font-extrabold">4</span> / 10 used this month
+                <p className="text-xs font-mono font-bold text-[#0F172A] dark:text-white">
+                  <span className="text-[#6366F1] dark:text-[#A5B4FC] font-extrabold">4</span> / 10 used this month
                 </p>
               </div>
 
               {/* Progress bar */}
-              <div className="w-16 h-2 bg-border rounded-full overflow-hidden shrink-0">
-                <div className="h-full bg-emerald-500 rounded-full w-[40%]" />
+              <div className="w-16 h-2 bg-slate-100 dark:bg-[#1E2638] rounded-full overflow-hidden shrink-0">
+                <div className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full w-[40%]" />
               </div>
             </div>
 
@@ -106,7 +106,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               type="button"
               variant="outline"
               size="sm"
-              className="text-xs font-bold gap-1.5 border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 cursor-pointer h-10 px-3.5"
+              className="text-xs font-bold gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] hover:bg-purple-100 dark:hover:bg-purple-900/50 cursor-pointer h-10 px-3.5 rounded-xl shadow-2xs transition-all"
             >
               <span>Upgrade Plan</span>
               <ArrowUpRight className="size-3.5" />
@@ -115,7 +115,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
         </div>
 
         {/* ── 2. 4 Sub-Tabs Bar ────────────────────────────────────────────── */}
-        <div className="border-b border-border/80">
+        <div className="border-b border-slate-100 dark:border-[#1E2638]">
           <div className="flex items-center gap-6 overflow-x-auto scrollbar-none">
             <button
               type="button"
@@ -123,14 +123,14 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               className={cn(
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'library'
-                  ? 'text-tertiary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary'
+                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
               )}
             >
               <Library className="size-4" />
               <span>Scenario Library</span>
               {activeTab === 'library' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
 
@@ -140,14 +140,14 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               className={cn(
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'workspace'
-                  ? 'text-tertiary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary'
+                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
               )}
             >
               <Sliders className="size-4" />
               <span>Scenario Workspace</span>
               {activeTab === 'workspace' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
 
@@ -157,14 +157,14 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               className={cn(
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'compare'
-                  ? 'text-tertiary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary'
+                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
               )}
             >
               <Scale className="size-4" />
               <span>Compare Simulations</span>
               {activeTab === 'compare' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
 
@@ -174,14 +174,14 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               className={cn(
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'assumptions'
-                  ? 'text-tertiary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary'
+                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
               )}
             >
               <Settings className="size-4" />
               <span>Global Assumptions</span>
               {activeTab === 'assumptions' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
           </div>

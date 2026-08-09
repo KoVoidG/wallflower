@@ -137,7 +137,7 @@ export function StepAssumptions({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Continue</span>
           <ArrowRight className="size-3.5" />

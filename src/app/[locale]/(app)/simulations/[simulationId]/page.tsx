@@ -32,13 +32,12 @@ import { SimulationResultsSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ErrorState } from '@/components/ui/error-state';
 import { FadeIn, FadeInView, ChartInView, Expand } from '@/components/motion';
-import {
-  getSimulation,
-  type DetailedSimulationResult,
-} from '@/features/simulations/adapters/simulations.adapter';
+import { getSimulation, type DetailedSimulationResult } from '@/features/simulations/adapters/simulations.adapter';
 import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/chart-config';
+import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
 
 export default function SimulationResultPage() {
+  const { openDrawer } = useAdvisorDrawer();
   const params = useParams();
   const simulationId = (params.simulationId as string) || 'sim-001';
 
@@ -464,11 +463,18 @@ export default function SimulationResultPage() {
             <div className="p-4 rounded-xl border border-border/80 bg-surface shadow-2xs flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs font-semibold text-text-primary">Decision Guidance Actions:</span>
               <div className="flex flex-wrap items-center gap-2.5">
-                <Button asChild variant="outline" size="sm" className="text-xs">
-                  <Link href="/advisor">
-                    <Sparkles className="size-3.5 text-brand" />
-                    <span>Ask AI Advisor</span>
-                  </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    openDrawer(
+                      `Can you analyze the financial projection and risks for simulation: ${data?.name || simulationId}?`,
+                    )
+                  }
+                  className="text-xs cursor-pointer"
+                >
+                  <Sparkles className="size-3.5 text-brand" />
+                  <span>Ask AI Advisor</span>
                 </Button>
               </div>
             </div>

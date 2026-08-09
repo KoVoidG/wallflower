@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from '@/lib/i18n/navigation';
 import { FadeIn } from '@/components/motion';
 import { Select } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { AppPage } from '@/components/ui/layout';
 
 import { ProfileAccountSettings } from './profile-account-settings';
@@ -142,28 +141,29 @@ function SettingsContent() {
       <FadeIn>
         <div data-tour="settings-view" className="mx-auto max-w-[1240px] space-y-6">
           {/* Top Section Header with Title, Description, and Save Changes Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-4">
+          {/* Top Section Header with Title, Description, and Save Changes Button */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-[#1E2638] pb-4">
             <div className="space-y-0.5">
-              <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+              <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white">
                 {activeSectionObj.title}
               </h1>
-              <p className="text-xs text-text-secondary font-medium">
+              <p className="text-xs text-[#64748B] dark:text-[#94A3B8] font-medium">
                 {activeSectionObj.subtitle}
               </p>
             </div>
 
-            <Button
+            <button
               type="button"
               onClick={handleGlobalSave}
-              className="gap-2 text-xs font-bold bg-tertiary text-on-primary hover:bg-tertiary-hover shadow-2xs px-5 py-2 rounded-xl shrink-0 cursor-pointer self-start sm:self-auto"
+              className="inline-flex items-center gap-2 text-xs font-bold bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 py-2.5 rounded-xl shrink-0 cursor-pointer self-start sm:self-auto transition-all"
             >
               <Save className="size-3.5" />
               <span>Save Changes</span>
-            </Button>
+            </button>
           </div>
 
           {saveSuccessNotice && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 animate-in fade-in-50">
+            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 animate-in fade-in-50">
               <Check className="size-4 shrink-0" />
               <span>All changes saved successfully!</span>
             </div>
@@ -187,7 +187,7 @@ function SettingsContent() {
             {/* Left Sub-Navigation Bar (9 Items) */}
             <nav
               aria-label="Settings sub-navigation"
-              className="hidden md:block w-[230px] shrink-0 rounded-2xl border border-border bg-surface p-2 space-y-1 sticky top-20 shadow-2xs"
+              className="hidden md:block w-[230px] shrink-0 rounded-2xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] p-2 space-y-1 sticky top-20 shadow-xs"
             >
               <ul className="flex flex-col gap-0.5" role="list">
                 {SECTIONS.map((section) => {
@@ -202,12 +202,12 @@ function SettingsContent() {
                         className={cn(
                           'flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-left transition-all cursor-pointer select-none',
                           isSelected
-                            ? 'bg-tertiary/15 text-tertiary border-l-3 border-l-tertiary font-extrabold shadow-2xs'
-                            : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
+                            ? 'bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-l-3 border-l-[#6366F1] font-extrabold shadow-2xs'
+                            : 'text-[#64748B] dark:text-[#94A3B8] hover:bg-slate-50 dark:hover:bg-[#1E2638] hover:text-[#0F172A] dark:hover:text-white'
                         )}
                         aria-current={isSelected ? 'page' : undefined}
                       >
-                        <Icon className={cn('size-4 shrink-0', isSelected ? 'text-tertiary' : 'text-text-muted')} />
+                        <Icon className={cn('size-4 shrink-0', isSelected ? 'text-[#6366F1] dark:text-[#A5B4FC]' : 'text-[#94A3B8]')} />
                         <span className="truncate">{section.label}</span>
                       </button>
                     </li>

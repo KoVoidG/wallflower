@@ -1,10 +1,10 @@
+// src/features/business-health/components/business-health-view.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { RotateCw, Edit, LineChart, Building2, Package, SlidersHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AppPage } from '@/components/ui/layout';
-import { Button } from '@/components/ui/button';
 import { FadeInView } from '@/components/motion';
 import { BusinessHealthSkeleton } from '@/components/ui/skeleton';
 import { FinancialSnapshotView } from './financial-snapshot-view';
@@ -41,7 +41,7 @@ export function BusinessHealthView() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 350);
+    const timer = setTimeout(() => setIsLoading(false), 250);
     return () => clearTimeout(timer);
   }, []);
 
@@ -61,58 +61,56 @@ export function BusinessHealthView() {
         <FadeInView offset={8}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+              <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white">
                 Business Health
               </h1>
-              <p className="font-sans text-xs sm:text-sm text-text-secondary mt-1">
+              <p className="font-sans text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-1">
                 Monitor key financial metrics, operating ratios, and health indicators.
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface text-xs font-sans text-text-secondary">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-sans text-[#64748B] dark:text-[#94A3B8] shadow-xs">
                 <span className="font-medium">Data updated: May 2024</span>
                 <button
                   type="button"
                   onClick={handleRefresh}
-                  className="p-1 text-text-secondary hover:text-text-primary rounded-md transition-colors cursor-pointer"
+                  className="p-1 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white rounded-md transition-colors cursor-pointer"
                   title="Refresh business data"
                 >
-                  <RotateCw className={`size-3.5 ${isRefreshing ? 'animate-spin text-tertiary' : ''}`} />
+                  <RotateCw className={`size-3.5 ${isRefreshing ? 'animate-spin text-[#6366F1]' : ''}`} />
                 </button>
               </div>
 
-              <Button
+              <button
                 type="button"
-                variant="secondary"
-                size="sm"
-                className="inline-flex items-center gap-2 border-border bg-surface text-text-primary hover:bg-surface-hover cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-[#6366F1]/10 dark:hover:bg-[#6366F1]/20 hover:border-[#6366F1]/30 transition-all cursor-pointer shadow-xs"
               >
-                <Edit className="size-3.5 text-text-secondary" />
+                <Edit className="size-3.5 text-[#6366F1]" />
                 <span>Edit Business Info</span>
-              </Button>
+              </button>
             </div>
           </div>
         </FadeInView>
 
         {/* ── Internal Tabs Bar ──────────────────────────────────────────────── */}
         <FadeInView offset={12}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border/80 gap-4">
-            <div className="flex items-center gap-6 overflow-x-auto scrollbar-none">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200/80 dark:border-[#1E2638] gap-4">
+            <div className="flex items-center gap-2 sm:gap-6 overflow-x-auto scrollbar-none">
               <button
                 type="button"
                 onClick={() => handleTabChange('snapshot')}
                 className={cn(
-                  'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
+                  'pb-3 text-xs sm:text-sm font-medium transition-all relative cursor-pointer whitespace-nowrap flex items-center gap-2 px-2',
                   activeTab === 'snapshot'
-                    ? 'text-tertiary font-semibold'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 )}
               >
                 <LineChart className="size-4" />
                 <span>Financial Snapshot</span>
                 {activeTab === 'snapshot' && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
               </button>
 
@@ -120,16 +118,16 @@ export function BusinessHealthView() {
                 type="button"
                 onClick={() => handleTabChange('operations')}
                 className={cn(
-                  'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
+                  'pb-3 text-xs sm:text-sm font-medium transition-all relative cursor-pointer whitespace-nowrap flex items-center gap-2 px-2',
                   activeTab === 'operations'
-                    ? 'text-tertiary font-semibold'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 )}
               >
                 <Building2 className="size-4" />
                 <span>Operations</span>
                 {activeTab === 'operations' && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
               </button>
 
@@ -137,16 +135,16 @@ export function BusinessHealthView() {
                 type="button"
                 onClick={() => handleTabChange('inventory')}
                 className={cn(
-                  'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
+                  'pb-3 text-xs sm:text-sm font-medium transition-all relative cursor-pointer whitespace-nowrap flex items-center gap-2 px-2',
                   activeTab === 'inventory'
-                    ? 'text-tertiary font-semibold'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 )}
               >
                 <Package className="size-4" />
                 <span>Inventory Overview</span>
                 {activeTab === 'inventory' && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
               </button>
 
@@ -154,16 +152,16 @@ export function BusinessHealthView() {
                 type="button"
                 onClick={() => handleTabChange('assumptions')}
                 className={cn(
-                  'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
+                  'pb-3 text-xs sm:text-sm font-medium transition-all relative cursor-pointer whitespace-nowrap flex items-center gap-2 px-2',
                   activeTab === 'assumptions'
-                    ? 'text-tertiary font-semibold'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
                 )}
               >
                 <SlidersHorizontal className="size-4" />
                 <span>Assumptions</span>
                 {activeTab === 'assumptions' && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-tertiary rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
               </button>
             </div>

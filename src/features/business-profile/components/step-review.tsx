@@ -55,35 +55,35 @@ export function StepReview({
     {
       stepId: 3,
       icon: Building2,
-      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconBg: 'bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC]',
       title: 'Business Profile',
       summary: `${b.name || 'Somchai Retail Store'} • ${b.category || 'Grocery Store'} • ${b.size || 'Micro'} • ${b.age || '1–3 years'}`,
     },
     {
       stepId: 4,
       icon: Users,
-      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconBg: 'bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC]',
       title: 'Business Operations',
       summary: `${o?.employees || 6} employees • ${o?.operatingDays || '6 days/week'} • ${o?.transactionsPerDay || 120} transactions/day`,
     },
     {
       stepId: 5,
       icon: DollarSign,
-      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconBg: 'bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC]',
       title: 'Financial Baseline',
       summary: `Revenue ฿${revVal} • Expenses ฿${expVal} • Cash ฿${cashVal}`,
     },
     {
       stepId: 6,
       icon: Package,
-      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconBg: 'bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC]',
       title: 'Inventory',
       summary: `Value ฿${invVal} • ${i?.categories?.length || 3} categories • Shortages: ${i?.shortages || 'Sometimes'}`,
     },
     {
       stepId: 7,
       icon: Sliders,
-      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconBg: 'bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC]',
       title: 'Business Assumptions',
       summary: `Demand: ${a?.demand || 'Stable'} • Supplier Trend: ${a?.supplierCostTrend || 'Stable'} • Seasonality: ${a?.seasonality || 'Low'}`,
     },
@@ -154,7 +154,7 @@ export function StepReview({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Generate Business Baseline</span>
           <ArrowRight className="size-3.5" />

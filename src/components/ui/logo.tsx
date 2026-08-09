@@ -15,11 +15,11 @@ export interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const sizeMap = {
-  xs: 20,
-  sm: 26,
-  md: 32,
-  lg: 40,
-  xl: 48,
+  xs: 28,
+  sm: 36,
+  md: 44,
+  lg: 56,
+  xl: 68,
 } as const;
 
 export function Logo({
@@ -28,40 +28,32 @@ export function Logo({
   wordmarkClassName,
   className,
   iconOnly = false,
-  priority = false,
+  priority = true,
   ...props
 }: LogoProps) {
-  const pixelSize = typeof size === 'number' ? size : sizeMap[size] || 32;
+  const pixelSize = typeof size === 'number' ? size : sizeMap[size] || 44;
 
   return (
     <div
-      className={cn('inline-flex items-center gap-2.5 select-none shrink-0', className)}
+      className={cn('inline-flex items-center gap-3 select-none shrink-0', className)}
       {...props}
     >
-      {/* Dynamic Fluid Floral Mark with Official Gradient */}
-      <div
-        className="relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden shadow-2xs"
+      {/* Direct PNG Logo without circular containers or borders */}
+      <Image
+        src="/wallflower-logo 1.png"
+        alt="Wallflower Logo"
+        width={pixelSize}
+        height={pixelSize}
+        className="shrink-0 object-contain"
         style={{ width: pixelSize, height: pixelSize }}
-      >
-        <Image
-          src="/logo.png"
-          alt="Wallflower Logo"
-          width={pixelSize}
-          height={pixelSize}
-          className="size-full object-contain filter drop-shadow-[0_2px_8px_rgba(76,35,252,0.25)]"
-          priority={priority}
-        />
-      </div>
+        priority={priority}
+      />
 
       {/* Brand Wordmark Typography */}
       {showWordmark && !iconOnly && (
         <span
           className={cn(
-            'font-display font-extrabold tracking-tight text-text-primary leading-none',
-            pixelSize <= 24 && 'text-sm',
-            pixelSize > 24 && pixelSize <= 32 && 'text-lg sm:text-xl',
-            pixelSize > 32 && pixelSize <= 40 && 'text-xl sm:text-2xl',
-            pixelSize > 40 && 'text-2xl sm:text-3xl',
+            'font-display font-bold tracking-tight text-[#0F172A] dark:text-white leading-none text-xl sm:text-2xl',
             wordmarkClassName
           )}
         >

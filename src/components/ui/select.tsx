@@ -194,9 +194,9 @@ export function Select({
                 : { duration: DURATIONS.cardPanel, ease: EASINGS.default }
             }
             className={cn(
-              'absolute z-50 mt-1 w-full max-h-60 overflow-y-auto',
-              'rounded-[var(--radius-md)] border border-border dark:border-border-strong bg-surface shadow-lg dark:shadow-black/40',
-              'py-1'
+              'absolute z-50 mt-1.5 w-full max-h-60 overflow-y-auto',
+              'rounded-xl border border-slate-200 dark:border-[#2A344A] bg-white dark:bg-[#111622] shadow-xl dark:shadow-black/70',
+              'py-1 divide-y divide-slate-100 dark:divide-[#1E2638]'
             )}
           >
             {options.map((option, idx) => {
@@ -213,14 +213,14 @@ export function Select({
                   className={cn(
                     'flex items-center justify-between px-3 py-2 text-xs cursor-pointer',
                     'transition-colors duration-75',
-                    isHighlighted && 'bg-brand-soft',
-                    isSelected && !isHighlighted && 'text-brand font-[500]',
-                    !isHighlighted && !isSelected && 'text-text-primary'
+                    isHighlighted && 'bg-[#6366F1]/10 dark:bg-[#6366F1]/20 text-[#4F46E5] dark:text-[#A5B4FC]',
+                    isSelected && !isHighlighted && 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold bg-[#6366F1]/5 dark:bg-[#6366F1]/10',
+                    !isHighlighted && !isSelected && 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]'
                   )}
                 >
                   <span>{option.label}</span>
                   {isSelected && (
-                    <Check className="size-4 shrink-0 text-brand" aria-hidden="true" />
+                    <Check className="size-3.5 shrink-0 text-[#6366F1] dark:text-[#A5B4FC]" aria-hidden="true" />
                   )}
                 </li>
               );

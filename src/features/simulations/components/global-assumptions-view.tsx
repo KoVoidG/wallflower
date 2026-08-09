@@ -65,9 +65,9 @@ export function GlobalAssumptionsView() {
   return (
     <div className="space-y-5 max-w-[1600px] mx-auto">
       {/* Alert Callout Banner */}
-      <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs text-text-primary flex items-center gap-3">
-        <Info className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-        <p className="leading-relaxed text-text-secondary">
+      <div className="p-3.5 rounded-2xl border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/50 text-xs text-[#0F172A] dark:text-white flex items-center gap-3 shadow-2xs">
+        <Info className="size-4 text-[#6366F1] dark:text-[#A5B4FC] shrink-0" />
+        <p className="leading-relaxed text-[#64748B] dark:text-[#94A3B8]">
           Changing assumptions may affect the results of existing simulations. You may need to re-run simulations to see updated impacts.
         </p>
       </div>
@@ -283,7 +283,7 @@ export function GlobalAssumptionsView() {
             size="md"
             onClick={handleSaveChanges}
             disabled={isSaving}
-            className="text-xs font-bold gap-2 bg-tertiary text-on-primary hover:bg-tertiary-hover cursor-pointer shadow-2xs px-5 flex-1 sm:flex-none"
+            className="text-xs font-bold gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 cursor-pointer shadow-md shadow-indigo-500/25 px-5 flex-1 sm:flex-none rounded-xl"
           >
             {isSaved ? (
               <>

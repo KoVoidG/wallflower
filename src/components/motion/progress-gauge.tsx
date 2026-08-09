@@ -1,3 +1,4 @@
+// src/components/motion/progress-gauge.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -20,10 +21,10 @@ export function ProgressGauge({
   score,
   maxScore = 100,
   label = 'Healthy',
-  size = 128,
-  strokeWidth = 8,
+  size = 132,
+  strokeWidth = 9,
   color = '#00D395',
-  trackColor = 'var(--border-strong)',
+  trackColor,
   className,
 }: ProgressGaugeProps) {
   const prefersReduced = useReducedMotion();
@@ -37,8 +38,9 @@ export function ProgressGauge({
 
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
+  // Ensure the progress accurately reflects the score proportion (e.g. 84 / 100 = 84%)
   const percentage = Math.min(Math.max(score / maxScore, 0), 1);
-  const targetOffset = circumference * (1 - percentage);
+  const strokeDashoffset = circumference * (1 - percentage);
 
   useEffect(() => {
     if (!isInView || prefersReduced) return;
@@ -49,7 +51,6 @@ export function ProgressGauge({
     const animateCount = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // easeOutCubic
       const easeProgress = 1 - Math.pow(1 - progress, 3);
       setCurrentScore(Math.round(easeProgress * score));
 
@@ -65,7 +66,7 @@ export function ProgressGauge({
   return (
     <div
       ref={containerRef}
-      className={cn('flex flex-col items-center justify-center text-center', className)}
+      className={cn('flex flex-col items-center justify-center text-center select-none', className)}
       style={{ width: size }}
     >
       <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
@@ -75,17 +76,18 @@ export function ProgressGauge({
           viewBox={`0 0 ${size} ${size}`}
           className="transform -rotate-90"
         >
-          {/* Background Track Circle */}
+          {/* Background Track Circle - Visible clean track in light and dark mode */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke={trackColor}
+            stroke={trackColor || '#E2E8F0'}
             strokeWidth={strokeWidth}
             fill="transparent"
+            className="dark:stroke-[#1E2638]"
           />
 
-          {/* Animated Progress Circle */}
+          {/* Animated Progress Circle - Exactly up to the score percentage (e.g. 84%) */}
           {prefersReduced ? (
             <circle
               cx={size / 2}
@@ -94,7 +96,7 @@ export function ProgressGauge({
               stroke={color}
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
-              strokeDashoffset={targetOffset}
+              strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
               fill="transparent"
             />
@@ -107,11 +109,10 @@ export function ProgressGauge({
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
               initial={{ strokeDashoffset: circumference }}
-              whileInView={{ strokeDashoffset: targetOffset }}
-              viewport={{ once: true, amount: 0.2, margin: '0px 0px -40px 0px' }}
+              animate={isInView ? { strokeDashoffset } : { strokeDashoffset: circumference }}
               transition={{
                 duration: 1.2,
-                ease: [0, 0, 0.2, 1],
+                ease: [0.16, 1, 0.3, 1],
               }}
               strokeLinecap="round"
               fill="transparent"
@@ -121,15 +122,15 @@ export function ProgressGauge({
 
         {/* Center Text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-mono text-3xl font-bold text-text-primary tracking-tight">
+          <span className="font-mono text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
             {currentScore}
           </span>
-          <span className="font-sans text-[10px] font-medium text-text-secondary">/{maxScore}</span>
+          <span className="font-sans text-[10px] font-medium text-[#64748B] dark:text-[#94A3B8]">/{maxScore}</span>
         </div>
       </div>
 
       {label && (
-        <span className="font-display text-sm font-semibold text-tertiary mt-2">
+        <span className="font-sans text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2">
           {label}
         </span>
       )}

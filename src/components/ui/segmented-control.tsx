@@ -1,3 +1,4 @@
+// src/components/ui/segmented-control.tsx
 'use client';
 
 import { motion } from 'motion/react';
@@ -21,7 +22,7 @@ export function SegmentedControl<T extends string>({
   return (
     <div
       className={cn(
-        'relative flex items-center p-1 bg-surface border-2 border-border-strong rounded-2xl shadow-2xs w-full overflow-hidden',
+        'relative flex items-center p-1 bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] rounded-2xl shadow-xs w-full overflow-hidden',
         className
       )}
     >
@@ -36,13 +37,13 @@ export function SegmentedControl<T extends string>({
               'relative flex-1 py-2 px-3 text-xs font-bold transition-colors cursor-pointer select-none text-center rounded-xl z-10',
               isSelected
                 ? 'text-white font-extrabold'
-                : 'text-text-secondary hover:text-text-primary font-semibold'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white font-semibold'
             )}
           >
             {isSelected && (
               <motion.div
                 layoutId={layoutId}
-                className="absolute inset-0 bg-emerald-600 rounded-xl shadow-xs z-[-1]"
+                className="absolute inset-0 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-xl shadow-md shadow-indigo-500/25 z-[-1]"
                 transition={{ type: 'spring', stiffness: 450, damping: 32 }}
               />
             )}

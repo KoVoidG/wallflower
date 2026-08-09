@@ -77,7 +77,7 @@ export function StepSetupMethod({
               className={cn(
                 'relative flex items-start gap-3.5 p-4 rounded-2xl border transition-all cursor-pointer select-none',
                 isSelected
-                  ? 'border-2 border-emerald-600 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-sm'
+                  ? 'border-[#6366F1] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 shadow-xs'
                   : 'border-border bg-surface hover:border-border-strong hover:bg-surface-hover',
               )}
             >
@@ -85,7 +85,7 @@ export function StepSetupMethod({
                 className={cn(
                   'p-2.5 rounded-xl shrink-0 mt-0.5 transition-colors',
                   isSelected
-                    ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                    ? 'bg-[#6366F1]/15 text-[#4F46E5] dark:text-[#A5B4FC] border border-[#6366F1]/25'
                     : 'bg-surface-subtle text-text-primary border border-border/60'
                 )}
               >
@@ -105,7 +105,7 @@ export function StepSetupMethod({
               </div>
 
               {isSelected && (
-                <div className="absolute top-4 right-4 size-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                <div className="absolute top-4 right-4 size-5 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white flex items-center justify-center shadow-xs">
                   <Check className="size-3.5 stroke-[3]" />
                 </div>
               )}
@@ -135,7 +135,7 @@ export function StepSetupMethod({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Continue</span>
           <ArrowRight className="size-3.5" />

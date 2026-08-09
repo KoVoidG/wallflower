@@ -40,6 +40,7 @@ import { RiskCenterSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ErrorState } from '@/components/ui/error-state';
 import { FadeInView, ChartInView } from '@/components/motion';
+import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
 import {
   getRisksData,
   type RisksData,
@@ -51,6 +52,7 @@ import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/cha
 type TriageStageFilter = 'all' | 'action_required' | 'monitoring' | 'mitigating' | 'resolved';
 
 export function RisksView() {
+  const { openDrawer } = useAdvisorDrawer();
   const [data, setData] = useState<RisksData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -640,11 +642,18 @@ export function RisksView() {
                     </Link>
                   </Button>
 
-                  <Button asChild variant="outline" size="md" className="text-xs cursor-pointer">
-                    <Link href="/advisor">
-                      <Sparkles aria-hidden="true" />
-                      <span>Ask AI Advisor</span>
-                    </Link>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={() =>
+                      openDrawer(
+                        `How should I mitigate the risk: "${selectedRisk.title}"?`,
+                      )
+                    }
+                    className="text-xs cursor-pointer"
+                  >
+                    <Sparkles aria-hidden="true" />
+                    <span>Ask AI Advisor</span>
                   </Button>
                 </div>
               </Card>

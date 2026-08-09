@@ -1,6 +1,7 @@
+// src/components/app-shell/app-shell.tsx
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { Sidebar } from './sidebar';
 import { Topbar } from './topbar';
@@ -18,26 +19,14 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, title, aside, asideTitle }: AppShellProps) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
   return (
     <AdvisorDrawerProvider>
       <div className="relative min-h-screen bg-background">
-        {/* Sidebar */}
-        <Sidebar
-          collapsed={sidebarCollapsed}
-          onToggle={() => setSidebarCollapsed((prev) => !prev)}
-        />
+        {/* Sidebar (Always collapsed to 76px until hovered) */}
+        <Sidebar />
 
         {/* Main content wrapper */}
-        <div
-          className={cn(
-            'flex min-h-screen flex-col',
-            'transition-[margin-left] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
-            'motion-reduce:transition-none',
-            sidebarCollapsed ? 'ml-[72px]' : 'ml-[230px]'
-          )}
-        >
+        <div className="flex min-h-screen flex-col ml-[76px] transition-all duration-200">
           {/* Topbar */}
           <Topbar title={title} />
 
@@ -47,7 +36,7 @@ export function AppShell({ children, title, aside, asideTitle }: AppShellProps) 
               className={cn(
                 'flex-1 px-4 py-6 pb-6',
                 'md:px-6 lg:px-8',
-                'max-w-[1440px]'
+                'max-w-[1500px]'
               )}
             >
               {children}

@@ -5,14 +5,18 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-tertiary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed [&>svg]:size-4 [&>svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-150 select-none cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed active:scale-[0.98] [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       variant: {
         primary:
-          'bg-tertiary text-on-primary font-semibold border border-tertiary hover:bg-tertiary-hover active:bg-tertiary/90 shadow-xs',
+          'bg-brand text-on-primary font-semibold border border-brand hover:bg-brand-hover active:bg-brand-strong shadow-xs hover:shadow-md hover:brightness-105',
+        gradient:
+          'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-semibold hover:opacity-95 shadow-md shadow-indigo-500/25 border-0 active:scale-[0.98]',
+        purpleSoft:
+          'bg-purple-soft hover:bg-[#6366F1]/20 text-purple-text border border-purple-border font-semibold',
         secondary:
-          'border border-border bg-transparent text-text-primary hover:bg-surface-hover hover:border-border-strong shadow-2xs',
+          'border border-border bg-surface text-text-primary hover:bg-surface-hover hover:border-border-strong shadow-2xs hover:shadow-xs',
         outline:
           'border border-border bg-transparent text-text-primary hover:border-border-strong hover:bg-surface-hover',
         ghost:

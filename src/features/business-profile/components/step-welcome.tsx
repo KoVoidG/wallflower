@@ -82,7 +82,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
       {/* 3 Key Benefits */}
       <div className="space-y-2.5 text-left bg-surface/60 border border-border/70 rounded-2xl p-4">
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-brand-soft text-brand shrink-0">
+          <div className="p-1.5 rounded-lg bg-border text-text-secondary shrink-0">
             <BarChart3 className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -91,7 +91,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-success-soft text-success shrink-0">
+          <div className="p-1.5 rounded-lg bg-border text-text-secondary shrink-0">
             <TrendingUp className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -100,7 +100,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-ai-soft text-ai shrink-0">
+          <div className="p-1.5 rounded-lg bg-border text-text-secondary shrink-0">
             <Sparkles className="size-4" />
           </div>
           <span className="text-xs font-semibold text-text-primary">
@@ -111,7 +111,8 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
 
       {/* Prompt text */}
       <p className="text-[11px] text-text-muted font-medium">
-        Let&apos;s build your business profile so we can generate accurate insights.
+        Let&apos;s build your business profile so we can generate accurate
+        insights.
       </p>
 
       {/* CTA Button */}
@@ -119,7 +120,7 @@ export function StepWelcome({ onNext }: StepWelcomeProps) {
         <Button
           type="button"
           onClick={onNext}
-          className="w-full py-3 text-xs font-bold gap-2 bg-brand text-on-primary hover:bg-brand-hover shadow-md transition-all cursor-pointer rounded-xl"
+          className="w-full py-3 text-xs font-bold gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 transition-all cursor-pointer rounded-xl border-0"
         >
           <span>Get Started</span>
           <ArrowRight className="size-4" />

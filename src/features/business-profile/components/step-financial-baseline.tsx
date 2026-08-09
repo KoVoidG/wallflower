@@ -59,7 +59,7 @@ export function StepFinancialBaseline({
               onClick={() => setShowTooltip((prev) => !prev)}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold cursor-pointer hover:underline focus:outline-hidden"
+              className="inline-flex items-center gap-1 text-[#4F46E5] dark:text-[#A5B4FC] font-bold cursor-pointer hover:underline focus:outline-hidden"
             >
               <HelpCircle className="size-3.5" />
               <span>Why we ask this?</span>
@@ -67,7 +67,7 @@ export function StepFinancialBaseline({
 
             {showTooltip && (
               <div className="absolute left-0 sm:left-auto sm:-right-4 top-full mt-2 z-50 w-72 p-3.5 rounded-2xl border border-border bg-surface shadow-xl space-y-1.5 animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                <div className="flex items-center gap-1.5 text-[#4F46E5] dark:text-[#A5B4FC] font-bold text-xs">
                   <Lightbulb className="size-4 shrink-0" />
                   <span>Why we need this data</span>
                 </div>
@@ -99,7 +99,7 @@ export function StepFinancialBaseline({
                 updateFinValue('monthlyRevenue', parseFloat(e.target.value) || 0)
               }
               placeholder="1,200,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export function StepFinancialBaseline({
                 updateFinValue('operatingExpenses', parseFloat(e.target.value) || 0)
               }
               placeholder="820,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export function StepFinancialBaseline({
                 updateFinValue('payrollExpenses', parseFloat(e.target.value) || 0)
               }
               placeholder="180,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -165,7 +165,7 @@ export function StepFinancialBaseline({
                 updateFinValue('rent', parseFloat(e.target.value) || 0)
               }
               placeholder="60,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -187,7 +187,7 @@ export function StepFinancialBaseline({
                 updateFinValue('utilities', parseFloat(e.target.value) || 0)
               }
               placeholder="15,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -209,7 +209,7 @@ export function StepFinancialBaseline({
                 updateFinValue('marketing', parseFloat(e.target.value) || 0)
               }
               placeholder="20,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -231,7 +231,7 @@ export function StepFinancialBaseline({
                 updateFinValue('cashOnHand', parseFloat(e.target.value) || 0)
               }
               placeholder="150,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -253,7 +253,7 @@ export function StepFinancialBaseline({
                 updateFinValue('bankBalance', parseFloat(e.target.value) || 0)
               }
               placeholder="200,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -278,7 +278,7 @@ export function StepFinancialBaseline({
                 )
               }
               placeholder="300,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -299,7 +299,7 @@ export function StepFinancialBaseline({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Continue</span>
           <ArrowRight className="size-3.5" />

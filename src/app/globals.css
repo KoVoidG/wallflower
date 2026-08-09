@@ -4,6 +4,7 @@
 
 :root,
 .light {
+  /* Surfaces & Backgrounds */
   --background: #F8FAFC;
   --surface: #FFFFFF;
   --surface-hover: #F1F5F9;
@@ -11,22 +12,83 @@
   --surface-subtle: #F8FAFC;
   --surface-raised: #FFFFFF;
   
+  /* Sidebar */
+  --sidebar-bg: #DEE7F6;
+  --sidebar-border: #D5DEEE;
+  --sidebar-hover: #CBD8EE;
+  --sidebar-active: #FFFFFF;
+  
+  /* Borders */
   --border: #E2E8F0;
   --border-strong: #CBD5E1;
   
+  /* Typography */
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-muted: #94A3B8;
   
-  --brand: #4C23FC;
-  --brand-hover: #3C17E0;
-  --brand-soft: rgba(76, 35, 252, 0.08);
-  --brand-strong: #3512CC;
+  /* Signature Brand Purple / Indigo */
+  --brand: #6366F1;
+  --brand-hover: #4F46E5;
+  --brand-soft: rgba(99, 102, 241, 0.08);
+  --brand-subtle: rgba(99, 102, 241, 0.04);
+  --brand-border: rgba(99, 102, 241, 0.25);
+  --brand-strong: #4338CA;
+  --brand-text: #4F46E5;
+  --brand-light: #EEF2FF;
   
-  --tertiary: #4C23FC;
-  --tertiary-hover: #3C17E0;
+  --tertiary: #6366F1;
+  --tertiary-hover: #4F46E5;
   --on-primary: #FFFFFF;
   
+  /* Secondary Purple / Violet Accent */
+  --accent-purple: #8B5CF6;
+  --accent-purple-hover: #7C3AED;
+  --accent-purple-soft: rgba(139, 92, 246, 0.08);
+  --accent-purple-border: rgba(139, 92, 246, 0.25);
+  --accent-purple-text: #7C3AED;
+  --accent-purple-light: #F5F3FF;
+  
+  /* AI Accent */
+  --ai: #8B5CF6;
+  --ai-hover: #7C3AED;
+  --ai-soft: rgba(139, 92, 246, 0.10);
+  --ai-border: rgba(139, 92, 246, 0.25);
+  --ai-text: #7C3AED;
+
+  /* Selection & Card Active States */
+  --selection-bg: rgba(99, 102, 241, 0.10);
+  --selection-border: rgba(99, 102, 241, 0.40);
+  --selection-text: #4F46E5;
+  
+  /* Simulated Badge */
+  --badge-simulated-bg: #FAF5FF;
+  --badge-simulated-border: #E9D5FF;
+  --badge-simulated-text: #6366F1;
+  --badge-simulated-dot: #8B5CF6;
+
+  /* Status Colors */
+  --status-up: #059669;
+  --status-up-soft: rgba(5, 150, 105, 0.10);
+  --status-up-border: rgba(5, 150, 105, 0.20);
+  --status-up-text: #059669;
+
+  --status-down: #DC2626;
+  --status-down-soft: rgba(220, 38, 38, 0.10);
+  --status-down-border: rgba(220, 38, 38, 0.20);
+  --status-down-text: #DC2626;
+
+  --status-warning: #D97706;
+  --status-warning-soft: rgba(217, 119, 6, 0.10);
+  --status-warning-border: rgba(217, 119, 6, 0.20);
+  --status-warning-text: #D97706;
+
+  --status-neutral: #94A3B8;
+  --status-neutral-soft: rgba(148, 163, 184, 0.10);
+  --status-neutral-border: rgba(148, 163, 184, 0.20);
+  --status-neutral-text: #64748B;
+
+  /* Functional Utilities */
   --info: #2563EB;
   --info-soft: rgba(37, 99, 235, 0.10);
   
@@ -38,44 +100,107 @@
   
   --danger: #DC2626;
   --danger-soft: rgba(220, 38, 38, 0.10);
-  
-  --ai: #8B5CF6;
-  --ai-soft: rgba(139, 92, 246, 0.10);
 
+  /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.90);
   --glass-border: rgba(226, 232, 240, 0.8);
   --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
-  --radius-sm: 3px;
-  --radius-md: 5px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  /* Slider Track */
+  --slider-track-empty: #E2E8F0;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
 .dark {
+  /* Surfaces & Backgrounds */
   --background: #0B0E14;
-  --surface: #131823;
-  --surface-hover: #1A2232;
-  --surface-active: #232D40;
-  --surface-subtle: #1A2232;
-  --surface-raised: #131823;
+  --surface: #111622;
+  --surface-hover: #161D2B;
+  --surface-active: #1E2638;
+  --surface-subtle: #161D2B;
+  --surface-raised: #111622;
   
-  --border: #263042;
-  --border-strong: #37435C;
+  /* Sidebar */
+  --sidebar-bg: #0B0E14;
+  --sidebar-border: #1E2638;
+  --sidebar-hover: #161D2B;
+  --sidebar-active: #1E2638;
   
+  /* Borders */
+  --border: #1E2638;
+  --border-strong: #2A344A;
+  
+  /* Typography */
   --text-primary: #F1F5F9;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
   
+  /* Signature Brand Purple / Indigo */
   --brand: #6366F1;
   --brand-hover: #4F46E5;
-  --brand-soft: rgba(99, 102, 241, 0.15);
+  --brand-soft: rgba(99, 102, 241, 0.12);
+  --brand-subtle: rgba(99, 102, 241, 0.06);
+  --brand-border: rgba(99, 102, 241, 0.30);
   --brand-strong: #818CF8;
+  --brand-text: #A5B4FC;
+  --brand-light: rgba(99, 102, 241, 0.15);
   
   --tertiary: #6366F1;
   --tertiary-hover: #4F46E5;
   --on-primary: #FFFFFF;
   
+  /* Secondary Purple / Violet Accent */
+  --accent-purple: #8B5CF6;
+  --accent-purple-hover: #7C3AED;
+  --accent-purple-soft: rgba(139, 92, 246, 0.15);
+  --accent-purple-border: rgba(139, 92, 246, 0.30);
+  --accent-purple-text: #C4B5FD;
+  --accent-purple-light: rgba(139, 92, 246, 0.15);
+  
+  /* AI Accent */
+  --ai: #A78BFA;
+  --ai-hover: #8B5CF6;
+  --ai-soft: rgba(167, 139, 250, 0.15);
+  --ai-border: rgba(167, 139, 250, 0.30);
+  --ai-text: #C4B5FD;
+
+  /* Selection & Card Active States */
+  --selection-bg: rgba(99, 102, 241, 0.08);
+  --selection-border: rgba(99, 102, 241, 0.30);
+  --selection-text: #A5B4FC;
+  
+  /* Simulated Badge */
+  --badge-simulated-bg: rgba(59, 7, 100, 0.30);
+  --badge-simulated-border: rgba(147, 51, 234, 0.40);
+  --badge-simulated-text: #A5B4FC;
+  --badge-simulated-dot: #8B5CF6;
+
+  /* Status Colors */
+  --status-up: #10B981;
+  --status-up-soft: rgba(16, 185, 129, 0.12);
+  --status-up-border: rgba(16, 185, 129, 0.25);
+  --status-up-text: #34D399;
+
+  --status-down: #FF5C5C;
+  --status-down-soft: rgba(255, 92, 92, 0.12);
+  --status-down-border: rgba(255, 92, 92, 0.25);
+  --status-down-text: #FB7185;
+
+  --status-warning: #F5B942;
+  --status-warning-soft: rgba(245, 185, 66, 0.12);
+  --status-warning-border: rgba(245, 185, 66, 0.25);
+  --status-warning-text: #FBBF24;
+
+  --status-neutral: #64748B;
+  --status-neutral-soft: rgba(100, 116, 139, 0.15);
+  --status-neutral-border: rgba(100, 116, 139, 0.25);
+  --status-neutral-text: #94A3B8;
+
+  /* Functional Utilities */
   --info: #38BDF8;
   --info-soft: rgba(56, 189, 248, 0.12);
   
@@ -87,13 +212,14 @@
   
   --danger: #FF5C5C;
   --danger-soft: rgba(255, 92, 92, 0.12);
-  
-  --ai: #A78BFA;
-  --ai-soft: rgba(167, 139, 250, 0.15);
 
-  --glass-bg: rgba(19, 24, 35, 0.85);
-  --glass-border: rgba(38, 48, 66, 0.8);
+  /* Glassmorphism */
+  --glass-bg: rgba(17, 22, 34, 0.85);
+  --glass-border: rgba(30, 38, 56, 0.8);
   --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+
+  /* Slider Track */
+  --slider-track-empty: #1E2638;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -108,6 +234,12 @@
   --color-surface-active: var(--surface-active);
   --color-surface-subtle: var(--surface-subtle);
   --color-surface-raised: var(--surface-raised);
+  
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-active: var(--sidebar-active);
+  
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   
@@ -115,14 +247,59 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
   
+  /* Brand Tokens */
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
   --color-brand-soft: var(--brand-soft);
+  --color-brand-subtle: var(--brand-subtle);
+  --color-brand-border: var(--brand-border);
   --color-brand-strong: var(--brand-strong);
+  --color-brand-text: var(--brand-text);
+  --color-brand-light: var(--brand-light);
   
   --color-tertiary: var(--tertiary);
   --color-tertiary-hover: var(--tertiary-hover);
   --color-on-primary: var(--on-primary);
+
+  /* Purple / Violet Accent Tokens */
+  --color-purple-accent: var(--accent-purple);
+  --color-purple-hover: var(--accent-purple-hover);
+  --color-purple-soft: var(--accent-purple-soft);
+  --color-purple-border: var(--accent-purple-border);
+  --color-purple-text: var(--accent-purple-text);
+  --color-purple-light: var(--accent-purple-light);
+
+  /* Selection Tokens */
+  --color-selection-bg: var(--selection-bg);
+  --color-selection-border: var(--selection-border);
+  --color-selection-text: var(--selection-text);
+
+  /* Badge Tokens */
+  --color-badge-simulated-bg: var(--badge-simulated-bg);
+  --color-badge-simulated-border: var(--badge-simulated-border);
+  --color-badge-simulated-text: var(--badge-simulated-text);
+  --color-badge-simulated-dot: var(--badge-simulated-dot);
+
+  /* Status Colors */
+  --color-status-up: var(--status-up);
+  --color-status-up-soft: var(--status-up-soft);
+  --color-status-up-border: var(--status-up-border);
+  --color-status-up-text: var(--status-up-text);
+
+  --color-status-down: var(--status-down);
+  --color-status-down-soft: var(--status-down-soft);
+  --color-status-down-border: var(--status-down-border);
+  --color-status-down-text: var(--status-down-text);
+
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-soft: var(--status-warning-soft);
+  --color-status-warning-border: var(--status-warning-border);
+  --color-status-warning-text: var(--status-warning-text);
+
+  --color-status-neutral: var(--status-neutral);
+  --color-status-neutral-soft: var(--status-neutral-soft);
+  --color-status-neutral-border: var(--status-neutral-border);
+  --color-status-neutral-text: var(--status-neutral-text);
   
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
@@ -137,7 +314,10 @@
   --color-danger-soft: var(--danger-soft);
   
   --color-ai: var(--ai);
+  --color-ai-hover: var(--ai-hover);
   --color-ai-soft: var(--ai-soft);
+  --color-ai-border: var(--ai-border);
+  --color-ai-text: var(--ai-text);
   
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -259,4 +439,115 @@ input[type="range"].custom-slider::-moz-range-thumb {
 .dark input[type="range"].custom-slider::-moz-range-thumb {
   background: #ffffff;
 }
+
+/* ==========================================================================
+   Wallflower Semantic Utility Classes (Reusable without hardcoding hex codes)
+   ========================================================================== */
+
+/* Primary Gradient CTA Button */
+.btn-gradient {
+  background: linear-gradient(to right, #6366F1, #8B5CF6);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.btn-gradient:hover {
+  opacity: 0.96;
+  filter: brightness(1.04);
+}
+.btn-gradient:active {
+  transform: scale(0.98);
+}
+
+/* Soft Purple Action Button */
+.btn-purple-soft {
+  background: rgba(99, 102, 241, 0.10);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.20);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.dark .btn-purple-soft {
+  color: #A5B4FC;
+}
+.btn-purple-soft:hover {
+  background: rgba(99, 102, 241, 0.20);
+}
+
+/* Selected Card Active State */
+.card-selected {
+  border-color: rgba(99, 102, 241, 0.40);
+  background-color: rgba(99, 102, 241, 0.10);
+  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.12);
+}
+.dark .card-selected {
+  border-color: rgba(99, 102, 241, 0.30);
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+/* Simulated Pill Badge */
+.badge-simulated {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--badge-simulated-bg);
+  color: var(--badge-simulated-text);
+  border: 1px solid var(--badge-simulated-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Recommended Pill Badge */
+.badge-recommended {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #6366F1, #8B5CF6);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.30);
+}
+
+/* Brand Input Focus Ring */
+.input-brand-focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25);
+}
+
+/* Active Tab Indicator Bar */
+.tab-active-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #6366F1, #8B5CF6);
+  border-radius: 9999px;
+}
+
+/* ── Thai Language Typography Enhancements ───────────────────────────── */
+html[lang="th"] {
+  font-family: var(--font-noto-thai), var(--font-inter), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+html[lang="th"] h1,
+html[lang="th"] h2,
+html[lang="th"] h3,
+html[lang="th"] h4,
+html[lang="th"] p,
+html[lang="th"] span,
+html[lang="th"] button {
+  letter-spacing: normal;
+}
+
 

@@ -114,7 +114,7 @@ export function StepInventory({
                 })
               }
               placeholder="350,000"
-              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors font-mono font-medium"
+              className="w-full pl-8 pr-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors font-mono font-medium"
             />
           </div>
         </div>
@@ -128,7 +128,7 @@ export function StepInventory({
             {inv.categories.map((cat) => (
               <span
                 key={cat}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC] border border-[#6366F1]/20"
               >
                 <span>{cat}</span>
                 <button
@@ -153,7 +153,7 @@ export function StepInventory({
               <button
                 type="button"
                 onClick={handleAddCategory}
-                className="p-1 text-text-muted hover:text-emerald-600 cursor-pointer"
+                className="p-1 text-text-muted hover:text-[#4F46E5] dark:hover:text-[#A5B4FC] cursor-pointer"
               >
                 <Plus className="size-3.5" />
               </button>
@@ -234,7 +234,7 @@ export function StepInventory({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Continue</span>
           <ArrowRight className="size-3.5" />

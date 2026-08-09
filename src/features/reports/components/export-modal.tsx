@@ -1,8 +1,8 @@
+// src/features/reports/components/export-modal.tsx
 'use client';
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import {
   FileText,
@@ -25,7 +25,7 @@ function PdfIcon({ className }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Document page outline with folded top-right corner */}
+      {/* Document page outline */}
       <path
         d="M10 4 H26 L34 12 V34 C34 36.2 32.2 38 30 38 H10 C7.8 38 6 36.2 6 34 V8 C6 5.8 7.8 4 10 4 Z"
         fill="#FFFFFF"
@@ -41,7 +41,7 @@ function PdfIcon({ className }: { className?: string }) {
         strokeWidth="2.5"
         strokeLinejoin="round"
       />
-      {/* Grey text lines inside top half of document */}
+      {/* Grey text lines */}
       <line x1="12" y1="11" x2="24" y2="11" stroke="#9CA3AF" strokeWidth="1.75" strokeLinecap="round" />
       <line x1="12" y1="15" x2="28" y2="15" stroke="#9CA3AF" strokeWidth="1.75" strokeLinecap="round" />
       <line x1="12" y1="19" x2="28" y2="19" stroke="#9CA3AF" strokeWidth="1.75" strokeLinecap="round" />
@@ -83,13 +83,13 @@ function ExcelIcon({ className }: { className?: string }) {
         stroke="#107C41"
         strokeWidth="2.5"
       />
-      {/* Grid horizontal row lines inside spreadsheet */}
+      {/* Grid horizontal row lines */}
       <line x1="21" y1="11" x2="31" y2="11" stroke="#107C41" strokeWidth="2" strokeLinecap="round" />
       <line x1="21" y1="16" x2="31" y2="16" stroke="#107C41" strokeWidth="2" strokeLinecap="round" />
       <line x1="21" y1="21" x2="31" y2="21" stroke="#107C41" strokeWidth="2" strokeLinecap="round" />
       <line x1="21" y1="26" x2="31" y2="26" stroke="#107C41" strokeWidth="2" strokeLinecap="round" />
 
-      {/* Left Green Perspective Cover with large white 'X' */}
+      {/* Left Green Cover with white 'X' */}
       <path
         d="M4 8 L17 4 V36 L4 32 Z"
         fill="#107C41"
@@ -131,27 +131,27 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-surface border border-border-strong rounded-2xl shadow-2xl space-y-5 p-6 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#1E2638] rounded-2xl shadow-2xl space-y-5 p-6 animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border/60 pb-3">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-3.5">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-tertiary/15 text-tertiary">
+              <div className="size-7 rounded-lg bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center">
                 <FileText className="size-4" />
               </div>
-              <h3 className="font-display text-base font-bold text-text-primary">
+              <h3 className="font-display text-base font-bold text-[#0F172A] dark:text-white">
                 Export Report
               </h3>
             </div>
-            <p className="text-xs text-text-secondary">
-              Choose format and customize your report
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+              Choose format and customize your exported document.
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>
@@ -159,7 +159,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
 
         {/* Formats Grid */}
         <div className="space-y-2">
-          <label className="text-[11px] font-bold text-text-muted uppercase tracking-wider block">
+          <label className="text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
             Export Format
           </label>
           <div className="grid grid-cols-3 gap-2.5">
@@ -170,15 +170,15 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               className={cn(
                 'flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer space-y-1.5',
                 format === 'pdf'
-                  ? 'border-red-500 bg-red-500/10 text-red-600 dark:text-red-400 shadow-2xs font-bold'
-                  : 'border-border bg-surface-subtle/50 text-text-secondary hover:border-red-400/50 hover:bg-red-500/5'
+                  ? 'border-rose-500 bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-2xs font-bold'
+                  : 'border-slate-200 dark:border-[#1E2638] bg-[#F8FAFC] dark:bg-[#0B0F17] text-[#64748B] dark:text-[#94A3B8] hover:border-rose-400/50 hover:bg-rose-500/5'
               )}
             >
               <PdfIcon />
               <div>
-                <span className="text-xs block font-bold text-red-600 dark:text-red-400">PDF</span>
-                <span className="text-[9px] text-text-muted font-normal block leading-tight">
-                  Best for sharing & printing
+                <span className="text-xs block font-bold text-rose-600 dark:text-rose-400">PDF</span>
+                <span className="text-[9px] text-[#94A3B8] font-normal block leading-tight">
+                  Print & share
                 </span>
               </div>
             </button>
@@ -191,16 +191,16 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
                 'flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer space-y-1.5',
                 format === 'excel'
                   ? 'border-emerald-600 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-2xs font-bold'
-                  : 'border-border bg-surface-subtle/50 text-text-secondary hover:border-emerald-400/50 hover:bg-emerald-500/5'
+                  : 'border-slate-200 dark:border-[#1E2638] bg-[#F8FAFC] dark:bg-[#0B0F17] text-[#64748B] dark:text-[#94A3B8] hover:border-emerald-400/50 hover:bg-emerald-500/5'
               )}
             >
               <ExcelIcon />
               <div>
-                <span className={cn('text-xs block font-bold', format === 'excel' ? 'text-emerald-600 dark:text-emerald-400' : 'text-text-primary')}>
+                <span className={cn('text-xs block font-bold', format === 'excel' ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#0F172A] dark:text-white')}>
                   Excel
                 </span>
-                <span className="text-[9px] text-text-muted font-normal block leading-tight">
-                  Best for data analysis
+                <span className="text-[9px] text-[#94A3B8] font-normal block leading-tight">
+                  Data analysis
                 </span>
               </div>
             </button>
@@ -212,28 +212,28 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               className={cn(
                 'flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer space-y-1.5',
                 format === 'print'
-                  ? 'border-tertiary bg-tertiary/10 text-tertiary shadow-2xs font-bold'
-                  : 'border-border bg-surface-subtle/50 text-text-secondary hover:border-border-strong hover:text-text-primary'
+                  ? 'border-[#6366F1] bg-[#6366F1]/10 text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs font-bold'
+                  : 'border-slate-200 dark:border-[#1E2638] bg-[#F8FAFC] dark:bg-[#0B0F17] text-[#64748B] dark:text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#0F172A] dark:hover:text-white'
               )}
             >
-              <Printer className="size-5" />
+              <Printer className="size-6 text-[#6366F1] dark:text-[#A5B4FC]" />
               <div>
                 <span className="text-xs block font-bold">Print</span>
-                <span className="text-[9px] text-text-muted font-normal block leading-tight">
-                  Print-ready format
+                <span className="text-[9px] text-[#94A3B8] font-normal block leading-tight">
+                  Hard copy
                 </span>
               </div>
             </button>
           </div>
         </div>
 
-        {/* Include Options (Checkboxes) */}
+        {/* Include Options */}
         <div className="space-y-2.5 pt-1">
-          <label className="text-[11px] font-bold text-text-muted uppercase tracking-wider block">
+          <label className="text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
             Include in Report
           </label>
 
-          <div className="space-y-2 text-xs font-medium text-text-primary">
+          <div className="space-y-2 text-xs font-medium text-[#0F172A] dark:text-white">
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -243,15 +243,15 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               />
               <div
                 className={cn(
-                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  'size-4.5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#6366F1]',
                   includeCharts
-                    ? 'bg-tertiary border-tertiary text-on-primary'
-                    : 'border-border-strong bg-surface'
+                    ? 'bg-[#6366F1] border-[#6366F1] text-white'
+                    : 'border-slate-300 dark:border-[#2A344A] bg-[#F8FAFC] dark:bg-[#0B0F17]'
                 )}
               >
-                {includeCharts && <Check className="size-3.5 stroke-[3]" />}
+                {includeCharts && <Check className="size-3 stroke-[3]" />}
               </div>
-              <span>Include Charts & Graphs</span>
+              <span>Include Charts & Sparklines</span>
             </label>
 
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -263,15 +263,15 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               />
               <div
                 className={cn(
-                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  'size-4.5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#6366F1]',
                   includeAI
-                    ? 'bg-tertiary border-tertiary text-on-primary'
-                    : 'border-border-strong bg-surface'
+                    ? 'bg-[#6366F1] border-[#6366F1] text-white'
+                    : 'border-slate-300 dark:border-[#2A344A] bg-[#F8FAFC] dark:bg-[#0B0F17]'
                 )}
               >
-                {includeAI && <Check className="size-3.5 stroke-[3]" />}
+                {includeAI && <Check className="size-3 stroke-[3]" />}
               </div>
-              <span>Include AI Insights</span>
+              <span>Include AI Strategic Insights</span>
             </label>
 
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -283,15 +283,15 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               />
               <div
                 className={cn(
-                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  'size-4.5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#6366F1]',
                   includeRisk
-                    ? 'bg-tertiary border-tertiary text-on-primary'
-                    : 'border-border-strong bg-surface'
+                    ? 'bg-[#6366F1] border-[#6366F1] text-white'
+                    : 'border-slate-300 dark:border-[#2A344A] bg-[#F8FAFC] dark:bg-[#0B0F17]'
                 )}
               >
-                {includeRisk && <Check className="size-3.5 stroke-[3]" />}
+                {includeRisk && <Check className="size-3 stroke-[3]" />}
               </div>
-              <span>Include Risk Assessment</span>
+              <span>Include Risk Assessment Matrix</span>
             </label>
 
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
@@ -303,23 +303,23 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               />
               <div
                 className={cn(
-                  'size-5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-tertiary',
+                  'size-4.5 rounded-md border flex items-center justify-center shrink-0 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#6366F1]',
                   includeAssumptions
-                    ? 'bg-tertiary border-tertiary text-on-primary'
-                    : 'border-border-strong bg-surface'
+                    ? 'bg-[#6366F1] border-[#6366F1] text-white'
+                    : 'border-slate-300 dark:border-[#2A344A] bg-[#F8FAFC] dark:bg-[#0B0F17]'
                 )}
               >
-                {includeAssumptions && <Check className="size-3.5 stroke-[3]" />}
+                {includeAssumptions && <Check className="size-3 stroke-[3]" />}
               </div>
-              <span>Include Assumptions</span>
+              <span>Include Model Assumptions</span>
             </label>
           </div>
         </div>
 
         {/* Page Setup Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-border/60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-[#1E2638]">
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
               Page Size
             </span>
             <Select
@@ -334,7 +334,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
               Orientation
             </span>
             <Select
@@ -349,28 +349,24 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-border/60">
-          <Button
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-[#1E2638]">
+          <button
             type="button"
-            variant="outline"
-            size="sm"
             onClick={onClose}
-            className="text-xs font-semibold cursor-pointer border-border-strong px-4"
+            className="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
           >
             Cancel
-          </Button>
+          </button>
 
-          <Button
+          <button
             type="button"
-            variant="primary"
-            size="sm"
             onClick={handleExport}
             disabled={isExporting}
-            className="text-xs font-bold gap-1.5 cursor-pointer bg-tertiary text-on-primary hover:bg-tertiary-hover shadow-2xs px-4"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-md shadow-indigo-500/25 hover:opacity-95 hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             {isExporting ? (
               <>
-                <div className="size-3.5 rounded-full border-2 border-on-primary border-t-transparent animate-spin" />
+                <div className="size-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 <span>Exporting...</span>
               </>
             ) : (
@@ -379,7 +375,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
                 <span>Export Report</span>
               </>
             )}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

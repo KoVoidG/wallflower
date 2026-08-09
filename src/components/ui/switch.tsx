@@ -1,3 +1,4 @@
+// src/components/ui/switch.tsx
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -26,8 +27,8 @@ export function Switch({
       disabled={disabled}
       onClick={() => !disabled && onCheckedChange(!checked)}
       className={cn(
-        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tertiary focus-visible:ring-offset-2',
-        checked ? 'bg-tertiary' : 'bg-slate-300 dark:bg-zinc-700',
+        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#6366F1] focus-visible:ring-offset-2',
+        checked ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6]' : 'bg-slate-300 dark:bg-zinc-700',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}

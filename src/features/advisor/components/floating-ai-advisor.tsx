@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'motion/react';
-import { usePathname } from '@/lib/i18n/navigation';
+import { useLocale } from 'next-intl';
+import { usePathname, Link } from '@/lib/i18n/navigation';
 import {
   Clock,
   Plus,
@@ -17,7 +18,6 @@ import {
 import { cn } from '@/lib/utils';
 import { useAdvisorDrawer } from '../context/advisor-drawer-context';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/lib/i18n/navigation';
 import { BotAvatar } from '@/components/ui/bot-avatar';
 
 export interface AdvisorMessage {
@@ -206,7 +206,29 @@ const PRESET_QUICK_QUESTIONS: Record<string, string[]> = {
   ],
 };
 
+const PRESET_QUICK_QUESTIONS_TH: Record<string, string[]> = {
+  business: [
+    'ทำไมมูลค่าสินค้าคงคลังเคลื่อนไหวช้าถึงอยู่ที่ ฿120,000?',
+    'หมวดหมู่สินค้าใดสร้างอัตรากำไรสูงสุด?',
+    'ความเสี่ยงสินค้าขาดสต็อกของเราอยู่ในระดับใด?',
+    'จะปรับปรุงอัตราต้นทุนแรงงานและพนักงานอย่างไร?',
+  ],
+  simulations: [
+    'การปรับขึ้นราคา 10% จะส่งผลต่ออัตรากำไรอย่างไร?',
+    'ธุรกิจสามารถจ้างพนักงานเพิ่มได้หรือไม่ในตอนนี้?',
+    'จะเกิดอะไรขึ้นหากต้นทุนซัพพลายเออร์เพิ่มขึ้น 5%?',
+  ],
+  default: [
+    'ทำไมเงินสดสำรองถึงลดลงในเดือนนี้?',
+    'ความเสี่ยงใดที่ควรจัดการเป็นอันดับแรก?',
+    'อะไรคือสาเหตุของลูกหนี้การค้าที่เกินกำหนด?',
+    'จะปรับปรุงคะแนนเงินทุนหมุนเวียนได้อย่างไร?',
+  ],
+};
+
 export function FloatingAIAdvisor() {
+  const locale = useLocale();
+  const isThai = locale === 'th';
   const pathname = usePathname();
   const { isOpen, closeAdvisor, pendingQuery, clearPendingQuery } =
     useAdvisorDrawer();
@@ -389,48 +411,87 @@ export function FloatingAIAdvisor() {
 
       setTimeout(() => {
         setIsGenerating(false);
-        const advMsg: AdvisorMessage = {
-          id: `adv-${Date.now()}`,
-          sender: 'advisor',
-          timestamp: new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-          directAnswer: `Analysis grounded in ${getCurrentContextTag()}: Regarding "${query}", your current cash buffer is ฿245,000 with a monthly net operating burn of ฿12,400.`,
-          usedSignals: [
-            'Usable Cash (฿245,000)',
-            'Runway (2.1 mo)',
-            'DSO (45 days)',
-          ],
-          evidence: [
-            {
-              label: 'Current Buffer',
-              value: '฿245,000',
-              note: 'May 2024 Verified',
-            },
-            {
-              label: 'Operating Margin',
-              value: '+14.2%',
-              note: 'Trailing 3-month avg',
-            },
-          ],
-          interpretation:
-            'Grounded data shows stable operational revenue. Reviewing overdue receivables or running a sensitivity simulation will help maintain your 6-month target runway.',
-          recommendedAction: {
-            title: 'Run Scenario Simulation in Decision Planner',
-            description:
-              'Simulate revenue growth and expense levers to evaluate runway impact.',
-            href: '/simulations/new',
-          },
-          followUpPrompts: [
-            'Why did cash runway decrease this month?',
-            'Which risk should I handle first?',
-          ],
-        };
+        const advMsg: AdvisorMessage = isThai
+          ? {
+              id: `adv-${Date.now()}`,
+              sender: 'advisor',
+              timestamp: new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              directAnswer: `ผลการวิเคราะห์ในบริบท ${getCurrentContextTag()}: สำหรับคำถาม "${query}" ปัจจุบันธุรกิจมีเงินสำรองสภาพคล่อง ฿245,000 และมีอัตราการเผาเงินสดสุทธิ ฿12,400 ต่อเดือน`,
+              usedSignals: [
+                'เงินสดที่ใช้ได้ (฿245,000)',
+                'ระยะเวลาเงินสด (2.1 เดือน)',
+                'ระยะเวลาเก็บหนี้ DSO (45 วัน)',
+              ],
+              evidence: [
+                {
+                  label: 'เงินสดสำรองปัจจุบัน',
+                  value: '฿245,000',
+                  note: 'ยืนยันข้อมูลแล้ว',
+                },
+                {
+                  label: 'อัตรากำไรจากการดำเนินงาน',
+                  value: '+14.2%',
+                  note: 'เฉลี่ยย้อนหลัง 3 เดือน',
+                },
+              ],
+              interpretation:
+                'ข้อมูลบ่งชี้ว่ารายได้ดำเนินงานยังอยู่ในเกณฑ์ที่มั่นคง การเร่งติดตามลูกหนี้การค้าที่เกินกำหนดหรือทดลองจำลองสถานการณ์จะช่วยรักษาเงินสำรองให้อยู่ในเป้าหมาย 6 เดือนได้อย่างปลอดภัย',
+              recommendedAction: {
+                title: 'ทดสอบจำลองสถานการณ์ในเครื่องมือวางแผนการตัดสินใจ',
+                description:
+                  'จำลองการเติบโตของรายได้และตัวปรับลดค่าใช้จ่ายเพื่อดูผลกระทบต่อกระแสเงินสด',
+                href: '/simulations/new',
+              },
+              followUpPrompts: [
+                'ทำไมเงินสดสำรองถึงลดลงในเดือนนี้?',
+                'ความเสี่ยงใดที่ควรจัดการเป็นอันดับแรก?',
+              ],
+            }
+          : {
+              id: `adv-${Date.now()}`,
+              sender: 'advisor',
+              timestamp: new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              directAnswer: `Analysis grounded in ${getCurrentContextTag()}: Regarding "${query}", your current cash buffer is ฿245,000 with a monthly net operating burn of ฿12,400.`,
+              usedSignals: [
+                'Usable Cash (฿245,000)',
+                'Runway (2.1 mo)',
+                'DSO (45 days)',
+              ],
+              evidence: [
+                {
+                  label: 'Current Buffer',
+                  value: '฿245,000',
+                  note: 'May 2024 Verified',
+                },
+                {
+                  label: 'Operating Margin',
+                  value: '+14.2%',
+                  note: 'Trailing 3-month avg',
+                },
+              ],
+              interpretation:
+                'Grounded data shows stable operational revenue. Reviewing overdue receivables or running a sensitivity simulation will help maintain your 6-month target runway.',
+              recommendedAction: {
+                title: 'Run Scenario Simulation in Decision Planner',
+                description:
+                  'Simulate revenue growth and expense levers to evaluate runway impact.',
+                href: '/simulations/new',
+              },
+              followUpPrompts: [
+                'Why did cash runway decrease this month?',
+                'Which risk should I handle first?',
+              ],
+            };
         setMessages((prev) => [...prev, advMsg]);
       }, 600);
     },
-    [inputText, isGenerating, getCurrentContextTag],
+    [inputText, isGenerating, getCurrentContextTag, isThai],
   );
 
   // Handle incoming pending query when opened via global trigger
@@ -506,8 +567,9 @@ export function FloatingAIAdvisor() {
     : pathname.includes('simulations')
       ? 'simulations'
       : 'default';
+  const questionsBank = isThai ? PRESET_QUICK_QUESTIONS_TH : PRESET_QUICK_QUESTIONS;
   const quickQuestions =
-    PRESET_QUICK_QUESTIONS[currentContextKey] || PRESET_QUICK_QUESTIONS.default;
+    questionsBank[currentContextKey] || questionsBank.default;
 
   return (
     <AnimatePresence>
@@ -627,10 +689,10 @@ export function FloatingAIAdvisor() {
                     ? 'bg-tertiary/15 text-tertiary border border-tertiary/30'
                     : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                 )}
-                title="Toggle Conversation History Drawer"
+                title={isThai ? 'ประวัติการสนทนา' : 'Toggle Conversation History Drawer'}
               >
                 <Clock className="size-3.5" />
-                <span className="hidden sm:inline">History</span>
+                <span className="hidden sm:inline">{isThai ? 'ประวัติ' : 'History'}</span>
               </button>
 
               {/* New Chat Button */}
@@ -638,7 +700,7 @@ export function FloatingAIAdvisor() {
                 type="button"
                 onClick={handleNewChat}
                 className="p-1.5 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors cursor-pointer"
-                title="Start New Conversation"
+                title={isThai ? 'เริ่มการสนทนาใหม่' : 'Start New Conversation'}
               >
                 <Plus className="size-4" />
               </button>
@@ -648,7 +710,7 @@ export function FloatingAIAdvisor() {
                 type="button"
                 onClick={closeAdvisor}
                 className="p-1.5 rounded-md text-text-secondary hover:bg-danger/15 hover:text-danger transition-colors cursor-pointer"
-                title="Close AI Advisor"
+                title={isThai ? 'ปิด AI ที่ปรึกษา' : 'Close AI Advisor'}
               >
                 <X className="size-4" />
               </button>
@@ -667,7 +729,7 @@ export function FloatingAIAdvisor() {
               {/* Drawer Header */}
               <div className="p-3 border-b border-border/80 flex items-center justify-between bg-surface-subtle/50 shrink-0">
                 <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Conversation History
+                  {isThai ? 'ประวัติการสนทนา' : 'Conversation History'}
                 </span>
                 <button
                   type="button"
@@ -684,7 +746,7 @@ export function FloatingAIAdvisor() {
                   <Search className="size-3.5 text-text-secondary absolute left-2.5 top-2.5" />
                   <input
                     type="text"
-                    placeholder="Search history..."
+                    placeholder={isThai ? 'ค้นหาประวัติ...' : 'Search history...'}
                     value={historySearch}
                     onChange={(e) => setHistorySearch(e.target.value)}
                     className="w-full bg-surface-hover text-xs text-text-primary pl-8 pr-3 py-1.5 rounded-md border border-border focus:outline-none focus:border-tertiary"
@@ -696,7 +758,7 @@ export function FloatingAIAdvisor() {
               <div className="flex-1 overflow-y-auto p-2 space-y-2">
                 {filteredHistory.length === 0 ? (
                   <div className="p-4 text-center text-xs text-text-secondary">
-                    No matching conversations
+                    {isThai ? 'ไม่พบประวัติการสนทนา' : 'No matching conversations'}
                   </div>
                 ) : (
                   filteredHistory.map((item) => {
@@ -897,8 +959,9 @@ export function FloatingAIAdvisor() {
                   <div className="p-3 rounded-xl border border-border bg-surface-subtle flex items-center gap-2 text-xs text-text-secondary">
                     <span className="size-2 rounded-full bg-tertiary animate-ping" />
                     <span>
-                      Analyzing data signals & preparing grounded
-                      recommendation...
+                      {isThai
+                        ? 'กำลังวิเคราะห์สัญญาณข้อมูลและจัดเตรียมคำแนะนำ...'
+                        : 'Analyzing data signals & preparing grounded recommendation...'}
                     </span>
                   </div>
                 )}
@@ -914,7 +977,11 @@ export function FloatingAIAdvisor() {
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={`Ask AI Advisor about ${getCurrentContextTag()}...`}
+                    placeholder={
+                      isThai
+                        ? `ถาม AI ที่ปรึกษาเกี่ยวกับ ${getCurrentContextTag()}...`
+                        : `Ask AI Advisor about ${getCurrentContextTag()}...`
+                    }
                     className="w-full bg-surface text-xs text-text-primary pr-10 pl-3 py-2.5 rounded-xl border border-border focus:outline-none focus:border-tertiary resize-none"
                   />
                   <button

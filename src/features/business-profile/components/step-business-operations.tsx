@@ -76,7 +76,7 @@ export function StepBusinessOperations({
               min="0"
               value={ops.employees}
               onChange={(e) => updateOps({ employees: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors"
+              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
             />
           </div>
 
@@ -114,7 +114,7 @@ export function StepBusinessOperations({
               min="0"
               value={ops.transactionsPerDay}
               onChange={(e) => updateOps({ transactionsPerDay: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors"
+              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export function StepBusinessOperations({
               min="0"
               value={ops.customersPerDay}
               onChange={(e) => updateOps({ customersPerDay: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors"
+              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
             />
           </div>
 
@@ -143,7 +143,7 @@ export function StepBusinessOperations({
               min="0"
               value={ops.suppliersCount}
               onChange={(e) => updateOps({ suppliersCount: parseInt(e.target.value) || 0 })}
-              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors"
+              className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors"
             />
           </div>
         </div>
@@ -158,7 +158,7 @@ export function StepBusinessOperations({
             value={ops.businessNotes || ''}
             onChange={(e) => updateOps({ businessNotes: e.target.value })}
             placeholder="e.g. Business highlights, special services, target customers..."
-            className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-emerald-600 transition-colors resize-none"
+            className="w-full px-3.5 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/25 transition-colors resize-none"
           />
         </div>
       </div>
@@ -178,7 +178,7 @@ export function StepBusinessOperations({
         <Button
           type="button"
           onClick={onNext}
-          className="text-xs font-bold gap-1.5 cursor-pointer bg-emerald-600 text-white dark:text-on-primary hover:bg-emerald-700 shadow-2xs px-5"
+          className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-5 border-0"
         >
           <span>Continue</span>
           <ArrowRight className="size-3.5" />

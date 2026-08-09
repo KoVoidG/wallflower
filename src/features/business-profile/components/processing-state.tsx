@@ -63,16 +63,16 @@ export function ProcessingState({ onComplete }: ProcessingStateProps) {
     <FadeIn>
       <div className="flex flex-col items-center justify-center py-10 px-4 text-center max-w-lg mx-auto space-y-6 animate-in fade-in zoom-in-95 duration-300">
         {/* Animated Icon Header */}
-        <div className="relative flex size-16 items-center justify-center rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-md">
+        <div className="relative flex size-16 items-center justify-center rounded-2xl bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] dark:text-[#A5B4FC] shadow-md">
           <Loader2 className="size-8 animate-spin" />
-          <div className="absolute -bottom-1 -right-1 p-1 rounded-full bg-emerald-600 text-white shadow-xs">
+          <div className="absolute -bottom-1 -right-1 p-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-xs">
             <Sparkles className="size-3" />
           </div>
         </div>
 
         {/* Headline & Subtitle */}
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-bold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#6366F1]/10 text-[#4F46E5] dark:text-[#A5B4FC] border border-[#6366F1]/20 text-[11px] font-bold">
             <ShieldCheck className="size-3.5" />
             <span>Data Quality Check & Model Generation</span>
           </div>
@@ -91,11 +91,11 @@ export function ProcessingState({ onComplete }: ProcessingStateProps) {
             <span className="text-text-muted uppercase tracking-wider text-[10px]">
               Processing Data
             </span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">{progressPct}%</span>
+            <span className="font-mono text-[#4F46E5] dark:text-[#A5B4FC] font-extrabold">{progressPct}%</span>
           </div>
           <div className="w-full h-2.5 bg-surface border border-border rounded-full overflow-hidden p-0.5 shadow-2xs">
             <div
-              className="h-full bg-emerald-600 rounded-full transition-all duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -113,16 +113,16 @@ export function ProcessingState({ onComplete }: ProcessingStateProps) {
                 className={cn(
                   'flex items-center gap-3 p-2 rounded-xl transition-all duration-200',
                   isDone
-                    ? 'text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-500/5'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold bg-[#6366F1]/5'
                     : isCurrent
-                    ? 'text-emerald-600 font-bold bg-surface border border-emerald-500/20 shadow-2xs'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold bg-surface border border-[#6366F1]/20 shadow-2xs'
                     : 'text-text-muted opacity-50'
                 )}
               >
                 {isDone ? (
-                  <CheckCircle2 className="size-4 shrink-0 text-emerald-600 stroke-[2.5]" />
+                  <CheckCircle2 className="size-4 shrink-0 text-[#6366F1] stroke-[2.5]" />
                 ) : isCurrent ? (
-                  <Loader2 className="size-4 shrink-0 animate-spin text-emerald-600" />
+                  <Loader2 className="size-4 shrink-0 animate-spin text-[#6366F1]" />
                 ) : (
                   <div className="size-4 rounded-full border border-border shrink-0" />
                 )}

@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { OnboardingForm } from '@/features/business-profile/components/onboarding-form';
-import { DraftBanner } from '@/features/business-profile/components/draft-banner';
 import { PrivacyNotice } from '@/features/business-profile/components/privacy-notice';
 import { onboardingService } from '@/features/business-profile/services/onboarding.service';
 import { Skeleton, SkeletonText } from '@/components/ui/skeleton';
@@ -37,8 +36,7 @@ export default function OnboardingPage() {
   const t = useTranslations('onboarding');
 
   const [pageState, setPageState] = useState<PageState>({ status: 'loading' });
-  const [draftData, setDraftData] = useState<OnboardingData | null>(null);
-  const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [formData, setFormData] = useState<OnboardingData | null>(null);
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
 
   useEffect(() => {
@@ -46,15 +44,14 @@ export default function OnboardingPage() {
 
     async function init() {
       try {
-        // Prototype mode: Allow accessing onboarding page anytime for testing & iteration
+        // Prototype mode: Check if onboarding has baseline or draft data
         if (onboardingService.isOnboardingCompleted()) {
           setIsAlreadyCompleted(true);
         }
 
         const draft = onboardingService.loadDraft();
         if (draft && !cancelled) {
-          setDraftData(draft);
-          setShowDraftBanner(true);
+          setFormData(draft);
         }
 
         if (!cancelled) {
@@ -73,21 +70,10 @@ export default function OnboardingPage() {
     };
   }, []);
 
-  const handleContinueDraft = useCallback(() => {
-    setShowDraftBanner(false);
-  }, []);
-
-  const handleClearDraft = useCallback(() => {
-    onboardingService.clearDraft();
-    setDraftData(null);
-    setShowDraftBanner(false);
-  }, []);
-
   const handleResetBaseline = useCallback(() => {
     onboardingService.resetPrototypeData();
     setIsAlreadyCompleted(false);
-    setDraftData(null);
-    setShowDraftBanner(false);
+    setFormData(null);
     window.location.reload();
   }, []);
 
@@ -120,39 +106,31 @@ export default function OnboardingPage() {
         {pageState.status === 'ready' && (
           <FadeIn>
             <div className="flex flex-col gap-6">
-              {/* Prototype Re-access Notice Banner */}
+              {/* Single Prototype Notice Banner with Purple Theme */}
               {isAlreadyCompleted && (
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-brand/40 bg-brand-soft/20 p-3.5 text-xs text-text-secondary">
+                <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#6366F1]/30 bg-[#6366F1]/10 dark:bg-[#6366F1]/8 p-3.5 text-xs text-text-secondary">
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-brand-soft px-2 py-0.5 font-bold text-brand uppercase tracking-wider text-[10px]">
-                      Development Prototype Mode
+                    <span className="rounded-full bg-[#6366F1]/15 px-2.5 py-0.5 font-bold text-[#4F46E5] dark:text-[#A5B4FC] uppercase tracking-wider text-[10px]">
+                      {t('prototypeMode')}
                     </span>
                     <span>
-                      You have already set up a business baseline. You can re-run onboarding or edit fields anytime.
+                      {t('prototypeNotice')}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleResetBaseline}
-                    className="inline-flex items-center gap-1 font-semibold text-brand hover:underline shrink-0 cursor-pointer"
+                    className="inline-flex items-center gap-1 font-bold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline shrink-0 cursor-pointer"
                   >
                     <RefreshCw className="size-3" />
-                    <span>Reset & Start Fresh</span>
+                    <span>{t('resetStartFresh')}</span>
                   </button>
                 </div>
               )}
 
-              {/* Draft Banner */}
-              {showDraftBanner && draftData && (
-                <DraftBanner
-                  onContinue={handleContinueDraft}
-                  onClear={handleClearDraft}
-                />
-              )}
-
               {/* Redesigned Onboarding Flow Component */}
               <OnboardingForm
-                initialData={draftData || onboardingService.getOnboardingData()}
+                initialData={formData || onboardingService.getOnboardingData()}
                 onSubmitComplete={handleSubmitComplete}
               />
 

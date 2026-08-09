@@ -53,13 +53,13 @@ export default function HelpSupportPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
                     <HelpCircle className="size-5" />
                   </div>
-                  <ArrowRight className="size-4 text-text-muted group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="size-4 text-text-muted group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                     {t('cards.faq.title')}
                   </h3>
                   <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
@@ -76,13 +76,13 @@ export default function HelpSupportPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
                     <BookOpen className="size-5" />
                   </div>
-                  <ArrowRight className="size-4 text-text-muted group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="size-4 text-text-muted group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                     {t('cards.guide.title')}
                   </h3>
                   <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
@@ -99,13 +99,13 @@ export default function HelpSupportPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
                     <FlaskConical className="size-5" />
                   </div>
-                  <ArrowRight className="size-4 text-text-muted group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="size-4 text-text-muted group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                     {t('cards.simulations.title')}
                   </h3>
                   <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
@@ -122,13 +122,13 @@ export default function HelpSupportPage() {
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+                  <div className="p-3 rounded-xl bg-surface-hover text-text-primary border border-border/80 shadow-2xs shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
                     <Mail className="size-5" />
                   </div>
-                  <ArrowRight className="size-4 text-text-muted group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="size-4 text-text-muted group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                 </div>
                 <div>
-                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-display text-sm font-bold text-text-primary group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                     {t('cards.contact.title')}
                   </h3>
                   <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
@@ -156,7 +156,8 @@ export default function HelpSupportPage() {
                     Replay Product Tour
                   </h3>
                   <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
-                    Restart the guided tour of Business Pulse, KPIs, Risks, Simulations, and Support.
+                    Restart the guided tour of Business Pulse, KPIs, Risks,
+                    Simulations, and Support.
                   </p>
                 </div>
               </div>
@@ -167,7 +168,9 @@ export default function HelpSupportPage() {
         {/* Direct Help Info Card */}
         <Card className="p-5 border-border-strong bg-surface space-y-4">
           <div className="border-b border-border/60 pb-3">
-            <h3 className="font-display text-sm font-bold text-text-primary">{t('contactBox.title')}</h3>
+            <h3 className="font-display text-sm font-bold text-text-primary">
+              {t('contactBox.title')}
+            </h3>
             <p className="text-xs text-text-secondary font-medium mt-0.5">
               {t('contactBox.desc')}
             </p>
@@ -177,7 +180,9 @@ export default function HelpSupportPage() {
             <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface-subtle">
               <Mail className="size-4 text-tertiary shrink-0" />
               <div>
-                <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">{t('contactBox.emailLabel')}</span>
+                <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                  {t('contactBox.emailLabel')}
+                </span>
                 <a
                   href="mailto:support@wallflower.app"
                   className="font-bold text-text-primary hover:text-tertiary transition-colors"
@@ -190,8 +195,12 @@ export default function HelpSupportPage() {
             <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface-subtle">
               <Clock className="size-4 text-tertiary shrink-0" />
               <div>
-                <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">{t('contactBox.hoursLabel')}</span>
-                <span className="font-bold text-text-primary">{t('contactBox.hoursValue')}</span>
+                <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                  {t('contactBox.hoursLabel')}
+                </span>
+                <span className="font-bold text-text-primary">
+                  {t('contactBox.hoursValue')}
+                </span>
               </div>
             </div>
           </div>

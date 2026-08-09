@@ -18,7 +18,7 @@ import { AppPage, PageHeader } from '@/components/ui/layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
-import { MonthPicker } from '@/components/ui/month-picker';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Dialog } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -797,10 +797,11 @@ export function DataSourcesView() {
               </div>
 
               <div className="space-y-1">
-                <MonthPicker
-                  label="Reporting Month *"
-                  value={manualMonth}
-                  onChange={(dt) => setManualMonth(dt)}
+                <label className="text-xs font-semibold text-text-primary block">Reporting Month *</label>
+                <DatePicker
+                  value={manualMonth || undefined}
+                  onChange={(dt: Date) => setManualMonth(dt)}
+                  align="start"
                 />
               </div>
 

@@ -28,14 +28,18 @@ export function Expand({ children, open, className }: ExpandProps) {
     <AnimatePresence initial={false}>
       {open && (
         <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
+          initial={{ height: 0, opacity: 0, overflow: 'hidden' }}
+          animate={{
+            height: 'auto',
+            opacity: 1,
+            transitionEnd: { overflow: 'visible' },
+          }}
+          exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
           transition={{
             height: { duration: DURATIONS.cardPanel, ease: EASINGS.default },
             opacity: { duration: DURATIONS.cardPanel * 0.8, ease: EASINGS.default },
           }}
-          className={cn('overflow-hidden', className)}
+          className={cn(className)}
         >
           {children}
         </motion.div>

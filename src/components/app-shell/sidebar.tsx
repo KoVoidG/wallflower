@@ -1,22 +1,20 @@
+// src/components/app-shell/sidebar.tsx
 'use client';
 
+import { useState } from 'react';
 import {
   LayoutDashboard,
   Building2,
   GitPullRequest,
   FileText,
-  PanelLeftClose,
-  PanelLeft,
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import { AccountMenu } from './account-menu';
 import { Logo } from '@/components/ui/logo';
 
 interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
+  className?: string;
 }
 
 interface NavItem {
@@ -24,40 +22,77 @@ interface NavItem {
   label: string;
   href: string;
   tourId: string;
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+  icon: React.ComponentType<{
+    className?: string;
+    strokeWidth?: number;
+    'aria-hidden'?: boolean | 'true' | 'false';
+  }>;
 }
 
 const mainNavItems: readonly NavItem[] = [
-  { key: 'dashboard', label: 'Overview', href: '/dashboard', tourId: 'sidebar-dashboard', icon: LayoutDashboard },
-  { key: 'business', label: 'Business', href: '/business-health', tourId: 'sidebar-business', icon: Building2 },
-  { key: 'planner', label: 'Decision Planner', href: '/simulations', tourId: 'sidebar-planner', icon: GitPullRequest },
-  { key: 'reports', label: 'Reports', href: '/reports', tourId: 'sidebar-reports', icon: FileText },
+  {
+    key: 'dashboard',
+    label: 'Overview',
+    href: '/dashboard',
+    tourId: 'sidebar-dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    key: 'business',
+    label: 'Business',
+    href: '/business-health',
+    tourId: 'sidebar-business',
+    icon: Building2,
+  },
+  {
+    key: 'planner',
+    label: 'Decision Planner',
+    href: '/simulations',
+    tourId: 'sidebar-planner',
+    icon: GitPullRequest,
+  },
+  {
+    key: 'reports',
+    label: 'Reports',
+    href: '/reports',
+    tourId: 'sidebar-reports',
+    icon: FileText,
+  },
 ] as const;
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
-  const t = useTranslations('nav');
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <aside
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        'sidebar-dark fixed inset-y-0 left-0 z-40 flex flex-col border-r border-border bg-surface text-text-primary',
-        'transition-[width] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
-        'motion-reduce:transition-none',
-        collapsed ? 'w-[72px]' : 'w-[230px]'
+        'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[#D5DEEE] dark:border-[#1E2638] bg-[#DEE7F6] dark:bg-[#0B0E14] text-slate-800 dark:text-slate-100',
+        'transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)]',
+        isHovered ? 'w-[230px] shadow-2xl' : 'w-[76px] shadow-xs',
+        className,
       )}
     >
-      {/* Brand */}
-      <div className="flex h-16 items-center border-b border-border px-4 shrink-0 overflow-hidden">
-        <Logo size="sm" showWordmark={!collapsed} />
+      {/* Brand Header with Big Logo */}
+      <div className="flex h-16 items-center px-4 shrink-0 overflow-hidden">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <Logo size={44} showWordmark={isHovered} />
+        </Link>
       </div>
 
       {/* Navigation Groups */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
-        <ul className="flex flex-col gap-1" role="list">
+      <nav
+        className="flex-1 overflow-y-auto px-2.5 py-4"
+        aria-label="Main navigation"
+      >
+        <ul className="flex flex-col gap-1.5" role="list">
           {mainNavItems.map((item) => {
             const isActive =
-              pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(`${item.href}`));
+              pathname === item.href ||
+              (item.href !== '/dashboard' &&
+                pathname.startsWith(`${item.href}`));
             const Icon = item.icon;
             const label = item.label;
 
@@ -67,25 +102,31 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   href={item.href}
                   data-tour={item.tourId}
                   className={cn(
-                    'group flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium',
-                    'transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)]',
-                    'motion-reduce:transition-none',
-                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tertiary',
+                    'group flex items-center gap-3 rounded-xl py-2.5 text-sm font-medium transition-all duration-150',
+                    isHovered
+                      ? 'px-3'
+                      : 'justify-center px-0 w-10 h-10 mx-auto',
+                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
                     isActive
-                      ? 'bg-brand-soft text-tertiary border-l-2 border-l-tertiary font-semibold'
-                      : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
+                      ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-semibold shadow-md shadow-indigo-500/25'
+                      : 'text-[#50617A] hover:text-[#4F46E5] hover:bg-[#6366F1]/12 dark:text-slate-400 dark:hover:text-[#C4B5FD] dark:hover:bg-[#6366F1]/18',
                   )}
                   aria-current={isActive ? 'page' : undefined}
-                  title={collapsed ? label : undefined}
+                  title={!isHovered ? label : undefined}
                 >
                   <Icon
+                    strokeWidth={2}
                     className={cn(
-                      'size-5 shrink-0',
-                      isActive ? 'text-tertiary' : 'text-text-secondary group-hover:text-text-primary'
+                      'size-4.5 shrink-0 transition-colors',
+                      isActive
+                        ? 'text-white'
+                        : 'text-[#50617A] group-hover:text-[#4F46E5] dark:text-slate-400 dark:group-hover:text-[#C4B5FD]',
                     )}
                     aria-hidden="true"
                   />
-                  {!collapsed && <span className="truncate">{label}</span>}
+                  {isHovered && (
+                    <span className="truncate font-semibold">{label}</span>
+                  )}
                 </Link>
               </li>
             );
@@ -93,35 +134,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Account Control Row */}
-      <div data-tour="sidebar-account-menu" className="p-3 my-1 border-t border-border/60 shrink-0">
-        <AccountMenu collapsed={collapsed} align="top" />
-      </div>
-
-      {/* Collapse toggle */}
-      <div className="border-t border-border/60 p-3 shrink-0">
-        <button
-          type="button"
-          onClick={onToggle}
-          className={cn(
-            'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold',
-            'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
-            'transition-colors duration-150',
-            'motion-reduce:transition-none',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tertiary',
-            'cursor-pointer'
-          )}
-          aria-label={collapsed ? t('expand') : t('collapse')}
-        >
-          {collapsed ? (
-            <PanelLeft className="size-5 shrink-0" aria-hidden="true" />
-          ) : (
-            <>
-              <PanelLeftClose className="size-5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{t('collapse')}</span>
-            </>
-          )}
-        </button>
+      {/* Account Control Card at Bottom (No collapse button!) */}
+      <div className="p-2.5 pb-4 shrink-0 border-t border-[#D5DEEE]/80 dark:border-[#1E2638]">
+        <AccountMenu collapsed={!isHovered} align="top" />
       </div>
     </aside>
   );
