@@ -11,7 +11,7 @@ export type TypographyProps = {
 // ── Marketing Scale ──────────────────────────────────────────────────────────
 
 export const MarketingDisplay = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'h1';
+  const Component = (as || 'h1') as any;
   return (
     <Component
       className={cn(
@@ -25,7 +25,7 @@ export const MarketingDisplay = ({ children, className, as }: TypographyProps) =
 };
 
 export const MarketingSectionTitle = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'h2';
+  const Component = (as || 'h2') as any;
   return (
     <Component
       className={cn(
@@ -39,7 +39,7 @@ export const MarketingSectionTitle = ({ children, className, as }: TypographyPro
 };
 
 export const MarketingLead = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'p';
+  const Component = (as || 'p') as any;
   return (
     <Component
       className={cn(
@@ -55,7 +55,7 @@ export const MarketingLead = ({ children, className, as }: TypographyProps) => {
 // ── Application Scale ────────────────────────────────────────────────────────
 
 export const PageTitle = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'h1';
+  const Component = (as || 'h1') as any;
   return (
     <Component
       className={cn(
@@ -69,7 +69,7 @@ export const PageTitle = ({ children, className, as }: TypographyProps) => {
 };
 
 export const PageDescription = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'p';
+  const Component = (as || 'p') as any;
   return (
     <Component
       className={cn('font-sans text-[0.95rem]/[1.6] font-normal text-text-secondary', className)}
@@ -80,7 +80,7 @@ export const PageDescription = ({ children, className, as }: TypographyProps) =>
 };
 
 export const SectionTitle = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'h2';
+  const Component = (as || 'h2') as any;
   return (
     <Component
       className={cn(
@@ -94,7 +94,7 @@ export const SectionTitle = ({ children, className, as }: TypographyProps) => {
 };
 
 export const CardTitle = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'h3';
+  const Component = (as || 'h3') as any;
   return (
     <Component
       className={cn('font-display text-[1.1rem]/[1.4] font-semibold text-text-primary', className)}
@@ -105,7 +105,7 @@ export const CardTitle = ({ children, className, as }: TypographyProps) => {
 };
 
 export const BodyLarge = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'p';
+  const Component = (as || 'p') as any;
   return (
     <Component
       className={cn('font-sans text-[1.05rem]/[1.6] font-normal text-text-secondary', className)}
@@ -116,7 +116,7 @@ export const BodyLarge = ({ children, className, as }: TypographyProps) => {
 };
 
 export const Body = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'p';
+  const Component = (as || 'p') as any;
   return (
     <Component
       className={cn('font-sans text-[0.95rem]/[1.6] font-normal text-text-secondary', className)}
@@ -127,7 +127,7 @@ export const Body = ({ children, className, as }: TypographyProps) => {
 };
 
 export const BodySmall = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'p';
+  const Component = (as || 'p') as any;
   return (
     <Component
       className={cn('font-sans text-[0.85rem]/[1.5] font-normal text-text-secondary', className)}
@@ -138,7 +138,7 @@ export const BodySmall = ({ children, className, as }: TypographyProps) => {
 };
 
 export const Label = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'span';
+  const Component = (as || 'span') as any;
   return (
     <Component
       className={cn('font-mono text-[0.72rem] tracking-[0.05em] uppercase font-medium text-text-secondary', className)}
@@ -149,7 +149,7 @@ export const Label = ({ children, className, as }: TypographyProps) => {
 };
 
 export const Caption = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'span';
+  const Component = (as || 'span') as any;
   return (
     <Component
       className={cn('font-sans text-[0.8rem]/[1.4] font-normal text-text-secondary', className)}
@@ -160,7 +160,7 @@ export const Caption = ({ children, className, as }: TypographyProps) => {
 };
 
 export const MetricValue = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'span';
+  const Component = (as || 'span') as any;
   return (
     <Component
       className={cn(
@@ -174,7 +174,7 @@ export const MetricValue = ({ children, className, as }: TypographyProps) => {
 };
 
 export const TableNumber = ({ children, className, as }: TypographyProps) => {
-  const Component = as || 'span';
+  const Component = (as || 'span') as any;
   return (
     <Component
       className={cn(

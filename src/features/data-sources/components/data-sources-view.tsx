@@ -30,6 +30,7 @@ import {
   type DataSourceItem,
   type MonthlySnapshotHistory,
 } from '../adapters/data-sources.adapter';
+import { OperationalIntegrationsView } from '@/features/integrations/components/operational-integrations-view';
 
 const CATEGORY_FILTER_OPTIONS = [
   { value: 'All', label: 'All categories' },
@@ -44,7 +45,7 @@ export function DataSourcesView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'sources' | 'gaps' | 'connections'>('sources');
+  const [activeTab, setActiveTab] = useState<'sources' | 'gaps' | 'connections' | 'operational'>('sources');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -320,11 +321,12 @@ export function DataSourcesView() {
               { id: 'sources', label: `Sources (${realActiveSources.length})` },
               { id: 'gaps', label: `Data Gaps (${missingImpacts.length})` },
               { id: 'connections', label: `Connections (${externalConnections.length})` },
+              { id: 'operational', label: `Operational Data` },
             ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id as 'sources' | 'gaps' | 'connections')}
+                onClick={() => setActiveTab(tab.id as 'sources' | 'gaps' | 'connections' | 'operational')}
                 className={cn(
                   'px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer',
                   activeTab === tab.id
@@ -709,6 +711,12 @@ export function DataSourcesView() {
                   </table>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'operational' && (
+            <div className="h-[600px] border border-border/60 rounded-xl overflow-hidden bg-surface shadow-2xs">
+              <OperationalIntegrationsView />
             </div>
           )}
 

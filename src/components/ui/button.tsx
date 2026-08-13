@@ -61,7 +61,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Component = (
       asChild ? SlotPrimitive.Slot : 'button'
-    ) as React.ElementType;
+    ) as any;
 
     return (
       <Component

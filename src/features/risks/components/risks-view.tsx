@@ -47,6 +47,7 @@ import {
   type RiskSeverity,
   type RiskCategory,
 } from '../adapters/risks.adapter';
+import { BottleneckAnalysisSection } from './bottleneck-analysis';
 import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/chart-config';
 
 type TriageStageFilter = 'all' | 'action_required' | 'monitoring' | 'mitigating' | 'resolved';
@@ -779,6 +780,9 @@ export function RisksView() {
             </div>
           </Card>
         </FadeInView>
+
+        {/* AI Workflow Bottleneck Analysis Section */}
+        <BottleneckAnalysisSection />
       </div>
     </AppPage>
   );

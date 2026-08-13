@@ -7,6 +7,7 @@ import {
   Building2,
   GitPullRequest,
   FileText,
+  Cpu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
@@ -57,6 +58,13 @@ const mainNavItems: readonly NavItem[] = [
     href: '/reports',
     tourId: 'sidebar-reports',
     icon: FileText,
+  },
+  {
+    key: 'automation',
+    label: 'Automation',
+    href: '/automation',
+    tourId: 'sidebar-automation',
+    icon: Cpu,
   },
 ] as const;
 
