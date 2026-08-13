@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Banknote,
   AlertTriangle,
@@ -49,6 +50,8 @@ import {
 import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/chart-config';
 
 export function CashFlowView() {
+  const t = useTranslations('cashFlow');
+  const tCommon = useTranslations('common');
   const { openDrawer } = useAdvisorDrawer();
   const [data, setData] = useState<CashFlowServiceResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -152,14 +155,14 @@ export function CashFlowView() {
           <div className="space-y-1">
             <div className="flex items-center gap-2.5">
               <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
-                Cash Flow Workspace
+                {t('pageTitle')}
               </h1>
               <Badge variant="healthy" dot>
                 Stable Liquidity
               </Badge>
             </div>
             <p className="text-xs text-text-secondary">
-              Time-based cash forecasting, transaction timeline, and working-capital risk analysis.
+              {t('subtitle')}
             </p>
           </div>
 
@@ -180,7 +183,7 @@ export function CashFlowView() {
               onClick={loadData}
             >
               <RefreshCw className="size-3.5" aria-hidden="true" />
-              <span>Refresh</span>
+              <span>{tCommon('refresh')}</span>
             </Button>
           </div>
         </div>
@@ -225,13 +228,13 @@ export function CashFlowView() {
 
             <div className="space-y-0.5 pt-2 sm:pt-0 sm:px-4">
               <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
-                Estimated Runway
+                {t('runwayMonths')}
               </span>
               <div className="flex items-baseline gap-1">
                 <span className="text-base sm:text-lg font-bold text-warning tabular-nums">
                   {position.estimatedRunwayMonths}
                 </span>
-                <span className="text-xs text-text-muted">months</span>
+                <span className="text-xs text-text-muted">{tCommon('units.months')}</span>
               </div>
               <span className="text-[11px] text-text-muted block">At current burn</span>
             </div>
@@ -267,7 +270,7 @@ export function CashFlowView() {
                         : 'text-text-muted hover:text-text-primary'
                     )}
                   >
-                    All Cases
+                    {t('scenarios.all')}
                   </button>
                   <button
                     type="button"
@@ -279,7 +282,7 @@ export function CashFlowView() {
                         : 'text-text-muted hover:text-text-primary'
                     )}
                   >
-                    Expected
+                    {t('scenarios.expected')}
                   </button>
                   <button
                     type="button"
@@ -291,7 +294,7 @@ export function CashFlowView() {
                         : 'text-text-muted hover:text-text-primary'
                     )}
                   >
-                    Conservative
+                    {t('scenarios.conservative')}
                   </button>
                 </div>
               </div>

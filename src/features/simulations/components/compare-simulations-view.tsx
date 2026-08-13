@@ -307,10 +307,10 @@ export function CompareSimulationsView({
               type="button"
               onClick={handleRunCompare}
               disabled={selectedIds.length === 0}
-              className="inline-flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 cursor-pointer shadow-md shadow-indigo-500/25 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 cursor-pointer shadow-md shadow-indigo-500/25 transition-all disabled:opacity-50"
             >
               <span>Compare</span>
-              <ArrowRight className="size-3.5" />
+              <ArrowRight className="size-4" />
             </button>
           </div>
         </Card>
@@ -630,19 +630,19 @@ export function CompareSimulationsView({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
-                      className="text-xs font-semibold gap-1.5 cursor-pointer rounded-xl"
+                      size="md"
+                      className="text-sm font-semibold gap-1.5 cursor-pointer rounded-xl"
                     >
-                      <Download className="size-3.5" />
+                      <Download className="size-4" />
                       <span>Export Comparison</span>
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
-                      className="text-xs font-semibold gap-1.5 cursor-pointer rounded-xl"
+                      size="md"
+                      className="text-sm font-semibold gap-1.5 cursor-pointer rounded-xl"
                     >
-                      <Save className="size-3.5" />
+                      <Save className="size-4" />
                       <span>Save Report</span>
                     </Button>
                   </div>

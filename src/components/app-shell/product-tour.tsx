@@ -23,12 +23,15 @@ import {
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/components/motion/use-reduced-motion';
 import { H3, Label, BodySmall } from '@/components/ui/typography';
+import { useLocale } from 'next-intl';
 
 export interface SidebarTourStep {
   id: string;
   selector: string;
   title: string;
   desc: string;
+  titleTh?: string;
+  descTh?: string;
   icon: React.ComponentType<{ className?: string }>;
   accent: string; // Tailwind color class for per-step accent variety
 }
@@ -39,6 +42,8 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     selector: '[data-tour="sidebar-dashboard"]',
     title: 'Overview — Executive Cockpit',
     desc: 'Review overall financial posture, cash runway countdown, health scores, and recommended actions at a glance.',
+    titleTh: 'ภาพรวม — ศูนย์ควบคุมผู้บริหาร',
+    descTh: 'ตรวจสอบสถานะทางการเงินโดยรวม ระยะเวลาเงินสดสำรอง คะแนนสุขภาพธุรกิจ และข้อเสนอแนะที่สำคัญในหน้าเดียว',
     icon: LayoutDashboard,
     accent: 'from-[#6366F1] to-[#8B5CF6]',
   },
@@ -47,6 +52,8 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     selector: '[data-tour="sidebar-business"]',
     title: 'Business Diagnostics & Health',
     desc: 'Inspect financial strengths, operating capacity, inventory turnover, and diagnostic metric trends.',
+    titleTh: 'การวินิจฉัยและสุขภาพธุรกิจ',
+    descTh: 'ตรวจสอบจุดแข็งทางการเงิน ประสิทธิภาพการดำเนินงาน อัตราการหมุนเวียนสินค้าคงคลัง และแนวโน้มตัวชี้วัด',
     icon: Building2,
     accent: 'from-[#6366F1] to-[#A78BFA]',
   },
@@ -55,6 +62,8 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     selector: '[data-tour="sidebar-planner"]',
     title: 'Decision Planner & Simulations',
     desc: 'Model strategic decisions like hiring, price changes, or capex loans before committing business capital.',
+    titleTh: 'เครื่องมือวางแผนการตัดสินใจและการจำลอง',
+    descTh: 'จำลองผลลัพธ์ของการตัดสินใจเชิงกลยุทธ์ เช่น การจ้างงาน การปรับราคา หรือการลงทุน ก่อนใช้เงินทุนจริง',
     icon: GitPullRequest,
     accent: 'from-[#7C3AED] to-[#6366F1]',
   },
@@ -63,6 +72,8 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     selector: '[data-tour="sidebar-reports"]',
     title: 'Decision Intelligence Reports',
     desc: 'Generate, review, and export formal decision memos and executive reports to share with partners or lenders.',
+    titleTh: 'รายงานวิเคราะห์เพื่อการตัดสินใจ',
+    descTh: 'สร้าง ตรวจสอบ และส่งออกรายงานสรุปสำหรับผู้บริหารและบันทึกการตัดสินใจเพื่อแชร์กับพาร์ทเนอร์หรือสถาบันการเงิน',
     icon: FileText,
     accent: 'from-[#6366F1] to-[#818CF8]',
   },
@@ -71,6 +82,8 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     selector: '[data-tour="sidebar-account-menu"]',
     title: 'Account & Settings Control',
     desc: 'Manage your settings, view plan details, switch appearance themes, access support, or replay this tour anytime.',
+    titleTh: 'การตั้งค่าและบัญชีผู้ใช้',
+    descTh: 'จัดการการตั้งค่า ดูรายละเอียดแพ็กเกจ เปลี่ยนธีม เข้าถึงศูนย์ช่วยเหลือ หรือเริ่มดูทัวร์แนะนำนี้ใหม่ได้ตลอดเวลา',
     icon: UserCheck,
     accent: 'from-[#8B5CF6] to-[#6366F1]',
   },
@@ -91,6 +104,7 @@ const POPOVER_WIDTH = 340;
 const POPOVER_EST_HEIGHT = 260;
 
 export function ProductTour() {
+  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const prefersReduced = useReducedMotion();
@@ -378,10 +392,14 @@ export function ProductTour() {
               </div>
               <div>
                 <span className="text-[10px] font-bold text-white/70 uppercase tracking-widest block leading-none">
-                  Step {currentStepIdx + 1} of {SIDEBAR_TOUR_STEPS.length}
+                  {locale === 'th'
+                    ? `ขั้นตอนที่ ${currentStepIdx + 1} จาก ${SIDEBAR_TOUR_STEPS.length}`
+                    : `Step ${currentStepIdx + 1} of ${SIDEBAR_TOUR_STEPS.length}`}
                 </span>
                 <H3 className="text-[13px] font-bold text-white leading-snug mt-0.5">
-                  {currentStep.title}
+                  {locale === 'th' && currentStep.titleTh
+                    ? currentStep.titleTh
+                    : currentStep.title}
                 </H3>
               </div>
             </div>
@@ -389,7 +407,7 @@ export function ProductTour() {
               type="button"
               onClick={handleSkip}
               className="rounded-lg p-1 text-white/60 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
-              title="Close tour (Esc)"
+              title={locale === 'th' ? 'ปิดทัวร์ (Esc)' : 'Close tour (Esc)'}
             >
               <X className="size-4" />
             </button>
@@ -398,7 +416,9 @@ export function ProductTour() {
           {/* Content Area */}
           <div className="px-4 py-3.5">
             <BodySmall className="text-[12.5px] text-[#475569] dark:text-[#94A3B8] leading-relaxed">
-              {currentStep.desc}
+              {locale === 'th' && currentStep.descTh
+                ? currentStep.descTh
+                : currentStep.desc}
             </BodySmall>
           </div>
 
@@ -428,7 +448,7 @@ export function ProductTour() {
               onClick={handleSkip}
               className="text-[11px] font-semibold text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white transition-colors cursor-pointer"
             >
-              Skip tour
+              {locale === 'th' ? 'ข้ามทัวร์' : 'Skip tour'}
             </button>
 
             <div className="flex items-center gap-2">
@@ -439,7 +459,7 @@ export function ProductTour() {
                   className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] px-2.5 py-1.5 text-[11px] font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1A2232] cursor-pointer transition-colors"
                 >
                   <ArrowLeft className="size-3" />
-                  <span>Back</span>
+                  <span>{locale === 'th' ? 'ย้อนกลับ' : 'Back'}</span>
                 </button>
               )}
 
@@ -452,7 +472,15 @@ export function ProductTour() {
                   currentStep.accent,
                 )}
               >
-                <span>{isLastStep ? 'Start Exploring' : 'Next'}</span>
+                <span>
+                  {isLastStep
+                    ? locale === 'th'
+                      ? 'เริ่มต้นใช้งาน'
+                      : 'Start Exploring'
+                    : locale === 'th'
+                      ? 'ถัดไป'
+                      : 'Next'}
+                </span>
                 {!isLastStep ? (
                   <ChevronRight className="size-3.5" />
                 ) : (

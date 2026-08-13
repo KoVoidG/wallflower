@@ -81,7 +81,7 @@ export function ScenarioResultsView({
               onClick={handleBackToLibrary}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline cursor-pointer transition-all"
             >
-              <ArrowLeft className="size-3.5" />
+              <ArrowLeft className="size-4" />
               <span>Back to Library</span>
             </button>
 
@@ -89,33 +89,33 @@ export function ScenarioResultsView({
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-sm font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
               >
-                <Copy className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                <Copy className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                 <span>Duplicate</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => scenario && onCompareScenario?.(scenario)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-sm font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
               >
-                <Scale className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                <Scale className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                 <span>Compare</span>
               </button>
 
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-sm font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
               >
-                <Download className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                <Download className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                 <span>Export</span>
-                <ChevronDown className="size-3 text-[#94A3B8]" />
+                <ChevronDown className="size-4 text-[#94A3B8]" />
               </button>
 
               <button
                 type="button"
-                className="p-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
+                className="p-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] shadow-xs cursor-pointer transition-colors"
               >
                 <MoreHorizontal className="size-4" />
               </button>

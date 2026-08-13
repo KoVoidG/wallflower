@@ -13,6 +13,7 @@ import {
   PiggyBank,
 } from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/card';
 import { FadeInView, CountUp } from '@/components/motion';
@@ -61,6 +62,10 @@ const workingCapitalSparkline = [
 ];
 
 export function FinancialSnapshotView() {
+  const t = useTranslations('businessHealth.snapshot');
+  const tCommon = useTranslations('common');
+  const tHealth = useTranslations('businessHealth');
+
   return (
     <div className="space-y-6">
       {/* ── Row 1: 4 Top Metric Cards (No hover effect, B&W icons) ─────────────────────── */}
@@ -74,7 +79,7 @@ export function FinancialSnapshotView() {
                   <TrendingUp className="size-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                  Total Revenue
+                  {t('revenue')}
                 </span>
               </div>
             </div>
@@ -122,7 +127,7 @@ export function FinancialSnapshotView() {
                   <PiggyBank className="size-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                  Gross Profit
+                  {t('grossProfit')}
                 </span>
               </div>
             </div>
@@ -144,7 +149,7 @@ export function FinancialSnapshotView() {
 
             <div className="border-t border-slate-100 dark:border-[#1E2638] pt-3 flex items-center justify-between text-xs">
               <span className="text-[#64748B] dark:text-[#94A3B8]">
-                Gross Margin
+                {t('grossMargin')}
               </span>
               <span className="font-mono font-medium text-[#0F172A] dark:text-white">
                 34.0%
@@ -160,7 +165,7 @@ export function FinancialSnapshotView() {
                   <Wallet className="size-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                  Net Profit
+                  {t('netProfit')}
                 </span>
               </div>
             </div>
@@ -182,7 +187,7 @@ export function FinancialSnapshotView() {
 
             <div className="border-t border-slate-100 dark:border-[#1E2638] pt-3 flex items-center justify-between text-xs">
               <span className="text-[#64748B] dark:text-[#94A3B8]">
-                Net Margin
+                {t('netMargin')}
               </span>
               <span className="font-mono font-medium text-[#0F172A] dark:text-white">
                 14.9%
@@ -198,14 +203,15 @@ export function FinancialSnapshotView() {
                   <Clock className="size-3.5" />
                 </div>
                 <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                  Cash Runway
+                  {t('runwayMonths')}
                 </span>
               </div>
             </div>
 
             <div className="space-y-1">
               <div className="font-mono text-2xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-                <CountUp to={8.2} decimals={1} duration={0.8} /> months
+                <CountUp to={8.2} decimals={1} duration={0.8} />{' '}
+                {tCommon('units.months')}
               </div>
               <div className="flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
                 <ArrowDownRight className="size-3.5" />
@@ -218,7 +224,7 @@ export function FinancialSnapshotView() {
                 Target Runway
               </span>
               <span className="font-mono font-medium text-[#0F172A] dark:text-white">
-                6.0 months
+                6.0 {tCommon('units.months')}
               </span>
             </div>
           </Card>
@@ -236,13 +242,15 @@ export function FinancialSnapshotView() {
                   <Receipt className="size-3.5" />
                 </div>
                 <h2 className="font-display text-base font-bold text-[#0F172A] dark:text-white">
-                  Expenses
+                  {t('expenses')}
                 </h2>
               </div>
 
               <div className="space-y-2.5 text-xs">
                 <div className="flex items-center justify-between py-1">
-                  <span className="text-[#64748B] dark:text-[#94A3B8]">Rent</span>
+                  <span className="text-[#64748B] dark:text-[#94A3B8]">
+                    Rent
+                  </span>
                   <div className="flex items-center gap-3">
                     <span className="font-mono font-medium text-[#0F172A] dark:text-white">
                       ฿120,000
@@ -312,7 +320,7 @@ export function FinancialSnapshotView() {
 
               <div className="border-t border-slate-100 dark:border-[#1E2638] pt-3 flex items-center justify-between text-xs">
                 <span className="font-semibold text-[#0F172A] dark:text-white">
-                  Total Expenses
+                  {t('expenses')}
                 </span>
                 <div className="flex items-center gap-3">
                   <span className="font-mono font-bold text-[#0F172A] dark:text-white text-sm">
@@ -329,7 +337,7 @@ export function FinancialSnapshotView() {
               href="/business-health?tab=operations"
               className="pt-2 text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-[#A5B4FC] transition-colors flex items-center justify-between group cursor-pointer"
             >
-              <span>View expense breakdown</span>
+              <span>{tCommon('view')}</span>
               <ChevronRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Card>
@@ -399,7 +407,7 @@ export function FinancialSnapshotView() {
               href="/business-health?tab=operations"
               className="pt-2 text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-[#A5B4FC] transition-colors flex items-center justify-between group cursor-pointer"
             >
-              <span>View cash flow summary</span>
+              <span>{tCommon('view')}</span>
               <ChevronRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Card>
@@ -449,7 +457,7 @@ export function FinancialSnapshotView() {
               <div className="rounded-xl bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] p-3 flex items-center justify-between">
                 <div>
                   <span className="text-[11px] font-sans text-[#64748B] dark:text-[#94A3B8] block">
-                    Working Capital
+                    {t('workingCapital')}
                   </span>
                   <span className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
                     ฿800,000
@@ -478,7 +486,7 @@ export function FinancialSnapshotView() {
               href="/reports"
               className="pt-2 text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-[#A5B4FC] transition-colors flex items-center justify-between group cursor-pointer"
             >
-              <span>View full balance sheet</span>
+              <span>{tCommon('view')}</span>
               <ChevronRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Card>
@@ -500,7 +508,7 @@ export function FinancialSnapshotView() {
               {/* Current Ratio */}
               <div className="space-y-2">
                 <span className="text-xs font-sans text-[#64748B] dark:text-[#94A3B8] block">
-                  Current Ratio
+                  {t('currentRatio')}
                 </span>
                 <span className="font-mono text-xl font-bold text-[#0F172A] dark:text-white block">
                   <CountUp to={1.65} decimals={2} duration={0.6} />x
@@ -552,7 +560,7 @@ export function FinancialSnapshotView() {
               {/* Inventory Turnover (Down = Red) */}
               <div className="space-y-2">
                 <span className="text-xs font-sans text-[#64748B] dark:text-[#94A3B8] block">
-                  Inventory Turnover
+                  {tHealth('inventory.turnover')}
                 </span>
                 <span className="font-mono text-xl font-bold text-[#0F172A] dark:text-white block">
                   <CountUp to={3.1} decimals={1} duration={0.6} />x
@@ -681,7 +689,7 @@ export function FinancialSnapshotView() {
               href="/settings"
               className="pt-2 text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-[#A5B4FC] transition-colors flex items-center justify-between group cursor-pointer"
             >
-              <span>View missing data</span>
+              <span>{tCommon('view')}</span>
               <ChevronRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Card>

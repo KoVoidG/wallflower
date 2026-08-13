@@ -46,7 +46,7 @@ export function StepAssumptions({
   return (
     <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
       {/* ── Fixed White Box Card (Zero Scroll Canvas) ──────────────────── */}
-      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
         {/* Header */}
         <div className="space-y-1 text-center sm:text-left border-b border-slate-100 dark:border-[#1E2638] pb-4">
           <div className="flex items-center gap-2.5">
@@ -69,7 +69,7 @@ export function StepAssumptions({
           {/* Row 1: Demand & Supplier Cost Trend */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
                 Expected Market Demand
               </label>
               <SegmentedControl
@@ -81,7 +81,7 @@ export function StepAssumptions({
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
                 Supplier Cost Trend
               </label>
               <SegmentedControl
@@ -96,7 +96,7 @@ export function StepAssumptions({
           {/* Row 2: Seasonality & Competition */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
                 Seasonality Impact
               </label>
               <SegmentedControl
@@ -108,7 +108,7 @@ export function StepAssumptions({
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+              <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
                 Local Market Competition
               </label>
               <SegmentedControl
@@ -122,7 +122,7 @@ export function StepAssumptions({
 
           {/* Row 3: Record Confidence */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Confidence in Financial Estimates
             </label>
             <SegmentedControl
@@ -139,20 +139,22 @@ export function StepAssumptions({
           <Button
             type="button"
             variant="outline"
+            size="md"
             onClick={onPrev}
-            className="text-xs font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638]"
+            className="text-sm font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638] rounded-xl"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-4" />
             <span>Go back</span>
           </Button>
 
           <Button
             type="button"
+            size="md"
             onClick={onNext}
-            className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2 rounded-xl transition-all border-0"
+            className="text-sm font-semibold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2.5 rounded-xl transition-all border-0"
           >
             <span>Continue</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </div>

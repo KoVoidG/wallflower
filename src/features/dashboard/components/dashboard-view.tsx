@@ -32,6 +32,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/card';
 import { BotAvatar } from '@/components/ui/bot-avatar';
@@ -99,6 +100,8 @@ const trendChartData = [
 ];
 
 export function DashboardView({}: DashboardViewProps) {
+  const t = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
   const { openDrawer } = useAdvisorDrawer();
   const [selectedRange, setSelectedRange] = useState<'30D' | '90D' | '12M'>(
     '90D',
@@ -118,22 +121,22 @@ export function DashboardView({}: DashboardViewProps) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white flex items-center gap-2">
-              Good morning, Somchai{' '}
+              {t('goodMorning', { name: 'Somchai' })}{' '}
               <span className="inline-block animate-bounce">👋</span>
             </h1>
             <p className="font-sans text-sm text-[#64748B] dark:text-[#94A3B8] mt-1">
-              Here&apos;s what&apos;s happening with Somchai Retail today.
+              {t('overviewSubtitle', { businessName: 'Somchai Retail' })}
             </p>
           </div>
 
           <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
             <div className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
-              <span>Last updated 2 hours ago</span>
+              <span>{t('lastUpdatedTwoHours')}</span>
               <button
                 type="button"
                 onClick={handleRefresh}
                 className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white cursor-pointer"
-                title="Refresh dashboard data"
+                title={t('refreshData')}
               >
                 <RotateCw
                   className={`size-3.5 ${isRefreshing ? 'animate-spin text-[#6366F1]' : ''}`}
@@ -159,9 +162,9 @@ export function DashboardView({}: DashboardViewProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <h2 className="font-display text-base sm:text-lg font-bold text-[#0F172A] dark:text-white">
-                  Business Health
+                  {t('businessHealth')}
                 </h2>
-                <InfoTooltip content="Composite score evaluating cash runway, risk factors, and financial stability." />
+                <InfoTooltip content={t('healthTooltip')} />
               </div>
             </div>
 
@@ -171,7 +174,7 @@ export function DashboardView({}: DashboardViewProps) {
                 <ProgressGauge
                   score={84}
                   maxScore={100}
-                  label="Healthy"
+                  label={t('healthy')}
                   size={132}
                   color="#00D395"
                 />
@@ -186,12 +189,12 @@ export function DashboardView({}: DashboardViewProps) {
                   <div className="flex items-center gap-2.5">
                     <TrendingUp className="size-4 text-[#64748B] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors shrink-0" />
                     <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:font-semibold transition-all">
-                      Cash Runway
+                      {t('cashRunway')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:font-bold">
-                      8.2 months
+                      8.2 {tCommon('units.months')}
                     </span>
                     <ChevronRight className="size-4 text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                   </div>
@@ -204,12 +207,12 @@ export function DashboardView({}: DashboardViewProps) {
                   <div className="flex items-center gap-2.5">
                     <ShieldAlert className="size-4 text-[#64748B] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors shrink-0" />
                     <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:font-semibold transition-all">
-                      Risk Level
+                      {t('riskLevel')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:font-bold">
-                      Low
+                      {t('low')}
                     </span>
                     <ChevronRight className="size-4 text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                   </div>
@@ -222,12 +225,12 @@ export function DashboardView({}: DashboardViewProps) {
                   <div className="flex items-center gap-2.5">
                     <Sparkles className="size-4 text-[#8B5CF6] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors shrink-0" />
                     <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:font-semibold transition-all">
-                      Decision Confidence
+                      {t('decisionConfidence')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:font-bold">
-                      High
+                      {t('high')}
                     </span>
                     <ChevronRight className="size-4 text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:translate-x-1 transition-all" />
                   </div>
@@ -238,10 +241,7 @@ export function DashboardView({}: DashboardViewProps) {
             {/* Bottom Banner */}
             <div className="rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] dark:bg-emerald-950/40 dark:border-emerald-800/50 px-3.5 py-2.5 text-xs text-[#065F46] dark:text-emerald-300 font-medium flex items-center gap-2">
               <CheckCircle2 className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-              <span>
-                Your business is in a strong position. Keep an eye on inventory
-                turnover.
-              </span>
+              <span>{t('strongBanner')}</span>
             </div>
           </Card>
 
@@ -250,15 +250,15 @@ export function DashboardView({}: DashboardViewProps) {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
                 <h2 className="font-display text-base sm:text-lg font-bold text-[#0F172A] dark:text-white">
-                  Today&apos;s Priorities
+                  {t('todaysPriorities')}
                 </h2>
-                <InfoTooltip content="Actionable priority items and automated alerts requiring attention." />
+                <InfoTooltip content={t('prioritiesSubtitle')} />
               </div>
               <Link
                 href="/business-health?tab=operations"
                 className="text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] hover:underline hover:font-bold transition-all"
               >
-                View all
+                {tCommon('viewAll')}
               </Link>
             </div>
 
@@ -380,7 +380,7 @@ export function DashboardView({}: DashboardViewProps) {
           >
             <Card className="flex flex-col justify-between gap-2 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs">
               <span className="font-sans text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                Monthly Revenue
+                {t('monthlyRevenue')}
               </span>
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-white">
@@ -394,7 +394,7 @@ export function DashboardView({}: DashboardViewProps) {
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  <ArrowUpRight className="size-3.5" /> 8.4% vs last month
+                  <ArrowUpRight className="size-3.5" /> 8.4% {t('vsPrevMonth')}
                 </span>
                 <div className="h-8 w-20">
                   <ResponsiveContainer width="100%" height="100%">
@@ -420,7 +420,7 @@ export function DashboardView({}: DashboardViewProps) {
           >
             <Card className="flex flex-col justify-between gap-2 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs">
               <span className="font-sans text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                Net Profit
+                {t('netProfit')}
               </span>
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-white">
@@ -434,7 +434,7 @@ export function DashboardView({}: DashboardViewProps) {
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  <ArrowUpRight className="size-3.5" /> 6.7% vs last month
+                  <ArrowUpRight className="size-3.5" /> 6.7% {t('vsPrevMonth')}
                 </span>
                 <div className="h-8 w-20">
                   <ResponsiveContainer width="100%" height="100%">
@@ -460,16 +460,16 @@ export function DashboardView({}: DashboardViewProps) {
           >
             <Card className="flex flex-col justify-between gap-2 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs">
               <span className="font-sans text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                Cash Runway
+                {t('cashRunway')}
               </span>
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-white">
-                  <CountUp to={8.2} decimals={1} duration={0.65} /> months
+                  <CountUp to={8.2} decimals={1} duration={0.65} /> {tCommon('units.months')}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
-                  <ArrowDownRight className="size-3.5" /> -0.8 vs last month
+                  <ArrowDownRight className="size-3.5" /> -0.8 {t('vsPrevMonth')}
                 </span>
                 <div className="h-8 w-20">
                   <ResponsiveContainer width="100%" height="100%">
@@ -495,16 +495,16 @@ export function DashboardView({}: DashboardViewProps) {
           >
             <Card className="flex flex-col justify-between gap-2 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs">
               <span className="font-sans text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
-                Inventory Turnover
+                {t('inventoryTurnover')}
               </span>
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-white">
-                  <CountUp to={3.1} decimals={1} duration={0.65} />x
+                  <CountUp to={3.1} decimals={1} duration={0.65} />{tCommon('units.times')}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
-                  <ArrowDownRight className="size-3.5" /> -0.4 vs last month
+                  <ArrowDownRight className="size-3.5" /> -0.4 {t('vsPrevMonth')}
                 </span>
                 <div className="h-8 w-20">
                   <ResponsiveContainer width="100%" height="100%">
@@ -531,9 +531,9 @@ export function DashboardView({}: DashboardViewProps) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-2">
               <h2 className="font-display text-base sm:text-lg font-bold text-[#0F172A] dark:text-white">
-                Revenue & Profit Trend
+                {t('revenueAndProfitTrend')}
               </h2>
-              <InfoTooltip content="Historical comparison of total gross revenue against net bottom-line profit." />
+              <InfoTooltip content={t('trendSubtitle')} />
             </div>
 
             <div className="flex items-center gap-4 flex-wrap">
@@ -541,13 +541,13 @@ export function DashboardView({}: DashboardViewProps) {
                 <div className="flex items-center gap-1.5">
                   <span className="size-2.5 rounded-full bg-blue-500 shadow-2xs" />
                   <span className="text-[#64748B] dark:text-[#94A3B8] font-semibold">
-                    Revenue (฿)
+                    {t('revenue')} (฿)
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="size-2.5 rounded-full bg-emerald-500 shadow-2xs" />
                   <span className="text-[#64748B] dark:text-[#94A3B8] font-semibold">
-                    Net Profit (฿)
+                    {t('profit')} (฿)
                   </span>
                 </div>
               </div>
@@ -571,7 +571,7 @@ export function DashboardView({}: DashboardViewProps) {
                   type="button"
                   className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-sans text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white transition-colors cursor-pointer"
                 >
-                  <span>Compare</span>
+                  <span>{tCommon('compare')}</span>
                   <ChevronDown className="size-3" />
                 </button>
               </div>
@@ -689,10 +689,10 @@ export function DashboardView({}: DashboardViewProps) {
               <div className="flex items-center gap-2">
                 <h2 className="font-display text-base font-bold text-[#4F46E5] dark:text-purple-300 flex items-center gap-2">
                   <Sparkles className="size-4 text-[#8B5CF6] dark:text-purple-400" />
-                  <span>AI Executive Summary</span>
+                  <span>{t('aiAdvisorCTA')}</span>
                 </h2>
                 <InfoTooltip
-                  content="AI-generated financial synthesis and strategic next steps."
+                  content={t('aiAdvisorSubtitle')}
                   iconClassName="text-[#8B5CF6]/70 dark:text-purple-400/70 hover:text-[#8B5CF6] dark:hover:text-purple-300"
                 />
               </div>
@@ -735,7 +735,7 @@ export function DashboardView({}: DashboardViewProps) {
               <div
                 onClick={() => openDrawer('Can you summarize my business health and key priority recommendations?')}
                 className="cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-                title="Click to talk to AI Advisor"
+                title={t('aiAdvisorCTA')}
               >
                 <BotAvatar size={84} animate />
               </div>
@@ -746,7 +746,7 @@ export function DashboardView({}: DashboardViewProps) {
                 className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-semibold text-xs shadow-md shadow-indigo-500/25 hover:opacity-95 hover:scale-105 active:scale-95 cursor-pointer transition-all"
               >
                 <MessageSquare className="size-3.5" />
-                <span>Ask AI Advisor</span>
+                <span>{t('aiAdvisorCTA')}</span>
               </button>
             </div>
           </div>
@@ -760,13 +760,13 @@ export function DashboardView({}: DashboardViewProps) {
           <Card className="flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display text-base sm:text-lg font-bold text-[#0F172A] dark:text-white">
-                Recent Simulations
+                {t('recentDecisions')}
               </h2>
               <Link
                 href="/simulations?tab=library"
                 className="text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] hover:underline hover:font-bold transition-all"
               >
-                View all
+                {tCommon('viewAll')}
               </Link>
             </div>
 
@@ -858,7 +858,7 @@ export function DashboardView({}: DashboardViewProps) {
                 href="/reports"
                 className="text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] hover:underline hover:font-bold transition-all"
               >
-                View all
+                {tCommon('viewAll')}
               </Link>
             </div>
 
@@ -886,7 +886,7 @@ export function DashboardView({}: DashboardViewProps) {
                   </span>
                   <div
                     className="p-1.5 text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors"
-                    title="Download report"
+                    title={tCommon('download')}
                   >
                     <Download className="size-4" />
                   </div>
@@ -916,7 +916,7 @@ export function DashboardView({}: DashboardViewProps) {
                   </span>
                   <div
                     className="p-1.5 text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors"
-                    title="Download report"
+                    title={tCommon('download')}
                   >
                     <Download className="size-4" />
                   </div>
@@ -946,7 +946,7 @@ export function DashboardView({}: DashboardViewProps) {
                   </span>
                   <div
                     className="p-1.5 text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors"
-                    title="Download report"
+                    title={tCommon('download')}
                   >
                     <Download className="size-4" />
                   </div>

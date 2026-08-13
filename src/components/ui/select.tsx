@@ -50,7 +50,10 @@ export function Select({
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -61,7 +64,9 @@ export function Select({
   // Scroll highlighted item into view
   useEffect(() => {
     if (!open || highlightedIndex < 0) return;
-    const item = listboxRef.current?.children[highlightedIndex] as HTMLElement | undefined;
+    const item = listboxRef.current?.children[highlightedIndex] as
+      | HTMLElement
+      | undefined;
     item?.scrollIntoView({ block: 'nearest' });
   }, [highlightedIndex, open]);
 
@@ -82,7 +87,7 @@ export function Select({
       onChange(optValue);
       closeDropdown();
     },
-    [onChange, closeDropdown]
+    [onChange, closeDropdown],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -111,7 +116,9 @@ export function Select({
         if (!open) {
           openDropdown();
         } else {
-          setHighlightedIndex((prev) => (prev - 1 + options.length) % options.length);
+          setHighlightedIndex(
+            (prev) => (prev - 1 + options.length) % options.length,
+          );
         }
         break;
       case 'Escape':
@@ -125,11 +132,11 @@ export function Select({
   };
 
   return (
-    <div ref={containerRef} className={cn('relative', className)}>
+    <div ref={containerRef} className={cn('relative', open && 'z-50', className)}>
       {label && (
         <label
           htmlFor={selectId}
-          className="block text-[13px]/[18px] font-[550] text-text-primary mb-1.5"
+          className="block text-sm font-semibold text-text-primary mb-1.5"
         >
           {label}
         </label>
@@ -149,22 +156,27 @@ export function Select({
         onClick={() => (open ? closeDropdown() : openDropdown())}
         onKeyDown={handleKeyDown}
         className={cn(
-          'flex w-full items-center justify-between gap-2 px-3 py-2 rounded-[var(--radius-md)] border bg-surface text-xs font-medium text-left',
+          'flex w-full items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border bg-surface text-sm font-medium text-left',
           'outline-none transition-colors cursor-pointer',
           'focus-visible:ring-2 focus-visible:ring-brand/40',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           error ? 'border-danger' : 'border-border dark:border-border-strong',
-          !error && !disabled && 'hover:border-border-strong'
+          !error && !disabled && 'hover:border-border-strong',
         )}
       >
-        <span className={cn(!selectedOption && 'text-text-muted', selectedOption && 'text-text-primary')}>
+        <span
+          className={cn(
+            !selectedOption && 'text-text-muted',
+            selectedOption && 'text-text-primary',
+          )}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           className={cn(
-            'size-3.5 shrink-0 text-text-muted transition-transform duration-150',
+            'size-4 shrink-0 text-text-muted transition-transform duration-150',
             'motion-reduce:transition-none',
-            open && 'rotate-180'
+            open && 'rotate-180',
           )}
           aria-hidden="true"
         />
@@ -172,7 +184,11 @@ export function Select({
 
       {/* Error message */}
       {error && (
-        <span id={`${selectId}-error`} className="block mt-1 text-[12px] text-danger" role="alert">
+        <span
+          id={`${selectId}-error`}
+          className="block mt-1 text-xs text-danger"
+          role="alert"
+        >
           {error}
         </span>
       )}
@@ -185,18 +201,28 @@ export function Select({
             id={listboxId}
             role="listbox"
             aria-label={label || placeholder}
-            initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: -4, scale: 0.98 }}
-            animate={prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-            exit={prefersReduced ? { opacity: 1 } : { opacity: 0, y: -4, scale: 0.98 }}
+            initial={
+              prefersReduced
+                ? { opacity: 1 }
+                : { opacity: 0, y: -4, scale: 0.98 }
+            }
+            animate={
+              prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
+            }
+            exit={
+              prefersReduced
+                ? { opacity: 1 }
+                : { opacity: 0, y: -4, scale: 0.98 }
+            }
             transition={
               prefersReduced
                 ? { duration: 0 }
                 : { duration: DURATIONS.cardPanel, ease: EASINGS.default }
             }
             className={cn(
-              'absolute z-50 mt-1.5 w-full max-h-60 overflow-y-auto',
-              'rounded-xl border border-slate-200 dark:border-[#2A344A] bg-white dark:bg-[#111622] shadow-xl dark:shadow-black/70',
-              'py-1 divide-y divide-slate-100 dark:divide-[#1E2638]'
+              'absolute z-50 mt-1.5 w-full max-h-56 overflow-y-auto overscroll-contain',
+              'rounded-xl border border-slate-200 dark:border-[#2A344A] bg-white dark:bg-[#111622] shadow-2xl dark:shadow-black/80',
+              'py-1 divide-y divide-slate-100 dark:divide-[#1E2638]',
             )}
           >
             {options.map((option, idx) => {
@@ -211,16 +237,24 @@ export function Select({
                   onMouseEnter={() => setHighlightedIndex(idx)}
                   onClick={() => selectOption(option.value)}
                   className={cn(
-                    'flex items-center justify-between px-3 py-2 text-xs cursor-pointer',
+                    'flex items-center justify-between px-3 py-2.5 text-sm cursor-pointer',
                     'transition-colors duration-75',
-                    isHighlighted && 'bg-[#6366F1]/10 dark:bg-[#6366F1]/20 text-[#4F46E5] dark:text-[#A5B4FC]',
-                    isSelected && !isHighlighted && 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold bg-[#6366F1]/5 dark:bg-[#6366F1]/10',
-                    !isHighlighted && !isSelected && 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]'
+                    isHighlighted &&
+                      'bg-[#6366F1]/10 dark:bg-[#6366F1]/20 text-[#4F46E5] dark:text-[#A5B4FC]',
+                    isSelected &&
+                      !isHighlighted &&
+                      'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold bg-[#6366F1]/5 dark:bg-[#6366F1]/10',
+                    !isHighlighted &&
+                      !isSelected &&
+                      'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]',
                   )}
                 >
                   <span>{option.label}</span>
                   {isSelected && (
-                    <Check className="size-3.5 shrink-0 text-[#6366F1] dark:text-[#A5B4FC]" aria-hidden="true" />
+                    <Check
+                      className="size-4 shrink-0 text-[#6366F1] dark:text-[#A5B4FC]"
+                      aria-hidden="true"
+                    />
                   )}
                 </li>
               );

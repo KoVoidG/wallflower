@@ -138,13 +138,13 @@ export default function ResetPasswordPage() {
         <div className="space-y-1.5">
           <label
             htmlFor="password"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
+            className="block text-sm font-semibold text-text-primary"
           >
             New password
           </label>
           <div className="relative">
             <Lock
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
               aria-hidden="true"
             />
             <input
@@ -154,28 +154,28 @@ export default function ResetPasswordPage() {
               placeholder="••••••••"
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? 'password-error' : undefined}
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-xl border border-border dark:border-border-strong bg-surface px-3.5 py-2.5 pl-10 pr-10 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
               {...register('password')}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer p-1"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="size-4" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="size-4" />
               )}
             </button>
           </div>
           {errors.password && (
-            <p id="password-error" className="text-[12px]/[18px] text-danger">
+            <p id="password-error" className="text-xs font-semibold text-danger">
               {errors.password.message}
             </p>
           )}
-          <p className="text-[12px]/[18px] text-text-muted">
+          <p className="text-xs text-text-muted">
             Minimum 8 characters
           </p>
         </div>
@@ -184,13 +184,13 @@ export default function ResetPasswordPage() {
         <div className="space-y-1.5">
           <label
             htmlFor="confirmPassword"
-            className="block text-[13px]/[18px] font-[550] text-text-primary"
+            className="block text-sm font-semibold text-text-primary"
           >
             Confirm password
           </label>
           <div className="relative">
             <Lock
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-text-muted"
               aria-hidden="true"
             />
             <input
@@ -202,28 +202,28 @@ export default function ResetPasswordPage() {
               aria-describedby={
                 errors.confirmPassword ? 'confirm-password-error' : undefined
               }
-              className="w-full rounded-[var(--radius-sm)] border border-border dark:border-border-strong bg-surface px-3 py-2 pl-9 pr-10 text-[15px]/[24px] text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:border-brand transition-colors"
+              className="w-full rounded-xl border border-border dark:border-border-strong bg-surface px-3.5 py-2.5 pl-10 pr-10 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
               {...register('confirmPassword')}
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer p-1"
               aria-label={
                 showConfirmPassword ? 'Hide password' : 'Show password'
               }
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="size-4" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="size-4" />
               )}
             </button>
           </div>
           {errors.confirmPassword && (
             <p
               id="confirm-password-error"
-              className="text-[12px]/[18px] text-danger"
+              className="text-xs font-semibold text-danger"
             >
               {errors.confirmPassword.message}
             </p>
@@ -234,9 +234,9 @@ export default function ResetPasswordPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-brand px-4 py-2.5 text-[15px]/[24px] font-[550] text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" />}
+          {isSubmitting && <Loader2 className="size-4 animate-spin motion-reduce:animate-none" />}
           {isSubmitting ? 'Resetting…' : 'Reset password'}
         </button>
       </form>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -17,6 +18,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const t = useTranslations('auth.login');
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -59,10 +61,10 @@ export default function LoginPage() {
       {/* Form Header */}
       <div className="space-y-1">
         <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-          Welcome back!
+          {t('title')}
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary font-medium">
-          Sign in to continue to your account.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -79,14 +81,14 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4.5" noValidate>
         {/* Email Address */}
         <div className="space-y-1.5">
-          <label htmlFor="email" className="block text-xs font-bold text-text-primary">
-            Email address
+          <label htmlFor="email" className="block text-sm font-semibold text-text-primary">
+            {t('emailLabel')}
           </label>
           <input
             id="email"
             type="email"
-            placeholder="somchai@example.com"
-            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            placeholder={t('emailPlaceholder')}
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
             {...register('email')}
           />
           {errors.email && (
@@ -96,15 +98,15 @@ export default function LoginPage() {
 
         {/* Password */}
         <div className="space-y-1.5">
-          <label htmlFor="password" className="block text-xs font-bold text-text-primary">
-            Password
+          <label htmlFor="password" className="block text-sm font-semibold text-text-primary">
+            {t('passwordLabel')}
           </label>
           <div className="relative">
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••••••"
-              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-10 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
               {...register('password')}
             />
             <button
@@ -129,14 +131,14 @@ export default function LoginPage() {
               className="rounded-md border-border text-emerald-600 focus:ring-emerald-500 accent-emerald-600 size-4"
               {...register('rememberMe')}
             />
-            <span>Remember me</span>
+            <span>{t('rememberMe')}</span>
           </label>
 
           <Link
             href="/forgot-password"
             className="font-bold text-tertiary hover:underline transition-all"
           >
-            Forgot password?
+            {t('forgotPassword')}
           </Link>
         </div>
 
@@ -144,10 +146,10 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-xs sm:text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 text-sm font-semibold transition-all shadow-md cursor-pointer disabled:opacity-50"
         >
           {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-          <span>{isSubmitting ? 'Signing in...' : 'Sign In'}</span>
+          <span>{isSubmitting ? `${t('signIn')}...` : t('signIn')}</span>
         </button>
       </form>
 

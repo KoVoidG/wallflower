@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/i18n/navigation';
 import {
   Search,
@@ -280,8 +280,7 @@ const SEARCH_DATABASE: SearchResultItem[] = [
 ];
 
 export function TopbarSearch() {
-  const locale = useLocale();
-  const isThai = locale === 'th';
+  const t = useTranslations('common');
   const router = useRouter();
   const { openDrawer } = useAdvisorDrawer();
   const [query, setQuery] = useState('');
@@ -381,7 +380,7 @@ export function TopbarSearch() {
       {/* Search Input Bar */}
       <div
         className={cn(
-          'flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all duration-150 w-full',
+          'flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-150 w-full',
           'bg-[#F8FAFC] dark:bg-[#0B0F17]',
           isOpen
             ? 'border-[#6366F1] ring-2 ring-[#6366F1]/20 shadow-xs'
@@ -400,12 +399,8 @@ export function TopbarSearch() {
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDownInput}
-          placeholder={
-            isThai
-              ? 'ค้นหาหน้า, จำลองสถานการณ์, รายงาน, ตัวชี้วัด...'
-              : 'Search pages, simulations, reports, metrics...'
-          }
-          className="w-full bg-transparent text-xs font-medium text-[#0F172A] dark:text-white placeholder:text-[#94A3B8] dark:placeholder:text-[#64748B] focus:outline-hidden"
+          placeholder={t('search')}
+          className="w-full bg-transparent text-sm font-medium text-[#0F172A] dark:text-white placeholder:text-[#94A3B8] dark:placeholder:text-[#64748B] focus:outline-hidden"
         />
 
         <button

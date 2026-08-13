@@ -36,17 +36,17 @@ export function BusinessProfileSettings() {
           <div className="flex-1 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Business Name</label>
+                <label className="text-sm font-semibold text-text-primary block">Business Name</label>
                 <input
                   type="text"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Business Category</label>
+                <label className="text-sm font-semibold text-text-primary block">Business Category</label>
                 <Select
                   value={category}
                   onChange={setCategory}
@@ -60,7 +60,7 @@ export function BusinessProfileSettings() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Business Size</label>
+                <label className="text-sm font-semibold text-text-primary block">Business Size</label>
                 <SegmentedControl
                   options={['Micro', 'Small', 'Medium'] as const}
                   value={size}
@@ -70,7 +70,7 @@ export function BusinessProfileSettings() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Business Age</label>
+                <label className="text-sm font-semibold text-text-primary block">Business Age</label>
                 <Select
                   value={age}
                   onChange={setAge}
@@ -84,7 +84,7 @@ export function BusinessProfileSettings() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Store Type</label>
+                <label className="text-sm font-semibold text-text-primary block">Store Type</label>
                 <SegmentedControl
                   options={['Physical', 'Online', 'Both'] as const}
                   value={storeType}
@@ -94,23 +94,23 @@ export function BusinessProfileSettings() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-text-primary block">Number of Branches</label>
+                <label className="text-sm font-semibold text-text-primary block">Number of Branches</label>
                 <input
                   type="number"
                   value={branches}
                   onChange={(e) => setBranches(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Business Description (Optional)</label>
+              <label className="text-sm font-semibold text-text-primary block">Business Description (Optional)</label>
               <textarea
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-tertiary"
+                className="w-full p-3.5 text-sm border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-tertiary"
               />
             </div>
           </div>
@@ -123,7 +123,7 @@ export function BusinessProfileSettings() {
             <div className="space-y-1">
               <button
                 type="button"
-                className="px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+                className="px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
               >
                 Change Logo
               </button>
@@ -141,7 +141,7 @@ export function BusinessProfileSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Operating Days per Week</label>
+            <label className="text-sm font-semibold text-text-primary block">Operating Days per Week</label>
             <Select
               value={opDays}
               onChange={setOpDays}
@@ -154,7 +154,7 @@ export function BusinessProfileSettings() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Operating Hours</label>
+            <label className="text-sm font-semibold text-text-primary block">Operating Hours</label>
             <Select
               value={opHours}
               onChange={setOpHours}
@@ -167,42 +167,42 @@ export function BusinessProfileSettings() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Employees</label>
+            <label className="text-sm font-semibold text-text-primary block">Employees</label>
             <input
               type="number"
               value={employees}
               onChange={(e) => setEmployees(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Average Customers per Day</label>
+            <label className="text-sm font-semibold text-text-primary block">Average Customers per Day</label>
             <input
               type="number"
               value={customers}
               onChange={(e) => setCustomers(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Average Transactions per Day</label>
+            <label className="text-sm font-semibold text-text-primary block">Average Transactions per Day</label>
             <input
               type="number"
               value={transactions}
               onChange={(e) => setTransactions(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Number of Suppliers</label>
+            <label className="text-sm font-semibold text-text-primary block">Number of Suppliers</label>
             <input
               type="number"
               value={suppliers}
               onChange={(e) => setSuppliers(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </div>

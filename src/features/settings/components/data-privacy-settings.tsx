@@ -50,54 +50,54 @@ export function DataPrivacySettings() {
               <button
                 type="button"
                 onClick={() => handleExport('Business Data')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
               >
-                <Download className="size-3.5 text-tertiary" />
+                <Download className="size-4 text-tertiary" />
                 <span>Export</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border bg-surface-subtle">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Simulation Data</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Includes all scenarios and results.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Simulation Data</h4>
+                <p className="text-xs text-text-secondary font-medium">Includes all scenarios and results.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleExport('Simulation Data')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
               >
-                <Download className="size-3.5 text-tertiary" />
+                <Download className="size-4 text-tertiary" />
                 <span>Export</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border bg-surface-subtle">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Reports</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Includes all generated reports.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Reports</h4>
+                <p className="text-xs text-text-secondary font-medium">Includes all generated reports.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleExport('Reports Data')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
               >
-                <Download className="size-3.5 text-tertiary" />
+                <Download className="size-4 text-tertiary" />
                 <span>Export</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border bg-surface-subtle">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Account Data</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Includes account and activity data.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Account Data</h4>
+                <p className="text-xs text-text-secondary font-medium">Includes account and activity data.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleExport('Account Data')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
               >
-                <Download className="size-3.5 text-tertiary" />
+                <Download className="size-4 text-tertiary" />
                 <span>Export</span>
               </button>
             </div>
@@ -113,60 +113,60 @@ export function DataPrivacySettings() {
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/10">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Archive Business</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Permanently archive this business and its data.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Archive Business</h4>
+                <p className="text-xs text-text-secondary font-medium">Permanently archive this business and its data.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleDestructive('Archive Business')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
               >
-                <Archive className="size-3.5" />
+                <Archive className="size-4" />
                 <span>Archive</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/10">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Delete All Reports</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Permanently delete all reports.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Delete All Reports</h4>
+                <p className="text-xs text-text-secondary font-medium">Permanently delete all reports.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleDestructive('Delete All Reports')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className="size-4" />
                 <span>Delete</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/10">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Delete Simulations</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Permanently delete all simulations.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Delete Simulations</h4>
+                <p className="text-xs text-text-secondary font-medium">Permanently delete all simulations.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleDestructive('Delete Simulations')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className="size-4" />
                 <span>Delete</span>
               </button>
             </div>
 
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/10">
               <div>
-                <h4 className="text-xs font-bold text-text-primary">Delete Historical Records</h4>
-                <p className="text-[11px] text-text-secondary font-medium">Permanently delete all history data.</p>
+                <h4 className="text-sm font-semibold text-text-primary">Delete Historical Records</h4>
+                <p className="text-xs text-text-secondary font-medium">Permanently delete all history data.</p>
               </div>
               <button
                 type="button"
                 onClick={() => handleDestructive('Delete Historical Records')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer shrink-0"
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className="size-4" />
                 <span>Delete</span>
               </button>
             </div>

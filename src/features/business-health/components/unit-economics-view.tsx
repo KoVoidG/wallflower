@@ -1,6 +1,6 @@
-// src/features/business-health/components/unit-economics-view.tsx
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
   TrendingUp,
   Tag,
@@ -24,13 +24,14 @@ import { FadeInView } from '@/components/motion';
 import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
 
 export function UnitEconomicsView() {
+  const tHealth = useTranslations('businessHealth');
   const { openDrawer } = useAdvisorDrawer();
   return (
     <div className="space-y-6">
       {/* Assumption Categories Section Title */}
       <FadeInView offset={12}>
         <h3 className="font-display text-base font-bold text-[#0F172A] dark:text-white">
-          Assumption Categories
+          {tHealth('tabs.unitEconomics')}
         </h3>
       </FadeInView>
 

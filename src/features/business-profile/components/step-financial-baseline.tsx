@@ -44,7 +44,7 @@ export function StepFinancialBaseline({
   return (
     <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
       {/* ── Fixed White Box Card (Zero Scroll Canvas) ──────────────────── */}
-      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
         {/* Header */}
         <div className="space-y-1 text-center sm:text-left border-b border-slate-100 dark:border-[#1E2638] pb-4">
           <div className="flex items-center justify-between">
@@ -86,11 +86,11 @@ export function StepFinancialBaseline({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
           {/* Average Monthly Revenue */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Average Monthly Revenue
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -101,18 +101,18 @@ export function StepFinancialBaseline({
                   updateFinValue('monthlyRevenue', parseFloat(e.target.value) || 0)
                 }
                 placeholder="1,200,000"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
 
           {/* Average Operating Expenses (OPEX) */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Monthly Operating Expenses (OPEX)
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -123,18 +123,18 @@ export function StepFinancialBaseline({
                   updateFinValue('operatingExpenses', parseFloat(e.target.value) || 0)
                 }
                 placeholder="820,000"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
 
           {/* Payroll Expenses */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Monthly Payroll Expenses
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -145,18 +145,18 @@ export function StepFinancialBaseline({
                   updateFinValue('payrollExpenses', parseFloat(e.target.value) || 0)
                 }
                 placeholder="250,000"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
 
           {/* Total Liquid Cash on Hand */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Total Cash on Hand
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -167,18 +167,18 @@ export function StepFinancialBaseline({
                   updateFinValue('cashOnHand', parseFloat(e.target.value) || 0)
                 }
                 placeholder="150,000"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
 
           {/* Total Outstanding Debt */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Total Outstanding Debt
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -189,18 +189,18 @@ export function StepFinancialBaseline({
                   updateFinValue('totalDebt', parseFloat(e.target.value) || 0)
                 }
                 placeholder="0"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
 
           {/* Monthly Loan / Debt Payment */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-[#0F172A] dark:text-white block">
+            <label className="text-sm font-semibold text-[#0F172A] dark:text-white block">
               Monthly Debt Payment
             </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748B] dark:text-[#94A3B8]">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748B] dark:text-[#94A3B8]">
                 ฿
               </span>
               <input
@@ -211,7 +211,7 @@ export function StepFinancialBaseline({
                   updateFinValue('monthlyDebtRepayment', parseFloat(e.target.value) || 0)
                 }
                 placeholder="0"
-                className="w-full pl-8 pr-3.5 py-2 text-xs border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
+                className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-slate-200 dark:border-[#1E2638] rounded-xl bg-white dark:bg-[#0B0F17] text-[#0F172A] dark:text-white font-medium focus:outline-hidden focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900/10 transition-colors"
               />
             </div>
           </div>
@@ -222,20 +222,22 @@ export function StepFinancialBaseline({
           <Button
             type="button"
             variant="outline"
+            size="md"
             onClick={onPrev}
-            className="text-xs font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638]"
+            className="text-sm font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638] rounded-xl"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-4" />
             <span>Go back</span>
           </Button>
 
           <Button
             type="button"
+            size="md"
             onClick={onNext}
-            className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2 rounded-xl transition-all border-0"
+            className="text-sm font-semibold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2.5 rounded-xl transition-all border-0"
           >
             <span>Continue</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </div>

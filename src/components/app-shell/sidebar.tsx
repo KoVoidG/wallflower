@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LayoutDashboard,
   Building2,
@@ -17,9 +18,8 @@ interface SidebarProps {
   className?: string;
 }
 
-interface NavItem {
-  key: string;
-  label: string;
+interface NavItemConfig {
+  key: 'dashboard' | 'businessHealth' | 'simulation' | 'reports';
   href: string;
   tourId: string;
   icon: React.ComponentType<{
@@ -29,31 +29,27 @@ interface NavItem {
   }>;
 }
 
-const mainNavItems: readonly NavItem[] = [
+const mainNavItems: readonly NavItemConfig[] = [
   {
     key: 'dashboard',
-    label: 'Overview',
     href: '/dashboard',
     tourId: 'sidebar-dashboard',
     icon: LayoutDashboard,
   },
   {
-    key: 'business',
-    label: 'Business',
+    key: 'businessHealth',
     href: '/business-health',
     tourId: 'sidebar-business',
     icon: Building2,
   },
   {
-    key: 'planner',
-    label: 'Decision Planner',
+    key: 'simulation',
     href: '/simulations',
     tourId: 'sidebar-planner',
     icon: GitPullRequest,
   },
   {
     key: 'reports',
-    label: 'Reports',
     href: '/reports',
     tourId: 'sidebar-reports',
     icon: FileText,
@@ -61,6 +57,7 @@ const mainNavItems: readonly NavItem[] = [
 ] as const;
 
 export function Sidebar({ className }: SidebarProps) {
+  const t = useTranslations('nav');
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -85,7 +82,7 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Navigation Groups */}
       <nav
         className="flex-1 overflow-y-auto px-2.5 py-4"
-        aria-label="Main navigation"
+        aria-label={t('openMenu')}
       >
         <ul className="flex flex-col gap-1.5" role="list">
           {mainNavItems.map((item) => {
@@ -94,7 +91,7 @@ export function Sidebar({ className }: SidebarProps) {
               (item.href !== '/dashboard' &&
                 pathname.startsWith(`${item.href}`));
             const Icon = item.icon;
-            const label = item.label;
+            const label = t(item.key);
 
             return (
               <li key={item.key}>

@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { RotateCw, Edit, LineChart, Building2, Package, SlidersHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AppPage } from '@/components/ui/layout';
@@ -15,6 +16,8 @@ import { UnitEconomicsView } from './unit-economics-view';
 export type BusinessTab = 'snapshot' | 'operations' | 'inventory' | 'assumptions';
 
 export function BusinessHealthView() {
+  const t = useTranslations('businessHealth');
+  const tCommon = useTranslations('common');
   const [activeTab, setActiveTab] = useState<BusinessTab>(() => {
     if (typeof window === 'undefined') return 'snapshot';
     const params = new URLSearchParams(window.location.search);
@@ -62,10 +65,10 @@ export function BusinessHealthView() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white">
-                Business Health
+                {t('pageTitle')}
               </h1>
               <p className="font-sans text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-1">
-                Monitor key financial metrics, operating ratios, and health indicators.
+                {t('subtitle')}
               </p>
             </div>
 
@@ -87,7 +90,7 @@ export function BusinessHealthView() {
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-[#6366F1]/10 dark:hover:bg-[#6366F1]/20 hover:border-[#6366F1]/30 transition-all cursor-pointer shadow-xs"
               >
                 <Edit className="size-3.5 text-[#6366F1]" />
-                <span>Edit Business Info</span>
+                <span>{tCommon('edit')}</span>
               </button>
             </div>
           </div>
@@ -108,7 +111,7 @@ export function BusinessHealthView() {
                 )}
               >
                 <LineChart className="size-4" />
-                <span>Financial Snapshot</span>
+                <span>{t('tabs.snapshot')}</span>
                 {activeTab === 'snapshot' && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
@@ -125,7 +128,7 @@ export function BusinessHealthView() {
                 )}
               >
                 <Building2 className="size-4" />
-                <span>Operations</span>
+                <span>{t('tabs.operations')}</span>
                 {activeTab === 'operations' && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
@@ -142,7 +145,7 @@ export function BusinessHealthView() {
                 )}
               >
                 <Package className="size-4" />
-                <span>Inventory Overview</span>
+                <span>{t('tabs.inventory')}</span>
                 {activeTab === 'inventory' && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
@@ -159,7 +162,7 @@ export function BusinessHealthView() {
                 )}
               >
                 <SlidersHorizontal className="size-4" />
-                <span>Assumptions</span>
+                <span>{t('tabs.unitEconomics')}</span>
                 {activeTab === 'assumptions' && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}

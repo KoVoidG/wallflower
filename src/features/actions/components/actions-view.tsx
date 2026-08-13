@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Plus,
   Search,
@@ -29,20 +30,21 @@ import {
   type OutcomeStatus,
 } from '../adapters/actions.adapter';
 
-const STATUS_FILTER_OPTIONS = [
-  { value: 'All active', label: 'Status: All active' },
-  { value: 'Planned', label: 'Planned' },
-  { value: 'In progress', label: 'In progress' },
-  { value: 'Blocked', label: 'Blocked' },
-  { value: 'Execution complete', label: 'Execution complete' },
-];
-
 export function ActionsView() {
+  const t = useTranslations('actions');
   const [data, setData] = useState<ActionsPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<'active' | 'reviews' | 'history'>('active');
+
+  const STATUS_FILTER_OPTIONS = [
+    { value: 'All active', label: `Status: ${t('statusList.planned')}` },
+    { value: 'Planned', label: t('statusList.planned') },
+    { value: 'In progress', label: t('statusList.inProgress') },
+    { value: 'Blocked', label: t('statusList.blocked') },
+    { value: 'Execution complete', label: t('statusList.complete') },
+  ];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All active');
@@ -258,11 +260,11 @@ export function ActionsView() {
             title={
               <div className="flex items-center gap-2.5">
                 <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
-                  Action Plan
+                  {t('pageTitle')}
                 </h1>
               </div>
             }
-            description="Turn Wallflower recommendations into owned work and verify the resulting business outcome."
+            description={t('subtitle')}
             actions={
               <Button
                 variant="primary"
@@ -271,7 +273,7 @@ export function ActionsView() {
                 className="shadow-2xs cursor-pointer"
               >
                 <Plus className="size-4" />
-                <span>Add Action</span>
+                <span>{t('addAction')}</span>
               </Button>
             }
           />
@@ -288,9 +290,9 @@ export function ActionsView() {
 
           <div className="flex items-center gap-2 border-b border-border pb-3">
             {[
-              { id: 'active', label: `Active Actions (${activeActionsList.length})` },
-              { id: 'reviews', label: `Outcome Reviews (${outcomeReviewsList.length})` },
-              { id: 'history', label: `History (${historyList.length})` },
+              { id: 'active', label: `${t('tabs.active')} (${activeActionsList.length})` },
+              { id: 'reviews', label: `${t('tabs.reviews')} (${outcomeReviewsList.length})` },
+              { id: 'history', label: `${t('tabs.history')} (${historyList.length})` },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -315,7 +317,7 @@ export function ActionsView() {
                   <Search className="size-3.5 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Search actions…"
+                    placeholder={t('searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
@@ -781,39 +783,39 @@ export function ActionsView() {
         title="Add Action"
         size="md"
       >
-        <form onSubmit={handleCreateActionSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleCreateActionSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="font-semibold text-text-primary block">Action Title *</label>
+            <label className="text-sm font-semibold text-text-primary block">Action Title *</label>
             <input
               type="text"
               required
               placeholder="e.g. Request landlord rent deferral proposal"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-text-primary block">Objective & Expected Result</label>
+            <label className="text-sm font-semibold text-text-primary block">Objective & Expected Result</label>
             <textarea
               rows={2}
               placeholder="Explain the business objective and expected outcome…"
               value={newObjective}
               onChange={(e) => setNewObjective(e.target.value)}
-              className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-text-primary block">Owner *</label>
+              <label className="text-sm font-semibold text-text-primary block">Owner *</label>
               <input
                 type="text"
                 required
                 value={newOwner}
                 onChange={(e) => setNewOwner(e.target.value)}
-                className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
               />
             </div>
 
@@ -831,21 +833,21 @@ export function ActionsView() {
             </div>
 
             <div className="space-y-1 sm:col-span-2">
-              <label className="font-semibold text-text-primary block">Due Date (ISO/Locale format)</label>
+              <label className="text-sm font-semibold text-text-primary block">Due Date (ISO/Locale format)</label>
               <input
                 type="text"
                 value={newDueDate}
                 onChange={(e) => setNewDueDate(e.target.value)}
-                className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-            <Button type="button" variant="outline" size="sm" onClick={() => setIsAddModalOpen(false)}>
+            <Button type="button" variant="outline" size="md" onClick={() => setIsAddModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="primary" size="md">
               Create Action
             </Button>
           </div>
@@ -858,21 +860,21 @@ export function ActionsView() {
         title="Record Business Outcome"
         size="md"
       >
-        <form onSubmit={handleSaveOutcomeReview} className="space-y-4 text-xs">
-          <div className="p-3 rounded-lg border border-border bg-surface-subtle space-y-1">
-            <span className="font-bold text-text-primary block">{reviewAction?.title}</span>
-            <p className="text-text-muted text-[11px]">Expected Target: {reviewAction?.expectedImpact}</p>
+        <form onSubmit={handleSaveOutcomeReview} className="space-y-4">
+          <div className="p-3 rounded-xl border border-border bg-surface-subtle space-y-1">
+            <span className="font-bold text-text-primary block text-sm">{reviewAction?.title}</span>
+            <p className="text-text-muted text-xs">Expected Target: {reviewAction?.expectedImpact}</p>
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-text-primary block">Observed Business Result *</label>
+            <label className="text-sm font-semibold text-text-primary block">Observed Business Result *</label>
             <textarea
               rows={2}
               required
               placeholder="e.g. Wait times reduced to 3.2 mins; payroll burn capped."
               value={observedResult}
               onChange={(e) => setObservedResult(e.target.value)}
-              className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
@@ -890,21 +892,21 @@ export function ActionsView() {
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-text-primary block">Review Notes & Lessons</label>
+            <label className="text-sm font-semibold text-text-primary block">Review Notes & Lessons</label>
             <input
               type="text"
               placeholder="Optional notes or follow-up recommendation…"
               value={reviewNotes}
               onChange={(e) => setReviewNotes(e.target.value)}
-              className="w-full px-3 py-1.5 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:border-brand"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-            <Button type="button" variant="outline" size="sm" onClick={() => setReviewAction(null)}>
+            <Button type="button" variant="outline" size="md" onClick={() => setReviewAction(null)}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="primary" size="md">
               Verify Outcome & Archive
             </Button>
           </div>

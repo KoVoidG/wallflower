@@ -1,7 +1,7 @@
 // src/components/app-shell/topbar.tsx
 'use client';
 
-import { Globe, Sun, Moon, Bell } from 'lucide-react';
+import { Sun, Moon, Bell } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { useSyncExternalStore } from 'react';
@@ -31,10 +31,6 @@ export function Topbar({ title }: TopbarProps) {
     () => false,
   );
 
-  const handleLanguageToggle = () => {
-    const nextLocale = locale === 'en' ? 'th' : 'en';
-    router.replace(pathname, { locale: nextLocale });
-  };
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
@@ -73,7 +69,7 @@ export function Topbar({ title }: TopbarProps) {
             'inline-flex items-center justify-center rounded-full p-0.5 hover:scale-110 active:scale-95 transition-all duration-150 cursor-pointer',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
           )}
-          aria-label="Open AI Advisor"
+          aria-label={t('advisor')}
           title="AI Advisor (Cmd+K / Ctrl+K)"
         >
           <BotAvatar size={36} animate={false} />
@@ -106,12 +102,12 @@ export function Topbar({ title }: TopbarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
             'cursor-pointer',
           )}
-          aria-label="Toggle light/dark theme"
+          aria-label={t('switchTheme')}
           title={
             mounted
               ? resolvedTheme === 'dark'
-                ? 'Switch to Light Mode'
-                : 'Switch to Dark Mode'
+                ? t('switchToLight')
+                : t('switchToDark')
               : undefined
           }
         >
@@ -122,23 +118,44 @@ export function Topbar({ title }: TopbarProps) {
           )}
         </button>
 
-        {/* Language toggle */}
-        <button
-          type="button"
-          onClick={handleLanguageToggle}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wider',
-            'text-[#64748B] dark:text-[#94A3B8] hover:bg-slate-100 dark:hover:bg-[#1E2638] hover:text-[#0F172A] dark:hover:text-white',
-            'transition-colors duration-150',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
-            'cursor-pointer',
-          )}
+        {/* Language toggle — EN | TH */}
+        <div
+          className="inline-flex items-center rounded-xl px-1 py-1 text-xs font-bold uppercase tracking-wider"
+          role="radiogroup"
           aria-label={t('changeLanguage')}
-          title={t('changeLanguage')}
         >
-          <Globe className="size-4" aria-hidden="true" />
-          <span>{locale === 'en' ? 'TH' : 'EN'}</span>
-        </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={locale === 'en'}
+            onClick={() => locale !== 'en' && router.replace(pathname, { locale: 'en' })}
+            className={cn(
+              'px-2 py-1 rounded-lg transition-colors duration-150 cursor-pointer',
+              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
+              locale === 'en'
+                ? 'text-[#6366F1] dark:text-[#A5B4FC]'
+                : 'text-[#94A3B8] dark:text-[#475569] hover:text-[#64748B] dark:hover:text-[#94A3B8]',
+            )}
+          >
+            EN
+          </button>
+          <span className="text-[#CBD5E1] dark:text-[#334155] select-none" aria-hidden="true">|</span>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={locale === 'th'}
+            onClick={() => locale !== 'th' && router.replace(pathname, { locale: 'th' })}
+            className={cn(
+              'px-2 py-1 rounded-lg transition-colors duration-150 cursor-pointer',
+              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
+              locale === 'th'
+                ? 'text-[#6366F1] dark:text-[#A5B4FC]'
+                : 'text-[#94A3B8] dark:text-[#475569] hover:text-[#64748B] dark:hover:text-[#94A3B8]',
+            )}
+          >
+            TH
+          </button>
+        </div>
 
         {/* Mobile-only Account Menu Trigger */}
         <div className="block md:hidden ml-1">

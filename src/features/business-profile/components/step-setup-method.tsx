@@ -73,7 +73,7 @@ export function StepSetupMethod({
   return (
     <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
       {/* ── Fixed Dimensions White Card Container (Zero Scroll Canvas) ──── */}
-      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
         {/* ── Top Bar: Monochrome Logo & Clean Header ─────────────────── */}
         <div className="flex flex-col items-center justify-center border-b border-slate-100 dark:border-[#1E2638] pb-4 space-y-2">
           <Logo size="lg" showWordmark={true} />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -25,6 +26,7 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+  const t = useTranslations('auth.register');
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -71,10 +73,10 @@ export default function RegisterPage() {
       {/* Form Header */}
       <div className="space-y-1">
         <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-          Create your account
+          {t('title')}
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary font-medium">
-          Start your journey to better business decisions.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -91,14 +93,14 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
         {/* Full Name */}
         <div className="space-y-1">
-          <label htmlFor="name" className="block text-xs font-bold text-text-primary">
-            Full name
+          <label htmlFor="name" className="block text-sm font-semibold text-text-primary">
+            {t('fullNameLabel')}
           </label>
           <input
             id="name"
             type="text"
             placeholder="Somchai Pattana"
-            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
             {...register('name')}
           />
           {errors.name && (
@@ -108,14 +110,14 @@ export default function RegisterPage() {
 
         {/* Email Address */}
         <div className="space-y-1">
-          <label htmlFor="email" className="block text-xs font-bold text-text-primary">
-            Email address
+          <label htmlFor="email" className="block text-sm font-semibold text-text-primary">
+            {t('emailLabel')}
           </label>
           <input
             id="email"
             type="email"
             placeholder="somchai@example.com"
-            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
             {...register('email')}
           />
           {errors.email && (
@@ -126,15 +128,15 @@ export default function RegisterPage() {
         {/* Password & Confirm Password Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label htmlFor="password" className="block text-xs font-bold text-text-primary">
-              Password
+            <label htmlFor="password" className="block text-sm font-semibold text-text-primary">
+              {t('passwordLabel')}
             </label>
             <div className="relative">
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••••••"
-                className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-9 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+                className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 pr-9 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
                 {...register('password')}
               />
               <button
@@ -142,7 +144,7 @@ export default function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary cursor-pointer p-1"
               >
-                {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
             {errors.password && (
@@ -151,40 +153,44 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="confirmPassword" className="block text-xs font-bold text-text-primary">
-              Confirm password
+            <label htmlFor="confirmPassword" className="block text-sm font-semibold text-text-primary">
+              {t('confirmPasswordLabel')}
             </label>
             <input
               id="confirmPassword"
-              type={showPassword ? 'text' : 'password'}
+              type="password"
               placeholder="••••••••••••"
-              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+              className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
               {...register('confirmPassword')}
             />
             {errors.confirmPassword && (
-              <p className="text-xs font-semibold text-rose-500">{errors.confirmPassword.message}</p>
+              <p className="text-xs font-semibold text-rose-500">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Business Name Select/Input */}
+        {/* Business Name */}
         <div className="space-y-1">
-          <label htmlFor="businessName" className="block text-xs font-bold text-text-primary">
+          <label htmlFor="businessName" className="block text-sm font-semibold text-text-primary">
             Business name
           </label>
           <input
             id="businessName"
             type="text"
             placeholder="Somchai Retail Store"
-            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
+            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary transition-colors shadow-2xs font-medium"
             {...register('businessName')}
           />
           {errors.businessName && (
-            <p className="text-xs font-semibold text-rose-500">{errors.businessName.message}</p>
+            <p className="text-xs font-semibold text-rose-500">
+              {errors.businessName.message}
+            </p>
           )}
         </div>
 
-        {/* Terms Agreement Checkbox */}
+        {/* Terms Agreement */}
         <div className="pt-1">
           <label className="flex items-start gap-2.5 cursor-pointer select-none text-xs text-text-secondary font-medium">
             <input
@@ -193,29 +199,30 @@ export default function RegisterPage() {
               {...register('termsAgreed')}
             />
             <span>
-              I agree to the{' '}
-              <Link href="/terms" className="font-bold text-tertiary hover:underline">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="font-bold text-tertiary hover:underline">
-                Privacy Policy
-              </Link>
+              {t('agreeTerms')}
             </span>
           </label>
           {errors.termsAgreed && (
-            <p className="text-xs font-semibold text-rose-500 mt-1">{errors.termsAgreed.message}</p>
+            <p className="text-xs font-semibold text-rose-500 mt-1">
+              {errors.termsAgreed.message}
+            </p>
           )}
         </div>
 
-        {/* Create Account Button */}
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-xs sm:text-sm font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2"
+          className="w-full rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/25 hover:opacity-95 active:scale-[0.99] disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
-          {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-          <span>{isSubmitting ? 'Creating account...' : 'Create Account'}</span>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>{t('signUp')}...</span>
+            </>
+          ) : (
+            <span>{t('signUp')}</span>
+          )}
         </button>
       </form>
 

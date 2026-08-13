@@ -41,7 +41,7 @@ export function DraftBanner({ onContinue, onClear, className }: DraftBannerProps
             type="button"
             onClick={onContinue}
             className={cn(
-              'px-3 py-1.5 rounded-[var(--radius-md)] text-[13px] font-[550]',
+              'px-3.5 py-2 rounded-xl text-sm font-semibold',
               'bg-info text-white dark:text-on-primary hover:bg-info/90 transition-colors cursor-pointer'
             )}
           >
@@ -51,7 +51,7 @@ export function DraftBanner({ onContinue, onClear, className }: DraftBannerProps
             type="button"
             onClick={onClear}
             className={cn(
-              'px-3 py-1.5 rounded-[var(--radius-md)] text-[13px] font-[550]',
+              'px-3.5 py-2 rounded-xl text-sm font-semibold',
               'border border-border text-text-secondary',
               'hover:bg-surface-subtle transition-colors cursor-pointer'
             )}

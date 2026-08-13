@@ -90,7 +90,7 @@ export function StepReview({
   return (
     <div className="w-full max-w-4xl mx-auto flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
       {/* ── Fixed White Box Card (Zero Scroll Canvas) ──────────────────── */}
-      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6 overflow-hidden">
+      <div className="w-full rounded-3xl border border-slate-200/90 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-2xl shadow-slate-900/5 dark:shadow-black/60 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
         {/* Header */}
         <div className="space-y-1 text-center sm:text-left border-b border-slate-100 dark:border-[#1E2638] pb-4">
           <div className="flex items-center gap-2.5">
@@ -138,7 +138,7 @@ export function StepReview({
                   className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shrink-0"
                   title={`Edit ${item.title}`}
                 >
-                  <Edit2 className="size-3.5" />
+                  <Edit2 className="size-4" />
                 </button>
               </div>
             );
@@ -150,20 +150,22 @@ export function StepReview({
           <Button
             type="button"
             variant="outline"
+            size="md"
             onClick={onPrev}
-            className="text-xs font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638]"
+            className="text-sm font-semibold gap-1.5 cursor-pointer px-4 border-slate-200 dark:border-[#1E2638] rounded-xl"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-4" />
             <span>Go back</span>
           </Button>
 
           <Button
             type="button"
+            size="md"
             onClick={onNext}
-            className="text-xs font-bold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2 rounded-xl transition-all border-0"
+            className="text-sm font-semibold gap-1.5 cursor-pointer bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25 px-6 py-2.5 rounded-xl transition-all border-0"
           >
             <span>Confirm & Build Baseline</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </div>

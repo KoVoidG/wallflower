@@ -35,6 +35,7 @@ export interface ScenarioItem {
   riskLevel?: 'Low' | 'Medium' | 'High';
   confidence?: number;
   icon: typeof Tag;
+  templateId?: string;
 }
 
 const SAMPLE_SCENARIOS: ScenarioItem[] = [
@@ -49,6 +50,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     riskLevel: 'Low',
     confidence: 91,
     icon: Tag,
+    templateId: 'price_increase',
   },
   {
     id: 'scen-2',
@@ -61,6 +63,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     riskLevel: 'Low',
     confidence: 87,
     icon: Users,
+    templateId: 'hire_employee',
   },
   {
     id: 'scen-3',
@@ -73,6 +76,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     riskLevel: 'Medium',
     confidence: 82,
     icon: Box,
+    templateId: 'inventory_expansion',
   },
   {
     id: 'scen-4',
@@ -85,6 +89,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     riskLevel: 'Low',
     confidence: 89,
     icon: Truck,
+    templateId: 'cost_reduction',
   },
   {
     id: 'scen-5',
@@ -94,6 +99,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     status: 'Draft',
     lastSimulated: 'Today, 09:11 AM',
     icon: Sparkles,
+    templateId: 'holiday_promo',
   },
   {
     id: 'scen-6',
@@ -103,6 +109,7 @@ const SAMPLE_SCENARIOS: ScenarioItem[] = [
     status: 'Draft',
     lastSimulated: '3 days ago',
     icon: Users,
+    templateId: 'new_branch',
   },
 ];
 
@@ -133,6 +140,7 @@ export function ScenarioLibraryView({
       status: 'Draft',
       lastSimulated: 'Just now',
       icon: Tag,
+      templateId: template.id,
     };
     setScenariosList([newScen, ...scenariosList]);
     setIsModalOpen(false);
@@ -174,7 +182,7 @@ export function ScenarioLibraryView({
               placeholder="Search scenarios by name, goal, strategy..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] text-[#0F172A] dark:text-white placeholder:text-[#94A3B8] focus:outline-hidden focus:border-[#6366F1] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] text-[#0F172A] dark:text-white placeholder:text-[#94A3B8] focus:outline-hidden focus:border-[#6366F1] transition-colors"
             />
           </div>
 
@@ -210,7 +218,7 @@ export function ScenarioLibraryView({
               />
             </div>
 
-            <div className="w-44">
+            <div className="w-47">
               <Select
                 value={sortBy}
                 onChange={setSortBy}
