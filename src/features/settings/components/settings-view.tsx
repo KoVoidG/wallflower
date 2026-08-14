@@ -15,6 +15,7 @@ import {
   Sparkles,
   Check,
   Save,
+  Plug,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from '@/lib/i18n/navigation';
@@ -31,11 +32,13 @@ import { AppearanceLanguageSettings } from './appearance-language-settings';
 import { DataPrivacySettings } from './data-privacy-settings';
 import { SecuritySettings } from './security-settings';
 import { PlanUsageSettings } from './plan-usage-settings';
+import { OperationalIntegrationsView } from '@/features/integrations/components/operational-integrations-view';
 
 export type SectionId =
   | 'profile'
   | 'business'
   | 'business-data'
+  | 'integrations'
   | 'simulation'
   | 'notifications'
   | 'appearance'
@@ -72,6 +75,13 @@ const SECTIONS: readonly SectionItem[] = [
     title: 'Business Data',
     subtitle: 'Maintain your financial, operational and inventory data.',
     icon: Database,
+  },
+  {
+    id: 'integrations',
+    label: 'App Integrations',
+    title: 'App Integrations',
+    subtitle: 'Manage connected external apps and operational data sources.',
+    icon: Plug,
   },
   {
     id: 'simulation',
@@ -185,7 +195,7 @@ function SettingsContent() {
 
           {/* Main 2-Column Settings Layout (Left Nav + Right Content) */}
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            {/* Left Sub-Navigation Bar (9 Items) */}
+            {/* Left Sub-Navigation Bar */}
             <nav
               aria-label="Settings sub-navigation"
               className="hidden md:block w-[230px] shrink-0 rounded-2xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] p-2 space-y-1 sticky top-20 shadow-xs"
@@ -226,6 +236,11 @@ function SettingsContent() {
               )}
               {activeSection === 'business' && <BusinessProfileSettings />}
               {activeSection === 'business-data' && <BusinessDataSettings />}
+              {activeSection === 'integrations' && (
+                <div className="h-[650px] border border-border/60 rounded-xl overflow-hidden bg-surface shadow-2xs">
+                  <OperationalIntegrationsView />
+                </div>
+              )}
               {activeSection === 'simulation' && <SimulationSettings />}
               {activeSection === 'notifications' && <NotificationSettings />}
               {activeSection === 'appearance' && <AppearanceLanguageSettings />}

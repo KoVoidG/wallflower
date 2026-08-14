@@ -529,3 +529,97 @@ export const DEMO_WORKFLOW_RESULT: WorkflowPlanResult = {
     "Vendor e-invoicing readiness is unknown — a structured survey of the top-10 suppliers by invoice volume should be completed in Week 1 before finalising the OCR rollout plan",
   ],
 };
+
+export const DEMO_ONBOARDING_RESULT: WorkflowPlanResult = {
+  goal: "Reduce customer onboarding cycle time by 30%",
+  confidenceScore: 0.82,
+  executiveSummary:
+    "Analysis of the Customer Onboarding workflow indicates that compliance verification and cross-departmental handoffs are the primary constraints, taking up 60% of the total cycle time. By introducing a self-serve documentation portal and automating initial compliance checks via AI, the cycle time can be reduced by 35%. This cuts onboarding time from 14 days to 9 days, accelerating time-to-revenue and improving customer satisfaction scores.",
+  projectedImpact: {
+    cycleTimeReductionPct: 35,
+    costSavingsPerWeek: 8500,
+    qualityImprovementPct: 15,
+    paybackWeeks: 12,
+  },
+  actionItems: [
+    {
+      id: "ob-1",
+      title: "Deploy Self-Serve Client Documentation Portal",
+      description: "Replace back-and-forth email chains with a unified secure portal where clients can upload KYC/AML documents and instantly see missing items.",
+      priority: "critical",
+      department: "Sales",
+      timeline: "Weeks 1-4",
+      effort: "high",
+      expectedImpact: "Eliminates 3-4 days of email latency.",
+      metrics: { before: "Email collection taking 5 days", after: "Portal collection taking 1-2 days", methodology: "Industry standard for digital onboarding" },
+      risks: ["Low initial adoption by older clients"],
+      mitigations: ["Provide guided onboarding calls during the transition period"]
+    },
+    {
+      id: "ob-2",
+      title: "Automate Tier-1 Compliance Verification",
+      description: "Implement AI-driven document verification to pre-clear standard clients, escalating only edge cases to the Compliance team.",
+      priority: "high",
+      department: "Operations",
+      timeline: "Weeks 5-8",
+      effort: "medium",
+      expectedImpact: "Reduces compliance review queue depth by 70%.",
+      metrics: { before: "100% manual review", after: "30% manual review", methodology: "M/M/1 queuing reduction" },
+      risks: ["False positives triggering unnecessary manual reviews"],
+      mitigations: ["Tune confidence thresholds conservatively at launch"]
+    }
+  ],
+  phases: [
+    { phase: "Phase 1: Portal Build", duration: "Weeks 1-4", focus: "Client experience", actions: ["Deploy portal", "Migrate pipeline"] },
+    { phase: "Phase 2: AI Verification", duration: "Weeks 5-8", focus: "Internal efficiency", actions: ["Train compliance models", "Activate auto-clearance"] }
+  ],
+  keyRisks: ["Integration challenges with existing CRM"],
+  dataGaps: ["Exact drop-off rates at each onboarding step"]
+};
+
+export const DEMO_SUPPLY_CHAIN_RESULT: WorkflowPlanResult = {
+  goal: "Identify and eliminate the primary constraint in the Supply Chain department.",
+  confidenceScore: 0.89,
+  executiveSummary:
+    "The primary constraint in the Supply Chain department is the Custom Part Procurement workflow. Analysis shows that lack of automated forecasting and high multi-tier approval requirements cause a perpetual backlog. Implementing Vendor Managed Inventory (VMI) for standard parts and dynamic approval thresholds will increase throughput by 28% and eliminate the procurement bottleneck.",
+  projectedImpact: {
+    cycleTimeReductionPct: 28,
+    costSavingsPerWeek: 15200,
+    qualityImprovementPct: 10,
+    paybackWeeks: 7,
+  },
+  actionItems: [
+    {
+      id: "sc-1",
+      title: "Transition C-Parts to Vendor Managed Inventory (VMI)",
+      description: "Shift inventory management of low-value, high-volume items to primary suppliers, eliminating internal procurement cycles for these parts.",
+      priority: "critical",
+      department: "Supply Chain",
+      timeline: "Weeks 1-6",
+      effort: "medium",
+      expectedImpact: "Removes 40% of PO volume from the procurement queue.",
+      metrics: { before: "Internal management of all parts", after: "VMI for bottom 40%", methodology: "Lean inventory practices" },
+      risks: ["Stockouts if vendor fails to monitor bins"],
+      mitigations: ["Implement daily automated bin level reporting"]
+    },
+    {
+      id: "sc-2",
+      title: "Dynamic Procurement Approval Thresholds",
+      description: "Base approval routing on historical vendor reliability and part criticality rather than just cost, allowing fast-tracking of trusted repeat orders.",
+      priority: "high",
+      department: "Supply Chain",
+      timeline: "Weeks 3-5",
+      effort: "low",
+      expectedImpact: "Accelerates 60% of remaining procurement cycles.",
+      metrics: { before: "Static cost-based routing", after: "Dynamic risk-based routing", methodology: "Risk-adjusted process design" },
+      risks: ["Potential compliance issues with financial controls"],
+      mitigations: ["Quarterly audits of dynamic routing decisions"]
+    }
+  ],
+  phases: [
+    { phase: "Phase 1: VMI Setup", duration: "Weeks 1-4", focus: "Offload volume", actions: ["Identify C-parts", "Negotiate VMI terms"] },
+    { phase: "Phase 2: Dynamic Routing", duration: "Weeks 3-6", focus: "Accelerate remaining", actions: ["Define risk matrices", "Update ERP routing"] }
+  ],
+  keyRisks: ["Supplier readiness for VMI programs"],
+  dataGaps: ["Detailed breakdown of procurement delays by vendor"]
+};

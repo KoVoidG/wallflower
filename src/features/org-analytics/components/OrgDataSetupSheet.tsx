@@ -151,8 +151,8 @@ export function OrgDataSetupSheet({
   open: boolean;
   onClose: () => void;
 }) {
-  const { departments, workflows, setOrgData, loadProfile, orgName } = useAppStore();
-  const [mainTab, setMainTab] = useState<"templates" | "custom">("templates");
+  const { departments, workflows, setOrgData, loadProfile, orgName, syncWithWallflower } = useAppStore();
+  const [mainTab, setMainTab] = useState<"templates" | "custom" | "wallflower">("wallflower");
   const [customTab, setCustomTab] = useState<"departments" | "workflows">("departments");
   
   const [localDepts, setLocalDepts] = useState<Department[]>([...departments]);
@@ -169,7 +169,7 @@ export function OrgDataSetupSheet({
     setLocalOrgName(orgName);
     setError(null);
     setSaved(false);
-    setMainTab("templates");
+    setMainTab("wallflower");
   }
   if (!open) wasOpen.current = false;
 
@@ -245,12 +245,44 @@ export function OrgDataSetupSheet({
 
         {/* Tabs */}
         <div className="flex border-b border-border/80">
+          <button onClick={() => setMainTab("wallflower")} className={`flex-1 py-3 text-sm font-medium transition-colors ${mainTab === "wallflower" ? "text-brand border-b-2 border-brand bg-brand-soft/10" : "text-text-muted hover:text-text-primary"}`}>Wallflower DB</button>
           <button onClick={() => setMainTab("templates")} className={`flex-1 py-3 text-sm font-medium transition-colors ${mainTab === "templates" ? "text-brand border-b-2 border-brand bg-brand-soft/10" : "text-text-muted hover:text-text-primary"}`}>Industry Templates</button>
           <button onClick={() => setMainTab("custom")} className={`flex-1 py-3 text-sm font-medium transition-colors ${mainTab === "custom" ? "text-brand border-b-2 border-brand bg-brand-soft/10" : "text-text-muted hover:text-text-primary"}`}>Custom Org Setup</button>
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-hidden flex flex-col">
+          {mainTab === "wallflower" && (
+            <div className="p-6 flex flex-col items-center justify-center text-center h-full space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-brand-soft/20 border border-brand/30 flex items-center justify-center text-brand mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <h3 className="text-lg font-bold text-text-primary">Sync with Wallflower Database</h3>
+              <p className="text-sm text-text-muted max-w-md">
+                Dynamically generate your organizational structure (departments, headcounts, and workflows) directly from your active Wallflower Business and Financial Snapshot records.
+              </p>
+              <button 
+                onClick={async () => {
+                  setError(null);
+                  try {
+                    await syncWithWallflower();
+                    setSaved(true);
+                    setTimeout(() => {
+                      setSaved(false);
+                      onClose();
+                    }, 1000);
+                  } catch (e: any) {
+                    setError("Failed to sync: " + e.message);
+                  }
+                }}
+                className="mt-4 px-6 py-2.5 text-sm font-semibold rounded-xl bg-brand hover:bg-brand-hover text-white transition-colors"
+              >
+                {saved ? "Synced successfully!" : "Sync Data Now"}
+              </button>
+              {error && <div className="text-xs text-danger mt-2">{error}</div>}
+            </div>
+          )}
+
           {mainTab === "templates" && (
             <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4">
               {ORG_PROFILES.map((profile) => (

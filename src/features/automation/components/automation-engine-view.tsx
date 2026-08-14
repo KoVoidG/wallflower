@@ -3,11 +3,10 @@
 
 import { useState, useEffect } from "react";
 import { 
-  Zap, Play, CheckCircle2, Clock, BarChart3, Database, FileText, ArrowRight, Activity, Terminal, Shield, 
-  Settings, Link as LinkIcon, RefreshCcw, ChevronRight, X, AlertTriangle, Code, Circle
+  Play, CheckCircle2, Clock, Database, FileText, ArrowRight, Activity, Terminal, 
+  Settings, Link as LinkIcon, RefreshCcw, ChevronRight, Code, Circle
 } from "lucide-react";
 import { useAppStore } from "@/lib/liquiflow-hooks";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface AutomationStep {
@@ -266,7 +265,6 @@ export function AutomationEngineView() {
                        const isPast = activeStepIndex > idx;
                        const isActive = activeStepIndex === idx;
                        const isPending = activeStepIndex < idx && activeStepIndex !== -1;
-                       const isIdle = activeStepIndex === -1;
                        
                        let nodeColor = "border-border/60 bg-surface-subtle text-text-muted";
                        let icon = <Circle className="w-4 h-4" />;

@@ -19,6 +19,7 @@ interface OrgDataStore {
   setOrgData: (departments: Department[], workflows: WorkflowStep[], orgName?: string) => void;
   loadProfile: (profileId: string) => void;
   resetData: () => void;
+  syncWithWallflower: () => Promise<void>;
 }
 
 export const useAppStore = create<OrgDataStore>()(
@@ -63,6 +64,25 @@ export const useAppStore = create<OrgDataStore>()(
           isDemoMode: true,
           lastUpdated: null,
         }),
+
+      syncWithWallflower: async () => {
+        try {
+          const res = await fetch("/api/liquiflow/sync");
+          if (!res.ok) throw new Error("Failed to sync with Wallflower");
+          const data = await res.json();
+          if (data.success) {
+            set({
+              orgName: data.orgName,
+              departments: data.departments,
+              workflows: data.workflows,
+              isDemoMode: data.isMockData ? true : false,
+              lastUpdated: new Date().toISOString()
+            });
+          }
+        } catch (error) {
+          console.error("Failed to sync Wallflower data:", error);
+        }
+      },
     }),
     {
       name: "liquiflow-org-data",

@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { Send, BrainCircuit, Activity, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Send, BrainCircuit, Activity, Clock, FlaskConical, Settings2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AppPage } from "@/components/ui/layout";
-import { AgentWorkflowCanvas, AgentId, AgentStatus } from "@/features/org-analytics/components";
+import { Link } from "@/lib/i18n/navigation";
+import { AgentWorkflowCanvas, AgentId, AgentStatus, OrgDataSetupSheet } from "@/features/org-analytics/components";
 import { useAppStore } from "@/lib/liquiflow-hooks";
 import type { WorkflowPlanResult } from "@/lib/liquiflow-types";
+import { DEMO_WORKFLOW_RESULT } from "@/lib/liquiflow-demo-data";
 
 export default function AdvisorPage() {
   const { departments, workflows, isDemoMode } = useAppStore();
   const [goal, setGoal] = useState("");
   const [isRunning, setIsRunning] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
   
   const [agentStatuses, setAgentStatuses] = useState<Record<AgentId, AgentStatus | null>>({
     planner: null,
@@ -24,6 +27,35 @@ export default function AdvisorPage() {
   
   const [result, setResult] = useState<WorkflowPlanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isDemoMode) {
+      setGoal(DEMO_WORKFLOW_RESULT.goal);
+      setResult(DEMO_WORKFLOW_RESULT);
+      
+      const PLANNER_CONTENT = `GOAL DECOMPOSITION — "${DEMO_WORKFLOW_RESULT.goal}"\n\nSub-tasks identified:\n1. Quantify current AP workflow constraint (71.2h cycle, 15% error, 29 items/wk)\n2. Identify root-cause error categories (manual keying vs. matching vs. approval delay)\n3. Model intervention options: OCR extraction, 3-way PO matching, delegation authority\n4. Estimate cycle-time impact of each lever using Little's Law\n5. Sequence interventions by ROI and implementation complexity`;
+
+      const RESEARCHER_CONTENT = `OPERATIONS RESEARCH ANALYSIS\n\nLittle's Law (L = λW): λ = 29 invoices/wk, W = 71.2h → L = 86.3 avg invoices in-flight\nTarget: W_target = 42.7h (−40%), so L_target = 51.8\n\nM/M/1 Approval queue: Finance at ~95% utilization\n  E[Wq] ≈ 14h (queue wait contribution at ρ=0.95)\n  After delegation → ρ ≈ 0.55 → E[Wq] ≈ 1.8h\n\nLean Six Sigma DPMO:\n  Current: 150,000 DPMO (2.6σ)\n  With OCR + 3-way match: 20,000 DPMO (3.5σ)\n  Aberdeen top-quartile target: 10,000 DPMO (3.8σ)\n\nProjected savings: $12,400/wk | Payback: week 9`;
+
+      const CRITIC_CONTENT = `CRITICAL REVIEW — Risks & Assumptions Challenged\n\n✗ ASSUMPTION CHALLENGED: "OCR will work immediately"\n  → Reality: ERP PO master data may be 20–30% incomplete. Run data audit first.\n\n✗ ASSUMPTION CHALLENGED: "Delegation is low-effort"\n  → Reality: Requires CFO sign-off + fraud controls. Underestimated stakeholder friction.\n\n✓ VALIDATED: Little's Law projections — math checks out given stated λ and W values\n✓ VALIDATED: 3-way matching ROI — Aberdeen 2023 confirms median 73% error reduction\n\nData gaps flagged:\n• Per-stage timing breakdown unavailable (entry vs. matching vs. approval)\n• Vendor e-invoicing readiness unknown — survey required`;
+      
+      setAgentStatuses({
+        planner: { agent: "planner", state: "done", message: "Planning complete — sub-tasks identified.", content: PLANNER_CONTENT },
+        researcher: { agent: "researcher", state: "done", message: "Research complete — quantified improvement potential.", content: RESEARCHER_CONTENT },
+        critic: { agent: "critic", state: "done", message: "Critical review complete — risks and mitigations identified.", content: CRITIC_CONTENT },
+        synthesizer: { agent: "synthesizer", state: "done", message: "Synthesis complete — action plan ready." },
+      });
+    } else {
+      setGoal("");
+      setResult(null);
+      setAgentStatuses({
+        planner: null,
+        researcher: null,
+        critic: null,
+        synthesizer: null,
+      });
+    }
+  }, [isDemoMode]);
 
   const startPipeline = async (overrideGoal?: string) => {
     const targetGoal = overrideGoal || goal;
@@ -123,7 +155,22 @@ export default function AdvisorPage() {
               Multi-agent operations research pipeline. Define a goal and let the agents decompose, analyze, and synthesize an action plan.
             </p>
           </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" onClick={() => setShowSetup(true)} className="gap-2 text-xs h-9 rounded-xl border border-border/80">
+              <Settings2 className="size-3.5" />
+              Configure Org Data
+            </Button>
+            <Link
+              href="/advisor/playground"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-brand/30 bg-brand/8 text-brand hover:bg-brand/15 hover:border-brand/50 transition-all text-sm font-semibold h-9"
+            >
+              <FlaskConical className="size-4" />
+              AI Playground
+            </Link>
+          </div>
         </div>
+
+        <OrgDataSetupSheet open={showSetup} onClose={() => setShowSetup(false)} />
 
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
           <div className="xl:col-span-4 space-y-6">

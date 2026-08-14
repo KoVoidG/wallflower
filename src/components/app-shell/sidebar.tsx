@@ -1,7 +1,7 @@
 // src/components/app-shell/sidebar.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   LayoutDashboard,
@@ -9,20 +9,24 @@ import {
   GitPullRequest,
   FileText,
   Cpu,
+  FlaskConical,
+  Database,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import { AccountMenu } from './account-menu';
 import { Logo } from '@/components/ui/logo';
+import { useAppStore } from '@/lib/liquiflow-hooks';
 
 interface SidebarProps {
   className?: string;
 }
 
 interface NavItemConfig {
-  key: 'dashboard' | 'businessHealth' | 'simulation' | 'reports';
+  key: string;
   href: string;
   tourId: string;
+  label?: string;
   icon: React.ComponentType<{
     className?: string;
     strokeWidth?: number;
@@ -44,6 +48,13 @@ const mainNavItems: readonly NavItemConfig[] = [
     icon: Building2,
   },
   {
+    key: 'data-sources',
+    label: 'Data & Integrations',
+    href: '/data-sources',
+    tourId: 'sidebar-data-sources',
+    icon: Database,
+  },
+  {
     key: 'simulation',
     href: '/simulations',
     tourId: 'sidebar-planner',
@@ -57,10 +68,16 @@ const mainNavItems: readonly NavItemConfig[] = [
   },
   {
     key: 'automation',
-    label: 'Automation',
     href: '/automation',
     tourId: 'sidebar-automation',
     icon: Cpu,
+  },
+  {
+    key: 'playground',
+    label: 'AI Playground',
+    href: '/advisor/playground',
+    tourId: 'sidebar-playground',
+    icon: FlaskConical,
   },
 ] as const;
 
@@ -68,6 +85,14 @@ export function Sidebar({ className }: SidebarProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
+  const { isDemoMode, syncWithWallflower } = useAppStore();
+
+  useEffect(() => {
+    // Attempt to automatically sync Wallflower Business/Financial data into Liquiflow on load
+    if (isDemoMode) {
+      syncWithWallflower();
+    }
+  }, [isDemoMode, syncWithWallflower]);
 
   return (
     <aside
@@ -99,7 +124,13 @@ export function Sidebar({ className }: SidebarProps) {
               (item.href !== '/dashboard' &&
                 pathname.startsWith(`${item.href}`));
             const Icon = item.icon;
-            const label = t(item.key);
+            // Use explicit label for new items not in translations, fall back to t() for known keys
+            let label: string;
+            try {
+              label = item.label ?? t(item.key as Parameters<typeof t>[0]);
+            } catch {
+              label = item.label ?? item.key;
+            }
 
             return (
               <li key={item.key}>

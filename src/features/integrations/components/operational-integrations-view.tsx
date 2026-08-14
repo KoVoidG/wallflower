@@ -6,8 +6,6 @@ import { useAppStore } from "@/lib/liquiflow-hooks";
 import type { Department, WorkflowStep } from "@/lib/liquiflow-types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 type IntegrationId = "jira" | "linear" | "notion" | "asana" | "github" | "trello" | "gitlab" | "zendesk" | "salesforce" | "monday" | "hubspot" | "intercom" | "zapier" | "make";
 
@@ -576,11 +574,11 @@ function IntegrationCard({
       <div className="space-y-3">
         {config.fields.map((field) => (
           <div key={field.key} className="space-y-1">
-            <Label className="text-[10px] text-text-muted block mb-1">{field.label}</Label>
-            <Input
+            <label className="text-[10px] text-text-muted block mb-1">{field.label}</label>
+            <input
               type={field.type === "email" ? "email" : "text"}
               value={fields[field.key] ?? ""}
-              onChange={(e) => handleFieldChange(field.key, e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.key, e.target.value)}
               placeholder={field.placeholder}
               autoComplete="off"
               spellCheck={false}
