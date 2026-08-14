@@ -11,7 +11,10 @@ interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 export function AppPage({ children, className, ...props }: LayoutProps) {
   return (
     <div
-      className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6', className)}
+      className={cn(
+        'mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 space-y-6',
+        className,
+      )}
       {...props}
     >
       {children}
@@ -19,7 +22,8 @@ export function AppPage({ children, className, ...props }: LayoutProps) {
   );
 }
 
-interface PageHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+interface PageHeaderProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
@@ -39,7 +43,7 @@ export function PageHeader({
     <div
       className={cn(
         'flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-border/60 pb-5',
-        className
+        className,
       )}
       {...props}
     >
@@ -48,13 +52,12 @@ export function PageHeader({
           {typeof title === 'string' ? <PageTitle>{title}</PageTitle> : title}
           {badge}
         </div>
-        {description && (
-          typeof description === 'string' ? (
+        {description &&
+          (typeof description === 'string' ? (
             <PageDescription>{description}</PageDescription>
           ) : (
             description
-          )
-        )}
+          ))}
       </div>
 
       {actions && (
@@ -66,7 +69,11 @@ export function PageHeader({
   );
 }
 
-export function PageHeaderActions({ children, className, ...props }: LayoutProps) {
+export function PageHeaderActions({
+  children,
+  className,
+  ...props
+}: LayoutProps) {
   return (
     <div
       className={cn('flex flex-wrap items-center gap-2.5 shrink-0', className)}
@@ -93,7 +100,8 @@ export function Section({ children, className, ...props }: LayoutProps) {
   );
 }
 
-interface SectionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+interface SectionHeaderProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
@@ -113,14 +121,17 @@ export function SectionHeader({
       {...props}
     >
       <div>
-        {typeof title === 'string' ? <SectionTitle>{title}</SectionTitle> : title}
-        {description && (
-          typeof description === 'string' ? (
+        {typeof title === 'string' ? (
+          <SectionTitle>{title}</SectionTitle>
+        ) : (
+          title
+        )}
+        {description &&
+          (typeof description === 'string' ? (
             <p className="text-xs text-text-muted mt-0.5">{description}</p>
           ) : (
             description
-          )
-        )}
+          ))}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>

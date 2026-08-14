@@ -1,7 +1,7 @@
-// src/features/business-health/components/inventory-view.tsx
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { motion } from 'motion/react';
 import {
   Box,
@@ -43,6 +43,8 @@ const inventoryTimeSeriesData = [
 ];
 
 export function InventoryView() {
+  const t = useTranslations('businessHealth.inventory');
+  const tHealth = useTranslations('businessHealth');
   const { openDrawer } = useAdvisorDrawer();
   const [selectedTimeframe, setSelectedTimeframe] = useState<
     '30D' | '90D' | '6M' | '12M'
@@ -54,10 +56,10 @@ export function InventoryView() {
       <FadeInView offset={12}>
         <div>
           <h2 className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
-            Inventory Overview
+            {tHealth('tabs.inventory')}
           </h2>
           <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
-            Track your inventory performance, valuation, and stock alerts.
+            {t('subtitle')}
           </p>
         </div>
       </FadeInView>

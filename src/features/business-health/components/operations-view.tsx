@@ -1,6 +1,6 @@
-// src/features/business-health/components/operations-view.tsx
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { motion } from 'motion/react';
 import {
   Plus,
@@ -20,6 +20,10 @@ import { Badge } from '@/components/ui/badge';
 import { FadeInView, CountUp } from '@/components/motion';
 
 export function OperationsView() {
+  const t = useTranslations('businessHealth.operations');
+  const tHealth = useTranslations('businessHealth');
+  const tCommon = useTranslations('common');
+
   return (
     <div className="space-y-6">
       {/* Header / Title Bar */}
@@ -27,10 +31,10 @@ export function OperationsView() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="font-display text-xl font-bold text-[#0F172A] dark:text-white">
-              Operations
+              {tHealth('tabs.operations')}
             </h2>
             <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
-              Track your day-to-day operations and key business drivers.
+              {t('subtitle')}
             </p>
           </div>
           <button
@@ -38,7 +42,7 @@ export function OperationsView() {
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-xs font-semibold shadow-md shadow-indigo-500/25 hover:opacity-95 hover:scale-105 active:scale-95 cursor-pointer transition-all self-start sm:self-auto"
           >
             <Plus className="size-3.5" />
-            <span>Edit Operations Data</span>
+            <span>{tCommon('edit')}</span>
           </button>
         </div>
       </FadeInView>

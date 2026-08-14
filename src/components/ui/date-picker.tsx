@@ -82,12 +82,18 @@ export function DatePicker({
   };
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(() => parseDate(value));
+  const [selectedDate, setSelectedDate] = useState<Date>(() =>
+    parseDate(value),
+  );
   const [tempDate, setTempDate] = useState<Date>(() => parseDate(value));
 
   // View navigation state (month & year being viewed)
-  const [viewYear, setViewYear] = useState<number>(() => parseDate(value).getFullYear());
-  const [viewMonth, setViewMonth] = useState<number>(() => parseDate(value).getMonth());
+  const [viewYear, setViewYear] = useState<number>(() =>
+    parseDate(value).getFullYear(),
+  );
+  const [viewMonth, setViewMonth] = useState<number>(() =>
+    parseDate(value).getMonth(),
+  );
 
   // Dropdown overlay states
   const [isMonthDropdownOpen, setIsMonthDropdownOpen] = useState(false);
@@ -277,7 +283,7 @@ export function DatePicker({
           className={cn(
             'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border transition-all duration-150 cursor-pointer select-none text-xs font-semibold',
             'border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#0F172A] dark:text-white shadow-2xs hover:bg-slate-50 dark:hover:bg-[#182032]',
-            isOpen && 'border-[#6366F1] ring-2 ring-[#6366F1]/20'
+            isOpen && 'border-[#6366F1] ring-2 ring-[#6366F1]/20',
           )}
         >
           <CalendarIcon className="size-3.5 text-[#6366F1] dark:text-[#A5B4FC]" />
@@ -298,7 +304,11 @@ export function DatePicker({
               'absolute top-full mt-2 z-50 w-[310px] sm:w-[324px] rounded-3xl p-5',
               'bg-white dark:bg-[#111622] border border-slate-200/90 dark:border-[#1E2638]',
               'shadow-2xl shadow-indigo-500/10 dark:shadow-black/60 text-left select-none',
-              align === 'end' ? 'right-0' : align === 'center' ? 'left-1/2 -translate-x-1/2' : 'left-0'
+              align === 'end'
+                ? 'right-0'
+                : align === 'center'
+                  ? 'left-1/2 -translate-x-1/2'
+                  : 'left-0',
             )}
           >
             {/* ── Top Header Bar (Month + Year + Nav Arrows) ─────────────── */}
@@ -315,7 +325,7 @@ export function DatePicker({
                     'inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wider px-2 py-1 rounded-lg transition-colors cursor-pointer',
                     isMonthDropdownOpen
                       ? 'bg-purple-50 dark:bg-purple-950/70 text-[#6366F1] dark:text-[#A5B4FC]'
-                      : 'text-[#6366F1] dark:text-[#A5B4FC] hover:bg-slate-100 dark:hover:bg-[#1E2638]'
+                      : 'text-[#6366F1] dark:text-[#A5B4FC] hover:bg-slate-100 dark:hover:bg-[#1E2638]',
                   )}
                 >
                   <span>{monthNames[viewMonth]}</span>
@@ -337,7 +347,7 @@ export function DatePicker({
                     'inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer',
                     isYearDropdownOpen
                       ? 'bg-purple-50 dark:bg-purple-950/70 text-[#6366F1] dark:text-[#A5B4FC]'
-                      : 'text-[#0F172A] dark:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638]'
+                      : 'text-[#0F172A] dark:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638]',
                   )}
                 >
                   <span>{viewYear}</span>
@@ -405,8 +415,8 @@ export function DatePicker({
                         isSelected
                           ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-bold shadow-md shadow-indigo-500/25 scale-105'
                           : item.isCurrentMonth
-                          ? 'text-[#0F172A] dark:text-white hover:bg-purple-50 dark:hover:bg-purple-950/50 hover:text-[#6366F1] dark:hover:text-[#A5B4FC]'
-                          : 'text-[#CBD5E1] dark:text-[#334155] hover:text-[#64748B] dark:hover:text-[#94A3B8]'
+                            ? 'text-[#0F172A] dark:text-white hover:bg-purple-50 dark:hover:bg-purple-950/50 hover:text-[#6366F1] dark:hover:text-[#A5B4FC]'
+                            : 'text-[#CBD5E1] dark:text-[#334155] hover:text-[#64748B] dark:hover:text-[#94A3B8]',
                       )}
                     >
                       {item.dayNumber}
@@ -446,7 +456,7 @@ export function DatePicker({
                               'w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-between',
                               isSelectedMonth
                                 ? 'bg-purple-50 dark:bg-purple-950/60 text-[#6366F1] dark:text-[#A5B4FC] font-bold'
-                                : 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]'
+                                : 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]',
                             )}
                           >
                             <span>{m}</span>
@@ -492,7 +502,7 @@ export function DatePicker({
                               'w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-between',
                               isSelectedYear
                                 ? 'bg-purple-50 dark:bg-purple-950/60 text-[#6366F1] dark:text-[#A5B4FC] font-bold'
-                                : 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]'
+                                : 'text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638]',
                             )}
                           >
                             <span>{y}</span>

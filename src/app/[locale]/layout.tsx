@@ -44,7 +44,7 @@ export default async function LocaleLayout({
     <html lang={locale} className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${notoTh.variable} antialiased bg-background text-text-primary`} suppressHydrationWarning>
         <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider messages={messages} locale={locale}>
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

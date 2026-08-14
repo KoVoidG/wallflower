@@ -2,11 +2,258 @@
   "welcome": "Welcome",
   "login": "Login",
   "register": "Register",
-  "dashboard": "Dashboard",
+  "auth": {
+    "login": {
+      "title": "Welcome back!",
+      "subtitle": "Sign in to continue to your account.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "somchai@example.com",
+      "passwordLabel": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign In",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create an account"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Start making smarter business decisions today.",
+      "fullNameLabel": "Full name",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "agreeTerms": "I agree to the Terms of Service and Privacy Policy",
+      "signUp": "Create Account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign In"
+    },
+    "loginTitle": "Welcome back to Wallflower",
+    "loginSubtitle": "Enter your credentials to access your financial intelligence workspace.",
+    "email": "Email Address",
+    "emailPlaceholder": "name@company.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "rememberMe": "Remember this device",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "signingIn": "Signing In...",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create an account",
+    "registerTitle": "Start your Wallflower trial",
+    "registerSubtitle": "Decision intelligence built specifically for growing SMEs.",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Somchai Jaidee",
+    "confirmPassword": "Confirm Password",
+    "agreeTerms": "I agree to the Terms of Service and Privacy Policy",
+    "signUp": "Create Account",
+    "signingUp": "Creating Account...",
+    "alreadyHaveAccount": "Already have an account?",
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordSubtitle": "Enter your email to receive password reset instructions.",
+    "sendResetLink": "Send Reset Instructions",
+    "backToLogin": "Back to login"
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard",
+    "goodMorning": "Good morning, {name}",
+    "overviewSubtitle": "Here's what's happening with {businessName} today.",
+    "lastUpdated": "Last updated {time}",
+    "lastUpdatedTwoHours": "Last updated 2 hours ago",
+    "refreshData": "Refresh dashboard data",
+    "businessHealth": "Business Health",
+    "healthTooltip": "Composite score evaluating cash runway, risk factors, and financial stability.",
+    "healthy": "Healthy",
+    "cashRunway": "Cash Runway",
+    "riskLevel": "Risk Level",
+    "decisionConfidence": "Decision Confidence",
+    "low": "Low",
+    "high": "High",
+    "strongBanner": "Your business is in a strong position. Keep an eye on inventory turnover.",
+    "todaysPriorities": "Today's Priorities",
+    "prioritiesSubtitle": "Actions and alerts requiring your attention",
+    "monthlyRevenue": "Monthly Revenue",
+    "netProfit": "Net Profit",
+    "inventoryTurnover": "Inventory Turnover",
+    "vsPrevMonth": "vs last month",
+    "revenueAndProfitTrend": "Revenue & Profit Trend",
+    "trendSubtitle": "Historical performance over selected time horizon",
+    "revenue": "Revenue",
+    "profit": "Profit",
+    "recentDecisions": "Recent Scenario Simulations",
+    "recentDecisionsSubtitle": "Simulated outcomes and projected impacts",
+    "openPlanner": "Open Decision Planner",
+    "newSimulation": "New Simulation",
+    "activeRisks": "Active Risks & Alerts",
+    "activeRisksSubtitle": "Identified business risks requiring monitoring",
+    "viewRiskCenter": "View Risk Center",
+    "aiAdvisorCTA": "Ask AI Advisor",
+    "aiAdvisorSubtitle": "Get actionable financial intelligence based on your numbers",
+    "quickActions": "Quick Actions",
+    "createScenario": "Create Scenario",
+    "generateReport": "Generate Report",
+    "updateBaseline": "Update Baseline",
+    "exploreBusinessHealth": "Explore Business Health",
+    "exploreSimulations": "Explore Simulations",
+    "priorityItems": {
+      "reviewReceivables": "Follow up on overdue invoices",
+      "reviewReceivablesDesc": "฿53,340 in receivables is nearing the 30-day threshold.",
+      "inventoryReorder": "Review inventory holding costs",
+      "inventoryReorderDesc": "Holding costs represent 6.2% of monthly operating expenses."
+    }
+  },
   "settings": "Settings",
   "risk": "Risk Center",
   "simulation": "Simulation",
-  "advisor": "Advisor",
+  "simulations": {
+    "pageTitle": "Decision Planner",
+    "subtitle": "Plan, simulate, and make smarter business decisions with predictive intelligence.",
+    "tabs": {
+      "library": "Scenario Library",
+      "workspace": "Scenario Workspace",
+      "compare": "Compare Simulations",
+      "assumptions": "Global Assumptions"
+    },
+    "simulationCredits": "Simulation Credits",
+    "creditsUsed": "{used} / {total} used this month",
+    "upgradePlan": "Upgrade Plan",
+    "newSimulation": "New Simulation",
+    "runSimulation": "Run Simulation",
+    "running": "Running simulation...",
+    "runningDescription": "Calculating best, expected, and worst case scenarios.",
+    "chooseScenario": "Choose a Decision to Simulate",
+    "chooseDescription": "Select a business scenario to explore its potential impact.",
+    "configure": "Configure Scenario",
+    "configureDescription": "Enter your assumptions to run the simulation.",
+    "results": "Simulation Results",
+    "steps": {
+      "select": "Select Scenario",
+      "configure": "Configure",
+      "results": "Results"
+    },
+    "scenarios": {
+      "hire_employees": "Hire Employees",
+      "change_price": "Change Price",
+      "marketing_investment": "Marketing Investment",
+      "purchase_equipment": "Purchase Equipment",
+      "payment_delay": "Customer Payment Delay"
+    },
+    "posture": {
+      "bullish": "Bullish",
+      "cautious": "Cautious",
+      "neutral": "Neutral"
+    },
+    "confidence": {
+      "high": "High Confidence",
+      "medium": "Medium Confidence",
+      "low": "Low Confidence"
+    },
+    "summary": {
+      "expectedOutcome": "Expected Outcome",
+      "largestUpside": "Largest Upside",
+      "largestDownside": "Largest Downside",
+      "monthlyProfit": "monthly profit",
+      "bestCaseProfit": "best case profit",
+      "worstCaseProfit": "worst case profit"
+    },
+    "cases": {
+      "best": "Best Case",
+      "expected": "Expected",
+      "worst": "Worst Case"
+    },
+    "metrics": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "profit": "Profit",
+      "cashRunway": "Cash Runway",
+      "workingCapital": "Working Capital",
+      "roi": "ROI",
+      "paybackPeriod": "Payback Period"
+    },
+    "comparison": {
+      "title": "Baseline vs Projected",
+      "baseline": "Baseline",
+      "projected": "Projected",
+      "change": "Change"
+    },
+    "assumptions": {
+      "title": "Assumptions",
+      "fromBaseline": "From baseline",
+      "sensitivityTitle": "Sensitivity Notes",
+      "sensitivityNote": "Results are most sensitive to revenue assumptions. A ±10% change in projected revenue impacts profit by approximately ±฿15,000/month."
+    },
+    "timeline": {
+      "title": "Cash Runway Timeline",
+      "description": "Projected cash balance over 12 months"
+    },
+    "actions": {
+      "save": "Save Simulation",
+      "compare": "Compare",
+      "report": "Generate Report",
+      "duplicate": "Duplicate"
+    },
+    "history": {
+      "empty": {
+        "title": "No simulations yet",
+        "description": "Run your first scenario simulation to explore potential outcomes for business decisions."
+      }
+    },
+    "baseline": {
+      "title": "Current Baseline",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "profit": "Profit",
+      "cashRunway": "Cash Runway"
+    },
+    "errors": {
+      "loadFailed": "Failed to load simulation data",
+      "runFailed": "Simulation failed to run",
+      "retry": "Try Again"
+    },
+    "compare": {
+      "pageTitle": "Compare Simulations",
+      "selectDescription": "Select 2-3 simulations to compare side by side.",
+      "selected": "{count} of {max} selected",
+      "compareButton": "Compare",
+      "resultsTitle": "Comparison Results",
+      "resultsDescription": "Side-by-side comparison of {count} simulations against your current baseline.",
+      "changeSelection": "Change selection",
+      "chartTitle": "Revenue Projection Comparison",
+      "emptyTitle": "Not enough simulations to compare",
+      "emptyDescription": "Run at least 2 simulations to compare their outcomes side by side."
+    }
+  },
+  "advisor": {
+    "pageTitle": "AI Advisor",
+    "subtitle": "Contextual recommendations based on your business data.",
+    "suggestedPrompts": "What would you like to know?",
+    "recommendation": "Recommendation",
+    "generatedAt": "Generated on {date}",
+    "aiSummary": "AI Summary",
+    "evidence": "Supporting Evidence",
+    "risks": "Identified Risks",
+    "actions": "Recommended Actions",
+    "assumptionsTitle": "Assumptions",
+    "retry": "Try Again",
+    "errors": {
+      "insufficientData": {
+        "title": "Insufficient Business Data",
+        "description": "We need at least 2 months of financial snapshots to generate meaningful advice. Please add more data to your business profile."
+      },
+      "malformedOutput": {
+        "title": "Couldn't Generate Advice",
+        "description": "The AI response was incomplete or malformed. Please try again — this is usually a temporary issue."
+      },
+      "timeout": {
+        "title": "Request Timed Out",
+        "description": "The AI service took too long to respond. Your calculations and risk data are still available. Try again in a moment."
+      },
+      "providerUnavailable": {
+        "title": "AI Service Unavailable",
+        "description": "The AI service is temporarily unavailable. Your deterministic calculations, risk detection, and simulations remain fully functional."
+      },
+      "preserveNote": "Your calculated business data and risk assessments are always available regardless of AI service status."
+    }
+  },
   "reports": "Reports",
   "nav": {
     "sectionMain": "Overview",
@@ -233,114 +480,6 @@
       }
     }
   },
-  "simulations": {
-    "pageTitle": "Simulations",
-    "newSimulation": "New Simulation",
-    "runSimulation": "Run Simulation",
-    "running": "Running simulation...",
-    "runningDescription": "Calculating best, expected, and worst case scenarios.",
-    "chooseScenario": "Choose a Decision to Simulate",
-    "chooseDescription": "Select a business scenario to explore its potential impact.",
-    "configure": "Configure Scenario",
-    "configureDescription": "Enter your assumptions to run the simulation.",
-    "results": "Simulation Results",
-    "steps": {
-      "select": "Select Scenario",
-      "configure": "Configure",
-      "results": "Results"
-    },
-    "scenarios": {
-      "hire_employees": "Hire Employees",
-      "change_price": "Change Price",
-      "marketing_investment": "Marketing Investment",
-      "purchase_equipment": "Purchase Equipment",
-      "payment_delay": "Customer Payment Delay"
-    },
-    "posture": {
-      "bullish": "Bullish",
-      "cautious": "Cautious",
-      "neutral": "Neutral"
-    },
-    "confidence": {
-      "high": "High Confidence",
-      "medium": "Medium Confidence",
-      "low": "Low Confidence"
-    },
-    "summary": {
-      "expectedOutcome": "Expected Outcome",
-      "largestUpside": "Largest Upside",
-      "largestDownside": "Largest Downside",
-      "monthlyProfit": "monthly profit",
-      "bestCaseProfit": "best case profit",
-      "worstCaseProfit": "worst case profit"
-    },
-    "cases": {
-      "best": "Best Case",
-      "expected": "Expected",
-      "worst": "Worst Case"
-    },
-    "metrics": {
-      "revenue": "Revenue",
-      "expenses": "Expenses",
-      "profit": "Profit",
-      "cashRunway": "Cash Runway",
-      "workingCapital": "Working Capital",
-      "roi": "ROI",
-      "paybackPeriod": "Payback Period"
-    },
-    "comparison": {
-      "title": "Baseline vs Projected",
-      "baseline": "Baseline",
-      "projected": "Projected",
-      "change": "Change"
-    },
-    "assumptions": {
-      "title": "Assumptions",
-      "fromBaseline": "From baseline",
-      "sensitivityTitle": "Sensitivity Notes",
-      "sensitivityNote": "Results are most sensitive to revenue assumptions. A ±10% change in projected revenue impacts profit by approximately ±฿15,000/month."
-    },
-    "timeline": {
-      "title": "Cash Runway Timeline",
-      "description": "Projected cash balance over 12 months"
-    },
-    "actions": {
-      "save": "Save Simulation",
-      "compare": "Compare",
-      "report": "Generate Report",
-      "duplicate": "Duplicate"
-    },
-    "history": {
-      "empty": {
-        "title": "No simulations yet",
-        "description": "Run your first scenario simulation to explore potential outcomes for business decisions."
-      }
-    },
-    "baseline": {
-      "title": "Current Baseline",
-      "revenue": "Revenue",
-      "expenses": "Expenses",
-      "profit": "Profit",
-      "cashRunway": "Cash Runway"
-    },
-    "errors": {
-      "loadFailed": "Failed to load simulation data",
-      "runFailed": "Simulation failed to run",
-      "retry": "Try Again"
-    },
-    "compare": {
-      "pageTitle": "Compare Simulations",
-      "selectDescription": "Select 2-3 simulations to compare side by side.",
-      "selected": "{count} of {max} selected",
-      "compareButton": "Compare",
-      "resultsTitle": "Comparison Results",
-      "resultsDescription": "Side-by-side comparison of {count} simulations against your current baseline.",
-      "changeSelection": "Change selection",
-      "chartTitle": "Revenue Projection Comparison",
-      "emptyTitle": "Not enough simulations to compare",
-      "emptyDescription": "Run at least 2 simulations to compare their outcomes side by side."
-    }
-  },
   "reportsPage": {
     "pageTitle": "Reports",
     "subtitle": "Decision intelligence reports for your business.",
@@ -487,14 +626,12 @@
       "targetMargin": "Target gross margin (%)",
       "receivableDays": "Receivable overdue threshold (days)",
       "maxDebtRatio": "Maximum acceptable debt-to-revenue ratio",
-
       "simDefaultsTitle": "Simulation Defaults",
       "forecastPeriod": "Default forecast period",
       "months": "{count} months",
       "openingScenario": "Default opening scenario posture",
       "autoIncludeBestWorst": "Automatically include best and worst cases",
       "showSensitivity": "Show sensitivity analysis by default",
-
       "riskPreferencesTitle": "Risk Preferences",
       "riskSensitivity": "Risk engine sensitivity",
       "sensitivityOptions": {
@@ -518,7 +655,6 @@
       "emailNotice": "Email notifications are not connected in this prototype.",
       "inApp": "In-app alerts",
       "email": "Email alerts (Coming later)",
-
       "topicsTitle": "Alert Types & Preferences",
       "criticalRisk": "Critical risk alerts",
       "runwayWarning": "Cash-runway warnings",
@@ -551,12 +687,10 @@
       "dataUsageTitle": "How your data is used",
       "mathUsage": "Deterministic math formulas process revenue, expenses, and cash reserves to compute exact indicators.",
       "aiUsage": "The AI Advisor reads structured calculated outputs to generate natural-language explanations without modifying values.",
-
       "statusTitle": "Data Status & Completeness",
       "dataThrough": "Data-through date",
       "completenessScore": "Completeness score",
       "missingCategories": "Missing historical data",
-
       "destructiveTitle": "Prototype Data Actions",
       "resetData": "Reset prototype data",
       "resetDataDesc": "Restore default SME baseline fixtures.",
@@ -619,38 +753,6 @@
       "passwordIncorrect": "Current password is incorrect.",
       "deleteFailed": "Account deletion failed. Please try again.",
       "sessionExpired": "Your session has expired. Please sign in again."
-    }
-  },
-  "advisor": {
-    "pageTitle": "AI Advisor",
-    "subtitle": "Contextual recommendations based on your business data.",
-    "suggestedPrompts": "What would you like to know?",
-    "recommendation": "Recommendation",
-    "generatedAt": "Generated on {date}",
-    "aiSummary": "AI Summary",
-    "evidence": "Supporting Evidence",
-    "risks": "Identified Risks",
-    "actions": "Recommended Actions",
-    "assumptionsTitle": "Assumptions",
-    "retry": "Try Again",
-    "errors": {
-      "insufficientData": {
-        "title": "Insufficient Business Data",
-        "description": "We need at least 2 months of financial snapshots to generate meaningful advice. Please add more data to your business profile."
-      },
-      "malformedOutput": {
-        "title": "Couldn't Generate Advice",
-        "description": "The AI response was incomplete or malformed. Please try again — this is usually a temporary issue."
-      },
-      "timeout": {
-        "title": "Request Timed Out",
-        "description": "The AI service took too long to respond. Your calculations and risk data are still available. Try again in a moment."
-      },
-      "providerUnavailable": {
-        "title": "AI Service Unavailable",
-        "description": "The AI service is temporarily unavailable. Your deterministic calculations, risk detection, and simulations remain fully functional."
-      },
-      "preserveNote": "Your calculated business data and risk assessments are always available regardless of AI service status."
     }
   },
   "marketing": {
@@ -1021,5 +1123,250 @@
       "terms": "Terms of Service",
       "copyright": "© 2026 Wallflower. All rights reserved."
     }
+  },
+  "common": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "saved": "Saved successfully",
+    "error": "An error occurred",
+    "retry": "Try Again",
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "back": "Back",
+    "continue": "Continue",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "viewAll": "View all",
+    "filter": "Filter",
+    "search": "Search...",
+    "refresh": "Refresh",
+    "export": "Export",
+    "print": "Print",
+    "download": "Download",
+    "duplicate": "Duplicate",
+    "compare": "Compare",
+    "confirm": "Confirm",
+    "discard": "Discard",
+    "apply": "Apply",
+    "reset": "Reset",
+    "all": "All",
+    "active": "Active",
+    "status": "Status",
+    "actions": "Actions",
+    "category": "Category",
+    "date": "Date",
+    "details": "Details",
+    "overview": "Overview",
+    "currencySymbol": "฿",
+    "currencyCode": "THB",
+    "units": {
+      "months": "months",
+      "month": "month",
+      "days": "days",
+      "day": "day",
+      "years": "years",
+      "year": "year",
+      "percent": "%",
+      "times": "x",
+      "items": "items",
+      "units": "units"
+    },
+    "timeRanges": {
+      "30d": "Last 30 Days",
+      "90d": "Last 90 Days",
+      "12m": "Last 12 Months",
+      "1y": "Last 1 Year",
+      "all": "All Time"
+    },
+    "postures": {
+      "healthy": "Healthy",
+      "cautious": "Cautious",
+      "critical": "Critical",
+      "bullish": "Bullish",
+      "neutral": "Neutral"
+    },
+    "severities": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "low": "Low",
+      "info": "Info"
+    }
+  },
+  "businessHealth": {
+    "pageTitle": "Business Health",
+    "subtitle": "Monitor key financial metrics, operating ratios, and health indicators.",
+    "tabs": {
+      "snapshot": "Financial Snapshot",
+      "operations": "Operations",
+      "inventory": "Inventory",
+      "unitEconomics": "Unit Economics",
+      "assumptions": "Baseline Assumptions"
+    },
+    "snapshot": {
+      "title": "Financial Snapshot",
+      "subtitle": "Current monthly overview and core balance figures",
+      "revenue": "Monthly Revenue",
+      "expenses": "Total Expenses",
+      "grossProfit": "Gross Profit",
+      "grossMargin": "Gross Margin",
+      "netProfit": "Net Profit",
+      "netMargin": "Net Margin",
+      "cashReserve": "Cash Reserves",
+      "receivables": "Accounts Receivable",
+      "payables": "Accounts Payable",
+      "totalDebt": "Total Debt",
+      "burnRate": "Monthly Burn Rate",
+      "runwayMonths": "Cash Runway",
+      "workingCapital": "Working Capital",
+      "currentRatio": "Current Ratio",
+      "debtToRevenue": "Debt to Revenue Ratio"
+    },
+    "operations": {
+      "title": "Operating Performance & Cost Structure",
+      "subtitle": "Cost breakdown, payroll efficiency, and operating leverage",
+      "payrollRatio": "Payroll to Revenue",
+      "fixedCostRatio": "Fixed Costs Ratio",
+      "operatingExpenses": "Operating Expenses",
+      "headcount": "Team Size",
+      "costStructure": "Cost Structure Breakdown",
+      "payroll": "Payroll & Salaries",
+      "rent": "Rent & Utilities",
+      "marketing": "Marketing & Sales",
+      "cogs": "Cost of Goods Sold (COGS)",
+      "other": "Other Operating Expenses"
+    },
+    "inventory": {
+      "title": "Inventory & Stock Management",
+      "subtitle": "Turnover speed, holding costs, and stock health",
+      "turnover": "Inventory Turnover",
+      "dsi": "Days Sales of Inventory (DSI)",
+      "holdingCost": "Monthly Holding Cost",
+      "deadStock": "Dead / Slow-Moving Stock",
+      "stockValue": "Total Stock Value",
+      "reorderAlert": "Reorder Recommendation",
+      "healthyStatus": "Healthy Turnover Rate"
+    },
+    "unitEconomics": {
+      "title": "Unit Economics & Margins",
+      "subtitle": "Customer transactions, contribution margins, and break-even points",
+      "aov": "Average Order Value (AOV)",
+      "grossMarginPerUnit": "Gross Margin per Unit",
+      "contributionMargin": "Contribution Margin",
+      "breakEvenUnits": "Break-Even Sales Volume",
+      "breakEvenRevenue": "Break-Even Monthly Revenue",
+      "customerCount": "Monthly Active Customers"
+    }
+  },
+  "cashFlow": {
+    "pageTitle": "Cash Flow Intelligence",
+    "subtitle": "Track cash runway, forecast inflows and outflows, and simulate liquidity buffers.",
+    "forecastTitle": "12-Month Cash Flow Forecast",
+    "netCashFlow": "Net Cash Flow",
+    "endingCash": "Ending Cash Balance",
+    "inflows": "Operating Inflows",
+    "outflows": "Operating Outflows",
+    "burnRate": "Monthly Burn Rate",
+    "runwayMonths": "Estimated Cash Runway",
+    "runwayAlert": "Runway Alert",
+    "simulateMitigation": "Simulate Mitigation",
+    "inflowsBreakdown": "Inflows Breakdown",
+    "outflowsBreakdown": "Outflows Breakdown",
+    "operatingActivities": "Operating Activities",
+    "financingActivities": "Financing Activities",
+    "investingActivities": "Investing Activities",
+    "scenarios": {
+      "expected": "Expected Baseline",
+      "conservative": "Conservative Case",
+      "optimistic": "Optimistic Case",
+      "all": "All Scenarios"
+    },
+    "horizons": {
+      "all": "12 Months",
+      "30d": "30 Days",
+      "60d": "60 Days",
+      "90d": "90 Days"
+    }
+  },
+  "actions": {
+    "pageTitle": "90-Day Action Plan",
+    "subtitle": "Prioritized strategic initiatives to improve cash runway, profitability, and risk posture.",
+    "tabs": {
+      "active": "Active Roadmap",
+      "reviews": "Milestone Reviews",
+      "history": "Completed Actions"
+    },
+    "addAction": "Add Action Item",
+    "searchPlaceholder": "Search action plans...",
+    "filterStatus": "Status",
+    "filterPriority": "Priority",
+    "overdueOnly": "Overdue Only",
+    "targetImpact": "Estimated Impact",
+    "owner": "Owner",
+    "dueDate": "Target Due Date",
+    "milestones": "Key Milestones",
+    "statusList": {
+      "planned": "Planned",
+      "inProgress": "In Progress",
+      "blocked": "Blocked",
+      "complete": "Execution Complete"
+    },
+    "priorities": {
+      "high": "High Priority",
+      "medium": "Medium Priority",
+      "low": "Low Priority"
+    },
+    "empty": {
+      "title": "No actions found",
+      "description": "Create your first strategic action item to start tracking your 90-day execution plan."
+    }
+  },
+  "dataSources": {
+    "pageTitle": "Data & Connections",
+    "subtitle": "Manage financial data inputs, monthly snapshot history, and accounting integrations.",
+    "tabs": {
+      "sources": "Data Workspaces",
+      "gaps": "Data Completeness",
+      "connections": "Integrations"
+    },
+    "addSnapshot": "Add Monthly Snapshot",
+    "manualEntry": "Manual Data Entry",
+    "importCsv": "Import CSV / Excel",
+    "sampleData": "Load Sample SME Data",
+    "lastSync": "Last synced {date}",
+    "syncNow": "Sync Now",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "availableIntegrations": "Available Integrations",
+    "accountingSoftware": "Accounting & Invoicing",
+    "posSystems": "Point of Sale (POS)",
+    "bankFeeds": "Bank Statement Feeds",
+    "completenessScore": "Data Completeness Score",
+    "highConfidence": "High Confidence Model",
+    "insufficientWarning": "Add at least 3 monthly snapshots to enable reliable trend detection and full risk checks."
+  },
+  "legal": {
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "lastUpdated": "Last updated: {date}",
+    "backToHome": "Back to Home"
+  },
+  "emptyState": {
+    "noData": "No data available",
+    "noResults": "No matching results found",
+    "tryDifferentFilter": "Try adjusting your search or filter parameters.",
+    "createFirst": "Create your first item"
+  },
+  "errorState": {
+    "title": "Something went wrong",
+    "description": "We encountered an error loading this data. Please try again.",
+    "retry": "Try Again",
+    "goHome": "Return to Dashboard"
   }
 }

@@ -307,7 +307,7 @@ export function ReportLibraryView({
                           }}
                           className="flex items-center gap-2 w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1E2638] text-[#0F172A] dark:text-white font-medium cursor-pointer"
                         >
-                          <Eye className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                          <Eye className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                           <span>View Report</span>
                         </button>
 
@@ -320,7 +320,7 @@ export function ReportLibraryView({
                           }}
                           className="flex items-center gap-2 w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1E2638] text-[#0F172A] dark:text-white font-medium cursor-pointer"
                         >
-                          <Download className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                          <Download className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                           <span>Export</span>
                         </button>
 
@@ -329,7 +329,7 @@ export function ReportLibraryView({
                           onClick={(e) => handleDeleteReport(rpt.id, e)}
                           className="flex items-center gap-2 w-full text-left px-2.5 py-2 rounded-lg hover:bg-rose-500/10 text-rose-500 font-medium cursor-pointer"
                         >
-                          <Trash2 className="size-3.5" />
+                          <Trash2 className="size-4" />
                           <span>Delete</span>
                         </button>
                       </div>
@@ -353,7 +353,7 @@ export function ReportLibraryView({
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               className="p-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
             >
-              <ChevronLeft className="size-3.5" />
+              <ChevronLeft className="size-4" />
             </button>
 
             {[1, 2, 3, 4].map((pg) => (
@@ -377,7 +377,7 @@ export function ReportLibraryView({
               onClick={() => setCurrentPage(Math.min(4, currentPage + 1))}
               className="p-2 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
             >
-              <ChevronRight className="size-3.5" />
+              <ChevronRight className="size-4" />
             </button>
           </div>
         </div>

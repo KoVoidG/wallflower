@@ -33,9 +33,9 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
           <div className="space-y-1">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
             >
-              <Upload className="size-3.5 text-tertiary" />
+              <Upload className="size-4 text-tertiary" />
               <span>Change Photo</span>
             </button>
             <p className="text-[10px] text-text-muted font-medium">JPG, PNG up to 2MB</p>
@@ -45,33 +45,33 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
         {/* Form Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Display Name</label>
+            <label className="text-sm font-semibold text-text-primary block">Display Name</label>
             <input
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Preferred Name</label>
+            <label className="text-sm font-semibold text-text-primary block">Preferred Name</label>
             <input
               type="text"
               value={preferredName}
               onChange={(e) => setPreferredName(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Email Address</label>
+            <label className="text-sm font-semibold text-text-primary block">Email Address</label>
             <div className="relative flex items-center">
               <input
                 type="email"
                 value={email}
                 readOnly
-                className="w-full pl-3 pr-20 py-2 text-xs border border-border rounded-xl bg-surface-subtle text-text-primary font-medium focus:outline-hidden"
+                className="w-full pl-3.5 pr-20 py-2.5 text-sm border border-border rounded-xl bg-surface-subtle text-text-primary font-medium focus:outline-hidden"
               />
               <span className="absolute right-2 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1">
                 <Check className="size-3" />
@@ -81,17 +81,17 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Phone Number</label>
+            <label className="text-sm font-semibold text-text-primary block">Phone Number</label>
             <input
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Role</label>
+            <label className="text-sm font-semibold text-text-primary block">Role</label>
             <Select
               value={role}
               onChange={setRole}
@@ -104,7 +104,7 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Time Zone</label>
+            <label className="text-sm font-semibold text-text-primary block">Time Zone</label>
             <Select
               value={timeZone}
               onChange={setTimeZone}
@@ -126,7 +126,7 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 rounded-xl border border-border bg-surface-subtle">
           <div className="space-y-0.5">
-            <label className="text-xs font-bold text-text-primary block">Password</label>
+            <label className="text-sm font-semibold text-text-primary block">Password</label>
             <div className="flex items-center gap-2 font-mono text-sm text-text-muted">
               <span>••••••••••••</span>
               <span className="text-[10px] font-sans text-text-muted font-medium">Last changed: 20 Oct 2025</span>
@@ -135,7 +135,7 @@ export function ProfileAccountSettings({ onNavigateToSecurity }: ProfileAccountS
           <button
             type="button"
             onClick={onNavigateToSecurity}
-            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer self-start sm:self-auto"
+            className="px-4 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer self-start sm:self-auto"
           >
             Change Password
           </button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Database,
   Plus,
@@ -30,22 +31,23 @@ import {
   type DataSourceItem,
   type MonthlySnapshotHistory,
 } from '../adapters/data-sources.adapter';
-import { OperationalIntegrationsView } from '@/features/integrations/components/operational-integrations-view';
-
-const CATEGORY_FILTER_OPTIONS = [
-  { value: 'All', label: 'All categories' },
-  { value: 'financial_summary', label: 'Financial Summary' },
-  { value: 'cash_flow', label: 'Cash-Flow Activity' },
-  { value: 'operations', label: 'Business Operations' },
-  { value: 'assumptions', label: 'Decisions & Assumptions' },
-];
 
 export function DataSourcesView() {
+  const t = useTranslations('dataSources');
+
+  const CATEGORY_FILTER_OPTIONS = [
+    { value: 'All', label: 'All categories' },
+    { value: 'financial_summary', label: 'Financial Summary' },
+    { value: 'cash_flow', label: 'Cash-Flow Activity' },
+    { value: 'operations', label: 'Business Operations' },
+    { value: 'assumptions', label: 'Decisions & Assumptions' },
+  ];
+
   const [data, setData] = useState<DataWorkspaceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'sources' | 'gaps' | 'connections' | 'operational'>('sources');
+  const [activeTab, setActiveTab] = useState<'sources' | 'gaps' | 'connections'>('sources');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -255,11 +257,11 @@ export function DataSourcesView() {
             title={
               <div className="flex items-center gap-2.5">
                 <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
-                  Data & Connections
+                  {t('pageTitle')}
                 </h1>
               </div>
             }
-            description="Manage the business information Wallflower uses for analysis and forecasts."
+            description={t('subtitle')}
             actions={
               <Button
                 variant="primary"
@@ -271,7 +273,7 @@ export function DataSourcesView() {
                 className="shadow-2xs cursor-pointer"
               >
                 <Plus className="size-4" />
-                <span>Add Data</span>
+                <span>{t('addSnapshot')}</span>
               </Button>
             }
           />
@@ -301,7 +303,7 @@ export function DataSourcesView() {
                 onClick={() => setShowReadinessBasis(!showReadinessBasis)}
                 className="text-text-muted hover:text-text-primary font-medium flex items-center gap-1 cursor-pointer transition-colors"
               >
-                <span>Data readiness: {summary.completenessScore}%</span>
+                <span>{t('completenessScore')}: {summary.completenessScore}%</span>
                 {showReadinessBasis ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
               </button>
             </div>
@@ -318,15 +320,14 @@ export function DataSourcesView() {
 
           <div className="flex items-center gap-2 border-b border-border pb-3">
             {[
-              { id: 'sources', label: `Sources (${realActiveSources.length})` },
-              { id: 'gaps', label: `Data Gaps (${missingImpacts.length})` },
-              { id: 'connections', label: `Connections (${externalConnections.length})` },
-              { id: 'operational', label: `Operational Data` },
+              { id: 'sources', label: `${t('tabs.sources')} (${realActiveSources.length})` },
+              { id: 'gaps', label: `${t('tabs.gaps')} (${missingImpacts.length})` },
+              { id: 'connections', label: `${t('tabs.connections')} (${externalConnections.length})` },
             ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id as 'sources' | 'gaps' | 'connections' | 'operational')}
+                onClick={() => setActiveTab(tab.id as 'sources' | 'gaps' | 'connections')}
                 className={cn(
                   'px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer',
                   activeTab === tab.id
@@ -563,7 +564,7 @@ export function DataSourcesView() {
                             setIsAddModalOpen(true);
                           }}
                         >
-                          <Edit className="size-3.5" />
+                          <Edit className="size-4" />
                           <span>Edit Source</span>
                         </Button>
                         <Button
@@ -594,7 +595,7 @@ export function DataSourcesView() {
                           });
                         }}
                       >
-                        <Trash2 className="size-3.5" />
+                        <Trash2 className="size-4" />
                         <span>Remove Source</span>
                       </Button>
                     </div>
@@ -711,12 +712,6 @@ export function DataSourcesView() {
                   </table>
                 </div>
               </div>
-            </div>
-          )}
-
-          {activeTab === 'operational' && (
-            <div className="h-[600px] border border-border/60 rounded-xl overflow-hidden bg-surface shadow-2xs">
-              <OperationalIntegrationsView />
             </div>
           )}
 

@@ -95,19 +95,19 @@ export function ReportViewer({ report, onBackToLibrary }: ReportViewerProps) {
               <button
                 type="button"
                 onClick={() => setIsExportOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-[#1E2638] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] transition-all cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-[#1E2638] text-sm font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] transition-all cursor-pointer shadow-xs"
               >
-                <Download className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                <Download className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                 <span>Export Report</span>
-                <ChevronDown className="size-3 text-[#94A3B8]" />
+                <ChevronDown className="size-4 text-[#94A3B8]" />
               </button>
 
               <button
                 type="button"
                 onClick={handlePrint}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-[#1E2638] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] transition-all cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-[#1E2638] text-sm font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] transition-all cursor-pointer shadow-xs"
               >
-                <Printer className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
+                <Printer className="size-4 text-[#64748B] dark:text-[#94A3B8]" />
                 <span>Print</span>
               </button>
 

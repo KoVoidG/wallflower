@@ -93,151 +93,151 @@ export function BusinessDataSettings() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-left">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Average Monthly Revenue</label>
+              <label className="text-sm font-semibold text-text-primary block">Average Monthly Revenue</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.monthlyRevenue}
                   onChange={(e) => setFinData((p) => ({ ...p, monthlyRevenue: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Operating Expenses</label>
+              <label className="text-sm font-semibold text-text-primary block">Operating Expenses</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.operatingExpenses}
                   onChange={(e) => setFinData((p) => ({ ...p, operatingExpenses: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Payroll Expenses</label>
+              <label className="text-sm font-semibold text-text-primary block">Payroll Expenses</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.payrollExpenses}
                   onChange={(e) => setFinData((p) => ({ ...p, payrollExpenses: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Rent</label>
+              <label className="text-sm font-semibold text-text-primary block">Rent</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.rent}
                   onChange={(e) => setFinData((p) => ({ ...p, rent: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Utilities</label>
+              <label className="text-sm font-semibold text-text-primary block">Utilities</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.utilities}
                   onChange={(e) => setFinData((p) => ({ ...p, utilities: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Marketing Expenses</label>
+              <label className="text-sm font-semibold text-text-primary block">Marketing Expenses</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.marketingExpenses}
                   onChange={(e) => setFinData((p) => ({ ...p, marketingExpenses: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Cash on Hand</label>
+              <label className="text-sm font-semibold text-text-primary block">Cash on Hand</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.cashOnHand}
                   onChange={(e) => setFinData((p) => ({ ...p, cashOnHand: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Bank Balance</label>
+              <label className="text-sm font-semibold text-text-primary block">Bank Balance</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.bankBalance}
                   onChange={(e) => setFinData((p) => ({ ...p, bankBalance: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Outstanding Loans</label>
+              <label className="text-sm font-semibold text-text-primary block">Outstanding Loans</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={finData.outstandingLoans}
                   onChange={(e) => setFinData((p) => ({ ...p, outstandingLoans: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Gross Margin (Avg.)</label>
+              <label className="text-sm font-semibold text-text-primary block">Gross Margin (Avg.)</label>
               <input
                 type="text"
                 value={finData.grossMargin}
                 onChange={(e) => setFinData((p) => ({ ...p, grossMargin: e.target.value }))}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Net Margin (Avg.)</label>
+              <label className="text-sm font-semibold text-text-primary block">Net Margin (Avg.)</label>
               <input
                 type="text"
                 value={finData.netMargin}
                 onChange={(e) => setFinData((p) => ({ ...p, netMargin: e.target.value }))}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
           </div>
 
           <div className="space-y-1 text-left pt-2">
-            <label className="text-xs font-bold text-text-primary block">Notes (Optional)</label>
+            <label className="text-sm font-semibold text-text-primary block">Notes (Optional)</label>
             <textarea
               rows={3}
               value={finData.notes}
               onChange={(e) => setFinData((p) => ({ ...p, notes: e.target.value }))}
               placeholder="Contextual notes about seasonality or one-off expenses..."
-              className="w-full p-3 text-xs border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full p-3.5 text-sm border border-border rounded-xl bg-surface text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </Card>
@@ -253,20 +253,20 @@ export function BusinessDataSettings() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Total Inventory Valuation</label>
+              <label className="text-sm font-semibold text-text-primary block">Total Inventory Valuation</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">฿</span>
                 <input
                   type="text"
                   value={invData.inventoryValue}
                   onChange={(e) => setInvData((p) => ({ ...p, inventoryValue: e.target.value }))}
-                  className="w-full pl-7 pr-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Restock Frequency</label>
+              <label className="text-sm font-semibold text-text-primary block">Restock Frequency</label>
               <Select
                 value={invData.restockFrequency}
                 onChange={(val) => setInvData((p) => ({ ...p, restockFrequency: val }))}
@@ -280,7 +280,7 @@ export function BusinessDataSettings() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Inventory Shortages</label>
+              <label className="text-sm font-semibold text-text-primary block">Inventory Shortages</label>
               <SegmentedControl
                 options={['Never', 'Sometimes', 'Often'] as const}
                 value={(invData.inventoryShortages as 'Never' | 'Sometimes' | 'Often') || 'Sometimes'}
@@ -290,23 +290,23 @@ export function BusinessDataSettings() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Supplier Lead Time</label>
+              <label className="text-sm font-semibold text-text-primary block">Supplier Lead Time</label>
               <input
                 type="text"
                 value={invData.supplierLeadTime}
                 onChange={(e) => setInvData((p) => ({ ...p, supplierLeadTime: e.target.value }))}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
           </div>
 
           <div className="space-y-1 text-left">
-            <label className="text-xs font-bold text-text-primary block">Product Categories</label>
+            <label className="text-sm font-semibold text-text-primary block">Product Categories</label>
             <input
               type="text"
               value={invData.productCategories}
               onChange={(e) => setInvData((p) => ({ ...p, productCategories: e.target.value }))}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </Card>
@@ -322,29 +322,29 @@ export function BusinessDataSettings() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Employees (Headcount)</label>
+              <label className="text-sm font-semibold text-text-primary block">Employees (Headcount)</label>
               <input
                 type="number"
                 defaultValue={5}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Avg. Customers per Day</label>
+              <label className="text-sm font-semibold text-text-primary block">Avg. Customers per Day</label>
               <input
                 type="number"
                 defaultValue={140}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-text-primary block">Avg. Transactions per Day</label>
+              <label className="text-sm font-semibold text-text-primary block">Avg. Transactions per Day</label>
               <input
                 type="number"
                 defaultValue={115}
-                className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
             </div>
           </div>
@@ -359,8 +359,8 @@ export function BusinessDataSettings() {
               <h3 className="font-display text-sm font-bold text-text-primary">Monthly Historical Records</h3>
               <p className="text-xs text-text-secondary font-medium">Past monthly financial records used to refine baseline trend predictions.</p>
             </div>
-            <Button type="button" size="sm" className="gap-1.5 text-xs font-bold bg-tertiary text-on-primary hover:bg-tertiary-hover">
-              <Plus className="size-3.5" />
+            <Button type="button" size="md" className="gap-1.5 text-sm font-semibold bg-tertiary text-on-primary hover:bg-tertiary-hover rounded-xl">
+              <Plus className="size-4" />
               <span>Add Month</span>
             </Button>
           </div>
@@ -388,10 +388,10 @@ export function BusinessDataSettings() {
                     <td className="p-3 text-right font-sans">
                       <div className="flex items-center justify-end gap-1">
                         <button type="button" className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-surface-hover">
-                          <Edit2 className="size-3.5" />
+                          <Edit2 className="size-4" />
                         </button>
                         <button type="button" className="p-1 rounded-md text-text-muted hover:text-danger hover:bg-danger-soft/30">
-                          <Trash2 className="size-3.5" />
+                          <Trash2 className="size-4" />
                         </button>
                       </div>
                     </td>

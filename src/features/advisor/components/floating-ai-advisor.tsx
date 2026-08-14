@@ -982,7 +982,7 @@ export function FloatingAIAdvisor() {
                         ? `ถาม AI ที่ปรึกษาเกี่ยวกับ ${getCurrentContextTag()}...`
                         : `Ask AI Advisor about ${getCurrentContextTag()}...`
                     }
-                    className="w-full bg-surface text-xs text-text-primary pr-10 pl-3 py-2.5 rounded-xl border border-border focus:outline-none focus:border-tertiary resize-none"
+                    className="w-full bg-surface text-sm text-text-primary pr-10 pl-3.5 py-2.5 rounded-xl border border-border focus:outline-hidden focus:border-tertiary resize-none"
                   />
                   <button
                     type="button"
@@ -991,7 +991,7 @@ export function FloatingAIAdvisor() {
                     className="absolute right-2 p-1.5 rounded-lg bg-tertiary text-on-primary disabled:opacity-40 hover:bg-tertiary-hover transition-colors cursor-pointer"
                     title="Send message"
                   >
-                    <Send className="size-3.5" />
+                    <Send className="size-4" />
                   </button>
                 </div>
               </div>

@@ -47,7 +47,7 @@ export function SimulationSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Expected Demand Trend</label>
+            <label className="text-sm font-semibold text-text-primary block">Expected Demand Trend</label>
             <SegmentedControl
               options={['Declining', 'Stable', 'Growing'] as const}
               value={demandTrend}
@@ -57,7 +57,7 @@ export function SimulationSettings() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Supplier Cost Trend</label>
+            <label className="text-sm font-semibold text-text-primary block">Supplier Cost Trend</label>
             <SegmentedControl
               options={['Falling', 'Stable', 'Rising'] as const}
               value={supplierTrend}
@@ -69,58 +69,58 @@ export function SimulationSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-left">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Inflation Rate (Annual)</label>
+            <label className="text-sm font-semibold text-text-primary block">Inflation Rate (Annual)</label>
             <div className="relative">
               <input
                 type="text"
                 value={inflationRate}
                 onChange={(e) => setInflationRate(e.target.value)}
-                className="w-full pl-3 pr-7 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full pl-3.5 pr-8 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">%</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">%</span>
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Interest Rate (Annual)</label>
+            <label className="text-sm font-semibold text-text-primary block">Interest Rate (Annual)</label>
             <div className="relative">
               <input
                 type="text"
                 value={interestRate}
                 onChange={(e) => setInterestRate(e.target.value)}
-                className="w-full pl-3 pr-7 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full pl-3.5 pr-8 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">%</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">%</span>
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Tax</label>
+            <label className="text-sm font-semibold text-text-primary block">Tax</label>
             <div className="relative">
               <input
                 type="text"
                 value={taxRate}
                 onChange={(e) => setTaxRate(e.target.value)}
-                className="w-full pl-3 pr-7 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+                className="w-full pl-3.5 pr-8 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-text-muted">%</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-muted">%</span>
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Exchange Rate (USD / THB)</label>
+            <label className="text-sm font-semibold text-text-primary block">Exchange Rate (USD / THB)</label>
             <input
               type="text"
               value={exchangeRate}
               onChange={(e) => setExchangeRate(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface text-text-primary font-mono font-medium focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Seasonality</label>
+            <label className="text-sm font-semibold text-text-primary block">Seasonality</label>
             <Select
               value={seasonality}
               onChange={setSeasonality}
@@ -134,7 +134,7 @@ export function SimulationSettings() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Market Competition</label>
+            <label className="text-sm font-semibold text-text-primary block">Market Competition</label>
             <Select
               value={competition}
               onChange={setCompetition}
@@ -156,7 +156,7 @@ export function SimulationSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Default Time Horizon</label>
+            <label className="text-sm font-semibold text-text-primary block">Default Time Horizon</label>
             <Select
               value={timeHorizon}
               onChange={setTimeHorizon}
@@ -169,7 +169,7 @@ export function SimulationSettings() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-text-primary block">Default Confidence Threshold</label>
+            <label className="text-sm font-semibold text-text-primary block">Default Confidence Threshold</label>
             <Select
               value={confidenceThreshold}
               onChange={setConfidenceThreshold}

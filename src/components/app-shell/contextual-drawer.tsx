@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +13,7 @@ interface ContextualDrawerProps {
 }
 
 export function ContextualDrawer({ open, onClose, title, children }: ContextualDrawerProps) {
+  const t = useTranslations('common');
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Trap focus and handle Escape key
@@ -85,7 +87,7 @@ export function ContextualDrawer({ open, onClose, title, children }: ContextualD
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
               'cursor-pointer'
             )}
-            aria-label="Close panel"
+            aria-label={t('close')}
           >
             <X className="size-5" aria-hidden="true" />
           </button>

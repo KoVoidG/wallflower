@@ -1,43 +1,56 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { AppPage } from '@/components/ui/layout';
 import { DecisionPlannerSkeleton } from '@/components/ui/skeleton';
+import { Library, Sliders, Scale, Settings, ArrowUpRight } from 'lucide-react';
 import {
-  Library,
-  Sliders,
-  Scale,
-  Settings,
-  ArrowUpRight,
-} from 'lucide-react';
-import { ScenarioLibraryView, type ScenarioItem } from './scenario-library-view';
+  ScenarioLibraryView,
+  type ScenarioItem,
+} from './scenario-library-view';
 import { ScenarioWorkspaceView } from './scenario-workspace-view';
 import { CompareSimulationsView } from './compare-simulations-view';
 import { GlobalAssumptionsView } from './global-assumptions-view';
 import type { SavedSimulation } from '@/features/simulations/adapters/simulations.adapter';
 
-export type DecisionPlannerTab = 'library' | 'workspace' | 'compare' | 'assumptions';
+export type DecisionPlannerTab =
+  | 'library'
+  | 'workspace'
+  | 'compare'
+  | 'assumptions';
 
 interface DecisionPlannerViewProps {
   initialHistory?: SavedSimulation[];
 }
 
 export function DecisionPlannerView({}: DecisionPlannerViewProps) {
+  const t = useTranslations('simulations');
   const [activeTab, setActiveTab] = useState<DecisionPlannerTab>(() => {
     if (typeof window === 'undefined') return 'library';
     const params = new URLSearchParams(window.location.search);
     const tabFromUrl = params.get('tab') as DecisionPlannerTab | null;
-    const tabFromStorage = localStorage.getItem('decision_planner_active_tab') as DecisionPlannerTab | null;
-    const validTabs: DecisionPlannerTab[] = ['library', 'workspace', 'compare', 'assumptions'];
+    const tabFromStorage = localStorage.getItem(
+      'decision_planner_active_tab',
+    ) as DecisionPlannerTab | null;
+    const validTabs: DecisionPlannerTab[] = [
+      'library',
+      'workspace',
+      'compare',
+      'assumptions',
+    ];
 
     if (tabFromUrl && validTabs.includes(tabFromUrl)) return tabFromUrl;
-    if (tabFromStorage && validTabs.includes(tabFromStorage)) return tabFromStorage;
+    if (tabFromStorage && validTabs.includes(tabFromStorage))
+      return tabFromStorage;
     return 'library';
   });
 
-  const [activeScenario, setActiveScenario] = useState<ScenarioItem | null>(null);
+  const [activeScenario, setActiveScenario] = useState<ScenarioItem | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -70,16 +83,16 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
   }
 
   return (
-    <AppPage>
+    <AppPage className="pb-0">
       <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
         {/* ── 1. Page Header Bar with Credits & Upgrade Button ──────────── */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-[#1E2638]">
           <div className="space-y-1">
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-white">
-              Decision Planner
+              {t('pageTitle')}
             </h1>
             <p className="font-sans text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8]">
-              Plan, simulate, and make smarter business decisions with predictive intelligence.
+              {t('subtitle')}
             </p>
           </div>
 
@@ -88,10 +101,13 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
             <div className="px-3.5 py-2 rounded-2xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] flex items-center gap-3 shadow-xs">
               <div className="space-y-0.5">
                 <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block">
-                  Simulation Credits
+                  {t('simulationCredits')}
                 </span>
                 <p className="text-xs font-mono font-bold text-[#0F172A] dark:text-white">
-                  <span className="text-[#6366F1] dark:text-[#A5B4FC] font-extrabold">4</span> / 10 used this month
+                  <span className="text-[#6366F1] dark:text-[#A5B4FC] font-extrabold">
+                    4
+                  </span>{' '}
+                  / 10 used this month
                 </p>
               </div>
 
@@ -108,7 +124,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               size="sm"
               className="text-xs font-bold gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] hover:bg-purple-100 dark:hover:bg-purple-900/50 cursor-pointer h-10 px-3.5 rounded-xl shadow-2xs transition-all"
             >
-              <span>Upgrade Plan</span>
+              <span>{t('upgradePlan')}</span>
               <ArrowUpRight className="size-3.5" />
             </Button>
           </div>
@@ -124,11 +140,11 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'library'
                   ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
-                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
               )}
             >
               <Library className="size-4" />
-              <span>Scenario Library</span>
+              <span>{t('tabs.library')}</span>
               {activeTab === 'library' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
@@ -141,11 +157,11 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'workspace'
                   ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
-                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
               )}
             >
               <Sliders className="size-4" />
-              <span>Scenario Workspace</span>
+              <span>{t('tabs.workspace')}</span>
               {activeTab === 'workspace' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
@@ -158,11 +174,11 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'compare'
                   ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
-                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
               )}
             >
               <Scale className="size-4" />
-              <span>Compare Simulations</span>
+              <span>{t('tabs.compare')}</span>
               {activeTab === 'compare' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
@@ -175,11 +191,11 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
                 'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
                 activeTab === 'assumptions'
                   ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
-                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
               )}
             >
               <Settings className="size-4" />
-              <span>Global Assumptions</span>
+              <span>{t('tabs.assumptions')}</span>
               {activeTab === 'assumptions' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
@@ -203,13 +219,9 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
           />
         )}
 
-        {activeTab === 'compare' && (
-          <CompareSimulationsView />
-        )}
+        {activeTab === 'compare' && <CompareSimulationsView />}
 
-        {activeTab === 'assumptions' && (
-          <GlobalAssumptionsView />
-        )}
+        {activeTab === 'assumptions' && <GlobalAssumptionsView />}
       </div>
     </AppPage>
   );

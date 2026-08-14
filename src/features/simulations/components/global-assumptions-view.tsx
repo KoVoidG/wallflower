@@ -81,7 +81,7 @@ export function GlobalAssumptionsView() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Inflation Rate (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Inflation Rate (%)
             </label>
             <input
@@ -89,13 +89,13 @@ export function GlobalAssumptionsView() {
               step="0.1"
               value={formState.inflationRate}
               onChange={(e) => handleChange('inflationRate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Interest Rate (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Interest Rate (%)
             </label>
             <input
@@ -103,13 +103,13 @@ export function GlobalAssumptionsView() {
               step="0.05"
               value={formState.interestRate}
               onChange={(e) => handleChange('interestRate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* GDP Growth (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               GDP Growth (%)
             </label>
             <input
@@ -117,13 +117,13 @@ export function GlobalAssumptionsView() {
               step="0.1"
               value={formState.gdpGrowth}
               onChange={(e) => handleChange('gdpGrowth', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Exchange Rate (THB/USD) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Exchange Rate (THB/USD)
             </label>
             <input
@@ -131,7 +131,7 @@ export function GlobalAssumptionsView() {
               step="0.5"
               value={formState.exchangeRate}
               onChange={(e) => handleChange('exchangeRate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </div>
@@ -146,7 +146,7 @@ export function GlobalAssumptionsView() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Expected Demand Trend */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Expected Demand Trend
             </label>
             <Select
@@ -163,7 +163,7 @@ export function GlobalAssumptionsView() {
 
           {/* Supplier Cost Growth (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Supplier Cost Growth (%)
             </label>
             <input
@@ -171,13 +171,13 @@ export function GlobalAssumptionsView() {
               step="0.5"
               value={formState.supplierCostGrowth}
               onChange={(e) => handleChange('supplierCostGrowth', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Seasonality Pattern */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Seasonality Pattern
             </label>
             <Select
@@ -194,7 +194,7 @@ export function GlobalAssumptionsView() {
 
           {/* Tax Rate (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Tax Rate (%)
             </label>
             <input
@@ -202,7 +202,7 @@ export function GlobalAssumptionsView() {
               step="0.5"
               value={formState.taxRate}
               onChange={(e) => handleChange('taxRate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </div>
@@ -217,7 +217,7 @@ export function GlobalAssumptionsView() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Target Cash Runway (Months) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Target Cash Runway (Months)
             </label>
             <input
@@ -225,13 +225,13 @@ export function GlobalAssumptionsView() {
               step="1"
               value={formState.targetCashRunway}
               onChange={(e) => handleChange('targetCashRunway', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Minimum Profit Margin (%) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Minimum Profit Margin (%)
             </label>
             <input
@@ -239,13 +239,13 @@ export function GlobalAssumptionsView() {
               step="0.5"
               value={formState.minProfitMargin}
               onChange={(e) => handleChange('minProfitMargin', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Inventory Buffer (Days) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Inventory Buffer (Days)
             </label>
             <input
@@ -253,13 +253,13 @@ export function GlobalAssumptionsView() {
               step="1"
               value={formState.inventoryBuffer}
               onChange={(e) => handleChange('inventoryBuffer', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
 
           {/* Payment Terms (Days) */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary block">
+            <label className="text-sm font-semibold text-text-primary block">
               Payment Terms (Days)
             </label>
             <input
@@ -267,7 +267,7 @@ export function GlobalAssumptionsView() {
               step="1"
               value={formState.paymentTerms}
               onChange={(e) => handleChange('paymentTerms', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-xl bg-surface text-xs font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
+              className="w-full px-3.5 py-2.5 border border-border rounded-xl bg-surface text-sm font-mono font-medium text-text-primary focus:outline-hidden focus:border-tertiary"
             />
           </div>
         </div>
@@ -283,7 +283,7 @@ export function GlobalAssumptionsView() {
             size="md"
             onClick={handleSaveChanges}
             disabled={isSaving}
-            className="text-xs font-bold gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 cursor-pointer shadow-md shadow-indigo-500/25 px-5 flex-1 sm:flex-none rounded-xl"
+            className="text-sm font-semibold gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 cursor-pointer shadow-md shadow-indigo-500/25 px-5 flex-1 sm:flex-none rounded-xl"
           >
             {isSaved ? (
               <>
@@ -303,7 +303,7 @@ export function GlobalAssumptionsView() {
             variant="outline"
             size="md"
             onClick={handleResetToDefault}
-            className="text-xs font-semibold text-text-secondary hover:text-text-primary cursor-pointer px-4 flex-1 sm:flex-none border-border-strong"
+            className="text-sm font-semibold text-text-secondary hover:text-text-primary cursor-pointer px-4 flex-1 sm:flex-none border-border-strong rounded-xl"
           >
             Reset to Default
           </Button>
@@ -316,9 +316,9 @@ export function GlobalAssumptionsView() {
           size="md"
           onClick={handleRecalculate}
           disabled={isRecalculating}
-          className="text-xs font-semibold gap-2 text-text-secondary hover:text-text-primary cursor-pointer px-4 w-full sm:w-auto border-border-strong"
+          className="text-sm font-semibold gap-2 text-text-secondary hover:text-text-primary cursor-pointer px-4 w-full sm:w-auto border-border-strong rounded-xl"
         >
-          <RotateCw className={cn('size-3.5 text-text-secondary', isRecalculating && 'animate-spin text-tertiary')} />
+          <RotateCw className={cn('size-4 text-text-secondary', isRecalculating && 'animate-spin text-tertiary')} />
           <span>Recalculate Existing Simulations</span>
         </Button>
       </div>

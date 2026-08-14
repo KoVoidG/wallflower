@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   ShieldAlert,
   AlertTriangle,
@@ -53,6 +54,7 @@ import { formatThbAxis, AXIS_STYLES, GRID_STYLES } from '@/components/charts/cha
 type TriageStageFilter = 'all' | 'action_required' | 'monitoring' | 'mitigating' | 'resolved';
 
 export function RisksView() {
+  const t = useTranslations('risks');
   const { openDrawer } = useAdvisorDrawer();
   const [data, setData] = useState<RisksData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -209,7 +211,7 @@ export function RisksView() {
           <div className="space-y-1">
             <div className="flex items-center gap-2.5">
               <h1 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tight">
-                Risk Center
+                {t('pageTitle')}
               </h1>
             </div>
             <p className="text-xs text-text-secondary">
@@ -230,7 +232,7 @@ export function RisksView() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
             <div className="space-y-0.5 sm:pr-4">
               <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium block">
-                Active Risks
+                {t('summary.totalRisks')}
               </span>
               <span className="text-base sm:text-lg font-bold text-text-primary block tabular-nums">
                 {summary.totalCount} Tracked
@@ -368,13 +370,13 @@ export function RisksView() {
           <div className="xl:col-span-5 space-y-3 min-w-0">
             <div className="p-3 rounded-xl border border-border/80 bg-surface shadow-2xs space-y-2.5">
               <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 size-3.5 text-text-muted" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-text-muted" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search risks or rule IDs..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-border bg-surface-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-brand"
+                  className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-border bg-surface-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-tertiary"
                 />
               </div>
 

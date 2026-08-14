@@ -121,7 +121,7 @@ export default function OnboardingPage() {
                     onClick={handleResetBaseline}
                     className="inline-flex items-center gap-1 font-bold text-[#4F46E5] dark:text-[#A5B4FC] hover:underline shrink-0 cursor-pointer"
                   >
-                    <RefreshCw className="size-3" />
+                    <RefreshCw className="size-3.5" />
                     <span>{t('resetStartFresh')}</span>
                   </button>
                 </div>

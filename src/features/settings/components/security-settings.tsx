@@ -23,7 +23,7 @@ export function SecuritySettings() {
             </div>
             <button
               type="button"
-              className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+              className="px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
             >
               Change Password
             </button>
@@ -44,7 +44,7 @@ export function SecuritySettings() {
           </div>
           <button
             type="button"
-            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+            className="px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
           >
             Manage 2FA
           </button>
@@ -72,7 +72,7 @@ export function SecuritySettings() {
             value={recoveryEmail}
             onChange={(e) => setRecoveryEmail(e.target.value)}
             disabled={!editingEmail}
-            className="w-full px-3 py-2 text-xs border border-border rounded-xl bg-surface font-medium disabled:bg-surface-subtle disabled:text-text-muted"
+            className="w-full px-3.5 py-2.5 text-sm border border-border rounded-xl bg-surface font-medium disabled:bg-surface-subtle disabled:text-text-muted focus:outline-hidden focus:border-tertiary"
           />
         </Card>
 
@@ -84,7 +84,7 @@ export function SecuritySettings() {
           </div>
           <button
             type="button"
-            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
+            className="px-3.5 py-2 text-sm font-semibold rounded-xl border border-border bg-surface hover:bg-surface-hover transition-colors cursor-pointer"
           >
             View Security Log
           </button>
@@ -120,7 +120,7 @@ export function SecuritySettings() {
             <div className="flex items-center gap-3">
               <Smartphone className="size-5 text-text-muted shrink-0" />
               <div className="text-xs">
-                <span className="font-bold text-text-primary block">iPhone 14 • Safari</span>
+                <span className="font-bold text-text-primary block">iPhone 15 • Safari</span>
                 <span className="text-[11px] text-text-muted font-medium">Bangkok, Thailand • 2 hours ago</span>
               </div>
             </div>
@@ -159,7 +159,7 @@ export function SecuritySettings() {
             </div>
             <button
               type="button"
-              className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer self-start sm:self-auto"
+              className="px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-500/40 text-danger hover:bg-danger-soft/40 transition-colors cursor-pointer self-start sm:self-auto"
             >
               Sign Out All
             </button>
@@ -172,7 +172,7 @@ export function SecuritySettings() {
             </div>
             <button
               type="button"
-              className="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-danger text-white hover:bg-danger-hover transition-colors cursor-pointer shadow-2xs self-start sm:self-auto"
+              className="px-3.5 py-2 text-sm font-semibold rounded-xl bg-danger text-white hover:bg-danger-hover transition-colors cursor-pointer shadow-2xs self-start sm:self-auto"
             >
               Delete Account
             </button>
