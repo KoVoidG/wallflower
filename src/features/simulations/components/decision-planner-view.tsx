@@ -1,3 +1,4 @@
+// src/features/simulations/components/decision-planner-view.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,21 +7,22 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { AppPage } from '@/components/ui/layout';
 import { DecisionPlannerSkeleton } from '@/components/ui/skeleton';
-import { Library, Sliders, Scale, Settings, ArrowUpRight } from 'lucide-react';
+import { Library, Sliders, Scale, Activity, ArrowUpRight } from 'lucide-react';
 import {
   ScenarioLibraryView,
   type ScenarioItem,
 } from './scenario-library-view';
 import { ScenarioWorkspaceView } from './scenario-workspace-view';
 import { CompareSimulationsView } from './compare-simulations-view';
-import { GlobalAssumptionsView } from './global-assumptions-view';
+import { BottleneckAnalysisView } from './bottleneck-analysis-view';
 import type { SavedSimulation } from '@/features/simulations/adapters/simulations.adapter';
+import type { BottleneckResult } from '@/lib/liquiflow-types';
 
 export type DecisionPlannerTab =
   | 'library'
   | 'workspace'
-  | 'compare'
-  | 'assumptions';
+  | 'bottleneck'
+  | 'compare';
 
 interface DecisionPlannerViewProps {
   initialHistory?: SavedSimulation[];
@@ -38,8 +40,8 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
     const validTabs: DecisionPlannerTab[] = [
       'library',
       'workspace',
+      'bottleneck',
       'compare',
-      'assumptions',
     ];
 
     if (tabFromUrl && validTabs.includes(tabFromUrl)) return tabFromUrl;
@@ -51,6 +53,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
   const [activeScenario, setActiveScenario] = useState<ScenarioItem | null>(
     null,
   );
+  const [activeBottleneckResult, setActiveBottleneckResult] = useState<BottleneckResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -69,8 +72,13 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
   };
 
   const handleOpenScenario = (scen: ScenarioItem) => {
-    setActiveScenario(scen);
-    handleTabChange('workspace');
+    if (scen.type === 'bottleneck') {
+      setActiveBottleneckResult(scen.bottleneckResult || null);
+      handleTabChange('bottleneck');
+    } else {
+      setActiveScenario(scen);
+      handleTabChange('workspace');
+    }
   };
 
   const handleCompareScenario = (scen: ScenarioItem) => {
@@ -113,7 +121,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
 
               {/* Progress bar */}
               <div className="w-16 h-2 bg-slate-100 dark:bg-[#1E2638] rounded-full overflow-hidden shrink-0">
-                <div className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full w-[40%]" />
+                <div className="h-full bg-linear-to-r from-[#6366F1] to-[#8B5CF6] rounded-full w-[40%]" />
               </div>
             </div>
 
@@ -146,7 +154,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               <Library className="size-4" />
               <span>{t('tabs.library')}</span>
               {activeTab === 'library' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
 
@@ -163,7 +171,24 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               <Sliders className="size-4" />
               <span>{t('tabs.workspace')}</span>
               {activeTab === 'workspace' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleTabChange('bottleneck')}
+              className={cn(
+                'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
+                activeTab === 'bottleneck'
+                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
+              )}
+            >
+              <Activity className="size-4" />
+              <span>{t('tabs.bottleneck')}</span>
+              {activeTab === 'bottleneck' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
 
@@ -180,24 +205,7 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
               <Scale className="size-4" />
               <span>{t('tabs.compare')}</span>
               {activeTab === 'compare' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange('assumptions')}
-              className={cn(
-                'pb-3 text-sm font-medium transition-colors relative cursor-pointer whitespace-nowrap flex items-center gap-2',
-                activeTab === 'assumptions'
-                  ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-semibold'
-                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
-              )}
-            >
-              <Settings className="size-4" />
-              <span>{t('tabs.assumptions')}</span>
-              {activeTab === 'assumptions' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
               )}
             </button>
           </div>
@@ -219,9 +227,11 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
           />
         )}
 
-        {activeTab === 'compare' && <CompareSimulationsView />}
+        {activeTab === 'bottleneck' && (
+          <BottleneckAnalysisView initialResult={activeBottleneckResult} />
+        )}
 
-        {activeTab === 'assumptions' && <GlobalAssumptionsView />}
+        {activeTab === 'compare' && <CompareSimulationsView />}
       </div>
     </AppPage>
   );

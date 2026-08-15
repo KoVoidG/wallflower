@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Html } from "@react-three/drei";
-import * as THREE from "three";
-import type { SimulationResult, WorkflowStep } from "@/lib/liquiflow-types";
-import { utilizationColor } from "@/lib/liquiflow-algorithms";
+import { useRef, useMemo, useEffect } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Html } from '@react-three/drei';
+import * as THREE from 'three';
+import type { SimulationResult, WorkflowStep } from '@/lib/liquiflow-types';
+import { utilizationColor } from '@/lib/liquiflow-algorithms';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const STAGE_SPACING = 2.4;  // horizontal spacing between pipeline stages
-const PIPE_RADIUS = 0.18;   // tube/pipe cross-section radius
+const STAGE_SPACING = 2.4; // horizontal spacing between pipeline stages
+const PIPE_RADIUS = 0.18; // tube/pipe cross-section radius
 const PARTICLE_COUNT = 180; // total particles split across stages
 
 // Particle represents a work item flowing through the pipeline
@@ -17,25 +17,35 @@ interface ParticleState {
   stageIndex: number;
   // Progress 0→1 along this stage's pipe
   progress: number;
-  // Visual offsets within the pipe cross-section  
+  // Visual offsets within the pipe cross-section
   offsetX: number;
   offsetZ: number;
-  speed: number;          // relative to stage base speed
+  speed: number; // relative to stage base speed
   color: THREE.Color;
   size: number;
 }
 
 // ─── Pipeline Stage ───────────────────────────────────────────────────────────
 function PipelineStage({
-  stageX, label, cycleTime, volume,
-  maxVolume, utilizationRate, isConstraint,
-  isSimulating, result,
+  stageX,
+  label,
+  cycleTime,
+  volume,
+  maxVolume,
+  utilizationRate,
+  isConstraint,
+  isSimulating,
+  result,
 }: {
-  stageX: number; label: string;
-  cycleTime: number; volume: number;
+  stageX: number;
+  label: string;
+  cycleTime: number;
+  volume: number;
   maxVolume: number;
-  utilizationRate: number; isConstraint: boolean;
-  isSimulating: boolean; result: SimulationResult | null;
+  utilizationRate: number;
+  isConstraint: boolean;
+  isSimulating: boolean;
+  result: SimulationResult | null;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const timeRef = useRef(0);
@@ -53,22 +63,28 @@ function PipelineStage({
       const pulse = 1 + Math.sin(timeRef.current * 3.5) * 0.06;
       meshRef.current.scale.setScalar(pulse);
     } else {
-      meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, 1, 0.1));
+      meshRef.current.scale.setScalar(
+        THREE.MathUtils.lerp(meshRef.current.scale.x, 1, 0.1),
+      );
     }
   });
 
   // Projected improvement label
   const showProjection = result && !isSimulating;
   const deltaCycle = result
-    ? ((result.currentState.avgCycleTimeHours - result.projectedState.avgCycleTimeHours) /
-        result.currentState.avgCycleTimeHours * 100)
+    ? ((result.currentState.avgCycleTimeHours -
+        result.projectedState.avgCycleTimeHours) /
+        result.currentState.avgCycleTimeHours) *
+      100
     : 0;
 
   return (
     <group position={[stageX, 0, 0]}>
       {/* Cylinder representing pipeline stage */}
       <mesh ref={meshRef} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[PIPE_RADIUS, PIPE_RADIUS, pipeLen, 20, 1, true]} />
+        <cylinderGeometry
+          args={[PIPE_RADIUS, PIPE_RADIUS, pipeLen, 20, 1, true]}
+        />
         <meshStandardMaterial
           color={colorObj}
           emissive={colorObj}
@@ -85,9 +101,11 @@ function PipelineStage({
         <mesh key={i} position={[xOff, 0, 0]}>
           <circleGeometry args={[PIPE_RADIUS, 20]} />
           <meshStandardMaterial
-            color={colorObj} emissive={colorObj}
+            color={colorObj}
+            emissive={colorObj}
             emissiveIntensity={isConstraint ? 1.5 : 0.3}
-            transparent opacity={0.6}
+            transparent
+            opacity={0.6}
           />
         </mesh>
       ))}
@@ -102,25 +120,31 @@ function PipelineStage({
 
       {/* Stage Label */}
       <Html position={[0, 0.65, 0]} center>
-        <div className={`px-2 py-0.5 rounded-full backdrop-blur-md text-[10px] whitespace-nowrap border font-medium ${
-          isConstraint
-            ? "bg-danger-soft/70 border-danger/60 text-danger shadow-sm shadow-danger/20"
-            : "bg-surface/80 border-border/50 text-text-primary shadow-sm"
-        }`}>
+        <div
+          className={`px-2 py-0.5 rounded-full backdrop-blur-md text-[10px] whitespace-nowrap border font-medium ${
+            isConstraint
+              ? 'bg-danger-soft/70 border-danger/60 text-danger shadow-sm shadow-danger/20'
+              : 'bg-surface/80 border-border/50 text-text-primary shadow-sm'
+          }`}
+        >
           {label}
         </div>
       </Html>
 
       {/* Metrics below stage */}
       <Html position={[0, -0.65, 0]} center>
-        <div className="px-2 py-1 rounded-lg bg-surface/80 backdrop-blur text-[10px] space-y-0.5 text-center border border-border/50 shadow-sm min-w-[80px]">
+        <div className="px-2 py-1 rounded-lg bg-surface/80 backdrop-blur text-[10px] space-y-0.5 text-center border border-border/50 shadow-sm min-w-20">
           <div className="text-text-muted">{cycleTime}h cycle</div>
           <div className="text-text-muted/70">{volume}/wk</div>
           {showProjection && deltaCycle > 0 && (
-            <div className="text-brand">↓ {deltaCycle.toFixed(0)}% projected</div>
+            <div className="text-brand">
+              ↓ {deltaCycle.toFixed(0)}% projected
+            </div>
           )}
           {isConstraint && (
-            <div className="text-danger text-[9px] font-bold">TOC CONSTRAINT</div>
+            <div className="text-danger text-[9px] font-bold">
+              TOC CONSTRAINT
+            </div>
           )}
         </div>
       </Html>
@@ -128,54 +152,80 @@ function PipelineStage({
   );
 }
 
+const tempParticleMatrix = new THREE.Matrix4();
+
+function createInitialParticles(stageCount: number): ParticleState[] {
+  const count = Math.max(stageCount, 1);
+  return Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+    const stageIndex = i % count;
+    const hue = 0.65 + (stageIndex / count) * 0.15; // violet → cyan
+    const color = new THREE.Color().setHSL(hue, 0.8, 0.65);
+    const pseudo1 = ((i * 137.5) % 100) / 100;
+    const pseudo2 = ((i * 223.7) % 100) / 100;
+    const pseudo3 = ((i * 311.9) % 100) / 100;
+    const pseudo4 = ((i * 401.3) % 100) / 100;
+
+    return {
+      stageIndex,
+      progress: pseudo1,
+      offsetX: (pseudo2 - 0.5) * PIPE_RADIUS * 0.8,
+      offsetZ: (pseudo3 - 0.5) * PIPE_RADIUS * 0.8,
+      speed: 0.5 + pseudo4 * 0.5,
+      color,
+      size: 0.5 + pseudo2 * 0.5,
+    };
+  });
+}
+
 // ─── Flowing Particles (Instanced) ───────────────────────────────────────────
 function FlowParticles({
-  stages, result, isSimulating,
+  stages,
+  result,
+  isSimulating,
 }: {
-  stages: Array<{ x: number; baseSpeed: number; utilization: number; }>;
+  stages: Array<{ x: number; baseSpeed: number; utilization: number }>;
   result: SimulationResult | null;
   isSimulating: boolean;
 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
-  const matrix = useMemo(() => new THREE.Matrix4(), []);
+  const particlesRef = useRef<ParticleState[]>(
+    createInitialParticles(stages.length),
+  );
 
-  // Initialize particles distributed across stages
-  const particles = useMemo<ParticleState[]>(() => {
-    return Array.from({ length: PARTICLE_COUNT }, (_, i) => {
-      const stageIndex = i % stages.length;
-      const hue = 0.65 + (stageIndex / stages.length) * 0.15; // violet → cyan
-      const color = new THREE.Color().setHSL(hue, 0.8, 0.65);
-      return {
-        stageIndex,
-        progress: Math.random(),
-        offsetX: (Math.random() - 0.5) * PIPE_RADIUS * 0.8,
-        offsetZ: (Math.random() - 0.5) * PIPE_RADIUS * 0.8,
-        speed: 0.5 + Math.random() * 0.5,
-        color,
-        size: 0.5 + Math.random() * 0.5,
-      };
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    particlesRef.current = createInitialParticles(stages.length);
   }, [stages.length]);
 
   // Cycle time factor: if projected is faster, particles flow faster
   const cycleTimeFactor = useMemo(() => {
     if (!result || isSimulating) return 1;
-    return Math.max(0.3, result.currentState.avgCycleTimeHours / Math.max(result.projectedState.avgCycleTimeHours, 1));
+    return Math.max(
+      0.3,
+      result.currentState.avgCycleTimeHours /
+        Math.max(result.projectedState.avgCycleTimeHours, 1),
+    );
   }, [result, isSimulating]);
 
-  useFrame((state, delta) => {
+  const timeRef = useRef(0);
+  useFrame((_, delta) => {
     if (!meshRef.current || stages.length === 0) return;
-    const time = state.clock.elapsedTime;
+    const particles = particlesRef.current;
+    if (particles.length === 0) return;
+
+    timeRef.current += delta;
+    const time = timeRef.current;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const p = particles[i];
+      if (!p) continue;
       const stage = stages[p.stageIndex];
       if (!stage) continue;
 
       // Speed: inversely proportional to utilization (congested stages = slower)
       // but projected state = overall faster by cycleTimeFactor
-      const stageSlowdown = isSimulating ? 0.2 : Math.max(0.1, 1 - stage.utilization * 0.6);
+      const stageSlowdown = isSimulating
+        ? 0.2
+        : Math.max(0.1, 1 - stage.utilization * 0.6);
       const baseSpeed = stage.baseSpeed * stageSlowdown * cycleTimeFactor;
 
       if (isSimulating) {
@@ -195,9 +245,10 @@ function FlowParticles({
         p.progress -= 1;
         // Advance to next stage — flow through pipeline
         p.stageIndex = (p.stageIndex + 1) % stages.length;
-        // Re-randomize offsets at stage transition
-        p.offsetX = (Math.random() - 0.5) * PIPE_RADIUS * 0.8;
-        p.offsetZ = (Math.random() - 0.5) * PIPE_RADIUS * 0.8;
+        // Reset offsets at stage transition deterministically
+        const pseudoOffset = ((i * 179 + Math.floor(time * 10)) % 100) / 100;
+        p.offsetX = (pseudoOffset - 0.5) * PIPE_RADIUS * 0.8;
+        p.offsetZ = (((pseudoOffset * 3) % 1) - 0.5) * PIPE_RADIUS * 0.8;
       }
 
       // Position: lerp from start to end of stage X-range
@@ -207,26 +258,28 @@ function FlowParticles({
       const y = p.offsetX;
       const z = p.offsetZ;
 
-      matrix.setPosition(x, y, z);
+      tempParticleMatrix.setPosition(x, y, z);
       const sc = 0.055 * p.size * (isSimulating ? 1.4 : 1);
-      matrix.elements[0] = sc; matrix.elements[5] = sc; matrix.elements[10] = sc;
-      meshRef.current.setMatrixAt(i, matrix);
+      tempParticleMatrix.elements[0] = sc;
+      tempParticleMatrix.elements[5] = sc;
+      tempParticleMatrix.elements[10] = sc;
+      meshRef.current.setMatrixAt(i, tempParticleMatrix);
       meshRef.current.setColorAt(i, p.color);
     }
 
     meshRef.current.instanceMatrix.needsUpdate = true;
-    if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+    if (meshRef.current.instanceColor)
+      meshRef.current.instanceColor.needsUpdate = true;
   });
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, PARTICLE_COUNT]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshPhysicalMaterial
-        transparent opacity={0.85}
-        emissive="#0F766E"
-        emissiveIntensity={1.2}
-        roughness={0.1}
-        metalness={0.1}
+      <meshStandardMaterial
+        roughness={0.2}
+        metalness={0.6}
+        emissiveIntensity={isSimulating ? 0.9 : 0.4}
+        toneMapped={false}
       />
     </instancedMesh>
   );
@@ -253,9 +306,13 @@ function StageConnectors({ stageXs }: { stageXs: number[] }) {
 
 // ─── Main Scene ───────────────────────────────────────────────────────────────
 function SimulationScene({
-  workflows, result, isSimulating,
+  workflows,
+  result,
+  isSimulating,
 }: {
-  workflows: WorkflowStep[]; result: SimulationResult | null; isSimulating: boolean;
+  workflows: WorkflowStep[];
+  result: SimulationResult | null;
+  isSimulating: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -263,56 +320,66 @@ function SimulationScene({
   const visibleWorkflows = useMemo(() => workflows.slice(0, 6), [workflows]);
 
   const maxCycleTime = useMemo(
-    () => Math.max(...visibleWorkflows.map(w => w.avgDurationHours), 1),
-    [visibleWorkflows]
+    () => Math.max(...visibleWorkflows.map((w) => w.avgDurationHours), 1),
+    [visibleWorkflows],
   );
   const maxVolume = useMemo(
-    () => Math.max(...visibleWorkflows.map(w => w.volume), 1),
-    [visibleWorkflows]
+    () => Math.max(...visibleWorkflows.map((w) => w.volume), 1),
+    [visibleWorkflows],
   );
 
   const totalWidth = (visibleWorkflows.length - 1) * STAGE_SPACING;
   const startX = -totalWidth / 2;
 
-  const stageXs = visibleWorkflows.map((_, i) => startX + i * STAGE_SPACING);
+  const stageXs = useMemo(
+    () => visibleWorkflows.map((_, i) => startX + i * STAGE_SPACING),
+    [visibleWorkflows, startX],
+  );
 
   // Utilization per stage: volume × duration / (dept capacity estimate)
-  const utilizations = useMemo(() =>
-    visibleWorkflows.map(wf => {
-      const lambda = wf.volume / 40;
-      const mu = 1 / wf.avgDurationHours;
-      return Math.min(1.5, lambda / mu);
-    }),
-    [visibleWorkflows]
+  const utilizations = useMemo(
+    () =>
+      visibleWorkflows.map((wf) => {
+        const lambda = wf.volume / 40;
+        const mu = 1 / wf.avgDurationHours;
+        return Math.min(1.5, lambda / mu);
+      }),
+    [visibleWorkflows],
   );
 
   // Identify constraint (max constraint score = highest utilization × volume × duration)
-  const constraintIdx = useMemo(() =>
-    visibleWorkflows.reduce((maxIdx, wf, i) => {
-      const score = utilizations[i] * wf.volume * wf.avgDurationHours;
-      const maxScore = utilizations[maxIdx] * visibleWorkflows[maxIdx].volume * visibleWorkflows[maxIdx].avgDurationHours;
-      return score > maxScore ? i : maxIdx;
-    }, 0),
-    [visibleWorkflows, utilizations]
+  const constraintIdx = useMemo(
+    () =>
+      visibleWorkflows.reduce((maxIdx, wf, i) => {
+        const score = utilizations[i] * wf.volume * wf.avgDurationHours;
+        const maxScore =
+          utilizations[maxIdx] *
+          visibleWorkflows[maxIdx].volume *
+          visibleWorkflows[maxIdx].avgDurationHours;
+        return score > maxScore ? i : maxIdx;
+      }, 0),
+    [visibleWorkflows, utilizations],
   );
 
   // Stage data for particle system
-  const particleStages = useMemo(() =>
-    visibleWorkflows.map((wf, i) => ({
-      x: stageXs[i],
-      baseSpeed: 0.15 / Math.max(wf.avgDurationHours / maxCycleTime, 0.1),
-      utilization: utilizations[i],
-    })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [visibleWorkflows.map(w => w.id).join(","), result]
+  const particleStages = useMemo(
+    () =>
+      visibleWorkflows.map((wf, i) => ({
+        x: stageXs[i],
+        baseSpeed: 0.15 / Math.max(wf.avgDurationHours / maxCycleTime, 0.1),
+        utilization: utilizations[i],
+      })),
+    [visibleWorkflows, stageXs, utilizations, maxCycleTime],
   );
 
   // Gentle tilt animation
-  useFrame((state) => {
+  const tiltTimeRef = useRef(0);
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.12) * 0.06;
+    tiltTimeRef.current += delta;
+    groupRef.current.rotation.x = Math.sin(tiltTimeRef.current * 0.12) * 0.06;
     if (!isSimulating) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.07) * 0.08;
+      groupRef.current.rotation.y = Math.sin(tiltTimeRef.current * 0.07) * 0.08;
     }
   });
 
@@ -323,7 +390,7 @@ function SimulationScene({
         <PipelineStage
           key={wf.id}
           stageX={stageXs[i]}
-          label={wf.name.length > 18 ? wf.name.slice(0, 16) + "…" : wf.name}
+          label={wf.name.length > 18 ? wf.name.slice(0, 16) + '…' : wf.name}
           cycleTime={wf.avgDurationHours}
           volume={wf.volume}
           maxVolume={maxVolume}
@@ -349,30 +416,42 @@ function SimulationScene({
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
 export default function Simulation3D({
-  result, isSimulating, workflows = [],
+  result,
+  isSimulating,
+  workflows = [],
 }: {
-  result: SimulationResult | null; isSimulating: boolean; workflows?: WorkflowStep[];
+  result: SimulationResult | null;
+  isSimulating: boolean;
+  workflows?: WorkflowStep[];
 }) {
   return (
-    <div className="w-full h-full min-h-[320px] border border-border/50 rounded-2xl overflow-hidden bg-surface-subtle/50 relative shadow-inner">
+    <div className="w-full h-full min-h-80 border border-border/50 rounded-2xl overflow-hidden bg-surface-subtle/50 relative shadow-inner">
       <div className="absolute top-4 left-4 z-10 text-xs uppercase tracking-widest text-text-muted font-semibold bg-surface/80 px-3 py-1 rounded-full border border-border/50 backdrop-blur-md shadow-sm">
         {isSimulating
-          ? "Simulation Running — Workflow Pipeline"
+          ? 'Simulation Running — Workflow Pipeline'
           : result
-          ? `Projected Pipeline — ${result.deltaPercent.cycleTime < 0 ? Math.abs(result.deltaPercent.cycleTime) + "% faster" : "impact modeled"}`
-          : "Workflow Pipeline (Current State)"}
+            ? `Projected Pipeline — ${result.deltaPercent.cycleTime < 0 ? Math.abs(result.deltaPercent.cycleTime) + '% faster' : 'impact modeled'}`
+            : 'Workflow Pipeline (Current State)'}
       </div>
 
       {/* Legend */}
       <div className="absolute bottom-4 left-4 z-10 flex items-center gap-3 bg-surface/80 px-3 py-1.5 rounded-lg border border-border/50 backdrop-blur-md shadow-sm">
-        <div className="text-[10px] text-text-muted/70 uppercase tracking-wider font-semibold">Stage utilization:</div>
+        <div className="text-[10px] text-text-muted/70 uppercase tracking-wider font-semibold">
+          Stage utilization:
+        </div>
         {[
-          { color: "#34d399", label: "Healthy" },
-          { color: "#fbbf24", label: "High" },
-          { color: "#f87171", label: "Overloaded" },
+          { color: '#34d399', label: 'Healthy' },
+          { color: '#fbbf24', label: 'High' },
+          { color: '#f87171', label: 'Overloaded' },
         ].map(({ color, label }) => (
-          <div key={label} className="flex items-center gap-1 text-[10px] text-text-muted">
-            <div className="w-2 h-2 rounded-full shadow-sm" style={{ background: color }} />
+          <div
+            key={label}
+            className="flex items-center gap-1 text-[10px] text-text-muted"
+          >
+            <div
+              className="w-2 h-2 rounded-full shadow-sm"
+              style={{ background: color }}
+            />
             {label}
           </div>
         ))}

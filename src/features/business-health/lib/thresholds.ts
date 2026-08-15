@@ -182,7 +182,7 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
       primaryAction: { label: 'Simulate Payment Delay', href: '/simulations/new?type=payment_delay', isPrimary: true },
       secondaryActions: [
         { label: 'Open Cash Flow Workspace', href: '/cash-flow' },
-        { label: 'Review Liquidity Risk', href: '/risks' },
+        { label: 'Review Liquidity Risk', href: '/business-health?tab=risks' },
       ],
       assessmentDisclosure: {
         contributingMetricsCount: 3,
@@ -298,7 +298,7 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
       primaryAction: { label: 'Review Overdue Invoices in Cash Flow', href: '/cash-flow', isPrimary: true },
       secondaryActions: [
         { label: 'Simulate Customer Payment Delay', href: '/simulations/new?type=payment_delay' },
-        { label: 'Open Collection Risk Details', href: '/risks' },
+        { label: 'Open Collection Risk Details', href: '/business-health?tab=risks' },
       ],
       assessmentDisclosure: {
         contributingMetricsCount: 2,

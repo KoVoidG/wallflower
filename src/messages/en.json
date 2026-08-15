@@ -108,10 +108,10 @@
     "pageTitle": "Decision Planner",
     "subtitle": "Plan, simulate, and make smarter business decisions with predictive intelligence.",
     "tabs": {
-      "library": "Scenario Library",
-      "workspace": "Scenario Workspace",
-      "compare": "Compare Simulations",
-      "assumptions": "Global Assumptions"
+      "library": "Library",
+      "workspace": "What-If Scenario",
+      "bottleneck": "Bottleneck Analysis",
+      "compare": "Comparison"
     },
     "simulationCredits": "Simulation Credits",
     "creditsUsed": "{used} / {total} used this month",
@@ -268,7 +268,10 @@
     "advisor": "AI Advisor",
     "actionPlan": "Action Plan",
     "reports": "Reports",
+    "automation": "Automation",
+    "playground": "AI Playground",
     "dataConnections": "Data & Connections",
+    "data-sources": "Data & Integrations",
     "faq": "FAQ",
     "helpSupport": "Help & Support",
     "settings": "Settings",
@@ -1207,7 +1210,8 @@
       "operations": "Operations",
       "inventory": "Inventory",
       "unitEconomics": "Unit Economics",
-      "assumptions": "Baseline Assumptions"
+      "assumptions": "Baseline Assumptions",
+      "risks": "Risk Center"
     },
     "snapshot": {
       "title": "Financial Snapshot",

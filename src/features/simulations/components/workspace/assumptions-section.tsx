@@ -3,7 +3,6 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { RotateCcw } from 'lucide-react';
 import { DynamicInput } from './input-controls';
 import type {
   ScenarioTemplate,
@@ -14,7 +13,6 @@ interface AssumptionsSectionProps {
   template: ScenarioTemplate;
   values: Record<string, number | string>;
   onChange: (key: string, value: number | string) => void;
-  onResetDefaults: () => void;
 }
 
 function getContextNote(
@@ -75,7 +73,6 @@ export function AssumptionsSection({
   template,
   values,
   onChange,
-  onResetDefaults,
 }: AssumptionsSectionProps) {
   if (template.assumptions.length === 0) return null;
 
@@ -90,37 +87,21 @@ export function AssumptionsSection({
   return (
     <div className="space-y-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-            <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">
-              2
-            </span>
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">
-              Key Assumptions
-            </h3>
-            <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
-              Adjust the assumptions that drive how this decision impacts your
-              business.
-            </p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
+          <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">
+            2
+          </span>
         </div>
-
-        <button
-          type="button"
-          onClick={onResetDefaults}
-          className={cn(
-            'inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold',
-            'border border-slate-200 dark:border-[#2A344A] bg-white dark:bg-[#111622]',
-            'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
-            'hover:bg-slate-50 dark:hover:bg-[#1E2638] transition-colors cursor-pointer shadow-xs',
-          )}
-        >
-          <RotateCcw className="size-4" />
-          <span>Reset to defaults</span>
-        </button>
+        <div>
+          <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">
+            Key Assumptions
+          </h3>
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+            Adjust the assumptions that drive how this decision impacts your
+            business.
+          </p>
+        </div>
       </div>
 
       {/* Assumptions Card */}

@@ -111,8 +111,7 @@ function useForceLayout(
     }
 
     return positions;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [departments.map(d => d.id).join(","), workflows.map(w => w.id).join(",")]);
+  }, [departments, workflows]);
 }
 
 // ─── Scene Graph ──────────────────────────────────────────────────────────────
@@ -127,8 +126,7 @@ function OrgGraph({
 
   const analysis = useMemo(
     () => analyzeBottlenecks(departments, workflows, 35),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [departments.map(d => d.id + d.pendingApprovals).join(",")]
+    [departments, workflows]
   );
 
   const utilizationByDept = useMemo(() => {
@@ -204,13 +202,15 @@ function OrgGraph({
     });
   }, [departments, positions, utilizationByDept, stressById, result, analysis.primaryConstraint?.department]);
 
-  useFrame((state) => {
+  const timeRef = useRef(0);
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
+    timeRef.current += delta;
     // Very gentle drift — stops during scanning to show analysis
     if (!isScanning) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+      groupRef.current.rotation.y = timeRef.current * 0.05;
     } else {
-      groupRef.current.rotation.y += 0.01;
+      groupRef.current.rotation.y += delta * 0.6;
     }
   });
 

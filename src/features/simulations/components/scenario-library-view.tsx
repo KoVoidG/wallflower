@@ -1,7 +1,7 @@
 // src/features/simulations/components/scenario-library-view.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
@@ -9,23 +9,33 @@ import {
   Tag,
   Users,
   Box,
-  Truck,
+  ShoppingBag,
   Sparkles,
   Search,
   LayoutGrid,
   List,
   Eye,
   Scale,
-  MoreVertical,
   Plus,
   CheckCircle2,
   Clock,
+  Activity,
+  Workflow,
+  PlusCircle,
+  Wrench,
+  Store,
 } from 'lucide-react';
 import { NewScenarioModal, type StartingTemplate } from './new-scenario-modal';
 import { FadeInView } from '@/components/motion';
+import {
+  useSimulationHistory,
+  type SavedSimulationRun,
+} from '../engine/simulation-history-store';
+import type { SimulationResult, BottleneckResult } from '@/lib/liquiflow-types';
 
 export interface ScenarioItem {
   id: string;
+  type?: 'what_if' | 'bottleneck';
   name: string;
   strategyTag: string;
   goal: string;
@@ -36,82 +46,24 @@ export interface ScenarioItem {
   confidence?: number;
   icon: typeof Tag;
   templateId?: string;
+  whatIfResult?: SimulationResult;
+  bottleneckResult?: BottleneckResult;
+  inputValues?: Record<string, number | string>;
 }
 
-const SAMPLE_SCENARIOS: ScenarioItem[] = [
-  {
-    id: 'scen-1',
-    name: 'Price Increase +5%',
-    strategyTag: 'Pricing Strategy',
-    goal: 'Increase profit margin by 3%',
-    status: 'Simulated',
-    healthScore: 84,
-    lastSimulated: 'Today, 09:42 AM',
-    riskLevel: 'Low',
-    confidence: 91,
-    icon: Tag,
-    templateId: 'price_increase',
-  },
-  {
-    id: 'scen-2',
-    name: 'Hire 1 Sales Associate',
-    strategyTag: 'Staffing Plan',
-    goal: 'Expand customer capacity',
-    status: 'Simulated',
-    healthScore: 82,
-    lastSimulated: 'Today, 10:15 AM',
-    riskLevel: 'Low',
-    confidence: 87,
-    icon: Users,
-    templateId: 'hire_employee',
-  },
-  {
-    id: 'scen-3',
-    name: 'Expand Inventory +20%',
-    strategyTag: 'Inventory Management',
-    goal: 'Meet holiday peak demand',
-    status: 'Simulated',
-    healthScore: 81,
-    lastSimulated: 'Wednesday, 04:21 PM',
-    riskLevel: 'Medium',
-    confidence: 82,
-    icon: Box,
-    templateId: 'inventory_expansion',
-  },
-  {
-    id: 'scen-4',
-    name: 'Switch Supplier for Beverage',
-    strategyTag: 'Cost Optimization',
-    goal: 'Reduce COGS by 4%',
-    status: 'Simulated',
-    healthScore: 83,
-    lastSimulated: '3 days ago',
-    riskLevel: 'Low',
-    confidence: 89,
-    icon: Truck,
-    templateId: 'cost_reduction',
-  },
-  {
-    id: 'scen-5',
-    name: 'Launch Loyalty Program',
-    strategyTag: 'Marketing Strategy',
-    goal: 'Improve repeat customer rate',
-    status: 'Draft',
-    lastSimulated: 'Today, 09:11 AM',
-    icon: Sparkles,
-    templateId: 'holiday_promo',
-  },
-  {
-    id: 'scen-6',
-    name: 'Open New Branch in District 2',
-    strategyTag: 'Business Expansion',
-    goal: 'Scale regional footprint',
-    status: 'Draft',
-    lastSimulated: '3 days ago',
-    icon: Users,
-    templateId: 'new_branch',
-  },
-];
+function getScenarioIcon(scen: Partial<SavedSimulationRun>): typeof Tag {
+  if (scen.type === 'bottleneck') return Activity;
+  const t = (scen.templateId || scen.name || '').toLowerCase();
+  if (t.includes('price')) return Tag;
+  if (t.includes('hire') || t.includes('sales')) return Users;
+  if (t.includes('inventory')) return Box;
+  if (t.includes('cost') || t.includes('supplier')) return ShoppingBag;
+  if (t.includes('holiday') || t.includes('promo')) return Sparkles;
+  if (t.includes('equipment')) return Wrench;
+  if (t.includes('branch')) return Store;
+  if (t.includes('custom') || t.includes('blank')) return PlusCircle;
+  return Workflow;
+}
 
 interface ScenarioLibraryViewProps {
   onOpenScenario: (scenario: ScenarioItem) => void;
@@ -122,29 +74,58 @@ export function ScenarioLibraryView({
   onOpenScenario,
   onCompareScenario,
 }: ScenarioLibraryViewProps) {
+  const { history, saveRun } = useSimulationHistory();
   const [searchQuery, setSearchQuery] = useState('');
   const [strategyFilter, setStrategyFilter] = useState('All Strategies');
   const [statusFilter, setStatusFilter] = useState('All Status');
-  const [sortBy, setSortBy] = useState('Recently Simulated');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [scenariosList, setScenariosList] =
-    useState<ScenarioItem[]>(SAMPLE_SCENARIOS);
+
+  // Convert saved runs from persistent store into scenario items
+  const scenariosList: ScenarioItem[] = useMemo(() => {
+    return history.map((h) => ({
+      id: h.id,
+      type: h.type,
+      name: h.name,
+      strategyTag: h.strategyTag,
+      goal: h.goal,
+      status: h.status,
+      healthScore: h.healthScore,
+      lastSimulated: h.lastSimulated,
+      riskLevel: h.riskLevel,
+      confidence: h.confidence,
+      icon: getScenarioIcon(h),
+      templateId: h.templateId,
+      whatIfResult: h.whatIfResult,
+      bottleneckResult: h.bottleneckResult,
+      inputValues: h.inputValues,
+    }));
+  }, [history]);
 
   const handleSelectTemplate = (template: StartingTemplate) => {
-    const newScen: ScenarioItem = {
+    const newRun = saveRun({
       id: `scen-${Date.now()}`,
+      type: 'what_if',
       name: template.title,
+      templateId: template.id,
       strategyTag: template.strategyTag || 'New Strategy',
       goal: template.goal || 'Simulate financial impact',
       status: 'Draft',
       lastSimulated: 'Just now',
-      icon: Tag,
-      templateId: template.id,
-    };
-    setScenariosList([newScen, ...scenariosList]);
+    });
+
     setIsModalOpen(false);
-    onOpenScenario(newScen);
+    onOpenScenario({
+      id: newRun.id,
+      type: 'what_if',
+      name: newRun.name,
+      strategyTag: newRun.strategyTag,
+      goal: newRun.goal,
+      status: newRun.status,
+      lastSimulated: newRun.lastSimulated,
+      icon: getScenarioIcon(newRun),
+      templateId: newRun.templateId,
+    });
   };
 
   const filteredScenarios = scenariosList.filter((scen) => {
@@ -179,7 +160,7 @@ export function ScenarioLibraryView({
             <Search className="size-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search scenarios by name, goal, strategy..."
+              placeholder="Search simulations (What-If, Bottleneck, Scenarios)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] text-[#0F172A] dark:text-white placeholder:text-[#94A3B8] focus:outline-hidden focus:border-[#6366F1] transition-colors"
@@ -187,21 +168,20 @@ export function ScenarioLibraryView({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="w-40">
+            <div className="w-44">
               <Select
                 value={strategyFilter}
                 onChange={setStrategyFilter}
                 options={[
-                  { value: 'All Strategies', label: 'All Strategies' },
+                  { value: 'All Strategies', label: 'All Categories' },
                   { value: 'Pricing Strategy', label: 'Pricing Strategy' },
-                  { value: 'Staffing Plan', label: 'Staffing Plan' },
-                  {
-                    value: 'Inventory Management',
-                    label: 'Inventory Management',
-                  },
-                  { value: 'Cost Optimization', label: 'Cost Optimization' },
+                  { value: 'People Security', label: 'People Security' },
+                  { value: 'Operations Research', label: 'Operations Research' },
+                  { value: 'Cost Efficiency', label: 'Cost Efficiency' },
                   { value: 'Marketing Strategy', label: 'Marketing Strategy' },
-                  { value: 'Business Expansion', label: 'Business Expansion' },
+                  { value: 'Inventory Strategy', label: 'Inventory Strategy' },
+                  { value: 'Expansion Strategy', label: 'Expansion Strategy' },
+                  { value: 'Custom Strategy', label: 'Custom Strategy' },
                 ]}
               />
             </div>
@@ -218,33 +198,18 @@ export function ScenarioLibraryView({
               />
             </div>
 
-            <div className="w-47">
-              <Select
-                value={sortBy}
-                onChange={setSortBy}
-                options={[
-                  {
-                    value: 'Recently Simulated',
-                    label: 'Recently Simulated',
-                  },
-                  { value: 'Highest Health Score', label: 'Highest Health' },
-                  { value: 'Lowest Risk', label: 'Lowest Risk' },
-                ]}
-              />
-            </div>
-
             {/* View Mode Toggle */}
-            <div className="flex items-center p-1 rounded-xl bg-[#F8FAFC] dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638]">
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-[#1E2638] border border-slate-200/80 dark:border-[#2A344A]">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={cn(
                   'p-1.5 rounded-lg transition-all cursor-pointer',
                   viewMode === 'grid'
-                    ? 'bg-white dark:bg-[#1E2638] text-[#0F172A] dark:text-white shadow-xs'
+                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs'
                     : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
                 )}
-                title="Grid view"
+                title="Grid View"
               >
                 <LayoutGrid className="size-4" />
               </button>
@@ -254,59 +219,73 @@ export function ScenarioLibraryView({
                 className={cn(
                   'p-1.5 rounded-lg transition-all cursor-pointer',
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-[#1E2638] text-[#0F172A] dark:text-white shadow-xs'
+                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs'
                     : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
                 )}
-                title="List view"
+                title="List View"
               >
                 <List className="size-4" />
               </button>
             </div>
 
-            {/* New Scenario Button */}
+            {/* Start Simulation Button */}
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-xs font-bold shadow-md shadow-indigo-500/25 hover:opacity-95 hover:scale-105 active:scale-95 cursor-pointer transition-all shrink-0"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#6366F1] text-white hover:bg-[#4F46E5] text-sm font-semibold transition-all cursor-pointer shadow-md shadow-indigo-500/20 active:scale-95"
             >
               <Plus className="size-4" />
-              <span>New Scenario</span>
+              <span>New Simulation</span>
             </button>
           </div>
         </div>
       </FadeInView>
 
-      {/* ── 2. Grid View ─────────────────────────────────────────────────── */}
+      {/* ── 2. Grid View ──────────────────────────────────────────────────── */}
       {viewMode === 'grid' && (
         <FadeInView offset={12}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredScenarios.map((scen) => {
               const Icon = scen.icon;
               const isSimulated = scen.status === 'Simulated';
+              const isBottleneck = scen.type === 'bottleneck';
 
               return (
                 <Card
                   key={scen.id}
-                  className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-md dark:shadow-black/40 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-black/60 hover:-translate-y-1 hover:border-[#6366F1]/50 transition-all duration-200 space-y-4"
+                  onClick={() => onOpenScenario(scen)}
+                  className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-md dark:shadow-black/40 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-black/60 hover:-translate-y-1 hover:border-[#6366F1]/50 transition-all duration-200 space-y-4 cursor-pointer"
                 >
                   {/* Card Header: Icon, Title, Strategy Tag & Status */}
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="size-9 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
+                        <div className={cn(
+                          'size-9 rounded-xl border flex items-center justify-center shrink-0 transition-all',
+                          isBottleneck
+                            ? 'bg-amber-500/10 text-amber-600 border-amber-500/30'
+                            : 'bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border-slate-200 dark:border-[#2A344A] group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40',
+                        )}>
                           <Icon className="size-4.5" />
                         </div>
                         <div className="min-w-0">
                           <h3 className="font-display text-sm sm:text-base font-bold text-[#0F172A] dark:text-white leading-snug truncate group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                             {scen.name}
                           </h3>
-                          <p className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] truncate">
-                            {scen.strategyTag}
-                          </p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {isBottleneck && (
+                              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                                Bottleneck
+                              </span>
+                            )}
+                            <p className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] truncate">
+                              {scen.strategyTag}
+                            </p>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Purple "Simulated" Badge */}
+                      {/* Status Badge */}
                       <span
                         className={cn(
                           'px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide border shrink-0 inline-flex items-center gap-1.5',
@@ -333,7 +312,7 @@ export function ScenarioLibraryView({
                         </span>
                       </p>
                       <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px] font-mono">
-                        {isSimulated ? 'Last Simulated: ' : 'Last Modified: '}
+                        {isSimulated ? 'Simulated: ' : 'Saved: '}
                         <span className="font-medium text-[#0F172A] dark:text-white">
                           {scen.lastSimulated}
                         </span>
@@ -350,7 +329,7 @@ export function ScenarioLibraryView({
                       {isSimulated ? (
                         <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white inline-flex items-center gap-1">
                           <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                          {scen.healthScore}
+                          {scen.healthScore || 82}
                         </span>
                       ) : (
                         <span className="text-[#94A3B8] font-mono">—</span>
@@ -369,9 +348,10 @@ export function ScenarioLibraryView({
                               scen.riskLevel === 'Low' && 'bg-emerald-500',
                               scen.riskLevel === 'Medium' && 'bg-amber-500',
                               scen.riskLevel === 'High' && 'bg-rose-500',
+                              !scen.riskLevel && 'bg-emerald-500',
                             )}
                           />
-                          {scen.riskLevel}
+                          {scen.riskLevel || 'Low'}
                         </span>
                       ) : (
                         <span className="text-[#94A3B8] font-mono">—</span>
@@ -384,7 +364,7 @@ export function ScenarioLibraryView({
                       </span>
                       {isSimulated ? (
                         <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white">
-                          {scen.confidence}%
+                          {scen.confidence || 90}%
                         </span>
                       ) : (
                         <span className="text-[#94A3B8] font-mono">—</span>
@@ -392,36 +372,27 @@ export function ScenarioLibraryView({
                     </div>
                   </div>
 
-                  {/* Footer Action Buttons */}
-                  <div className="pt-2 border-t border-slate-100 dark:border-[#1E2638] flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onOpenScenario(scen)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] cursor-pointer shadow-xs transition-colors"
-                      >
-                        <Eye className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
-                        <span>Open</span>
-                      </button>
-
-                      {isSimulated && (
-                        <button
-                          type="button"
-                          onClick={() => onCompareScenario(scen)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] cursor-pointer shadow-xs transition-colors"
-                        >
-                          <Scale className="size-3.5 text-[#64748B] dark:text-[#94A3B8]" />
-                          <span>Compare</span>
-                        </button>
-                      )}
-                    </div>
+                  {/* Card Actions */}
+                  <div
+                    className="pt-2 border-t border-slate-100 dark:border-[#1E2638] flex items-center justify-between gap-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onOpenScenario(scen)}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/10 dark:hover:bg-[#6366F1]/20 border border-[#6366F1]/20 transition-colors cursor-pointer"
+                    >
+                      <Eye className="size-3.5" />
+                      <span>View Results</span>
+                    </button>
 
                     <button
                       type="button"
-                      className="p-1.5 rounded-xl text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
-                      title="More actions"
+                      onClick={() => onCompareScenario(scen)}
+                      className="inline-flex items-center justify-center p-2 rounded-xl text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white bg-slate-50 dark:bg-[#1E2638] hover:bg-slate-100 dark:hover:bg-[#2A344A] border border-slate-200/80 dark:border-[#2A344A] transition-colors cursor-pointer"
+                      title="Compare simulation"
                     >
-                      <MoreVertical className="size-4" />
+                      <Scale className="size-3.5" />
                     </button>
                   </div>
                 </Card>
@@ -431,137 +402,83 @@ export function ScenarioLibraryView({
         </FadeInView>
       )}
 
-      {/* ── 3. List View ─────────────────────────────────────────────────── */}
+      {/* ── 3. List View ──────────────────────────────────────────────────── */}
       {viewMode === 'list' && (
         <FadeInView offset={12}>
-          <Card className="rounded-2xl border-slate-100 dark:border-[#1E2638] bg-white dark:bg-[#111622] overflow-hidden shadow-md dark:shadow-black/40">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#F8FAFC] dark:bg-[#0B0F17] text-[#64748B] dark:text-[#94A3B8] border-b border-slate-100 dark:border-[#1E2638] text-[11px] font-semibold">
-                  <tr>
-                    <th className="p-3.5">Scenario</th>
-                    <th className="p-3.5">Status</th>
-                    <th className="p-3.5">Goal</th>
-                    <th className="p-3.5">Last Updated</th>
-                    <th className="p-3.5 text-center">Health Score</th>
-                    <th className="p-3.5 text-center">Risk Level</th>
-                    <th className="p-3.5 text-center">Confidence</th>
-                    <th className="p-3.5 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-[#1E2638]">
-                  {filteredScenarios.map((scen) => {
-                    const Icon = scen.icon;
-                    const isSimulated = scen.status === 'Simulated';
+          <div className="rounded-2xl border border-slate-100 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-[#1E2638]">
+            {filteredScenarios.map((scen) => {
+              const Icon = scen.icon;
+              const isSimulated = scen.status === 'Simulated';
+              const isBottleneck = scen.type === 'bottleneck';
 
-                    return (
-                      <tr
-                        key={scen.id}
-                        className="group hover:bg-slate-50 dark:hover:bg-[#1E2638]/40 transition-colors"
-                      >
-                        <td className="p-3.5">
-                          <div className="flex items-center gap-3">
-                            <div className="size-8 rounded-lg bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all">
-                              <Icon className="size-4" />
-                            </div>
-                            <div>
-                              <p className="font-bold text-[#0F172A] dark:text-white group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
-                                {scen.name}
-                              </p>
-                              <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8]">
-                                {scen.strategyTag}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className="p-3.5">
-                          <span
-                            className={cn(
-                              'px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide border inline-flex items-center gap-1.5',
-                              isSimulated
-                                ? 'bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60 shadow-2xs'
-                                : 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60',
-                            )}
-                          >
-                            {isSimulated && (
-                              <span className="size-1.5 rounded-full bg-[#8B5CF6] shrink-0" />
-                            )}
-                            <span>{scen.status}</span>
+              return (
+                <div
+                  key={scen.id}
+                  onClick={() => onOpenScenario(scen)}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50/70 dark:hover:bg-[#161D2E] transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className={cn(
+                      'size-10 rounded-xl border flex items-center justify-center shrink-0',
+                      isBottleneck
+                        ? 'bg-amber-500/10 text-amber-600 border-amber-500/30'
+                        : 'bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border-slate-200 dark:border-[#2A344A]',
+                    )}>
+                      <Icon className="size-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-[#0F172A] dark:text-white truncate">
+                          {scen.name}
+                        </h4>
+                        {isBottleneck && (
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                            Bottleneck
                           </span>
-                        </td>
-
-                        <td className="p-3.5 text-[#64748B] dark:text-[#94A3B8] font-medium">
-                          {scen.goal}
-                        </td>
-                        <td className="p-3.5 text-[#64748B] dark:text-[#94A3B8] font-mono">
-                          {scen.lastSimulated}
-                        </td>
-
-                        <td className="p-3.5 text-center font-mono font-bold text-[#0F172A] dark:text-white">
-                          {isSimulated ? (
-                            <span className="inline-flex items-center gap-1">
-                              <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                              {scen.healthScore}
-                            </span>
-                          ) : (
-                            '—'
+                        )}
+                        <span
+                          className={cn(
+                            'px-2 py-0.5 rounded-full text-[10px] font-bold border',
+                            isSimulated
+                              ? 'bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60'
+                              : 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60',
                           )}
-                        </td>
+                        >
+                          {scen.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
+                        {scen.strategyTag} · Goal: {scen.goal} · {scen.lastSimulated}
+                      </p>
+                    </div>
+                  </div>
 
-                        <td className="p-3.5 text-center font-semibold text-[#0F172A] dark:text-white">
-                          {isSimulated ? (
-                            <span className="inline-flex items-center gap-1">
-                              <span
-                                className={cn(
-                                  'size-2 rounded-full',
-                                  scen.riskLevel === 'Low' && 'bg-emerald-500',
-                                  scen.riskLevel === 'Medium' && 'bg-amber-500',
-                                  scen.riskLevel === 'High' && 'bg-rose-500',
-                                )}
-                              />
-                              {scen.riskLevel}
-                            </span>
-                          ) : (
-                            '—'
-                          )}
-                        </td>
-
-                        <td className="p-3.5 text-center font-mono font-bold text-[#0F172A] dark:text-white">
-                          {isSimulated ? `${scen.confidence}%` : '—'}
-                        </td>
-
-                        <td className="p-3.5 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              type="button"
-                              onClick={() => onOpenScenario(scen)}
-                              className="px-2.5 py-1 rounded-lg border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] cursor-pointer shadow-xs transition-colors"
-                            >
-                              Open
-                            </button>
-                            {isSimulated && (
-                              <button
-                                type="button"
-                                onClick={() => onCompareScenario(scen)}
-                                className="px-2.5 py-1 rounded-lg border border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] cursor-pointer shadow-xs transition-colors"
-                              >
-                                Compare
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+                  <div
+                    className="flex items-center gap-3 self-end sm:self-center shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {isSimulated && (
+                      <div className="flex items-center gap-4 text-xs font-mono pr-2">
+                        <span>Score: <strong className="text-[#0F172A] dark:text-white">{scen.healthScore || 82}</strong></span>
+                        <span>Confidence: <strong className="text-[#0F172A] dark:text-white">{scen.confidence || 90}%</strong></span>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onOpenScenario(scen)}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/15 border border-[#6366F1]/20 transition-colors cursor-pointer"
+                    >
+                      View Results
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </FadeInView>
       )}
 
-      {/* ── 4. New Scenario Template Selection Modal ──────────────────────── */}
+      {/* New Scenario Modal */}
       <NewScenarioModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

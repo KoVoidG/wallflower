@@ -49,7 +49,6 @@ const mainNavItems: readonly NavItemConfig[] = [
   },
   {
     key: 'data-sources',
-    label: 'Data & Integrations',
     href: '/data-sources',
     tourId: 'sidebar-data-sources',
     icon: Database,
@@ -74,7 +73,6 @@ const mainNavItems: readonly NavItemConfig[] = [
   },
   {
     key: 'playground',
-    label: 'AI Playground',
     href: '/advisor/playground',
     tourId: 'sidebar-playground',
     icon: FlaskConical,

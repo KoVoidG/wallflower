@@ -108,10 +108,10 @@
     "pageTitle": "เครื่องมือวางแผนการตัดสินใจ",
     "subtitle": "วางแผน จำลองสถานการณ์ และตัดสินใจทางธุรกิจอย่างแม่นยำด้วยการวิเคราะห์เชิงคาดการณ์",
     "tabs": {
-      "library": "คลังสถานการณ์จำลอง",
-      "workspace": "พื้นที่ทำงานจำลอง",
-      "compare": "เปรียบเทียบการจำลอง",
-      "assumptions": "สมมติฐานหลัก"
+      "library": "Library",
+      "workspace": "What-If Scenario",
+      "bottleneck": "Bottleneck Analysis",
+      "compare": "Comparison"
     },
     "simulationCredits": "เครดิตการจำลอง",
     "creditsUsed": "ใช้แล้ว {used} / {total} ในเดือนนี้",
@@ -268,7 +268,10 @@
     "advisor": "AI ที่ปรึกษา",
     "actionPlan": "แผนการดำเนินการ",
     "reports": "รายงาน",
+    "automation": "ระบบอัตโนมัติ (Automation)",
+    "playground": "AI สนามทดลอง",
     "dataConnections": "ข้อมูลและการเชื่อมต่อ",
+    "data-sources": "ข้อมูลและการรวมระบบ",
     "faq": "คำถามที่พบบ่อย",
     "helpSupport": "ช่วยเหลือและสนับสนุน",
     "settings": "ตั้งค่า",
@@ -1207,7 +1210,8 @@
       "operations": "การดำเนินงาน",
       "inventory": "สินค้าคงคลัง",
       "unitEconomics": "เศรษฐศาสตร์ต่อหน่วย",
-      "assumptions": "สมมติฐานข้อมูลฐาน"
+      "assumptions": "สมมติฐานข้อมูลฐาน",
+      "risks": "ศูนย์ความเสี่ยง"
     },
     "snapshot": {
       "title": "ภาพรวมการเงิน",

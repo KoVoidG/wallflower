@@ -1,9 +1,17 @@
-// src/features/risks/adapters/risks.adapter.ts
+// src/features/business-health/adapters/risks.adapter.ts
 import type { DataConfidence } from '@/types/domain';
 
-export type RiskCategory = 'cash_flow' | 'revenue' | 'expense' | 'debt' | 'operational' | 'compliance' | 'growth' | 'financial';
+export type RiskCategory =
+  | 'cash_flow'
+  | 'revenue'
+  | 'expense'
+  | 'debt'
+  | 'operational'
+  | 'compliance'
+  | 'growth'
+  | 'financial';
 export type RiskSeverity = 'critical' | 'high' | 'medium' | 'low' | 'warning';
-export type RiskLikelihood = 'high' | 'medium' | 'low';
+export type RiskLikelihood = 'critical' | 'high' | 'medium' | 'low';
 export type RiskStatus = 'active' | 'mitigated' | 'ignored';
 
 export type DetailedRiskItem = {
@@ -14,7 +22,7 @@ export type DetailedRiskItem = {
   severity: RiskSeverity;
   likelihood: RiskLikelihood;
   probability?: RiskLikelihood;
-  impact?: 'high' | 'medium' | 'low';
+  impact?: 'critical' | 'high' | 'medium' | 'low';
   estimatedExposure: number; // In THB
   expectedTiming: string;
   confidence: DataConfidence;
@@ -55,9 +63,9 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     title: 'Projected Cash Deficit in Late February',
     category: 'cash_flow',
     severity: 'critical',
-    likelihood: 'high',
-    probability: 'high',
-    impact: 'high',
+    likelihood: 'critical',
+    probability: 'critical',
+    impact: 'critical',
     estimatedExposure: 12400,
     expectedTiming: 'Feb 28, 2025',
     confidence: 'high',
@@ -68,7 +76,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { netProfit: -12400, revenue: 152400, totalExpenses: 164800 },
     affectedMetrics: ['Cash Runway', 'Net Cash Flow', 'Usable Liquidity'],
-    recommendedMitigation: 'Negotiate early customer invoice collection or delay supplier payment terms by 15 days.',
+    recommendedMitigation:
+      'Negotiate early customer invoice collection or delay supplier payment terms by 15 days.',
     status: 'active',
     owner: 'Financial Officer',
     mitigationScenario: 'payment_delay',
@@ -92,7 +101,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { receivablesRatio: 40, receivables: 21340 },
     affectedMetrics: ['Days Sales Outstanding (DSO)', 'Working Capital Ratio'],
-    recommendedMitigation: 'Offer 2% early settlement discount to expedite collection.',
+    recommendedMitigation:
+      'Offer 2% early settlement discount to expedite collection.',
     status: 'active',
     owner: 'Sales Operations',
     mitigationScenario: 'payment_delay',
@@ -103,8 +113,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     title: 'Upcoming 5% Commercial Rent Increase',
     category: 'expense',
     severity: 'medium',
-    likelihood: 'high',
-    probability: 'high',
+    likelihood: 'medium',
+    probability: 'medium',
     impact: 'medium',
     estimatedExposure: 3500,
     expectedTiming: 'Mar 1, 2025',
@@ -116,7 +126,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { currentRent: 32000, newRent: 33600 },
     affectedMetrics: ['Operating Margin', 'Monthly Operating Expense'],
-    recommendedMitigation: 'Test price adjustments on primary products to absorb rent increase.',
+    recommendedMitigation:
+      'Test price adjustments on primary products to absorb rent increase.',
     status: 'active',
     owner: 'General Manager',
     mitigationScenario: 'change_price',
@@ -139,7 +150,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { payrollRatio: 55.7, payrollAmount: 85000 },
     affectedMetrics: ['Operating Efficiency', 'Payroll-to-Revenue Ratio'],
-    recommendedMitigation: 'Simulate headcount productivity expansion before adding new hires.',
+    recommendedMitigation:
+      'Simulate headcount productivity expansion before adding new hires.',
     status: 'active',
     owner: 'HR Lead',
     mitigationScenario: 'hire_employees',
@@ -162,7 +174,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { capexCost: 200000, usefulLife: 5 },
     affectedMetrics: ['Cash Buffer', 'Capital Expenditure'],
-    recommendedMitigation: 'Explore equipment leasing or SME bank financing to preserve liquidity.',
+    recommendedMitigation:
+      'Explore equipment leasing or SME bank financing to preserve liquidity.',
     status: 'active',
     owner: 'Operations Manager',
     mitigationScenario: 'purchase_equipment',
@@ -173,8 +186,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     title: 'Digital Ad Acquisition Cost Inflation',
     category: 'growth',
     severity: 'low',
-    likelihood: 'medium',
-    probability: 'medium',
+    likelihood: 'low',
+    probability: 'low',
     impact: 'low',
     estimatedExposure: 12000,
     expectedTiming: 'May 1, 2025',
@@ -185,7 +198,8 @@ const MOCK_DETAILED_RISKS: DetailedRiskItem[] = [
     ],
     evidenceValues: { marketingSpend: 12000, roi: 2.4 },
     affectedMetrics: ['Reinvestment Capacity', 'Marketing ROI'],
-    recommendedMitigation: 'Simulate targeted social ad spend vs offline promo mix.',
+    recommendedMitigation:
+      'Simulate targeted social ad spend vs offline promo mix.',
     status: 'active',
     owner: 'Marketing Lead',
     mitigationScenario: 'invest_marketing',
@@ -201,9 +215,15 @@ export async function getRisksData(): Promise<RisksData> {
   const mediumCount = activeRisks.filter((r) => r.severity === 'medium').length;
   const warningCount = highCount + mediumCount;
 
-  const totalEstimatedExposure = activeRisks.reduce((sum, r) => sum + r.estimatedExposure, 0);
+  const totalEstimatedExposure = activeRisks.reduce(
+    (sum, r) => sum + r.estimatedExposure,
+    0,
+  );
 
-  const rawScore = Math.max(0, 100 - criticalCount * 25 - highCount * 15 - mediumCount * 5);
+  const rawScore = Math.max(
+    0,
+    100 - criticalCount * 25 - highCount * 15 - mediumCount * 5,
+  );
   const overallStatus: RiskSummaryData['overallStatus'] =
     rawScore >= 70 ? 'healthy' : rawScore >= 40 ? 'warning' : 'critical';
 

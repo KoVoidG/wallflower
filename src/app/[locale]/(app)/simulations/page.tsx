@@ -3,7 +3,6 @@ import { FadeIn } from '@/components/motion';
 import { getSimulationHistory } from '@/features/simulations/adapters/simulations.adapter';
 import { DecisionPlannerView } from '@/features/simulations/components';
 import { DecisionPlannerSkeleton } from '@/components/ui/skeleton';
-import { WhatIfScenarioEngine } from '@/features/simulations/components/what-if-scenario-engine';
 
 export const metadata = {
   title: 'Simulations',
@@ -24,7 +23,6 @@ async function SimulationsContent() {
     <FadeIn>
       <div data-tour="simulations-view">
         <DecisionPlannerView initialHistory={history} />
-        <WhatIfScenarioEngine />
       </div>
     </FadeIn>
   );

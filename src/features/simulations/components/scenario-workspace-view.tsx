@@ -1,10 +1,8 @@
 // src/features/simulations/components/scenario-workspace-view.tsx
 'use client';
 
-import { useState } from 'react';
 import type { ScenarioItem } from './scenario-library-view';
 import { ScenarioWorkspace } from './workspace/scenario-workspace';
-import { ScenarioResultsView } from './scenario-results-view';
 
 interface ScenarioWorkspaceViewProps {
   scenario?: ScenarioItem | null;
@@ -14,9 +12,7 @@ interface ScenarioWorkspaceViewProps {
 }
 
 /**
- * Maps old scenario library IDs to template config IDs.
- * When a user opens a scenario from the library, we use its
- * strategy tag or name to determine which template to render.
+ * Maps scenario library IDs to template config IDs.
  */
 function resolveTemplateId(scenario?: ScenarioItem | null, templateId?: string): string {
   if (templateId) return templateId;
@@ -39,40 +35,17 @@ export function ScenarioWorkspaceView({
   scenario,
   templateId: externalTemplateId,
   onBackToLibrary,
-  onCompareScenario,
 }: ScenarioWorkspaceViewProps) {
-  const isDraft = !scenario || scenario.status === 'Draft';
-  const [activeViewMode, setActiveViewMode] = useState<'results' | 'edit'>(
-    isDraft ? 'edit' : 'results',
-  );
-
   const resolvedTemplateId = resolveTemplateId(scenario, externalTemplateId);
 
-  const handleRunSimulationSuccess = () => {
-    setActiveViewMode('results');
-  };
-
-  // Draft scenarios CANNOT access Results Mode
-  if (isDraft || activeViewMode === 'edit') {
-    return (
-      <ScenarioWorkspace
-        templateId={resolvedTemplateId}
-        scenarioName={scenario?.name}
-        isSimulated={scenario?.status === 'Simulated'}
-        onBackToLibrary={() => onBackToLibrary?.()}
-        onRunSimulationSuccess={handleRunSimulationSuccess}
-        onSwitchToResultsMode={() => !isDraft && setActiveViewMode('results')}
-        showSubTabs={!isDraft}
-      />
-    );
-  }
-
   return (
-    <ScenarioResultsView
-      scenario={scenario}
+    <ScenarioWorkspace
+      templateId={resolvedTemplateId}
+      scenarioName={scenario?.name}
+      isSimulated={scenario?.status === 'Simulated'}
+      initialResult={scenario?.whatIfResult}
+      initialInputValues={scenario?.inputValues}
       onBackToLibrary={onBackToLibrary}
-      onSwitchToEditMode={() => setActiveViewMode('edit')}
-      onCompareScenario={onCompareScenario}
     />
   );
 }

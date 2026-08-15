@@ -143,7 +143,7 @@ const MOCK_ACTIONS: DetailedActionItem[] = [
     notes: 'Contacted Client A accounting department on Jan 22; payment authorization pending final CFO sign-off.',
     source: 'risk',
     sourceItemTitle: 'Risk Center · Overdue Receivables Drag',
-    sourceHref: '/risks',
+    sourceHref: '/business-health?tab=risks',
     createdDate: '2025-01-18',
     steps: [
       { id: 'st-1', title: 'Issue formal payment reminder with 2% discount offer', completed: true, dueDate: '2025-01-22' },

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { RotateCw, Edit, LineChart, Building2, Package, SlidersHorizontal } from 'lucide-react';
+import { RotateCw, Edit, LineChart, Building2, Package, SlidersHorizontal, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AppPage } from '@/components/ui/layout';
 import { FadeInView } from '@/components/motion';
@@ -12,8 +12,9 @@ import { FinancialSnapshotView } from './financial-snapshot-view';
 import { OperationsView } from './operations-view';
 import { InventoryView } from './inventory-view';
 import { UnitEconomicsView } from './unit-economics-view';
+import { RiskView } from './risk-view';
 
-export type BusinessTab = 'snapshot' | 'operations' | 'inventory' | 'assumptions';
+export type BusinessTab = 'snapshot' | 'operations' | 'inventory' | 'assumptions' | 'risks';
 
 export function BusinessHealthView() {
   const t = useTranslations('businessHealth');
@@ -23,7 +24,7 @@ export function BusinessHealthView() {
     const params = new URLSearchParams(window.location.search);
     const tabFromUrl = params.get('tab') as BusinessTab | null;
     const tabFromStorage = localStorage.getItem('business_active_tab') as BusinessTab | null;
-    const validTabs: BusinessTab[] = ['snapshot', 'operations', 'inventory', 'assumptions'];
+    const validTabs: BusinessTab[] = ['snapshot', 'operations', 'inventory', 'assumptions', 'risks'];
 
     if (tabFromUrl && validTabs.includes(tabFromUrl)) return tabFromUrl;
     if (tabFromStorage && validTabs.includes(tabFromStorage)) return tabFromStorage;
@@ -167,6 +168,23 @@ export function BusinessHealthView() {
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
                 )}
               </button>
+
+              <button
+                type="button"
+                onClick={() => handleTabChange('risks')}
+                className={cn(
+                  'pb-3 text-xs sm:text-sm font-medium transition-all relative cursor-pointer whitespace-nowrap flex items-center gap-2 px-2',
+                  activeTab === 'risks'
+                    ? 'text-[#4F46E5] dark:text-[#A5B4FC] font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
+                )}
+              >
+                <ShieldAlert className="size-4" />
+                <span>{t('tabs.risks')}</span>
+                {activeTab === 'risks' && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full" />
+                )}
+              </button>
             </div>
           </div>
         </FadeInView>
@@ -179,6 +197,8 @@ export function BusinessHealthView() {
         {activeTab === 'inventory' && <InventoryView />}
 
         {activeTab === 'assumptions' && <UnitEconomicsView />}
+
+        {activeTab === 'risks' && <RiskView />}
       </div>
     </AppPage>
   );
