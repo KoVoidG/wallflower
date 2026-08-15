@@ -11,7 +11,9 @@ import {
   CheckCircle2,
   Workflow,
   TrendingDown,
+  ArrowRight,
 } from 'lucide-react';
+import { useRouter } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,9 +33,14 @@ import { saveSimulationRun } from '../engine/simulation-history-store';
 
 interface BottleneckAnalysisViewProps {
   initialResult?: BottleneckResult | null;
+  onSimulateIntervention?: (bottleneck: BottleneckResult['bottlenecks'][number]) => void;
 }
 
-export function BottleneckAnalysisView({ initialResult = null }: BottleneckAnalysisViewProps) {
+export function BottleneckAnalysisView({
+  initialResult = null,
+  onSimulateIntervention,
+}: BottleneckAnalysisViewProps) {
+  const router = useRouter();
   const { departments, workflows, isDemoMode } = useAppStore();
   const [showSetup, setShowSetup] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
@@ -76,7 +83,7 @@ export function BottleneckAnalysisView({ initialResult = null }: BottleneckAnaly
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-4">
       <OrgDataSetupSheet open={showSetup} onClose={() => setShowSetup(false)} />
 
       {error && (
@@ -278,6 +285,25 @@ export function BottleneckAnalysisView({ initialResult = null }: BottleneckAnaly
                             />
                             <span>/wk</span>
                           </div>
+                        </div>
+
+                        {/* Cross-Tab Action: Simulate in What-If */}
+                        <div className="pt-2">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                              if (onSimulateIntervention) {
+                                onSimulateIntervention(b);
+                              } else {
+                                router.push('/simulations?tab=workspace');
+                              }
+                            }}
+                            className="w-full gap-1.5 text-xs font-bold h-8 rounded-lg cursor-pointer bg-linear-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-2xs transition-all"
+                          >
+                            <span>Simulate in What-If</span>
+                            <ArrowRight className="size-3" />
+                          </Button>
                         </div>
                       </div>
                     </Card>

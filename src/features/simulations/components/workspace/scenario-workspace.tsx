@@ -1,11 +1,10 @@
 // src/features/simulations/components/workspace/scenario-workspace.tsx
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Sparkles,
-  SlidersHorizontal,
   Settings2,
   AlertTriangle,
   Tag,
@@ -22,11 +21,19 @@ import {
   CheckCircle2,
   ChevronRight,
   ChevronUp,
+  Award,
+  Scale,
+  FileText,
+  TrendingUp,
+  ShieldAlert,
 } from 'lucide-react';
+import { useRouter } from '@/lib/i18n/navigation';
+import { saveReport } from '@/features/reports/engine/reports-store';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FadeInView } from '@/components/motion';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 import { useAppStore } from '@/lib/liquiflow-hooks';
 import type { SimulationResult, SimulationScenario } from '@/lib/liquiflow-types';
 import {
@@ -43,7 +50,12 @@ import { saveSimulationRun } from '../../engine/simulation-history-store';
 import { DecisionSection } from './decision-section';
 import { AssumptionsSection } from './assumptions-section';
 import { CustomScenarioBuilder } from './custom-scenario-builder';
-import type { SimulationPreview as SimulationPreviewData } from '../../engine/simulation-engine';
+import { BaselineSection } from './baseline-section';
+import { SimulationPreview } from './simulation-preview';
+import {
+  runScenarioCalculation,
+  type SimulationPreview as SimulationPreviewData,
+} from '../../engine/simulation-engine';
 
 interface ScenarioWorkspaceProps {
   templateId?: string;
@@ -60,9 +72,11 @@ interface ScenarioWorkspaceProps {
 export function ScenarioWorkspace({
   templateId: initialTemplateId = 'price_increase',
   scenarioName: initialName,
+  isSimulated = false,
   initialResult = null,
   initialInputValues,
 }: ScenarioWorkspaceProps) {
+  const router = useRouter();
   const { departments, workflows, isDemoMode } = useAppStore();
   const [showSetup, setShowSetup] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState(initialTemplateId);
@@ -124,8 +138,12 @@ export function ScenarioWorkspace({
     setInputValues(defaults);
   };
 
+  const templatePreview = useMemo(() => {
+    return runScenarioCalculation(selectedTemplateId, inputValues);
+  }, [selectedTemplateId, inputValues]);
+
   // Convert template inputs into simulation engine parameters
-  const runSimulation = async (customPreview?: SimulationPreviewData) => {
+  const runSimulation = useCallback(async (customPreview?: SimulationPreviewData) => {
     setIsSimulating(true);
     setError(null);
     try {
@@ -224,7 +242,25 @@ export function ScenarioWorkspace({
     } finally {
       setIsSimulating(false);
     }
-  };
+  }, [
+    activeTemplate.category,
+    activeTemplate.description,
+    activeTemplate.name,
+    activeTemplate.objective,
+    departments,
+    initialName,
+    inputValues,
+    isDemoMode,
+    selectedTemplateId,
+    workflows,
+  ]);
+
+  // Automatically execute simulation when opened as an active intervention
+  useEffect(() => {
+    if (isSimulated && !initialResult) {
+      void runSimulation();
+    }
+  }, [isSimulated, initialResult, runSimulation]);
 
   // 8 Complete Scenario Templates matching library
   const templateOptions = [
@@ -295,7 +331,7 @@ export function ScenarioWorkspace({
   ];
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-4">
       <OrgDataSetupSheet open={showSetup} onClose={() => setShowSetup(false)} />
 
       {error && (
@@ -377,7 +413,7 @@ export function ScenarioWorkspace({
             </span>
           </div>
 
-          <div className="h-[360px] sm:h-[400px] rounded-lg overflow-hidden bg-surface-subtle/30">
+          <div className="h-90 sm:h-100 rounded-lg overflow-hidden bg-surface-subtle/30">
             <Simulation3D
               result={result}
               isSimulating={isSimulating}
@@ -389,192 +425,360 @@ export function ScenarioWorkspace({
 
       {/* ── 2. Scenario Configuration & Template Parameter Controls (Shown when editing) ── */}
       {isEditingParams && (
-        <FadeInView offset={10}>
-          <Card className="p-5 shadow-2xs border-border/80 bg-surface space-y-6">
-            {/* Header & Template Selector */}
-            <div>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant="brand" className="text-[10px] uppercase font-bold tracking-wider">
-                    Select Scenario Template
-                  </Badge>
-                  <h3 className="text-sm font-bold text-text-primary">
-                    {initialName || activeTemplate.name}
-                  </h3>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowSetup(true)}
-                    className="gap-2 text-xs font-semibold cursor-pointer h-8 px-3"
-                  >
-                    <Settings2 className="size-3.5 text-brand" />
-                    Configure Org Data
-                  </Button>
-                  {result && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsEditingParams(false)}
-                      className="gap-1.5 text-xs text-text-muted hover:text-text-primary h-8 px-2.5"
-                    >
-                      <ChevronUp className="size-3.5" />
-                      Hide Parameters
-                    </Button>
-                  )}
-                </div>
+        <FadeInView offset={10} className="space-y-6">
+          {/* Distinct Card 1: Header & Template Selector Grid */}
+          <Card className="p-5 shadow-xs border-slate-200/80 dark:border-[#1E2638] bg-white dark:bg-[#111622] rounded-2xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="brand" className="text-[10px] uppercase font-bold tracking-wider">
+                  Select Scenario Template
+                </Badge>
+                <h3 className="text-sm font-bold text-text-primary">
+                  {initialName || activeTemplate.name}
+                </h3>
               </div>
 
-              {/* 8 Complete Templates Grid with Library Hover Effects */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
-                {templateOptions.map((tpl) => {
-                  const isSelected = selectedTemplateId === tpl.id;
-                  const Icon = tpl.icon;
-                  return (
-                    <div
-                      key={tpl.id}
-                      onClick={() => handleSelectTemplate(tpl.id)}
-                      className={cn(
-                        'group flex flex-col justify-between p-4 rounded-xl border transition-all duration-200 cursor-pointer space-y-3',
-                        isSelected
-                          ? 'border-brand bg-brand-soft/20 ring-1 ring-brand/30 shadow-md -translate-y-0.5'
-                          : 'border-border/80 bg-surface hover:border-brand/50 hover:shadow-md hover:-translate-y-0.5 hover:bg-surface-subtle/50',
-                      )}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <div className={cn(
-                            'p-2 rounded-lg border shadow-2xs shrink-0 transition-colors',
-                            isSelected
-                              ? 'bg-brand text-white border-brand'
-                              : 'bg-surface-subtle text-text-primary border-border/80 group-hover:bg-brand-soft group-hover:text-brand group-hover:border-brand/40',
-                          )}>
-                            <Icon className="size-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className={cn(
-                              'text-xs font-bold truncate transition-colors',
-                              isSelected ? 'text-text-primary' : 'text-text-primary group-hover:text-brand',
-                            )}>
-                              {tpl.title}
-                            </h4>
-                            <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wider block">
-                              {tpl.strategyTag}
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">
-                          {tpl.description}
-                        </p>
-                      </div>
-
-                      <div className="pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px] text-text-muted">
-                        <span className="truncate">Goal: <strong className="text-text-primary font-medium">{tpl.goal}</strong></span>
-                        <ChevronRight className={cn(
-                          'size-4 text-text-secondary transition-transform shrink-0',
-                          isSelected ? 'text-brand translate-x-0.5' : 'group-hover:translate-x-1 group-hover:text-brand',
-                        )} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* If Custom Blank Scenario is selected, render CustomScenarioBuilder */}
-            {selectedTemplateId === 'blank_scenario' ? (
-              <div className="pt-4 border-t border-border/60">
-                <CustomScenarioBuilder
-                  onRunSimulation={(preview) => runSimulation(preview)}
-                />
-              </div>
-            ) : (
-              /* Dynamic Template Parameters Grid for Standard Templates */
-              <div className="pt-4 border-t border-border/60">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <SlidersHorizontal className="size-4 text-brand" />
-                    <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                      Scenario Decision Inputs & Assumptions ({activeTemplate.name})
-                    </h4>
-                  </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSetup(true)}
+                  className="gap-2 text-xs font-semibold cursor-pointer h-8 px-3"
+                >
+                  <Settings2 className="size-3.5 text-brand" />
+                  Configure Org Data
+                </Button>
+                {result && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleSelectTemplate(selectedTemplateId)}
-                    className="gap-1.5 text-xs text-text-muted hover:text-text-primary h-7 px-2 cursor-pointer"
+                    onClick={() => setIsEditingParams(false)}
+                    className="gap-1.5 text-xs text-text-muted hover:text-text-primary h-8 px-2.5"
                   >
-                    <RotateCcw className="size-3" />
-                    Reset Defaults
+                    <ChevronUp className="size-3.5" />
+                    Hide Parameters
                   </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Template Decision Inputs */}
-                  {activeTemplate.decisionInputs.length > 0 && (
-                    <div className="space-y-4">
-                      <DecisionSection
-                        template={activeTemplate}
-                        values={inputValues}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  )}
-
-                  {/* Template Assumptions */}
-                  {activeTemplate.assumptions.length > 0 && (
-                    <div className="space-y-4 md:col-span-1 lg:col-span-2">
-                      <AssumptionsSection
-                        template={activeTemplate}
-                        values={inputValues}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Run Button in footer */}
-                <div className="pt-5 mt-4 border-t border-border/60 flex justify-end">
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={() => runSimulation()}
-                    disabled={isSimulating}
-                    className="gap-2 text-xs font-bold cursor-pointer h-9 px-5"
-                  >
-                    {isSimulating ? (
-                      <>
-                        <span className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Calculating Workflow Impact...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="size-3.5" />
-                        Run What-If Simulation {isDemoMode ? '(Demo)' : ''}
-                      </>
-                    )}
-                  </Button>
-                </div>
+                )}
               </div>
-            )}
+            </div>
+
+            {/* 8 Complete Templates Grid with Library Hover Effects */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+              {templateOptions.map((tpl) => {
+                const isSelected = selectedTemplateId === tpl.id;
+                const Icon = tpl.icon;
+                return (
+                  <div
+                    key={tpl.id}
+                    onClick={() => handleSelectTemplate(tpl.id)}
+                    className={cn(
+                      'group flex flex-col justify-between p-4 rounded-xl border transition-all duration-200 cursor-pointer space-y-3',
+                      isSelected
+                        ? 'border-brand bg-brand-soft/20 ring-1 ring-brand/30 shadow-md -translate-y-0.5'
+                        : 'border-border/80 bg-surface hover:border-brand/50 hover:shadow-md hover:-translate-y-0.5 hover:bg-surface-subtle/50',
+                    )}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          'p-2 rounded-lg border shadow-2xs shrink-0 transition-colors',
+                          isSelected
+                            ? 'bg-brand text-white border-brand'
+                            : 'bg-surface-subtle text-text-primary border-border/80 group-hover:bg-brand-soft group-hover:text-brand group-hover:border-brand/40',
+                        )}>
+                          <Icon className="size-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className={cn(
+                            'text-xs font-bold truncate transition-colors',
+                            isSelected ? 'text-text-primary' : 'text-text-primary group-hover:text-brand',
+                          )}>
+                            {tpl.title}
+                          </h4>
+                          <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wider block">
+                            {tpl.strategyTag}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">
+                        {tpl.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px] text-text-muted">
+                      <span className="truncate">Goal: <strong className="text-text-primary font-medium">{tpl.goal}</strong></span>
+                      <ChevronRight className={cn(
+                        'size-4 text-text-secondary transition-transform shrink-0',
+                        isSelected ? 'text-brand translate-x-0.5' : 'group-hover:translate-x-1 group-hover:text-brand',
+                      )} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </Card>
+
+          {/* Distinct Div 2: Inputs (Left) & Sticky Preview (Right) */}
+          {selectedTemplateId === 'blank_scenario' ? (
+            <CustomScenarioBuilder
+              onRunSimulation={(preview) => runSimulation(preview)}
+            />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Column: 1. Inputs, 2. Assumptions, 3. Baseline */}
+              <div className="lg:col-span-7 space-y-6 min-w-0">
+                {/* 1. What are you trying to change? (Primary Inputs) */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-3 px-1">
+                    <h4 className="font-display text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#94A3B8]">
+                      1. What are you trying to change?
+                    </h4>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSelectTemplate(selectedTemplateId)}
+                      className="gap-1.5 text-xs text-text-muted hover:text-text-primary h-7 px-2 cursor-pointer"
+                    >
+                      <RotateCcw className="size-3" />
+                      Reset Defaults
+                    </Button>
+                  </div>
+
+                  {activeTemplate.decisionInputs.length > 0 && (
+                    <DecisionSection
+                      template={activeTemplate}
+                      values={inputValues}
+                      onChange={handleInputChange}
+                    />
+                  )}
+                </div>
+
+                {/* 2. Scenario Assumptions */}
+                {activeTemplate.assumptions.length > 0 && (
+                  <AssumptionsSection
+                    template={activeTemplate}
+                    values={inputValues}
+                    onChange={handleInputChange}
+                  />
+                )}
+
+                {/* 3. Baseline Section */}
+                <BaselineSection badgeNumber={3} />
+              </div>
+
+              {/* Right Column: Live Simulation Preview (5 cols, sticky) */}
+              <div className="lg:col-span-5 min-w-0 lg:sticky lg:top-20 self-start space-y-4">
+                <SimulationPreview
+                  preview={templatePreview}
+                  timeHorizonMonths={Number(inputValues.timeHorizonMonths) || 6}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => runSimulation()}
+                  disabled={isSimulating}
+                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-linear-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 font-bold text-sm cursor-pointer shadow-md shadow-indigo-500/25 transition-all disabled:opacity-50"
+                >
+                  {isSimulating ? (
+                    <>
+                      <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Calculating Workflow Impact...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="size-4" />
+                      <span>Run What-If Simulation {isDemoMode ? '(Demo)' : ''}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </FadeInView>
       )}
 
       {/* ── 3. Results Section (Full Width Stacked Layout) ──────────────── */}
       {result && !isSimulating && (
         <div className="space-y-6">
-          {/* Executive AI Narrative */}
+          {/* Executive AI Verdict & Strategic Summary */}
           <FadeInView offset={16}>
-            <Card className="p-5 shadow-2xs border-border/80 bg-surface">
-              <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider mb-2">
-                Executive Simulation Narrative
-              </h3>
-              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed bg-surface-subtle p-3.5 rounded-xl border border-border/60 italic">
-                &ldquo;{result.narrative}&rdquo;
-              </p>
+            <Card className="p-6 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs space-y-5">
+              {/* Header: Title + Recommendation, Confidence & Risk Badges */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-[#1E2638]">
+                <div className="flex items-center gap-3">
+                  <BotAvatar size={42} className="shrink-0" />
+                  <div>
+                    <h3 className="text-sm sm:text-base font-bold text-[#0F172A] dark:text-white">
+                      Capybot Executive Verdict
+                    </h3>
+                    <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+                      Capybot&apos;s synthesis &amp; implementation assessment for {initialName || activeTemplate.name}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {/* Implementation Verdict Badge */}
+                  {((result.deltaPercent.throughput >= 0 && result.deltaPercent.cost <= 15) || result.deltaPercent.cycleTime < 0) ? (
+                    <div className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-2xs">
+                      <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <span>RECOMMENDED TO IMPLEMENT</span>
+                    </div>
+                  ) : (
+                    <div className="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center gap-1.5 shadow-2xs">
+                      <AlertTriangle className="size-3.5 text-amber-600 dark:text-amber-400" />
+                      <span>PROCEED WITH CAUTION</span>
+                    </div>
+                  )}
+
+                  {/* Confidence Score Badge */}
+                  <div className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-[#6366F1] dark:text-[#A5B4FC] text-xs font-bold flex items-center gap-1.5 shadow-2xs font-mono">
+                    <span className="size-2 rounded-full bg-[#6366F1]" />
+                    <span>
+                      {Math.round(
+                        (result.confidenceScore ?? 85) <= 1
+                          ? (result.confidenceScore ?? 0.85) * 100
+                          : (result.confidenceScore ?? 85)
+                      )}% Confidence
+                    </span>
+                  </div>
+
+                  {/* Risk Level Badge */}
+                  <div className={cn(
+                    'px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 shadow-2xs',
+                    (result.deltaPercent.cost > 20 || result.deltaPercent.throughput < -5)
+                      ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/40 text-rose-700 dark:text-rose-400'
+                      : (result.deltaPercent.cost > 10 || result.deltaPercent.cycleTime > 0)
+                        ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/40 text-amber-700 dark:text-amber-400'
+                        : 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400'
+                  )}>
+                    <ShieldAlert className="size-3.5" />
+                    <span>
+                      {(result.deltaPercent.cost > 20 || result.deltaPercent.throughput < -5)
+                        ? 'High Risk'
+                        : (result.deltaPercent.cost > 10 || result.deltaPercent.cycleTime > 0)
+                          ? 'Medium Risk'
+                          : 'Low Risk'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3-Column Summary Cards: Strategic Upside, Key Risks, Implementation Recommendation */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* 1. Strategic Upside */}
+                <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#0B0F17]/60 border border-slate-200/70 dark:border-[#1E2638] space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
+                    <TrendingUp className="size-4 text-emerald-500" />
+                    <span>Strategic Upside</span>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
+                    {result.recommendations && result.recommendations.length > 0 ? (
+                      result.recommendations.slice(0, 2).map((rec, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                          <span>{rec}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                          <span>Throughput projected to improve by +{result.deltaPercent.throughput}%</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                          <span>Cycle time reduced by {Math.abs(result.deltaPercent.cycleTime)}%</span>
+                        </li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+
+                {/* 2. Key Risks & Bottlenecks */}
+                <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#0B0F17]/60 border border-slate-200/70 dark:border-[#1E2638] space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
+                    <AlertTriangle className="size-4 text-amber-500" />
+                    <span>Watchouts & Risks</span>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
+                    {result.risks && result.risks.length > 0 ? (
+                      result.risks.slice(0, 2).map((risk, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-amber-500 font-bold shrink-0">⚠</span>
+                          <span>{risk}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-amber-500 font-bold shrink-0">⚠</span>
+                        <span>Ensure downstream capacity matches increased throughput rate.</span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+
+                {/* 3. Implementation Verdict Summary */}
+                <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#0B0F17]/60 border border-slate-200/70 dark:border-[#1E2638] space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
+                    <Award className="size-4 text-[#6366F1] dark:text-[#A5B4FC]" />
+                    <span>Action Summary</span>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#6366F1] dark:text-[#A5B4FC] font-bold shrink-0">➔</span>
+                      <span>
+                        {((result.deltaPercent.throughput >= 0 && result.deltaPercent.cost <= 15) || result.deltaPercent.cycleTime < 0)
+                          ? `Greenlight ${result.implementationPlan?.[0]?.phase || 'Phase 1'} rollout over ${result.implementationPlan?.[0]?.duration || '2 weeks'}.`
+                          : 'Conduct risk audit & validate baseline assumptions before committing capital.'}
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-[#6366F1] dark:text-[#A5B4FC] font-bold shrink-0">➔</span>
+                      <span>Monitor weekly throughput constraints and operational cash buffer.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Structured Operational Synthesis Breakdown */}
+              <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-[#0B0F17] border border-slate-200/80 dark:border-[#1E2638] space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-[#1E2638] pb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] dark:text-[#94A3B8]">
+                    Theory of Constraints &amp; Operational Synthesis
+                  </span>
+                  <span className="text-[10px] font-mono text-text-muted">
+                    Little&apos;s Law Engine (L = &lambda;W)
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="p-3 rounded-lg bg-white dark:bg-[#111622] border border-slate-200/60 dark:border-[#1E2638] space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B] dark:text-[#94A3B8] block">
+                      Constraint Impact
+                    </span>
+                    <p className="text-xs font-semibold text-[#0F172A] dark:text-white">
+                      Throughput +{result.deltaPercent.throughput}% · Cycle time {result.deltaPercent.cycleTime}%
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-white dark:bg-[#111622] border border-slate-200/60 dark:border-[#1E2638] space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B] dark:text-[#94A3B8] block">
+                      Cost &amp; Profit Yield
+                    </span>
+                    <p className="text-xs font-semibold text-[#0F172A] dark:text-white">
+                      Net weekly impact: {result.deltaPercent.cost > 0 ? `+${result.deltaPercent.cost}%` : `${result.deltaPercent.cost}%`}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-white dark:bg-[#111622] border border-slate-200/60 dark:border-[#1E2638] space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B] dark:text-[#94A3B8] block">
+                      Quality &amp; Satisfaction
+                    </span>
+                    <p className="text-xs font-semibold text-[#0F172A] dark:text-white">
+                      Satisfaction: {result.projectedState.employeeSatisfaction}/100 ({result.deltaPercent.satisfaction > 0 ? '+' : ''}{result.deltaPercent.satisfaction}%)
+                    </p>
+                  </div>
+                </div>
+              </div>
             </Card>
           </FadeInView>
 
@@ -601,7 +805,7 @@ export function ScenarioWorkspace({
               {/* Central Spine Infographic Timeline */}
               <div className="relative py-4">
                 {/* Central Vertical Spine Line (center on md, left on mobile) */}
-                <div className="absolute top-0 bottom-0 left-6 md:left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-teal-500 via-indigo-500 to-amber-500/80" />
+                <div className="absolute top-0 bottom-0 left-6 md:left-1/2 -translate-x-1/2 w-0.5 bg-linear-to-b from-teal-500 via-indigo-500 to-amber-500/80" />
 
                 <div className="space-y-12 md:space-y-16">
                   {result.implementationPlan.map((phase, i) => {
@@ -815,6 +1019,73 @@ export function ScenarioWorkspace({
                 </ul>
               </Card>
             </div>
+          </FadeInView>
+
+          {/* ── Wallflower Recommendation & Decision Actions (Section 13) ── */}
+          <FadeInView offset={18}>
+            <Card className="p-6 rounded-2xl bg-linear-to-br from-[#6366F1]/10 via-white to-purple-500/10 dark:from-[#6366F1]/15 dark:via-[#111622] dark:to-purple-950/25 border-2 border-[#6366F1]/50 shadow-md space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="size-10 rounded-xl bg-[#6366F1] text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Award className="size-5" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#6366F1] dark:text-[#A5B4FC]">
+                        Wallflower Verdict
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span className="size-1 rounded-full bg-emerald-500" />
+                        <span>Recommended Decision</span>
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-text-primary">
+                      {initialName || activeTemplate.name}
+                    </h4>
+                    <p className="text-xs text-text-muted leading-relaxed max-w-2xl pt-1">
+                      The simulation projects positive throughput gains (+{result.deltaPercent?.throughput || 0}%) while preserving working capital resilience and manageable execution risk.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Cross-Tab Actions: Generate Report & Compare */}
+                <div className="flex items-center gap-2.5 flex-wrap self-end sm:self-center shrink-0">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push('/simulations?tab=compare')}
+                    className="gap-2 text-xs font-semibold cursor-pointer h-9 px-3.5 rounded-xl border border-slate-200 dark:border-[#2A344A]"
+                  >
+                    <Scale className="size-3.5 text-[#6366F1]" />
+                    <span>Compare Alternatives</span>
+                  </Button>
+
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => {
+                      saveReport({
+                        id: `rpt-sim-${activeTemplate.id}`,
+                        title: `${initialName || activeTemplate.name} (Simulation Memo)`,
+                        type: 'Executive Summary',
+                        date: 'Today • Just now',
+                        horizon: '6 Months Horizon',
+                        healthScore: 84,
+                        profit: `฿${Math.round(120000 * (1 + (result.deltaPercent?.throughput || 0) * 0.006)).toLocaleString()}`,
+                        confidence: 91,
+                        confidenceBadge: 'High Confidence',
+                        iconColor: 'emerald',
+                      });
+                      router.push('/reports');
+                    }}
+                    className="gap-2 text-xs font-bold cursor-pointer h-9 px-4 rounded-xl bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm shadow-indigo-500/20"
+                  >
+                    <FileText className="size-3.5" />
+                    <span>Generate Decision Report</span>
+                  </Button>
+                </div>
+              </div>
+            </Card>
           </FadeInView>
         </div>
       )}

@@ -45,18 +45,7 @@ export function DecisionSection({ template, values, onChange }: DecisionSectionP
   const preview = getComputedPreview();
 
   return (
-    <div className="space-y-4">
-      {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-          <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">1</span>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Decision</h3>
-          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">Set the primary decision you want to evaluate.</p>
-        </div>
-      </div>
-
+    <div className="space-y-3">
       {/* Decision Input Card */}
       <div className={cn(
         'p-5 rounded-2xl border border-slate-200/80 dark:border-[#1E2638]',

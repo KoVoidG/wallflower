@@ -85,33 +85,20 @@ export function AssumptionsSection({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-          <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">
-            2
-          </span>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">
-            Key Assumptions
-          </h3>
-          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
-            Adjust the assumptions that drive how this decision impacts your
-            business.
-          </p>
-        </div>
-      </div>
+      <h4 className="font-display text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#94A3B8] px-1">
+        2. Scenario Assumptions
+      </h4>
 
       {/* Assumptions Card */}
       <div
         className={cn(
           'p-5 rounded-2xl border border-slate-200/80 dark:border-[#1E2638]',
           'bg-white dark:bg-[#111622] shadow-xs',
-          'divide-y divide-slate-100 dark:divide-[#1E2638]',
         )}
       >
+        <div className="divide-y divide-slate-100 dark:divide-[#1E2638]">
         {otherAssumptions.map((input: InputConfig, idx: number) => (
           <div key={input.key} className={cn('py-4', idx === 0 && 'pt-0')}>
             <DynamicInput
@@ -138,6 +125,7 @@ export function AssumptionsSection({
             />
           </div>
         )}
+        </div>
       </div>
     </div>
   );

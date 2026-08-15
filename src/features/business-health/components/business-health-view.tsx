@@ -60,7 +60,7 @@ export function BusinessHealthView() {
 
   return (
     <AppPage>
-      <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
+      <div className="space-y-6 max-w-[1600px] mx-auto pb-4">
         {/* ── Page Header ────────────────────────────────────────────────────────── */}
         <FadeInView offset={8}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

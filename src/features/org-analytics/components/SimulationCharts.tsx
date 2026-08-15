@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,9 +15,13 @@ import {
 } from 'recharts';
 import type { SimulationResult } from '@/lib/liquiflow-types';
 import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { ArrowUpRight, ArrowDownRight, Activity, Clock, DollarSign, Award } from 'lucide-react';
 
 export function SimulationCharts({ result }: { result: SimulationResult | null }) {
+  const isThroughputGood = (result?.deltaPercent?.throughput ?? 0) >= 0;
+  const throughputProjectedColor = isThroughputGood ? '#10B981' : '#F43F5E';
+
   const throughputData = useMemo(() => {
     if (!result) return [];
     return [
@@ -35,16 +40,19 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
         name: 'Cycle Time (hrs)',
         Current: result.currentState.avgCycleTimeHours,
         Projected: result.projectedState.avgCycleTimeHours,
+        isGood: result.deltaPercent.cycleTime <= 0, // Lower cycle time is good!
       },
       {
         name: 'Quality Score',
         Current: result.currentState.qualityScore,
         Projected: result.projectedState.qualityScore,
+        isGood: result.deltaPercent.quality >= 0,
       },
       {
         name: 'Satisfaction',
         Current: result.currentState.employeeSatisfaction,
         Projected: result.projectedState.employeeSatisfaction,
+        isGood: result.deltaPercent.satisfaction >= 0,
       },
     ];
   }, [result]);
@@ -58,7 +66,7 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
       projected: `${result.projectedState.throughput}/wk`,
       pct: result.deltaPercent.throughput,
       icon: Activity,
-      isGood: result.deltaPercent.throughput > 0,
+      isGood: result.deltaPercent.throughput >= 0,
     },
     {
       label: 'Avg Cycle Time',
@@ -66,7 +74,7 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
       projected: `${result.projectedState.avgCycleTimeHours}h`,
       pct: result.deltaPercent.cycleTime,
       icon: Clock,
-      isGood: result.deltaPercent.cycleTime < 0,
+      isGood: result.deltaPercent.cycleTime <= 0,
     },
     {
       label: 'Cost / Week',
@@ -82,57 +90,48 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
       projected: `${result.projectedState.employeeSatisfaction}/100`,
       pct: result.deltaPercent.satisfaction,
       icon: Award,
-      isGood: result.deltaPercent.satisfaction > 0,
+      isGood: result.deltaPercent.satisfaction >= 0,
     },
   ];
 
   return (
-    <div className="w-full space-y-5">
-      {/* 4 Stat KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+    <div className="w-full space-y-6">
+      {/* 4 Stat KPI Cards matching Business Health & Dashboard design */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((m) => {
           const Icon = m.icon;
           return (
             <Card
               key={m.label}
-              className="p-4 shadow-2xs border-border/80 bg-surface flex flex-col justify-between"
+              className="flex flex-col justify-between space-y-4 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs"
             >
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">
-                  {m.label}
-                </span>
-                <div className="p-1.5 rounded-lg bg-surface-subtle border border-border/60 text-brand shrink-0">
-                  <Icon className="size-3.5" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="size-7 rounded-lg bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white flex items-center justify-center border border-slate-200 dark:border-[#2A344A]">
+                    <Icon className="size-3.5" />
+                  </div>
+                  <span className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
+                    {m.label}
+                  </span>
                 </div>
               </div>
 
-              <div>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-lg font-bold text-text-primary">
-                    {m.projected}
-                  </span>
-                  <span className="text-[10px] text-text-muted">
-                    from {m.current}
-                  </span>
+              <div className="space-y-1">
+                <div className="font-mono text-2xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+                  {m.projected}
                 </div>
-
-                <div className="flex items-center gap-1">
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-0.5 ${
-                      m.isGood
-                        ? 'text-emerald-600 bg-emerald-500/10 border border-emerald-500/20'
-                        : 'text-amber-600 bg-amber-500/10 border border-amber-500/20'
-                    }`}
-                  >
-                    {m.pct > 0 ? (
-                      <ArrowUpRight className="size-3" />
-                    ) : (
-                      <ArrowDownRight className="size-3" />
-                    )}
-                    {m.pct > 0 ? '+' : ''}
-                    {m.pct}%
+                <div className={cn(
+                  'flex items-center gap-1 text-xs font-semibold',
+                  m.isGood ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                )}>
+                  {m.isGood ? (
+                    <ArrowUpRight className="size-3.5" />
+                  ) : (
+                    <ArrowDownRight className="size-3.5" />
+                  )}
+                  <span>
+                    {m.pct > 0 ? '+' : ''}{m.pct}% from {m.current}
                   </span>
-                  <span className="text-[10px] text-text-muted">projected</span>
                 </div>
               </div>
             </Card>
@@ -140,26 +139,31 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
         })}
       </div>
 
-      {/* 2 Focused Comparison Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      {/* 2 Focused Comparison Charts with Dynamic Green/Red Bar Fills */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
         {/* Throughput Scale Chart */}
-        <Card className="md:col-span-5 p-4 shadow-2xs border-border/80 bg-surface flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3 border-b border-border/60 pb-2">
+        <Card className="md:col-span-5 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-[#1E2638] pb-3">
             <div>
-              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
                 Throughput Volume
               </h4>
-              <p className="text-[10px] text-text-muted">
+              <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8]">
                 Completed workflow items per week
               </p>
             </div>
-            <span className="text-xs font-bold text-brand">
+            <span className={cn(
+              'text-xs font-bold font-mono px-2 py-0.5 rounded-lg border',
+              isThroughputGood
+                ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/40'
+                : 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/40'
+            )}>
               {result.deltaPercent.throughput > 0 ? '+' : ''}
               {result.deltaPercent.throughput}%
             </span>
           </div>
 
-          <div className="h-48 w-full">
+          <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={throughputData}
@@ -172,36 +176,37 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
                 />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: '#888888', fontSize: 10 }}
+                  tick={{ fill: '#888888', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fill: '#888888', fontSize: 10 }}
+                  tick={{ fill: '#888888', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'var(--surface, #0f172a)',
-                    borderColor: 'var(--border, #1e293b)',
-                    color: 'var(--text-primary, #f8fafc)',
+                    backgroundColor: '#0F172A',
+                    borderColor: '#1E293B',
+                    color: '#F8FAFC',
                     fontSize: 11,
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 6 }} />
                 <Bar
                   dataKey="Current"
-                  fill="#94a3b8"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={40}
+                  fill="#94A3B8"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={44}
                 />
                 <Bar
                   dataKey="Projected"
-                  fill="#0F766E"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={40}
+                  fill={throughputProjectedColor}
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={44}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -209,22 +214,22 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
         </Card>
 
         {/* Velocity & Quality Metrics */}
-        <Card className="md:col-span-7 p-4 shadow-2xs border-border/80 bg-surface flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3 border-b border-border/60 pb-2">
+        <Card className="md:col-span-7 p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-[#1E2638] pb-3">
             <div>
-              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-[#0F172A] dark:text-white uppercase tracking-wider">
                 Velocity & Quality Metrics
               </h4>
-              <p className="text-[10px] text-text-muted">
+              <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8]">
                 Cycle time reduction and satisfaction metrics
               </p>
             </div>
-            <span className="text-xs font-bold text-emerald-600">
+            <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-lg border text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/40">
               {result.deltaPercent.cycleTime}% cycle time
             </span>
           </div>
 
-          <div className="h-48 w-full">
+          <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={velocityData}
@@ -237,37 +242,44 @@ export function SimulationCharts({ result }: { result: SimulationResult | null }
                 />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: '#888888', fontSize: 10 }}
+                  tick={{ fill: '#888888', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fill: '#888888', fontSize: 10 }}
+                  tick={{ fill: '#888888', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'var(--surface, #0f172a)',
-                    borderColor: 'var(--border, #1e293b)',
-                    color: 'var(--text-primary, #f8fafc)',
+                    backgroundColor: '#0F172A',
+                    borderColor: '#1E293B',
+                    color: '#F8FAFC',
                     fontSize: 11,
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 6 }} />
                 <Bar
                   dataKey="Current"
-                  fill="#94a3b8"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={30}
+                  fill="#94A3B8"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={32}
                 />
                 <Bar
                   dataKey="Projected"
-                  fill="#0F766E"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={30}
-                />
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={32}
+                >
+                  {velocityData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.isGood ? '#10B981' : '#F43F5E'}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>

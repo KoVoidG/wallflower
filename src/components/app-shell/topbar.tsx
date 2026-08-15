@@ -70,7 +70,7 @@ export function Topbar({ title }: TopbarProps) {
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',
           )}
           aria-label={t('advisor')}
-          title="AI Advisor (Cmd+K / Ctrl+K)"
+          title="Capybot (Cmd+K / Ctrl+K)"
         >
           <BotAvatar size={36} animate={false} />
         </button>

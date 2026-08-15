@@ -1,7 +1,7 @@
 // src/features/simulations/components/scenario-library-view.tsx
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
@@ -18,12 +18,15 @@ import {
   Scale,
   Plus,
   CheckCircle2,
-  Clock,
   Activity,
   Workflow,
   PlusCircle,
   Wrench,
   Store,
+  MoreVertical,
+  FileText,
+  Trash2,
+  Check,
 } from 'lucide-react';
 import { NewScenarioModal, type StartingTemplate } from './new-scenario-modal';
 import { FadeInView } from '@/components/motion';
@@ -31,6 +34,8 @@ import {
   useSimulationHistory,
   type SavedSimulationRun,
 } from '../engine/simulation-history-store';
+import { useRouter } from '@/lib/i18n/navigation';
+import { saveReport } from '@/features/reports/engine/reports-store';
 import type { SimulationResult, BottleneckResult } from '@/lib/liquiflow-types';
 
 export interface ScenarioItem {
@@ -74,12 +79,23 @@ export function ScenarioLibraryView({
   onOpenScenario,
   onCompareScenario,
 }: ScenarioLibraryViewProps) {
-  const { history, saveRun } = useSimulationHistory();
+  const router = useRouter();
+  const { history, saveRun, deleteRun } = useSimulationHistory();
   const [searchQuery, setSearchQuery] = useState('');
-  const [strategyFilter, setStrategyFilter] = useState('All Strategies');
-  const [statusFilter, setStatusFilter] = useState('All Status');
+  const [typeFilter, setTypeFilter] = useState('All Types');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Close popup menu when clicking outside
+  useEffect(() => {
+    const handleDocumentClick = () => setActiveMenuId(null);
+    if (activeMenuId) {
+      window.addEventListener('click', handleDocumentClick);
+    }
+    return () => window.removeEventListener('click', handleDocumentClick);
+  }, [activeMenuId]);
 
   // Convert saved runs from persistent store into scenario items
   const scenariosList: ScenarioItem[] = useMemo(() => {
@@ -104,7 +120,6 @@ export function ScenarioLibraryView({
 
   const handleSelectTemplate = (template: StartingTemplate) => {
     const newRun = saveRun({
-      id: `scen-${Date.now()}`,
       type: 'what_if',
       name: template.title,
       templateId: template.id,
@@ -128,6 +143,38 @@ export function ScenarioLibraryView({
     });
   };
 
+  const handleDeleteScenario = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    deleteRun(id);
+    setActiveMenuId(null);
+    setToastMessage('Simulation deleted from library');
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  const handleGenerateReport = (scen: ScenarioItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setActiveMenuId(null);
+
+    // Save report to persistent reports library
+    saveReport({
+      id: `rpt-sim-${scen.id}`,
+      title: `${scen.name} (${scen.type === 'bottleneck' ? 'Bottleneck Diagnostic' : 'Simulation'} Memo)`,
+      type: scen.type === 'bottleneck' ? 'Diagnostic Report' : 'Executive Summary',
+      date: 'Today • Just now',
+      horizon: '6 Months Horizon',
+      healthScore: scen.healthScore || 84,
+      profit: scen.whatIfResult
+        ? `฿${Math.round(120000 * (1 + (scen.whatIfResult.deltaPercent?.throughput || 0) * 0.006)).toLocaleString()}`
+        : '฿145,000',
+      confidence: scen.confidence || 90,
+      confidenceBadge: (scen.confidence || 90) >= 85 ? 'High Confidence' : 'Medium Confidence',
+      iconColor: scen.type === 'bottleneck' ? 'rose' : 'emerald',
+    });
+
+    // Navigate to reports route to view and manage the saved report
+    router.push('/reports');
+  };
+
   const filteredScenarios = scenariosList.filter((scen) => {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -139,20 +186,25 @@ export function ScenarioLibraryView({
         return false;
       }
     }
-    if (
-      strategyFilter !== 'All Strategies' &&
-      scen.strategyTag !== strategyFilter
-    ) {
+    if (typeFilter === 'What-If Scenarios' && scen.type !== 'what_if') {
       return false;
     }
-    if (statusFilter !== 'All Status' && scen.status !== statusFilter) {
+    if (typeFilter === 'Bottleneck Scans' && scen.type !== 'bottleneck') {
       return false;
     }
     return true;
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Action Notification Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#0F172A] text-white text-xs font-semibold shadow-xl border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <Check className="size-3.5 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* ── 1. Search, Filter & View Mode Toolbar ─────────────────────────── */}
       <FadeInView offset={10}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-sm dark:shadow-black/20">
@@ -168,32 +220,15 @@ export function ScenarioLibraryView({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="w-44">
+            {/* Simulation Type Filter (All / What-If / Bottleneck) */}
+            <div className="w-48">
               <Select
-                value={strategyFilter}
-                onChange={setStrategyFilter}
+                value={typeFilter}
+                onChange={setTypeFilter}
                 options={[
-                  { value: 'All Strategies', label: 'All Categories' },
-                  { value: 'Pricing Strategy', label: 'Pricing Strategy' },
-                  { value: 'People Security', label: 'People Security' },
-                  { value: 'Operations Research', label: 'Operations Research' },
-                  { value: 'Cost Efficiency', label: 'Cost Efficiency' },
-                  { value: 'Marketing Strategy', label: 'Marketing Strategy' },
-                  { value: 'Inventory Strategy', label: 'Inventory Strategy' },
-                  { value: 'Expansion Strategy', label: 'Expansion Strategy' },
-                  { value: 'Custom Strategy', label: 'Custom Strategy' },
-                ]}
-              />
-            </div>
-
-            <div className="w-36">
-              <Select
-                value={statusFilter}
-                onChange={setStatusFilter}
-                options={[
-                  { value: 'All Status', label: 'All Status' },
-                  { value: 'Simulated', label: 'Simulated' },
-                  { value: 'Draft', label: 'Draft' },
+                  { value: 'All Types', label: 'All Simulations' },
+                  { value: 'What-If Scenarios', label: 'What-If Scenarios' },
+                  { value: 'Bottleneck Scans', label: 'Bottleneck Scans' },
                 ]}
               />
             </div>
@@ -206,7 +241,7 @@ export function ScenarioLibraryView({
                 className={cn(
                   'p-1.5 rounded-lg transition-all cursor-pointer',
                   viewMode === 'grid'
-                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs'
+                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs font-bold'
                     : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
                 )}
                 title="Grid View"
@@ -219,7 +254,7 @@ export function ScenarioLibraryView({
                 className={cn(
                   'p-1.5 rounded-lg transition-all cursor-pointer',
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs'
+                    ? 'bg-white dark:bg-[#111622] text-[#6366F1] dark:text-[#A5B4FC] shadow-2xs font-bold'
                     : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white',
                 )}
                 title="List View"
@@ -228,7 +263,7 @@ export function ScenarioLibraryView({
               </button>
             </div>
 
-            {/* Start Simulation Button */}
+            {/* Start Simulation Button (Brand Purple Styling Preserved) */}
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
@@ -247,64 +282,98 @@ export function ScenarioLibraryView({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredScenarios.map((scen) => {
               const Icon = scen.icon;
-              const isSimulated = scen.status === 'Simulated';
               const isBottleneck = scen.type === 'bottleneck';
+              const isMenuOpen = activeMenuId === scen.id;
 
               return (
                 <Card
                   key={scen.id}
                   onClick={() => onOpenScenario(scen)}
-                  className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-md dark:shadow-black/40 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-black/60 hover:-translate-y-1 hover:border-[#6366F1]/50 transition-all duration-200 space-y-4 cursor-pointer"
+                  className="group relative flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-md dark:shadow-black/40 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-black/60 hover:-translate-y-1 hover:border-[#6366F1]/50 transition-all duration-200 space-y-4 cursor-pointer"
                 >
-                  {/* Card Header: Icon, Title, Strategy Tag & Status */}
+                  {/* Card Header: Icon, Title, Strategy Tag, Type Badge & 3-Dots Action */}
                   <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className={cn(
-                          'size-9 rounded-xl border flex items-center justify-center shrink-0 transition-all',
-                          isBottleneck
-                            ? 'bg-amber-500/10 text-amber-600 border-amber-500/30'
-                            : 'bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border-slate-200 dark:border-[#2A344A] group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40',
-                        )}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        {/* Uniform Monochrome (Black & White) Icon Container for ALL Cards */}
+                        <div className="size-9 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:border-[#6366F1]/40 transition-colors shadow-2xs">
                           <Icon className="size-4.5" />
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <h3 className="font-display text-sm sm:text-base font-bold text-[#0F172A] dark:text-white leading-snug truncate group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                             {scen.name}
                           </h3>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            {isBottleneck && (
-                              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                                Bottleneck
-                              </span>
-                            )}
-                            <p className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] truncate">
-                              {scen.strategyTag}
-                            </p>
-                          </div>
+                          <p className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
+                            {scen.strategyTag}
+                          </p>
                         </div>
                       </div>
 
-                      {/* Status Badge */}
-                      <span
-                        className={cn(
-                          'px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide border shrink-0 inline-flex items-center gap-1.5',
-                          isSimulated
-                            ? 'bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60 shadow-2xs'
-                            : 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60',
-                        )}
+                      {/* Top-Right Badge & 3 Vertical Dots Menu */}
+                      <div
+                        className="flex items-center gap-1.5 shrink-0"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        {isSimulated ? (
-                          <span className="size-1.5 rounded-full bg-[#8B5CF6] shrink-0" />
+                        {isBottleneck ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide border shrink-0 inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60 shadow-2xs">
+                            <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+                            <span>Bottleneck</span>
+                          </span>
                         ) : (
-                          <Clock className="size-3 shrink-0" />
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide border shrink-0 inline-flex items-center gap-1.5 bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60 shadow-2xs">
+                            <span className="size-1.5 rounded-full bg-[#8B5CF6] shrink-0" />
+                            <span>What-If</span>
+                          </span>
                         )}
-                        <span>{scen.status}</span>
-                      </span>
+
+                        {/* Three Vertical Dots Menu Button */}
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveMenuId(isMenuOpen ? null : scen.id);
+                            }}
+                            className="p-1 rounded-lg text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
+                            title="Actions"
+                          >
+                            <MoreVertical className="size-4" />
+                          </button>
+
+                          {/* Dropdown Menu */}
+                          {isMenuOpen && (
+                            <div className="absolute right-0 top-full mt-1 w-32 rounded-xl bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shadow-xl py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100 divide-y divide-slate-100 dark:divide-[#1E2638]">
+                              <div className="py-0.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleGenerateReport(scen, e)}
+                                  // REMOVED justify-end, explicitly set text-left and justify-start
+                                  className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] flex justify-start items-center gap-2 transition-colors cursor-pointer"
+                                >
+                                  <span>Generate Report</span>
+                                </button>
+                              </div>
+                              <div className="py-0.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) =>
+                                    handleDeleteScenario(scen.id, e)
+                                  }
+                                  // REMOVED justify-end, explicitly set text-left and justify-start
+                                  className="w-full px-3 py-2 text-left text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex justify-start items-center gap-2 transition-colors cursor-pointer"
+                                >
+                                  <Trash2 className="size-3.5 text-rose-500" />
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     {/* Goal & Timestamp */}
-                    <div className="space-y-1 text-xs">
+                    <div className="space-y-1 text-xs pt-1">
                       <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px]">
                         Goal:{' '}
                         <span className="font-semibold text-[#0F172A] dark:text-white">
@@ -312,7 +381,7 @@ export function ScenarioLibraryView({
                         </span>
                       </p>
                       <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px] font-mono">
-                        {isSimulated ? 'Simulated: ' : 'Saved: '}
+                        Simulated:{' '}
                         <span className="font-medium text-[#0F172A] dark:text-white">
                           {scen.lastSimulated}
                         </span>
@@ -326,49 +395,37 @@ export function ScenarioLibraryView({
                       <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block mb-1">
                         Health Score
                       </span>
-                      {isSimulated ? (
-                        <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white inline-flex items-center gap-1">
-                          <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
-                          {scen.healthScore || 82}
-                        </span>
-                      ) : (
-                        <span className="text-[#94A3B8] font-mono">—</span>
-                      )}
+                      <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white inline-flex items-center gap-1">
+                        <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0" />
+                        {scen.healthScore || 82}
+                      </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block mb-1">
                         Risk Level
                       </span>
-                      {isSimulated ? (
-                        <span className="font-sans text-xs font-semibold text-[#0F172A] dark:text-white inline-flex items-center gap-1">
-                          <span
-                            className={cn(
-                              'size-2 rounded-full',
-                              scen.riskLevel === 'Low' && 'bg-emerald-500',
-                              scen.riskLevel === 'Medium' && 'bg-amber-500',
-                              scen.riskLevel === 'High' && 'bg-rose-500',
-                              !scen.riskLevel && 'bg-emerald-500',
-                            )}
-                          />
-                          {scen.riskLevel || 'Low'}
-                        </span>
-                      ) : (
-                        <span className="text-[#94A3B8] font-mono">—</span>
-                      )}
+                      <span className="font-sans text-xs font-semibold text-[#0F172A] dark:text-white inline-flex items-center gap-1">
+                        <span
+                          className={cn(
+                            'size-2 rounded-full',
+                            scen.riskLevel === 'Low' && 'bg-emerald-500',
+                            scen.riskLevel === 'Medium' && 'bg-amber-500',
+                            scen.riskLevel === 'High' && 'bg-rose-500',
+                            !scen.riskLevel && 'bg-emerald-500',
+                          )}
+                        />
+                        {scen.riskLevel || 'Low'}
+                      </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block mb-1">
                         Confidence
                       </span>
-                      {isSimulated ? (
-                        <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white">
-                          {scen.confidence || 90}%
-                        </span>
-                      ) : (
-                        <span className="text-[#94A3B8] font-mono">—</span>
-                      )}
+                      <span className="font-mono text-xs font-bold text-[#0F172A] dark:text-white">
+                        {scen.confidence || 90}%
+                      </span>
                     </div>
                   </div>
 
@@ -380,20 +437,22 @@ export function ScenarioLibraryView({
                     <button
                       type="button"
                       onClick={() => onOpenScenario(scen)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/10 dark:hover:bg-[#6366F1]/20 border border-[#6366F1]/20 transition-colors cursor-pointer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/15 border border-[#6366F1]/20 transition-colors cursor-pointer"
                     >
                       <Eye className="size-3.5" />
                       <span>View Results</span>
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => onCompareScenario(scen)}
-                      className="inline-flex items-center justify-center p-2 rounded-xl text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white bg-slate-50 dark:bg-[#1E2638] hover:bg-slate-100 dark:hover:bg-[#2A344A] border border-slate-200/80 dark:border-[#2A344A] transition-colors cursor-pointer"
-                      title="Compare simulation"
-                    >
-                      <Scale className="size-3.5" />
-                    </button>
+                    {!isBottleneck && (
+                      <button
+                        type="button"
+                        onClick={() => onCompareScenario(scen)}
+                        className="inline-flex items-center justify-center p-2 rounded-xl text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white bg-slate-50 dark:bg-[#1E2638] hover:bg-slate-100 dark:hover:bg-[#2A344A] border border-slate-200/80 dark:border-[#2A344A] transition-colors cursor-pointer"
+                        title="Compare simulation"
+                      >
+                        <Scale className="size-3.5" />
+                      </button>
+                    )}
                   </div>
                 </Card>
               );
@@ -408,47 +467,39 @@ export function ScenarioLibraryView({
           <div className="rounded-2xl border border-slate-100 dark:border-[#1E2638] bg-white dark:bg-[#111622] shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-[#1E2638]">
             {filteredScenarios.map((scen) => {
               const Icon = scen.icon;
-              const isSimulated = scen.status === 'Simulated';
               const isBottleneck = scen.type === 'bottleneck';
+              const isMenuOpen = activeMenuId === scen.id;
 
               return (
                 <div
                   key={scen.id}
                   onClick={() => onOpenScenario(scen)}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50/70 dark:hover:bg-[#161D2E] transition-colors cursor-pointer"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50/70 dark:hover:bg-[#161D2E] transition-colors cursor-pointer relative"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className={cn(
-                      'size-10 rounded-xl border flex items-center justify-center shrink-0',
-                      isBottleneck
-                        ? 'bg-amber-500/10 text-amber-600 border-amber-500/30'
-                        : 'bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border-slate-200 dark:border-[#2A344A]',
-                    )}>
+                    {/* Monochrome Icon Container */}
+                    <div className="size-10 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0">
                       <Icon className="size-5" />
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="text-sm font-bold text-[#0F172A] dark:text-white truncate">
                           {scen.name}
                         </h4>
-                        {isBottleneck && (
-                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                        {/* Top-Right/Inline Type Badge */}
+                        {isBottleneck ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60">
                             Bottleneck
                           </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60">
+                            What-If
+                          </span>
                         )}
-                        <span
-                          className={cn(
-                            'px-2 py-0.5 rounded-full text-[10px] font-bold border',
-                            isSimulated
-                              ? 'bg-purple-50 dark:bg-purple-950/50 text-[#6366F1] dark:text-[#A5B4FC] border-purple-200 dark:border-purple-800/60'
-                              : 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60',
-                          )}
-                        >
-                          {scen.status}
-                        </span>
                       </div>
                       <p className="text-xs text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
-                        {scen.strategyTag} · Goal: {scen.goal} · {scen.lastSimulated}
+                        {scen.strategyTag} · Goal: {scen.goal} ·{' '}
+                        {scen.lastSimulated}
                       </p>
                     </div>
                   </div>
@@ -457,19 +508,68 @@ export function ScenarioLibraryView({
                     className="flex items-center gap-3 self-end sm:self-center shrink-0"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {isSimulated && (
-                      <div className="flex items-center gap-4 text-xs font-mono pr-2">
-                        <span>Score: <strong className="text-[#0F172A] dark:text-white">{scen.healthScore || 82}</strong></span>
-                        <span>Confidence: <strong className="text-[#0F172A] dark:text-white">{scen.confidence || 90}%</strong></span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-4 text-xs font-mono pr-2">
+                      <span>
+                        Score:{' '}
+                        <strong className="text-[#0F172A] dark:text-white">
+                          {scen.healthScore || 82}
+                        </strong>
+                      </span>
+                      <span>
+                        Confidence:{' '}
+                        <strong className="text-[#0F172A] dark:text-white">
+                          {scen.confidence || 90}%
+                        </strong>
+                      </span>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => onOpenScenario(scen)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/15 border border-[#6366F1]/20 transition-colors cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-[#4F46E5] dark:text-[#A5B4FC] bg-[#6366F1]/5 dark:bg-[#6366F1]/10 hover:bg-[#6366F1]/15 border border-[#6366F1]/20 transition-colors cursor-pointer"
                     >
                       View Results
                     </button>
+
+                    {/* Three Vertical Dots for List View */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveMenuId(isMenuOpen ? null : scen.id);
+                        }}
+                        className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1E2638] transition-colors cursor-pointer"
+                        title="Actions"
+                      >
+                        <MoreVertical className="size-4" />
+                      </button>
+
+                      {isMenuOpen && (
+                        <div className="absolute right-0 top-full mt-1 w-32 rounded-xl bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shadow-xl py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100 divide-y divide-slate-100 dark:divide-[#1E2638]">
+                          <div className="py-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => handleGenerateReport(scen, e)}
+                              className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0F172A] dark:text-white hover:bg-slate-50 dark:hover:bg-[#1E2638] flex justify-start items-center gap-2 transition-colors cursor-pointer"
+                            >
+                              <FileText className="size-3.5 text-[#6366F1]" />
+                              <span>Generate Report</span>
+                            </button>
+                          </div>
+                          <div className="py-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => handleDeleteScenario(scen.id, e)}
+                              className="w-full px-3 py-2 text-left text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex justify-start items-center gap-2 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="size-3.5 text-rose-500" />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

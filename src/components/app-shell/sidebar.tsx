@@ -10,7 +10,6 @@ import {
   FileText,
   Cpu,
   FlaskConical,
-  Database,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
@@ -46,12 +45,6 @@ const mainNavItems: readonly NavItemConfig[] = [
     href: '/business-health',
     tourId: 'sidebar-business',
     icon: Building2,
-  },
-  {
-    key: 'data-sources',
-    href: '/data-sources',
-    tourId: 'sidebar-data-sources',
-    icon: Database,
   },
   {
     key: 'simulation',

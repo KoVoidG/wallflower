@@ -179,9 +179,9 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
           quality: 'actual',
         },
       ],
-      primaryAction: { label: 'Simulate Payment Delay', href: '/simulations/new?type=payment_delay', isPrimary: true },
+      primaryAction: { label: 'Simulate Payment Delay', href: '/simulations', isPrimary: true },
       secondaryActions: [
-        { label: 'Open Cash Flow Workspace', href: '/cash-flow' },
+        { label: 'Open Financial Health', href: '/business-health' },
         { label: 'Review Liquidity Risk', href: '/business-health?tab=risks' },
       ],
       assessmentDisclosure: {
@@ -240,7 +240,7 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
       primaryAction: { label: 'Simulate Price Adjustment', href: '/simulations/new?type=change_price', isPrimary: true },
       secondaryActions: [
         { label: 'View Revenue & Profit Trend', href: '/dashboard' },
-        { label: 'Ask AI Advisor for Margin Advice', href: '/advisor' },
+        { label: 'Ask Capybot for Margin Advice', href: '/business-health?tab=assumptions' },
       ],
       assessmentDisclosure: {
         contributingMetricsCount: 2,
@@ -295,9 +295,9 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
           quality: 'estimated',
         },
       ],
-      primaryAction: { label: 'Review Overdue Invoices in Cash Flow', href: '/cash-flow', isPrimary: true },
+      primaryAction: { label: 'Review Overdue Invoices in Operations', href: '/business-health?tab=operations', isPrimary: true },
       secondaryActions: [
-        { label: 'Simulate Customer Payment Delay', href: '/simulations/new?type=payment_delay' },
+        { label: 'Simulate Customer Payment Delay', href: '/simulations' },
         { label: 'Open Collection Risk Details', href: '/business-health?tab=risks' },
       ],
       assessmentDisclosure: {
@@ -353,9 +353,9 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
           quality: 'actual',
         },
       ],
-      primaryAction: { label: 'Simulate Equipment Loan Financing', href: '/simulations/new?type=purchase_equipment', isPrimary: true },
+      primaryAction: { label: 'Simulate Equipment Loan Financing', href: '/simulations', isPrimary: true },
       secondaryActions: [
-        { label: 'Review Upcoming Debt Payables', href: '/cash-flow' },
+        { label: 'Review Upcoming Debt Payables', href: '/business-health?tab=financial' },
       ],
       assessmentDisclosure: {
         contributingMetricsCount: 2,
@@ -413,7 +413,7 @@ export function getDiagnosticDimensions(): HealthDimensionDiagnostic[] {
       primaryAction: { label: 'Simulate Employee Hiring Impact', href: '/simulations/new?type=hire_employees', isPrimary: true },
       secondaryActions: [
         { label: 'View Expense Breakdown', href: '/dashboard' },
-        { label: 'Ask AI Advisor for Cost Control', href: '/advisor' },
+        { label: 'Ask Capybot for Cost Control', href: '/business-health?tab=operations' },
       ],
       assessmentDisclosure: {
         contributingMetricsCount: 2,

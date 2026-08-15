@@ -71,6 +71,27 @@ Prioritize executive summaries before details.
 
 ---
 
+## Design System & Memory Rules (Capybot & Components)
+
+Refer to [`design_system_memory.md`](./design_system_memory.md) for complete details:
+
+1. **AI Identity**:
+   - The AI Assistant is named **Capybot** (never "AI Advisor" or generic "AI").
+   - **Avatar**: Always use `<BotAvatar />` (`src/components/ui/bot-avatar.tsx`) instead of generic sparkle icons (`Sparkles`).
+2. **KPI Stat Cards**:
+   - Card container: `p-5 rounded-2xl bg-white dark:bg-[#111622] border border-slate-100 dark:border-[#1E2638] shadow-xs flex flex-col justify-between space-y-4`.
+   - Monochrome B&W icon box (`size-7 rounded-lg bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A]`).
+   - Large monospace metric value (`font-mono text-2xl font-bold text-[#0F172A] dark:text-white`).
+   - Comparison delta with `ArrowUpRight`/`ArrowDownRight` colored emerald for good, rose for bad.
+3. **Charts & Delta Colors**:
+   - Positive / Improvements: **Green / Emerald (`#10B981`)**
+   - Negative / Deteriorations: **Red / Rose (`#F43F5E`)**
+   - Baseline / Neutral: **Slate (`#94A3B8`)**
+4. **Number Formatting**:
+   - Confidence levels must always be formatted as integer percentages (`Math.round(...)%`, e.g. `80% Confidence`, never unrounded floating point numbers).
+
+---
+
 ## Cards
 
 Only use cards to group related information.

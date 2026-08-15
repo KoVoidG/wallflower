@@ -5,7 +5,11 @@
 import { cn } from '@/lib/utils';
 import { BUSINESS_BASELINE, formatCurrency } from '../../engine/business-baseline';
 
-export function BaselineSection() {
+interface BaselineSectionProps {
+  badgeNumber?: number | string;
+}
+
+export function BaselineSection({ badgeNumber = 3 }: BaselineSectionProps) {
   const baseline = BUSINESS_BASELINE;
 
   const metrics = [
@@ -19,17 +23,9 @@ export function BaselineSection() {
   return (
     <div className="space-y-3">
       {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-          <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">3</span>
-        </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Current Business Baseline</h3>
-          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
-            These values come from your latest business data.
-          </p>
-        </div>
-      </div>
+      <h4 className="font-display text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#94A3B8] px-1">
+        {badgeNumber}. Current Business Baseline
+      </h4>
 
       {/* Metrics Row */}
       <div className={cn(

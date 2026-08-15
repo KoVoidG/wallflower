@@ -10,6 +10,4 @@
  * - src/features/reports/adapters/reports.adapter.ts
  */
 
-export * from './cash-flow-service';
 export * from './actions-service';
-export * from './data-sources-service';

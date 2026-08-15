@@ -667,7 +667,7 @@ export function FloatingAIAdvisor() {
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-display text-sm font-bold text-text-primary truncate">
-                    AI Advisor
+                    Capybot
                   </span>
                   <span className="inline-flex items-center gap-1 text-[10px] font-medium text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full border border-tertiary/20 shrink-0">
                     <span className="size-1.5 rounded-full bg-tertiary animate-pulse" />
@@ -710,7 +710,7 @@ export function FloatingAIAdvisor() {
                 type="button"
                 onClick={closeAdvisor}
                 className="p-1.5 rounded-md text-text-secondary hover:bg-danger/15 hover:text-danger transition-colors cursor-pointer"
-                title={isThai ? 'ปิด AI ที่ปรึกษา' : 'Close AI Advisor'}
+                title={isThai ? 'ปิด Capybot' : 'Close Capybot'}
               >
                 <X className="size-4" />
               </button>
@@ -810,7 +810,7 @@ export function FloatingAIAdvisor() {
                       <div className="flex items-center gap-3 text-tertiary">
                         <BotAvatar size={48} />
                         <span className="font-display text-sm font-bold text-text-primary">
-                          Ask Wallflower AI Advisor
+                          Ask Wallflower Capybot
                         </span>
                       </div>
                       <p className="text-xs text-text-secondary leading-relaxed">
@@ -979,8 +979,8 @@ export function FloatingAIAdvisor() {
                     onKeyDown={handleKeyDown}
                     placeholder={
                       isThai
-                        ? `ถาม AI ที่ปรึกษาเกี่ยวกับ ${getCurrentContextTag()}...`
-                        : `Ask AI Advisor about ${getCurrentContextTag()}...`
+                        ? `ถาม Capybot เกี่ยวกับ ${getCurrentContextTag()}...`
+                        : `Ask Capybot about ${getCurrentContextTag()}...`
                     }
                     className="w-full bg-surface text-sm text-text-primary pr-10 pl-3.5 py-2.5 rounded-xl border border-border focus:outline-hidden focus:border-tertiary resize-none"
                   />

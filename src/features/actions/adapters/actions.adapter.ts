@@ -108,8 +108,8 @@ const MOCK_ACTIONS: DetailedActionItem[] = [
     status: 'Blocked',
     notes: 'Landlord requested formal sales statement before considering deferral.',
     source: 'advisor',
-    sourceItemTitle: 'AI Advisor · Fixed Expense Optimisation',
-    sourceHref: '/advisor',
+    sourceItemTitle: 'Capybot · Fixed Expense Optimisation',
+    sourceHref: '/dashboard',
     createdDate: '2025-01-20',
     blocker: {
       description: 'Waiting for Q4 verified sales statement from accounting advisor.',

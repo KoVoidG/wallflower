@@ -10,7 +10,6 @@ import {
   HeartPulse,
   Sliders,
   FileSpreadsheet,
-  Database,
   Settings,
   Sparkles,
   TrendingUp,
@@ -40,16 +39,16 @@ interface SearchResultItem {
 }
 
 const SEARCH_DATABASE: SearchResultItem[] = [
-  // ── AI Advisor Quick Trigger ────────────────────────────────────────
+  // ── Capybot Quick Trigger ────────────────────────────────────────────
   {
     id: 'action_ai_advisor',
-    title: 'Ask AI Advisor (CapyBot)',
+    title: 'Ask Capybot',
     category: 'AI Assistant',
     description:
-      'Open AI advisor drawer for strategic guidance, forecasting & diagnostics',
+      'Open Capybot drawer for strategic guidance, forecasting & diagnostics',
     href: '#advisor',
     icon: Sparkles,
-    badge: 'AI',
+    badge: 'Capybot',
   },
   // ── Pages ──────────────────────────────────────────────────────────
   {
@@ -133,15 +132,6 @@ const SEARCH_DATABASE: SearchResultItem[] = [
     description: 'Monthly executive summaries, export PDF/Excel, risk audits',
     href: '/reports',
     icon: FileSpreadsheet,
-  },
-  {
-    id: 'page_datasources',
-    title: 'Data Sources & Integrations',
-    category: 'Pages',
-    description:
-      'Connect POS systems, bank accounts, accounting software & ERP',
-    href: '/data-sources',
-    icon: Database,
   },
   {
     id: 'page_settings',

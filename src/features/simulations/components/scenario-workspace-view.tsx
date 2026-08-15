@@ -40,6 +40,7 @@ export function ScenarioWorkspaceView({
 
   return (
     <ScenarioWorkspace
+      key={`${resolvedTemplateId}-${scenario?.id || 'new'}`}
       templateId={resolvedTemplateId}
       scenarioName={scenario?.name}
       isSimulated={scenario?.status === 'Simulated'}

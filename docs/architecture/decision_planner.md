@@ -1,576 +1,872 @@
-# Decision Planner
+# Wallflower — Simulation Architecture Plan
 
-## Purpose
+## 1. Purpose
 
-The Decision Planner is the core feature of Wallflower.
+The Simulation workspace is Wallflower's **decision laboratory**.
 
-It enables retail SME owners to safely evaluate business decisions before implementing them in the real world.
+It should allow users to:
 
-Users create business scenarios, modify business variables, run deterministic financial simulations, receive AI explanations, compare outcomes, and export reports.
+1. View previous simulations
+2. Create and run What-If scenarios
+3. Identify and analyze operational bottlenecks
+4. Compare multiple possible decisions
+5. Move from simulation → recommendation → report → automation
+
+The existing simulation logic, calculations, and functionality should be preserved.
+
+This plan focuses on organizing and presenting the existing functionality into a coherent product architecture.
 
 ---
 
-# Core Philosophy
+# 2. Simulation Navigation
 
-A Scenario represents one possible business decision.
+Simulation should be one main section in the sidebar.
+
+Inside the Simulation workspace, use four tabs:
+
+```text
+SIMULATIONS
+
+[ Library ] [ What-If Scenario ] [ Bottleneck ] [ Comparison ]
+
+These are the only four primary simulation tabs.
+
+Tab responsibilities
+Tab	Purpose
+Library	Simulation history and saved simulations
+What-If Scenario	Simulate business decisions
+Bottleneck	Analyze operational constraints
+Comparison	Compare simulation outcomes
+
+Do not create separate top-level tabs for individual algorithms or technical simulation engines.
+
+3. Simulation Workspace Layout
+
+All four tabs should share the same general shell:
+
+┌─────────────────────────────────────────────────────────┐
+│ Simulations                                             │
+│ Short description                                       │
+│                                                         │
+│ Library | What-If | Bottleneck | Comparison             │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                    ACTIVE TAB                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+
+The tab navigation stays consistent while the content changes.
+
+4. Library
+Purpose
+
+The Library is the user's simulation history.
+
+It contains previously created:
+
+What-If simulations
+Bottleneck analyses
+Comparisons
+Saved/draft simulations
+Structure
+Library
+
+
+Search simulations
+Filter by type
+Filter by status
+Sort by recent / oldest / impact
+
+
+Recent Simulations
+
+Each simulation should show:
+
+Simulation Name
+Simulation Type
+
+
+Short description
+
+
+Key Result
+Risk / Status
+
+
+Created date
+Last updated
+
+
+[ Open ]
+
+Example:
+
+Increase Prices by 5%
+WHAT-IF
+
+
+Pricing strategy simulation
+
+
+Projected Profit     +10.2%
+Risk                 Moderate
+
+
+Aug 15, 2026
+[ Open Simulation ]
+Library actions
+
+Users should be able to:
+
+Open
+Duplicate
+Rename
+Delete/archive
+Continue editing a draft
+Compare with another simulation
+Empty state
+
+If there are no simulations:
+
+No simulations yet.
+
+
+Explore a business decision or analyze an operational
+bottleneck to begin.
+
+
+[ Create What-If Scenario ]
+[ Analyze Bottleneck ]
+5. What-If Scenario
+Purpose
+
+What-If is the main financial/business decision simulator.
+
+It answers:
+
+"What happens to my business if I make this decision?"
 
 Examples:
 
-- Increase prices by 5%
-- Hire one employee
-- Purchase new equipment
-- Launch a holiday promotion
-- Expand inventory
+Increase prices
+Hire employee
+Increase marketing
+Reduce expenses
+Increase inventory
+Reduce inventory
+Take a loan
+Change operating costs
+What-If Page Structure
+Scenario Header
+        ↓
+Scenario Inputs
+        ↓
+Projected Business Impact
+        ↓
+Financial Impact
+        ↓
+Operational Impact
+        ↓
+Scenario Outcomes
+        ↓
+Risk & Assumptions
+        ↓
+Wallflower Recommendation
+        ↓
+Next Actions
+5.1 Scenario Header
 
-A scenario progresses through three stages:
+Show:
 
-Draft
-↓
+Increase Prices by 5%
 
-Simulated
-↓
 
-Saved
+Pricing Strategy
+What happens if average selling price increases by 5%?
 
-Only simulated scenarios contain financial results.
 
----
+[ Edit Scenario ]     [ Run Simulation ]
 
-# Navigation
+Also show:
 
-Decision Planner
-│
-├── Scenario Library
-│
-├── Scenario Workspace
-│ ├── Edit Mode
-│ └── Results Mode
-│
-├── Compare Simulations
-│
-└── Global Assumptions
+Scenario type
+Status
+Last run
+Saved/draft state
+6. What-If Inputs
 
-Templates are NOT a permanent page.
+The user should define the variables that control the simulation.
 
-Templates only appear when creating a new scenario.
+Example:
 
----
+Decision Parameters
 
-# User Journey
 
-## Step 1
+Price Change
+[-5% ───────●──────── +20%]
 
-User opens Decision Planner.
 
-Default page:
+Expected Demand Change
+[-20% ──●──────────── +20%]
 
-Scenario Library
 
-Example
+Effective Date
+[ September 1 ]
 
-Current Baseline
+Inputs should be grouped logically.
 
-Price +5%
+Do not scatter controls across the page.
 
-Holiday Promotion
+7. What-If Results
 
-Hire Employee
+The most important result should appear immediately after the inputs.
 
-Expand Inventory
+Projected Business Impact
 
-A "New Scenario" button is always visible.
+Show a small number of high-value metrics.
 
----
+Projected Business Impact
 
-## Step 2
 
-User clicks
+Revenue       Profit       Cash Flow       Runway
 
-New Scenario
 
-A modal appears.
++4.1%         +10.0%       +12.4%          +0.5 mo
 
-Choose Starting Template
 
-- Increase Prices
-- Hire Employee
-- Reduce Costs
-- Launch Promotion
-- Purchase Equipment
-- Expand Inventory
-- Open New Branch
-- Blank Scenario
+฿1.34M        ฿212K        ฿154K            10.1 mo
 
-Selecting a template creates a Draft Scenario.
+The purpose is to immediately answer:
 
----
+"Is this decision good or bad for my business?"
 
-## Step 3
+8. Financial Impact
 
-Scenario Editor opens.
+Show how the decision changes the business financially.
 
-The user edits business variables.
+Use:
 
-Examples
+Current vs projected revenue
+Current vs projected profit
+Cash flow
+Margin
+Runway
 
-Scenario Information
+Prefer visual comparisons:
 
-- Name
-- Goal
-- Time Horizon
+Current ─────────────→ Projected
 
-Business Variables
-
-- Revenue Change %
-- Price Change %
-- Supplier Cost %
-- Payroll %
-- Marketing Spend
-- Inventory Investment
-
-No calculations happen yet.
-
-The scenario status is
-
-Draft
-
----
-
-## Step 4
-
-User clicks
-
-Run Simulation
-
-Run Simulation performs:
-
-1. Validate input values
-2. Run deterministic financial calculations
-3. Update KPI values
-4. Calculate Business Health
-5. Calculate Risk Score
-6. Generate AI explanation
-7. Save simulation
-8. Deduct one simulation credit (if applicable)
-
-The scenario status becomes
-
-Simulated
-
----
-
-## Step 5
-
-Simulation Results appear.
-
-Includes
-
-Business Health
 
 Revenue
+฿1.24M                ฿1.34M
+
 
 Profit
+฿192K                 ฿212K
 
-Cash Runway
 
-Working Capital
+Margin
+31%                   34%
 
-Inventory Turnover
+The visualization should emphasize change, not just the final number.
 
-Risk Level
+9. Operational Impact
 
-ROI
+Show how the scenario affects operations.
 
-Charts
+Example:
 
-AI Summary
+Operational Impact
 
-Recommendations
 
-Confidence Score
+Processing       64% → 69%
+Fulfillment      72% → 81%
+Capacity         78% → 86%
 
-User can
 
-Save
+Operational Risk
+Moderate
 
-Duplicate
+If the scenario changes workflow/headcount/capacity, provide:
 
-Compare
+[ View Workflow Impact ]
 
-Export
+This opens the more detailed workflow/3D visualization.
 
-Delete
+10. 3D Simulation
 
----
+Existing 3D simulation functionality should be preserved.
 
-## Step 6
+However:
 
-Scenario is stored inside
+3D should not be the primary way users understand the simulation.
 
-Scenario Library
+Default:
 
-Users may create multiple scenarios.
+Financial Impact
+Operational Impact
+Current → Projected
 
-Example
+Advanced:
 
-Current Baseline
+[ View Advanced 3D Simulation ]
 
-Price +5%
+The 3D visualization is for exploration and deeper understanding.
 
-Price +8%
+It should not dominate the page.
 
-Holiday Promotion
+11. Scenario Outcomes
 
-Hire Employee
+Show:
 
-Open Branch
+Best Case       Expected       Worst Case
 
-Each scenario stores
 
-Variables
++18%            +10%           -2%
+Profit          Profit         Profit
 
-Results
+The user should quickly understand the range of possible outcomes.
 
-AI Summary
+12. Risk & Assumptions
 
-Simulation Date
+Show important assumptions and risks.
 
-Version
+Example:
 
-Status
+Decision Risk
 
----
 
-# Scenario Library
+MODERATE
 
+
+Main Risk
+Demand may decrease after the price increase.
+
+
+Key Assumption
+Demand elasticity = -2%
+
+
+Potential Impact
+Revenue growth may be lower than expected.
+
+Technical calculations should not dominate this section.
+
+13. Wallflower Recommendation
+
+Every completed simulation should end with a recommendation.
+
+Example:
+
+WALLFLOWER RECOMMENDATION
+
+
+✓ Recommended
+
+
+Increase prices by 5%.
+
+
+The simulation projects improved margins and cash
+generation while keeping estimated demand risk
+within an acceptable range.
+
+
+[ Generate Report ]
+[ Save Scenario ]
+[ Compare Alternatives ]
+
+If not recommended:
+
+NOT RECOMMENDED
+
+
+The projected improvement does not justify the
+increase in risk.
+
+
+[ Compare Alternatives ]
+14. Bottleneck
 Purpose
 
-Central location for every business scenario.
+Bottleneck is the operational analysis workspace.
 
-Each scenario card displays
+It answers:
 
-Scenario Name
+"Where is my business constrained, why is it happening, and what can I do about it?"
 
-Status
-
-Template Type
-
-Business Goal
-
-Simulation Date
-
-Business Health
-
-Risk Level
-
-Actions
-
-Open
-
-Duplicate
-
-Delete
-
-Compare
-
-Export
-
----
-
-# Scenario Status
-
-Draft
-
-Created but never simulated.
-
-Simulated
-
-Simulation completed successfully.
-
-Archived
-
-Hidden from normal view.
-
----
-
-# Scenario Editor
-
-Purpose
-
-Modify scenario variables.
-
-Sections
-
-Scenario Information
-
-Financial Variables
-
-Operational Variables
-
-Inventory Variables
-
-Scenario Assumptions
-
-Run Simulation
-
-Only editable values appear here.
-
-Results are NOT displayed until simulation finishes.
-
----
-
-# Run Simulation
-
-Primary CTA.
-
-The most important button in Decision Planner.
-
-Button Text
-
-Run Simulation
-
-Before execution
-
-Display
-
-"This simulation will consume one simulation credit."
-
-Simulation may take several seconds.
-
-During execution
-
-Disable all editing.
-
-Show progress.
-
-After completion
-
-Display
-
-Simulation Results.
-
----
-
-# Simulation Results
-
-Purpose
-
-Display deterministic outcomes.
-
-Contains
-
-Executive Summary
-
-Business Health
-
-KPI Cards
-
-Trend Charts
-
-Scenario Impact
-
-Risk Analysis
-
-AI Explanation
-
-Recommendations
-
-Confidence Score
-
-Results become read-only.
-
-To modify them
-
-Return to Scenario Editor.
-
----
-
-# Compare Simulations
-
-Purpose
-
-Compare multiple simulated scenarios.
-
-Only Simulated scenarios are selectable.
-
+15. Bottleneck Page Structure
+Bottleneck Summary
+        ↓
+Bottleneck Ranking
+        ↓
 Workflow
+        ↓
+Bottleneck Impact
+        ↓
+Possible Improvements
+        ↓
+Simulation
+        ↓
+Recommendation
+16. Bottleneck Summary
 
-Select Scenarios
+Immediately show the primary constraint.
 
-↓
+Example:
+
+Primary Bottleneck
+
+
+Vendor Invoice Processing
+
+
+Utilization
+51.6%
+
+
+WIP
+273
+
+
+Severity
+HIGH
+
+
+[ Simulate Improvement ]
+
+The user should know the problem immediately.
+
+17. Bottleneck Ranking
+
+Show the most important bottlenecks in order.
+
+01  Vendor Invoice Processing
+    Utilization: 51.6%
+    HIGH
+
+
+02  Finance Approval
+    Pending: 23
+    MEDIUM
+
+
+03  IT Support
+    Cycle Time: 9.3h
+    MEDIUM
+
+Clicking an item should display its detailed analysis.
+
+18. Bottleneck Workflow
+
+Show the operational process visually.
+
+Example:
+
+Orders
+   ↓
+Processing
+   ↓
+Fulfillment
+   ↓
+Delivery
+
+Each stage can show:
+
+Utilization
+Throughput
+Queue/WIP
+Cycle time
+Severity
+
+The bottleneck should be visually obvious.
+
+19. Bottleneck 3D
+
+Existing Bottleneck3D functionality should remain available.
+
+Use:
+
+[ Overview ] [ Workflow ] [ Advanced 3D ]
+
+The default should be the simple workflow.
+
+3D is an advanced exploration mode.
+
+20. Bottleneck Impact
+
+Show the business consequence of the bottleneck.
+
+Example:
+
+Current Throughput
+29 / week
+
+
+Potential Throughput
+47 / week
+
+
+Potential Recovery
++62%
+
+Then show:
+
+Cycle Time       -18%
+WIP              -31%
+Throughput       +62%
+
+The user should understand why fixing the bottleneck matters.
+
+21. Bottleneck Improvements
+
+Show possible solutions.
+
+Possible Improvements
+
+
+01
+Add input validation
+
+
+Expected Impact
+↓ Defects
+
+
+[ Simulate ]
+
+
+
+
+02
+Delegate approval authority
+
+
+Expected Impact
+↓ Queue Time
+
+
+[ Simulate ]
+
+
+
+
+03
+Reduce low-value meetings
+
+
+Expected Impact
++7 hrs/week
+
+
+[ Simulate ]
+
+Clicking Simulate should create/open a What-If scenario based on that improvement.
+
+This connects Bottleneck → What-If.
+
+22. Bottleneck Methodology
+
+Technical methodology should be available but secondary.
+
+Use:
+
+Analysis Details ▾
+
+Inside:
+
+Little's Law
+M/M/1
+Theory of Constraints
+Lean Six Sigma
+Benchmarking
+
+The user sees the business conclusion first.
+
+Technical calculations are available for transparency.
+
+23. Comparison
+Purpose
+
+Comparison answers:
+
+"Which decision should I choose?"
+
+It combines results from multiple simulations.
+
+24. Comparison Structure
+Scenario Selection
+        ↓
+Overall Comparison
+        ↓
+Financial Comparison
+        ↓
+Operational Comparison
+        ↓
+Risk Comparison
+        ↓
+Trade-offs
+        ↓
+Wallflower Pick
+25. Scenario Selection
+
+Allow users to select existing simulations.
+
+Example:
 
 Compare
 
-↓
 
-Results
+☑ Hire 1 Employee
+☑ Increase Prices +5%
+☑ Do Nothing
 
-Comparison includes
 
-Revenue
+[ Compare ]
 
-Profit
+The simulations should come from the Library/current simulation history.
 
-Cash Runway
+26. Comparison Results
 
-Business Health
+Use the most important metrics.
 
-Working Capital
+Example:
 
-Inventory Turnover
+                Hire Employee   Raise Price   Do Nothing
 
-Risk Level
 
-ROI
+Revenue             +9.8%          +4.1%          0%
 
-Confidence
 
-Recommended Option
+Profit             +14.6%         +10.0%          0%
 
-Maximum
 
-4 scenarios.
+Cash Flow            +8.2%         +12.4%          0%
 
-Minimum
 
-2 scenarios.
+Risk                 Medium        Moderate       Low
 
-Current Baseline is automatically included by default.
+Use visual bars/deltas where appropriate.
 
----
+Avoid making the entire page feel like a spreadsheet.
 
-# Global Assumptions
+27. Decision Score
 
-Purpose
+If an overall score exists, show the components behind it.
 
-Business-wide assumptions shared by every simulation.
+Example:
 
-Examples
+Overall Decision Score
 
-Expected Inflation
 
-Supplier Cost Growth
+Hire Employee       89
+Increase Prices     85
+Do Nothing          78
 
-Average Demand Trend
+Then:
 
-Seasonality
+Financial     Risk     Operations
 
-Tax Rate
 
-Interest Rate
+92            72          88
 
-Currency
+The user should understand why one scenario wins.
 
-Changing Global Assumptions marks all existing simulations as
+28. Trade-offs
 
-Outdated
+Make trade-offs explicit.
 
-Users should rerun simulations to refresh results.
+Example:
 
----
+Hire Employee
 
-# AI Analysis
 
-AI never performs calculations.
+✓ Higher capacity
+✓ Higher revenue potential
+✕ Additional monthly cost
 
-AI receives deterministic outputs only.
 
-AI responsibilities
 
-Explain metrics
 
-Summarize outcomes
+Increase Prices
 
-Highlight risks
 
-Recommend actions
+✓ Higher margin
+✓ Low implementation cost
+✕ Demand risk
 
-Describe trade-offs
+This makes comparison useful for actual decision-making.
 
-Never invent financial values.
+29. Wallflower Pick
 
-Always mention uncertainty where appropriate.
+The comparison should end with the recommended option.
 
----
+WALLFLOWER PICK
 
-# Reports
 
-Simulation Results can be exported.
+✓ Hire 1 Employee
 
-Available formats
 
-PDF
+Best balance of financial improvement,
+operational capacity, and risk.
 
-Excel
 
-Print
+[ View Scenario ]
+[ Generate Report ]
+30. Cross-Tab Connections
 
-Reports always include
+The four tabs must work together rather than feeling like separate features.
 
-Business Health
+Business Health → Bottleneck
 
-KPIs
+If Business Health detects an operational issue:
 
-Charts
+Operational Risk Detected
 
-AI Summary
 
-Risk Analysis
+Fulfillment bottleneck detected.
 
-Recommendations
 
-Confidence Score
+[ Analyze Bottleneck ]
+Bottleneck → What-If
 
----
+When a bottleneck is found:
 
-# Monetization
+Primary Bottleneck
+Fulfillment
 
-Simulation is the premium action.
 
-Editing scenarios is free.
+Possible Solutions
 
-Running simulations consumes credits.
 
-Example Plans
+[ Hire Employee ]
+[ Increase Capacity ]
+[ Automate Processing ]
 
-Free
+Selecting a solution opens a What-If simulation.
 
-- 5 simulations/month
-- 5 saved scenarios
-- Basic AI
-- Limited exports
+What-If → Comparison
 
-Pro
+After running a scenario:
 
-- Unlimited simulations
-- Unlimited scenarios
-- Advanced AI
-- Comparison
-- Unlimited exports
+[ Compare Alternatives ]
+
+opens Comparison with the current scenario selected.
+
+Comparison → Report
+[ Generate Report ]
+
+creates a decision report based on the comparison.
+
+Report → Automation
+
+If the decision can be operationalized:
+
+[ Create Automation ]
+
+moves the user into Automation.
+
+31. Overall Simulation Flow
 
-Business
+The complete system should feel like:
 
-- Multiple businesses
-- Team collaboration
-- Advanced reporting
-- Future integrations
+                 BUSINESS HEALTH
+                       ↓
+                Problem detected
+                       ↓
+                 BOTTLENECK
+                       ↓
+                Find solutions
+                       ↓
+                 WHAT-IF
+                       ↓
+              Simulate each option
+                       ↓
+                 COMPARISON
+                       ↓
+                Choose decision
+                       ↓
+                   REPORT
+                       ↓
+                 AUTOMATION
+32. Architecture Principle
 
----
+Simulation is not just a collection of calculators.
 
-# UX Principles
+It is Wallflower's decision-making workflow.
 
-Scenarios are assets.
+The user journey should always move toward:
 
-Users should revisit, duplicate, improve and compare scenarios over time.
+Problem
+  ↓
+Analysis
+  ↓
+Simulation
+  ↓
+Comparison
+  ↓
+Decision
+  ↓
+Action
+33. What NOT to Do
 
-Templates are starting points, not destinations.
+Do not:
 
-Users spend most of their time inside
+Create more simulation categories unless genuinely necessary
+Put Automation inside Simulation
+Create separate tabs for individual algorithms
+Make 3D visualizations the main UI
+Duplicate simulation logic between What-If and Bottleneck
+Create isolated features that cannot connect to the rest of Wallflower
+Replace working calculation logic just for UI changes
+Add fake metrics or fake data
+Make every result a separate card
+34. Final Simulation Architecture
+SIMULATIONS
+│
+├── Library
+│   ├── What-If History
+│   ├── Bottleneck History
+│   ├── Comparison History
+│   └── Saved / Draft Simulations
+│
+├── What-If Scenario
+│   ├── Inputs
+│   ├── Business Impact
+│   ├── Financial Impact
+│   ├── Operational Impact
+│   ├── Scenario Outcomes
+│   ├── Risk & Assumptions
+│   └── Recommendation
+│
+├── Bottleneck
+│   ├── Bottleneck Summary
+│   ├── Bottleneck Ranking
+│   ├── Workflow
+│   ├── Advanced 3D View
+│   ├── Bottleneck Impact
+│   ├── Improvements
+│   └── Simulation
+│
+└── Comparison
+    ├── Scenario Selection
+    ├── Overall Results
+    ├── Financial Comparison
+    ├── Operational Comparison
+    ├── Risk Comparison
+    ├── Trade-offs
+    └── Wallflower Pick
+Core rule
 
-Scenario Editor
+Keep the existing simulation intelligence. Reorganize the experience around the user's decision journey.
 
-and
+The four tabs should feel like four stages of the same system:
 
-Simulation Results.
+Library = Remember
 
-Decision Planner should feel like a business laboratory where owners safely experiment before making real-world decisions.
+What-If = Explore
+
+Bottleneck = Diagnose
+
+Comparison = Decide
+```

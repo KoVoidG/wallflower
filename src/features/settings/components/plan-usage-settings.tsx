@@ -50,7 +50,7 @@ export function PlanUsageSettings() {
             </div>
             <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
               <Check className="size-4 shrink-0" />
-              <span>AI Advisor</span>
+              <span>Capybot</span>
             </div>
             <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
               <Check className="size-4 shrink-0" />

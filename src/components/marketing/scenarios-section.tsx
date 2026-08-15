@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   TrendingUp,
 } from 'lucide-react';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 
 export function ScenariosSection() {
   const [priceChange, setPriceChange] = useState(5);
@@ -89,12 +90,12 @@ export function ScenariosSection() {
     },
     {
       icon: Sparkles,
-      title: 'AI Advisor',
-      desc: 'Get AI-powered insights and strategic recommendations.',
+      title: 'Capybot',
+      desc: 'Get Capybot-powered insights and strategic recommendations.',
       widget: (
         <div className="p-3.5 rounded-xl border border-border bg-surface-subtle flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-bold text-tertiary uppercase tracking-wider block">AI Recommendation</span>
+            <span className="text-[10px] font-bold text-tertiary uppercase tracking-wider block">Capybot Recommendation</span>
             <span className="text-xs font-bold text-text-primary block mt-0.5">★ Recommended</span>
           </div>
           <span className="text-[10px] font-bold text-tertiary bg-tertiary/10 px-2 py-1 rounded-md">High Confidence</span>
@@ -215,11 +216,11 @@ export function ScenariosSection() {
         </div>
       </div>
 
-      {/* 3. AI Advisor Section */}
+      {/* 3. Capybot Section */}
       <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12 text-center">
         <div className="max-w-3xl mx-auto space-y-2">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
-            Your AI advisor for everyday decisions
+            Your Capybot for everyday decisions
           </h2>
         </div>
 
@@ -235,14 +236,12 @@ export function ScenariosSection() {
             </div>
           </div>
 
-          {/* AI Response Box */}
-          <div className="flex items-start gap-3 p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-            <div className="size-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
-              <Sparkles className="size-4" />
-            </div>
+          {/* Capybot Response Box */}
+          <div className="flex items-start gap-3.5 p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+            <BotAvatar size={34} animate={false} className="shrink-0" />
             <div className="space-y-3">
               <div>
-                <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 block">AI Advisor</span>
+                <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 block">Capybot</span>
                 <p className="text-xs text-text-secondary font-medium leading-relaxed mt-1">
                   Based on your current cash runway (5.1 months) and projected sales, hiring 1 employee is feasible. It could increase capacity by 12–15% but will increase monthly expenses by ~฿18,000. I recommend proceeding if you secure at least 10–15% more sales.
                 </p>

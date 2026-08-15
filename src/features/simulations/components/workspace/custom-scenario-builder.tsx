@@ -4,7 +4,7 @@
 
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { Plus, X, Target, Layers, Sparkles } from 'lucide-react';
+import { Plus, X, Sparkles } from 'lucide-react';
 import { formatCurrency } from '../../engine/business-baseline';
 import {
   CUSTOM_VARIABLE_CATEGORIES,
@@ -83,7 +83,7 @@ export function CustomScenarioBuilder({ onRunSimulation }: CustomScenarioBuilder
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-              <Target className="size-4 text-[#6366F1] dark:text-[#A5B4FC]" />
+              <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">1</span>
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">
@@ -117,7 +117,7 @@ export function CustomScenarioBuilder({ onRunSimulation }: CustomScenarioBuilder
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="size-7 rounded-lg bg-[#6366F1]/10 dark:bg-[#6366F1]/20 flex items-center justify-center shrink-0">
-              <Layers className="size-4 text-[#6366F1] dark:text-[#A5B4FC]" />
+              <span className="text-xs font-extrabold text-[#6366F1] dark:text-[#A5B4FC]">2</span>
             </div>
             <div className="flex-1">
               <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">

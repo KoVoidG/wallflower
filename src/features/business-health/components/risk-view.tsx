@@ -220,7 +220,7 @@ export function RiskView() {
   };
 
   return (
-    <div className="space-y-6 pb-12 max-w-[1600px] mx-auto">
+    <div className="space-y-6 pb-4 max-w-[1600px] mx-auto">
       {/* ── 1. Risk Overview ──────────────────────────────────────────────── */}
       <FadeInView offset={8}>
         <Card className="p-5 shadow-2xs">

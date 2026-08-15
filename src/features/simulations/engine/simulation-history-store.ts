@@ -130,6 +130,20 @@ export function saveSimulationRun(
   return newRun;
 }
 
+export function deleteSimulationRun(id: string): void {
+  const current = getSimulationHistory();
+  const updated = current.filter((x) => x.id !== id);
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent('simulation_history_updated'));
+    } catch (e) {
+      console.warn('Failed to delete simulation history from localStorage:', e);
+    }
+  }
+}
+
 export function useSimulationHistory() {
   const [history, setHistory] = useState<SavedSimulationRun[]>(() =>
     getSimulationHistory(),
@@ -148,5 +162,5 @@ export function useSimulationHistory() {
     };
   }, []);
 
-  return { history, saveRun: saveSimulationRun };
+  return { history, saveRun: saveSimulationRun, deleteRun: deleteSimulationRun };
 }

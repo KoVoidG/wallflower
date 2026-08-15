@@ -15,7 +15,6 @@ import {
   AlertTriangle,
   AlertOctagon,
   Clock,
-  Sparkles,
   MessageSquare,
 } from 'lucide-react';
 import {
@@ -29,6 +28,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/card';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 import { InfoTooltip } from '@/components/ui/tooltip';
 import { FadeInView, CountUp } from '@/components/motion';
 import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
@@ -819,12 +819,10 @@ export function InventoryView() {
       <FadeInView offset={20}>
         <div className="p-5 rounded-2xl bg-gradient-to-r from-[#F5F3FF] via-[#EDE9FE] to-[#F3E8FF] dark:from-[#181438] dark:via-[#1B1742] dark:to-[#111622] border border-[#DDD6FE] dark:border-purple-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="size-8 rounded-xl bg-[#EDE9FE] dark:bg-purple-950 text-[#8B5CF6] dark:text-purple-300 border border-[#DDD6FE] dark:border-purple-800 flex items-center justify-center shrink-0 shadow-2xs">
-              <Sparkles className="size-4" />
-            </div>
+            <BotAvatar size={34} animate={false} className="shrink-0" />
             <div>
               <h4 className="text-xs font-bold text-[#4F46E5] dark:text-purple-300">
-                Inventory Insight
+                Capybot Inventory Insight
               </h4>
               <p className="text-xs text-[#1E1B4B] dark:text-slate-200 mt-0.5">
                 Your inventory turnover decreased slightly this month. Consider
@@ -843,7 +841,7 @@ export function InventoryView() {
             className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-semibold text-xs shadow-md shadow-indigo-500/25 hover:opacity-95 hover:scale-105 active:scale-95 cursor-pointer transition-all shrink-0"
           >
             <MessageSquare className="size-3.5" />
-            <span>Ask AI Advisor</span>
+            <span>Ask Capybot</span>
           </button>
         </div>
       </FadeInView>

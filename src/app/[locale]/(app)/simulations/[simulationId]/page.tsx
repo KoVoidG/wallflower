@@ -6,7 +6,6 @@ import {
   FlaskConical,
   SlidersHorizontal,
   Columns,
-  Sparkles,
   AlertTriangle,
   CheckCircle2,
   ChevronDown,
@@ -26,6 +25,7 @@ import { AppPage } from '@/components/ui/layout';
 import { Card, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { BotAvatar } from '@/components/ui/bot-avatar';
 import { ChartCard } from '@/components/charts/chart-card';
 import { FinancialValue, QualityBadge } from '@/components/ui/domain-values';
 import { SimulationResultsSkeleton } from '@/components/ui/skeleton';
@@ -471,10 +471,10 @@ export default function SimulationResultPage() {
                       `Can you analyze the financial projection and risks for simulation: ${data?.name || simulationId}?`,
                     )
                   }
-                  className="text-xs cursor-pointer"
+                  className="text-xs cursor-pointer gap-2"
                 >
-                  <Sparkles className="size-3.5 text-brand" />
-                  <span>Ask AI Advisor</span>
+                  <BotAvatar size={20} animate={false} />
+                  <span>Ask Capybot</span>
                 </Button>
               </div>
             </div>
