@@ -111,7 +111,7 @@ function useForceLayout(
     }
 
     return positions;
-  }, [departments, workflows]);
+  }, [departments, workflows, iterations]);
 }
 
 // ─── Scene Graph ──────────────────────────────────────────────────────────────

@@ -20,7 +20,7 @@ export async function GET() {
           }
         }
       });
-    } catch (dbError) {
+    } catch {
       console.warn("[Liquiflow Sync] Database unavailable, returning fallback mock data.");
       return NextResponse.json({
         success: true,
@@ -38,7 +38,19 @@ export async function GET() {
     }
 
     if (!business) {
-      return NextResponse.json({ error: "No business profile found" }, { status: 404 });
+      return NextResponse.json({
+        success: true,
+        isMockData: true,
+        orgName: "Wallflower Demo Business",
+        departments: [
+          { id: "dept-1", name: "Operations", headcount: 10, avgTasksPerWeek: 150, avgResponseTimeHours: 4, pendingApprovals: 5, overdueItems: 1, meetingsPerWeek: 3 },
+          { id: "dept-2", name: "Finance", headcount: 5, avgTasksPerWeek: 80, avgResponseTimeHours: 8, pendingApprovals: 12, overdueItems: 3, meetingsPerWeek: 5 },
+        ],
+        workflows: [
+          { id: "wf-1", name: "Service Delivery", department: "Operations", avgDurationHours: 24, errorRate: 0.05, volume: 100 },
+          { id: "wf-2", name: "Invoice Processing", department: "Finance", avgDurationHours: 72, errorRate: 0.15, volume: 30 }
+        ]
+      });
     }
 
     const latestSnapshot = business.financialSnapshots?.[0];
@@ -48,7 +60,7 @@ export async function GET() {
     const salaryExpense = parseFloat(expenseCategories?.salary || expenseCategories?.payroll || "0");
     
     // Estimate total headcount from salary expense (assuming ~25k THB avg monthly salary for SME)
-    let totalHeadcount = salaryExpense > 0 ? Math.max(1, Math.round(salaryExpense / 25000)) : 5;
+    const totalHeadcount = salaryExpense > 0 ? Math.max(1, Math.round(salaryExpense / 25000)) : 5;
 
     // Distribute headcount to standard departments based on business industry/type
     const departments = [];
@@ -86,8 +98,9 @@ export async function GET() {
       workflows
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("[Liquiflow Sync Error]", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Internal Server Error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

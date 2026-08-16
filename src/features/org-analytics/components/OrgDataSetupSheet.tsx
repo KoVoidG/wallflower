@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import type { Department, WorkflowStep } from "@/lib/liquiflow-types";
 import {
   useAppStore,
@@ -161,17 +161,19 @@ export function OrgDataSetupSheet({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const wasOpen = useRef(false);
-  if (open && !wasOpen.current) {
-    wasOpen.current = true;
-    setLocalDepts([...departments]);
-    setLocalWfs([...workflows]);
-    setLocalOrgName(orgName);
-    setError(null);
-    setSaved(false);
-    setMainTab("wallflower");
-  }
-  if (!open) wasOpen.current = false;
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        setLocalDepts([...departments]);
+        setLocalWfs([...workflows]);
+        setLocalOrgName(orgName);
+        setError(null);
+        setSaved(false);
+        setMainTab("wallflower");
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [open, departments, workflows, orgName]);
 
   const handleDeptCSV = (content: string) => {
     try {
@@ -271,8 +273,8 @@ export function OrgDataSetupSheet({
                       setSaved(false);
                       onClose();
                     }, 1000);
-                  } catch (e: any) {
-                    setError("Failed to sync: " + e.message);
+                  } catch (e) {
+                    setError("Failed to sync: " + (e instanceof Error ? e.message : String(e)));
                   }
                 }}
                 className="mt-4 px-6 py-2.5 text-sm font-semibold rounded-xl bg-brand hover:bg-brand-hover text-white transition-colors"

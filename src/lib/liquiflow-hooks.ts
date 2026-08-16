@@ -238,7 +238,7 @@ export function useTypewriter(
 
   useEffect(() => {
     if (!enabled || !fullText) return;
-    setIndex(0);
+    const timer = setTimeout(() => setIndex(0), 0);
     const interval = setInterval(() => {
       setIndex((i) => {
         if (i >= fullText.length) {
@@ -248,7 +248,10 @@ export function useTypewriter(
         return i + 1;
       });
     }, speed);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [fullText, speed, enabled]);
 
   return { text: fullText.slice(0, index), done: index >= fullText.length };

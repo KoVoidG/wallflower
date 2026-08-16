@@ -148,15 +148,12 @@ export function ProductTour() {
   const [showSkipToast, setShowSkipToast] = useState(false);
   const [animKey, setAnimKey] = useState(0); // forces re-mount for animation
   const [cardHeight, setCardHeight] = useState(POPOVER_EST_HEIGHT);
-  const cardRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (node) {
-        // Measure actual rendered card height
-        setCardHeight(node.getBoundingClientRect().height);
-      }
-    },
-    [currentStepIdx],
-  ); // re-measure when step changes
+  const cardRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      // Measure actual rendered card height
+      setCardHeight(node.getBoundingClientRect().height);
+    }
+  }, []);
 
   // Initialize tour check on Dashboard mount
   useEffect(() => {

@@ -1223,7 +1223,8 @@ async function handleTrello(body: Record<string, string>) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handleGitLab(body: Record<string, string>) {
-  let { token, url } = body;
+  const token = body.token;
+  let url = body.url;
   if (!token) {
     return NextResponse.json(
       { error: "GitLab processing requires a Personal Access Token." },
@@ -1367,7 +1368,8 @@ async function handleZendesk(body: Record<string, string>) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handleSalesforce(body: Record<string, string>) {
-  let { token, instanceUrl } = body;
+  const token = body.token;
+  let instanceUrl = body.instanceUrl;
   if (!token || !instanceUrl) {
     return NextResponse.json(
       {

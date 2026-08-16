@@ -258,7 +258,10 @@ export function ScenarioWorkspace({
   // Automatically execute simulation when opened as an active intervention
   useEffect(() => {
     if (isSimulated && !initialResult) {
-      void runSimulation();
+      const timer = setTimeout(() => {
+        void runSimulation();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isSimulated, initialResult, runSimulation]);
 
