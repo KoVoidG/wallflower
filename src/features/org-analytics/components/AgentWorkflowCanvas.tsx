@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import {
   ReactFlow,
   Background,
+  Controls,
   useNodesState,
   useEdgesState,
   Position,
@@ -33,7 +34,7 @@ function AgentNode({ data }: NodeProps<AgentFlowNode>) {
   const { label, icon, color, glowColor, state, message, content } = data;
 
   const borderColor =
-    state === "running" ? color : state === "done" ? "#34d399" : state === "error" ? "#f87171" : "rgba(255,255,255,0.08)";
+    state === "running" ? color : state === "done" ? "#34d399" : state === "error" ? "#f87171" : "rgba(150,150,150,0.2)";
 
   const bgGlow = state === "running" ? `0 0 20px ${glowColor}40` : state === "done" ? "0 0 16px rgba(52,211,153,0.25)" : "none";
 
@@ -121,7 +122,15 @@ export interface AgentStatus {
   content?: string;
 }
 
-export function AgentWorkflowCanvas({ agentStatuses }: { agentStatuses: Record<AgentId, AgentStatus | null> }) {
+export function AgentWorkflowCanvas({
+  agentStatuses,
+  className = "",
+  height = "h-[260px]",
+}: {
+  agentStatuses: Record<AgentId, AgentStatus | null>;
+  className?: string;
+  height?: string;
+}) {
   const [nodes, setNodes, onNodesChange] = useNodesState(buildInitialNodes());
   const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
 
@@ -157,7 +166,7 @@ export function AgentWorkflowCanvas({ agentStatuses }: { agentStatuses: Record<A
           ...edge,
           animated: shouldAnimate,
           style: {
-            stroke: shouldAnimate ? "#0F766E" : "rgba(150,150,150,0.2)",
+            stroke: shouldAnimate ? "#6366F1" : "rgba(150,150,150,0.25)",
             strokeWidth: shouldAnimate ? 2 : 1,
           },
         };
@@ -168,7 +177,7 @@ export function AgentWorkflowCanvas({ agentStatuses }: { agentStatuses: Record<A
   const onConnect = useCallback(() => {}, []);
 
   return (
-    <div className="w-full min-h-[260px] h-[260px] bg-surface-subtle/50 rounded-xl border border-border/80 overflow-hidden shadow-inner">
+    <div className={`w-full ${height} bg-surface-subtle/50 rounded-xl border border-border/80 overflow-hidden shadow-inner ${className}`}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -177,15 +186,21 @@ export function AgentWorkflowCanvas({ agentStatuses }: { agentStatuses: Record<A
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.2 }}
+        fitViewOptions={{ padding: 0.15 }}
         proOptions={{ hideAttribution: true }}
-        panOnScroll={false}
-        zoomOnScroll={false}
-        nodesDraggable={false}
+        panOnScroll={true}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
+        panOnDrag={true}
+        nodesDraggable={true}
         nodesConnectable={false}
-        elementsSelectable={false}
+        elementsSelectable={true}
       >
         <Background color="rgba(150,150,150,0.15)" gap={20} />
+        <Controls
+          className="!bg-surface !border !border-border/80 !rounded-lg !shadow-md [&>button]:!bg-surface [&>button]:!border-border/60 [&>button]:!fill-text-primary [&>button:hover]:!bg-surface-hover"
+          showInteractive={false}
+        />
       </ReactFlow>
     </div>
   );

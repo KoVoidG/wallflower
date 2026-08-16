@@ -35,14 +35,31 @@ export function BusinessHealthView() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleTabChange = (tab: BusinessTab) => {
+    if (tab === activeTab) return;
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       localStorage.setItem('business_active_tab', tab);
       const url = new URL(window.location.href);
       url.searchParams.set('tab', tab);
-      window.history.replaceState({}, '', url.toString());
+      window.history.pushState({ tab }, '', url.toString());
     }
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tabFromUrl = params.get('tab') as BusinessTab | null;
+      const validTabs: BusinessTab[] = ['snapshot', 'operations', 'inventory', 'assumptions', 'risks'];
+      if (tabFromUrl && validTabs.includes(tabFromUrl)) {
+        setActiveTab(tabFromUrl);
+      } else {
+        setActiveTab('snapshot');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 250);

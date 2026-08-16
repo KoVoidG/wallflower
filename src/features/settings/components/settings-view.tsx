@@ -236,11 +236,7 @@ function SettingsContent() {
               )}
               {activeSection === 'business' && <BusinessProfileSettings />}
               {activeSection === 'business-data' && <BusinessDataSettings />}
-              {activeSection === 'integrations' && (
-                <div className="h-[650px] border border-border/60 rounded-xl overflow-hidden bg-surface shadow-2xs">
-                  <OperationalIntegrationsView />
-                </div>
-              )}
+              {activeSection === 'integrations' && <OperationalIntegrationsView />}
               {activeSection === 'simulation' && <SimulationSettings />}
               {activeSection === 'notifications' && <NotificationSettings />}
               {activeSection === 'appearance' && <AppearanceLanguageSettings />}

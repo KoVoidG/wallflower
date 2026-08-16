@@ -1,132 +1,220 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Send, BrainCircuit, Activity, Clock, FlaskConical, Settings2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { AppPage } from "@/components/ui/layout";
-import { Link } from "@/lib/i18n/navigation";
-import { AgentWorkflowCanvas, AgentId, AgentStatus, OrgDataSetupSheet } from "@/features/org-analytics/components";
-import { useAppStore } from "@/lib/liquiflow-hooks";
-import type { WorkflowPlanResult } from "@/lib/liquiflow-types";
-import { DEMO_WORKFLOW_RESULT } from "@/lib/liquiflow-demo-data";
+import { useEffect, useRef, useState } from 'react';
+import {
+  Send,
+  BrainCircuit,
+  Activity,
+  Clock,
+  FlaskConical,
+  Settings2,
+  Play,
+  BookmarkPlus,
+  MessageSquare,
+  AlertCircle,
+  Sparkles,
+  TrendingDown,
+  TrendingUp,
+  Maximize2,
+  X,
+} from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { AppPage } from '@/components/ui/layout';
+import { Link, useRouter } from '@/lib/i18n/navigation';
+import {
+  AgentWorkflowCanvas,
+  AgentId,
+  AgentStatus,
+  OrgDataSetupSheet,
+} from '@/features/org-analytics/components';
+import { useAppStore } from '@/lib/liquiflow-hooks';
+import { useAdvisorDrawer } from '@/features/advisor/context/advisor-drawer-context';
+import type { WorkflowPlanResult } from '@/lib/liquiflow-types';
+
+const SUGGESTED_GOALS = [
+  {
+    label: 'Reduce operating costs',
+    goal: 'Identify and eliminate unnecessary operating overhead across all departments.',
+  },
+  {
+    label: 'Improve cash flow',
+    goal: 'Accelerate invoice collection and reduce average receivables turnaround.',
+  },
+  {
+    label: 'Reduce inventory risk',
+    goal: 'Reduce capital tied up in slow-moving inventory categories by 30%.',
+  },
+  {
+    label: 'Find my biggest bottleneck',
+    goal: 'Identify the single primary operational constraint limiting total company throughput.',
+  },
+  {
+    label: 'Improve invoice processing',
+    goal: 'Cut Accounts Payable invoice processing time by 40% without increasing headcount.',
+  },
+  {
+    label: 'Reduce customer waiting time',
+    goal: 'Reduce customer onboarding and fulfillment cycle time by 35%.',
+  },
+];
+
+const EMPTY_AGENT_STATUSES: Record<AgentId, AgentStatus | null> = {
+  planner: null,
+  researcher: null,
+  critic: null,
+  synthesizer: null,
+};
 
 export default function AdvisorPage() {
-  const { departments, workflows, isDemoMode } = useAppStore();
-  const [goal, setGoal] = useState("");
+  const { isDemoMode } = useAppStore();
+  return <AdvisorWorkspace key={String(isDemoMode)} isDemoMode={isDemoMode} />;
+}
+
+function AdvisorWorkspace({ isDemoMode }: { isDemoMode: boolean }) {
+  const router = useRouter();
+  const { departments, workflows } = useAppStore();
+  const { openAdvisor } = useAdvisorDrawer();
+
+  const [goal, setGoal] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
-  
-  const [agentStatuses, setAgentStatuses] = useState<Record<AgentId, AgentStatus | null>>({
-    planner: null,
-    researcher: null,
-    critic: null,
-    synthesizer: null,
-  });
-  
+  const [isGraphExpanded, setIsGraphExpanded] = useState(false);
+  const [savedToActionPlan, setSavedToActionPlan] = useState(false);
+  const isUserEditedRef = useRef(false);
+
+  const [agentStatuses, setAgentStatuses] =
+    useState<Record<AgentId, AgentStatus | null>>(EMPTY_AGENT_STATUSES);
+
   const [result, setResult] = useState<WorkflowPlanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const DEFAULT_OBJECTIVE = 'Reduce vendor invoice processing time by 40%.';
+
   useEffect(() => {
-    if (isDemoMode) {
-      setGoal(DEMO_WORKFLOW_RESULT.goal);
-      setResult(DEMO_WORKFLOW_RESULT);
-      
-      const PLANNER_CONTENT = `GOAL DECOMPOSITION — "${DEMO_WORKFLOW_RESULT.goal}"\n\nSub-tasks identified:\n1. Quantify current AP workflow constraint (71.2h cycle, 15% error, 29 items/wk)\n2. Identify root-cause error categories (manual keying vs. matching vs. approval delay)\n3. Model intervention options: OCR extraction, 3-way PO matching, delegation authority\n4. Estimate cycle-time impact of each lever using Little's Law\n5. Sequence interventions by ROI and implementation complexity`;
+    let currentIdx = 0;
+    let timeoutId: NodeJS.Timeout;
 
-      const RESEARCHER_CONTENT = `OPERATIONS RESEARCH ANALYSIS\n\nLittle's Law (L = λW): λ = 29 invoices/wk, W = 71.2h → L = 86.3 avg invoices in-flight\nTarget: W_target = 42.7h (−40%), so L_target = 51.8\n\nM/M/1 Approval queue: Finance at ~95% utilization\n  E[Wq] ≈ 14h (queue wait contribution at ρ=0.95)\n  After delegation → ρ ≈ 0.55 → E[Wq] ≈ 1.8h\n\nLean Six Sigma DPMO:\n  Current: 150,000 DPMO (2.6σ)\n  With OCR + 3-way match: 20,000 DPMO (3.5σ)\n  Aberdeen top-quartile target: 10,000 DPMO (3.8σ)\n\nProjected savings: $12,400/wk | Payback: week 9`;
+    const typeNextChar = () => {
+      if (isUserEditedRef.current) return;
+      if (currentIdx < DEFAULT_OBJECTIVE.length) {
+        currentIdx++;
+        setGoal(DEFAULT_OBJECTIVE.slice(0, currentIdx));
+        timeoutId = setTimeout(typeNextChar, 28);
+      }
+    };
 
-      const CRITIC_CONTENT = `CRITICAL REVIEW — Risks & Assumptions Challenged\n\n✗ ASSUMPTION CHALLENGED: "OCR will work immediately"\n  → Reality: ERP PO master data may be 20–30% incomplete. Run data audit first.\n\n✗ ASSUMPTION CHALLENGED: "Delegation is low-effort"\n  → Reality: Requires CFO sign-off + fraud controls. Underestimated stakeholder friction.\n\n✓ VALIDATED: Little's Law projections — math checks out given stated λ and W values\n✓ VALIDATED: 3-way matching ROI — Aberdeen 2023 confirms median 73% error reduction\n\nData gaps flagged:\n• Per-stage timing breakdown unavailable (entry vs. matching vs. approval)\n• Vendor e-invoicing readiness unknown — survey required`;
-      
-      setAgentStatuses({
-        planner: { agent: "planner", state: "done", message: "Planning complete — sub-tasks identified.", content: PLANNER_CONTENT },
-        researcher: { agent: "researcher", state: "done", message: "Research complete — quantified improvement potential.", content: RESEARCHER_CONTENT },
-        critic: { agent: "critic", state: "done", message: "Critical review complete — risks and mitigations identified.", content: CRITIC_CONTENT },
-        synthesizer: { agent: "synthesizer", state: "done", message: "Synthesis complete — action plan ready." },
-      });
-    } else {
-      setGoal("");
-      setResult(null);
-      setAgentStatuses({
-        planner: null,
-        researcher: null,
-        critic: null,
-        synthesizer: null,
-      });
-    }
-  }, [isDemoMode]);
+    timeoutId = setTimeout(typeNextChar, 200);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const startPipeline = async (overrideGoal?: string) => {
-    const targetGoal = overrideGoal || goal;
+    const targetGoal = overrideGoal || goal.trim() || DEFAULT_OBJECTIVE;
     if (!targetGoal.trim()) return;
-    
+
+    if (!goal.trim()) {
+      setGoal(targetGoal);
+    }
+
     setIsRunning(true);
     setResult(null);
     setError(null);
-    
+    setSavedToActionPlan(false);
+    setIsGraphExpanded(true);
+
     setAgentStatuses({
-      planner: { agent: "planner", state: "running", message: "Decomposing goal..." },
+      planner: {
+        agent: 'planner',
+        state: 'running',
+        message: 'Decomposing goal into operations research tasks...',
+      },
       researcher: null,
       critic: null,
       synthesizer: null,
     });
 
     try {
-      const response = await fetch("/api/liquiflow/workflow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: targetGoal, departments, workflows, isDemoMode })
+      const response = await fetch('/api/liquiflow/workflow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          goal: targetGoal,
+          departments,
+          workflows,
+          isDemoMode,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to start workflow pipeline");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (!response.body) throw new Error("No response body");
+      if (!response.body) throw new Error('No response body');
 
       const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
 
-        let currentEvent = "";
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            currentEvent = line.replace("event: ", "").trim();
-          } else if (line.startsWith("data: ")) {
-            const dataStr = line.replace("data: ", "").trim();
-            if (dataStr) {
-              const data = JSON.parse(dataStr);
-              if (currentEvent === "status") {
-                setAgentStatuses(prev => ({
-                  ...prev,
-                  [data.agent]: data
-                }));
-              } else if (currentEvent === "result") {
-                setResult(data);
-              } else if (currentEvent === "error") {
-                throw new Error(data.message);
-              }
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() ?? '';
+
+        for (const part of parts) {
+          const lines = part.split('\n');
+          let eventType = '';
+          let dataStr = '';
+          for (const line of lines) {
+            if (line.startsWith('event: ')) eventType = line.slice(7).trim();
+            if (line.startsWith('data: ')) dataStr = line.slice(6).trim();
+          }
+          if (!dataStr) continue;
+
+          try {
+            const data = JSON.parse(dataStr);
+            if (eventType === 'status') {
+              setAgentStatuses((prev) => ({
+                ...prev,
+                [data.agent]: {
+                  agent: data.agent,
+                  state: data.state,
+                  message: data.message,
+                  content: data.content,
+                },
+              }));
+            } else if (eventType === 'result') {
+              setResult(data as WorkflowPlanResult);
+              setIsRunning(false);
+              setTimeout(() => {
+                setIsGraphExpanded(false);
+              }, 600);
+            } else if (eventType === 'error') {
+              setError(data.message || 'An error occurred');
+              setIsRunning(false);
+              setIsGraphExpanded(false);
             }
+          } catch {
+            // ignore parse errors
           }
         }
       }
-    } catch (e: any) {
-      setError(e.message);
-      // Mark running agent as error
-      setAgentStatuses(prev => {
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'An error occurred';
+      setError(msg);
+      setAgentStatuses((prev) => {
         const next = { ...prev };
         for (const key of Object.keys(next) as AgentId[]) {
-          if (next[key]?.state === "running") {
-            next[key] = { ...next[key]!, state: "done", message: "Failed due to error" }; // No error state in agent schema, map to done for now or handle appropriately
+          if (next[key]?.state === 'running') {
+            next[key] = {
+              ...next[key]!,
+              state: 'done',
+              message: 'Analysis interrupted.',
+            };
           }
         }
         return next;
@@ -136,27 +224,54 @@ export default function AdvisorPage() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      startPipeline();
+      startPipeline(goal.trim() || DEFAULT_OBJECTIVE);
     }
   };
+
+  const handleSaveToActionPlan = () => {
+    setSavedToActionPlan(true);
+    setTimeout(() => setSavedToActionPlan(false), 3000);
+  };
+
+  const handleAskCapybot = () => {
+    if (result) {
+      const prompt = `I am reviewing this Strategic Advisor plan for: "${result.goal}". Key finding: ${result.executiveSummary}. Projected cost savings: $${result.projectedImpact.costSavingsPerWeek}/wk. How should we prioritize implementation?`;
+      openAdvisor(prompt);
+    } else {
+      openAdvisor('How does the Strategic Advisor multi-agent framework work?');
+    }
+  };
+
+  const handleSimulateRecommendation = () => {
+    router.push('/simulations/new?type=payment_delay');
+  };
+
+  const hasWorkflow =
+    isRunning || !!result || Object.values(agentStatuses).some(Boolean);
 
   return (
     <AppPage>
       <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
+        {/* ── Header without icon or extra tags ──────────────────────────────── */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-border/80">
           <div className="space-y-1">
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-              AI Operations Advisor
+              Strategic Advisor
             </h1>
             <p className="font-sans text-xs sm:text-sm text-text-muted">
-              Multi-agent operations research pipeline. Define a goal and let the agents decompose, analyze, and synthesize an action plan.
+              Turn a business objective into a quantified action plan.
             </p>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Button variant="outline" size="sm" onClick={() => setShowSetup(true)} className="gap-2 text-xs h-9 rounded-xl border border-border/80">
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSetup(true)}
+              className="gap-2 text-xs h-9 rounded-xl border border-border/80"
+            >
               <Settings2 className="size-3.5" />
               Configure Org Data
             </Button>
@@ -170,145 +285,370 @@ export default function AdvisorPage() {
           </div>
         </div>
 
-        <OrgDataSetupSheet open={showSetup} onClose={() => setShowSetup(false)} />
+        <OrgDataSetupSheet
+          open={showSetup}
+          onClose={() => setShowSetup(false)}
+        />
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-          <div className="xl:col-span-4 space-y-6">
-            <Card className="p-5 shadow-2xs border-brand/30 bg-surface">
-              <h2 className="text-sm font-semibold text-text-primary mb-3">What's your operational goal?</h2>
+        {/* ── Top Row: Goal Input & Workflow Graph Side by Side ───────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* ── Card 1: Goal Input ─────────────────────────────────────────── */}
+          <Card className="p-5 shadow-2xs border-brand/30 bg-surface flex flex-col justify-between min-h-[380px]">
+            <div>
+              <h2 className="text-sm font-semibold text-text-primary mb-3">
+                What are you trying to improve?
+              </h2>
               <div className="relative">
                 <textarea
                   value={goal}
-                  onChange={(e) => setGoal(e.target.value)}
+                  onChange={(e) => {
+                    isUserEditedRef.current = true;
+                    setGoal(e.target.value);
+                  }}
                   onKeyDown={handleKeyDown}
-                  placeholder="e.g. Cut Accounts Payable processing time by 40% without increasing headcount."
+                  placeholder="Example: Reduce vendor invoice processing time by 40%."
                   className="w-full bg-surface-subtle border border-border/80 rounded-xl p-3 pr-12 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/60 resize-none h-28"
                   disabled={isRunning}
                 />
                 <Button
                   size="icon"
-                  className="absolute bottom-3 right-3 h-8 w-8 bg-brand hover:bg-brand-hover text-white rounded-lg cursor-pointer"
+                  className="absolute bottom-3 right-3 h-8 w-8 bg-brand hover:bg-brand-hover text-white rounded-lg cursor-pointer transition-transform active:scale-95 shadow-xs"
                   disabled={!goal.trim() || isRunning}
-                  onClick={() => startPipeline()}
+                  onClick={() => {
+                    startPipeline(goal.trim() || DEFAULT_OBJECTIVE);
+                  }}
+                  title="Run Strategic Investigation"
                 >
                   <Send className="size-4" />
                 </Button>
               </div>
+            </div>
 
-              <div className="mt-4 pt-4 border-t border-border/60">
-                <p className="text-xs text-text-muted mb-2">Or try an example:</p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge 
-                    variant="neutral" 
-                    className="cursor-pointer hover:bg-brand-soft/20 text-xs font-normal transition-colors"
+            {/* Quick Start Goal Chips */}
+            <div className="mt-4 pt-4 border-t border-border/60">
+              <p className="text-xs text-text-muted mb-2 font-medium">
+                Quick-start strategic goals:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {SUGGESTED_GOALS.map((item, idx) => (
+                  <button
+                    key={idx}
                     onClick={() => {
-                      setGoal("Reduce customer onboarding cycle time by 30%.");
-                      startPipeline("Reduce customer onboarding cycle time by 30%.");
+                      setGoal(item.goal);
+                      startPipeline(item.goal);
                     }}
+                    disabled={isRunning}
+                    className="px-2.5 py-1.5 rounded-lg bg-surface-subtle hover:bg-brand-soft/20 text-text-secondary hover:text-brand border border-border/60 text-xs font-normal transition-all text-left disabled:opacity-50 cursor-pointer"
                   >
-                    Reduce onboarding time
-                  </Badge>
-                  <Badge 
-                    variant="neutral" 
-                    className="cursor-pointer hover:bg-brand-soft/20 text-xs font-normal transition-colors"
-                    onClick={() => {
-                      setGoal("Identify and eliminate the primary constraint in the Supply Chain department.");
-                      startPipeline("Identify and eliminate the primary constraint in the Supply Chain department.");
-                    }}
-                  >
-                    Find supply chain constraint
-                  </Badge>
-                </div>
+                    {item.label}
+                  </button>
+                ))}
               </div>
-            </Card>
+            </div>
+          </Card>
 
-            <Card className="p-0 shadow-2xs border-brand/30 bg-surface overflow-hidden" style={{ minHeight: 200 }}>
-              <div className="p-3 border-b border-border/60 flex items-center gap-2 bg-surface-subtle/50">
+          {/* ── Card 2: Investigation Workflow (Pure Graph) ────────────────── */}
+          <Card className="p-5 shadow-2xs border-brand/30 bg-surface flex flex-col justify-between min-h-[380px]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
                 <BrainCircuit className="size-4 text-brand" />
-                <h3 className="text-xs font-semibold text-text-primary uppercase tracking-wider">Agent Pipeline</h3>
+                <h3 className="text-xs font-semibold text-text-primary uppercase tracking-wider">
+                  Investigation Workflow
+                </h3>
               </div>
-              <AgentWorkflowCanvas agentStatuses={agentStatuses} />
-            </Card>
-          </div>
-
-          <div className="xl:col-span-8">
-            <Card className="h-full p-6 shadow-2xs border-brand/30 bg-surface min-h-[600px] flex flex-col">
-              {error && (
-                <div className="p-4 rounded-xl border border-danger/20 bg-danger-soft/10 text-sm text-danger mb-4">
-                  {error}
-                </div>
+              {hasWorkflow && (
+                <button
+                  onClick={() => setIsGraphExpanded(true)}
+                  title="Expand to Full View"
+                  className="px-2.5 py-1 rounded-lg text-text-muted hover:text-brand hover:bg-brand/10 transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer border border-border/60"
+                >
+                  <Maximize2 className="size-3.5" />
+                  <span>Expand View</span>
+                </button>
               )}
+            </div>
 
-              {result ? (
-                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="flex items-start justify-between border-b border-border/60 pb-4">
-                    <div>
-                      <h2 className="text-xl font-bold text-text-primary mb-1">Synthesized Action Plan</h2>
-                      <p className="text-sm text-text-muted">Goal: {result.goal}</p>
-                    </div>
+            {hasWorkflow ? (
+              <div className="flex-1 w-full rounded-xl border border-border/80 overflow-hidden bg-surface-subtle/50">
+                <AgentWorkflowCanvas
+                  agentStatuses={agentStatuses}
+                  height="h-[280px]"
+                />
+              </div>
+            ) : (
+              <div className="flex-1 w-full rounded-xl border border-dashed border-border/80 flex flex-col items-center justify-center p-6 text-center text-text-muted bg-surface-subtle/40 min-h-[280px]">
+                <div className="w-12 h-12 rounded-xl bg-surface border border-border/60 flex items-center justify-center mb-3 text-text-muted/60">
+                  <BrainCircuit className="size-6 text-brand/60" />
+                </div>
+                <p className="text-xs font-semibold text-text-primary">
+                  Pipeline Inactive
+                </p>
+                <p className="text-[11px] text-text-muted mt-1 max-w-xs leading-relaxed">
+                  Select a quick-start goal or submit an objective to initialize
+                  the multi-agent investigation workflow.
+                </p>
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* ── Below: Strategic Action Plan Result ──────────────────────────── */}
+        <div className="w-full">
+          <Card className="p-6 sm:p-8 shadow-2xs border-brand/30 bg-surface min-h-[300px] flex flex-col justify-between">
+            {error && (
+              <div className="p-4 rounded-xl border border-danger/20 bg-danger-soft/10 text-sm text-danger mb-4 flex items-center gap-2">
+                <AlertCircle className="size-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {result ? (
+              /* ── Strategic Action Plan Output ────────────────────────────── */
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* Top Finding Header */}
+                <div className="border-b border-border/60 pb-4">
+                  <div className="flex items-center justify-between gap-4 mb-2">
                     <Badge variant="brand" className="text-xs">
                       {Math.round(result.confidenceScore * 100)}% Confidence
                     </Badge>
+                    <span className="text-xs text-text-muted font-medium">
+                      Goal: {result.goal}
+                    </span>
                   </div>
+                  <h2 className="text-lg sm:text-xl font-bold text-text-primary">
+                    Strategic Action Plan
+                  </h2>
+                </div>
 
-                  <div className="bg-brand-soft/10 p-4 rounded-xl border border-brand/20 text-sm text-text-primary leading-relaxed font-medium">
-                    {result.executiveSummary}
+                {/* Strategic Finding Box */}
+                <div className="bg-brand-soft/10 p-4 rounded-xl border border-brand/20 text-sm text-text-primary leading-relaxed font-medium">
+                  <div className="text-xs uppercase tracking-wider text-brand font-bold mb-1">
+                    Key Strategic Finding
                   </div>
+                  {result.executiveSummary}
+                </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="p-3 rounded-lg border border-border/60 bg-surface-subtle text-center">
-                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1">Cycle Time Drop</div>
-                      <div className="text-xl font-bold text-brand">{result.projectedImpact.cycleTimeReductionPct}%</div>
+                {/* Projected Impact 4-Col Grid */}
+                <div>
+                  <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">
+                    Projected Business Impact
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-3.5 rounded-xl border border-border/60 bg-surface-subtle text-center">
+                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
+                        <TrendingDown className="size-3 text-emerald-500" />
+                        Cycle Time Drop
+                      </div>
+                      <div className="text-xl font-bold text-brand">
+                        -{result.projectedImpact.cycleTimeReductionPct}%
+                      </div>
                     </div>
-                    <div className="p-3 rounded-lg border border-border/60 bg-surface-subtle text-center">
-                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1">Cost Savings</div>
-                      <div className="text-xl font-bold text-success">${result.projectedImpact.costSavingsPerWeek.toLocaleString()}/wk</div>
+                    <div className="p-3.5 rounded-xl border border-border/60 bg-surface-subtle text-center">
+                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
+                        <TrendingUp className="size-3 text-emerald-500" />
+                        Cost Savings
+                      </div>
+                      <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                        $
+                        {result.projectedImpact.costSavingsPerWeek.toLocaleString()}
+                        /wk
+                      </div>
                     </div>
-                    <div className="p-3 rounded-lg border border-border/60 bg-surface-subtle text-center">
-                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1">Quality Boost</div>
-                      <div className="text-xl font-bold text-brand">+{result.projectedImpact.qualityImprovementPct}%</div>
+                    <div className="p-3.5 rounded-xl border border-border/60 bg-surface-subtle text-center">
+                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
+                        <Sparkles className="size-3 text-brand" />
+                        Quality Boost
+                      </div>
+                      <div className="text-xl font-bold text-brand">
+                        +{result.projectedImpact.qualityImprovementPct}%
+                      </div>
                     </div>
-                    <div className="p-3 rounded-lg border border-border/60 bg-surface-subtle text-center">
-                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1">ROI Payback</div>
-                      <div className="text-xl font-bold text-text-primary">{result.projectedImpact.paybackWeeks} wks</div>
+                    <div className="p-3.5 rounded-xl border border-border/60 bg-surface-subtle text-center">
+                      <div className="text-[10px] uppercase text-text-muted font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
+                        <Clock className="size-3 text-text-muted" />
+                        ROI Payback
+                      </div>
+                      <div className="text-xl font-bold text-text-primary">
+                        {result.projectedImpact.paybackWeeks} wks
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">Action Items</h3>
-                    <div className="space-y-3">
-                      {result.actionItems.map(action => (
-                        <div key={action.id} className="p-4 rounded-xl border border-border/80 bg-surface shadow-2xs hover:border-brand/40 transition-colors">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-bold text-text-primary text-sm">{action.title}</h4>
-                            <Badge variant={action.priority === 'critical' ? 'critical' : action.priority === 'high' ? 'warning' : 'neutral'} dot>
-                              {action.priority.toUpperCase()}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-text-muted mb-3">{action.description}</p>
-                          <div className="flex flex-wrap gap-3 text-[11px] text-text-muted">
-                            <span className="flex items-center gap-1"><Activity className="size-3" /> {action.department}</span>
-                            <span className="flex items-center gap-1"><Clock className="size-3" /> {action.timeline}</span>
-                          </div>
+                {/* Why this is happening / Action Items */}
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">
+                    Recommended Action Items
+                  </h3>
+                  <div className="space-y-3">
+                    {result.actionItems.map((action) => (
+                      <div
+                        key={action.id}
+                        className="p-4 rounded-xl border border-border/80 bg-surface shadow-2xs hover:border-brand/40 transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-bold text-text-primary text-sm">
+                            {action.title}
+                          </h4>
+                          <Badge
+                            variant={
+                              action.priority === 'critical'
+                                ? 'critical'
+                                : action.priority === 'high'
+                                  ? 'warning'
+                                  : 'neutral'
+                            }
+                            dot
+                          >
+                            {action.priority.toUpperCase()}
+                          </Badge>
                         </div>
-                      ))}
+                        <p className="text-xs text-text-muted mb-3 leading-relaxed">
+                          {action.description}
+                        </p>
+                        <div className="flex flex-wrap gap-4 text-[11px] text-text-muted border-t border-border/40 pt-2">
+                          <span className="flex items-center gap-1">
+                            <Activity className="size-3 text-brand" />{' '}
+                            {action.department}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="size-3" /> {action.timeline}
+                          </span>
+                          {action.expectedImpact && (
+                            <span className="font-medium text-text-secondary">
+                              Impact: {action.expectedImpact}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Primary Handoff Actions */}
+                <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={handleSimulateRecommendation}
+                      className="gap-2 text-xs font-bold"
+                      size="md"
+                    >
+                      <Play className="size-3.5 fill-current" />
+                      Simulate Recommendation
+                    </Button>
+                    <Button
+                      variant={savedToActionPlan ? 'outline' : 'outline'}
+                      onClick={handleSaveToActionPlan}
+                      className="gap-2 text-xs font-semibold"
+                      size="md"
+                    >
+                      <BookmarkPlus className="size-3.5" />
+                      {savedToActionPlan
+                        ? 'Saved to Plan ✓'
+                        : 'Save to Action Plan'}
+                    </Button>
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    onClick={handleAskCapybot}
+                    className="gap-2 text-xs font-semibold text-brand hover:text-brand-hover hover:bg-brand/10"
+                  >
+                    <MessageSquare className="size-3.5" />
+                    Ask Capybot
+                  </Button>
+                </div>
+              </div>
+            ) : isRunning ? (
+              /* ── Live Running Status when popup is closed ────────────────── */
+              <div className="flex-1 flex flex-col items-center justify-center text-center text-text-muted max-w-md mx-auto py-16">
+                <div className="w-14 h-14 rounded-2xl bg-brand-soft/20 border border-brand/30 flex items-center justify-center mb-4">
+                  <Activity className="size-7 text-brand animate-spin" />
+                </div>
+                <h3 className="text-lg font-semibold text-text-primary mb-2">
+                  Multi-Agent Investigation in Progress...
+                </h3>
+                <p className="text-xs sm:text-sm leading-relaxed mb-4">
+                  Decomposing business goal, testing operations research models,
+                  and formulating the action plan.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsGraphExpanded(true)}
+                  className="gap-2 text-xs border-brand/40 text-brand"
+                >
+                  <Maximize2 className="size-3.5" />
+                  View Live Graph Popup
+                </Button>
+              </div>
+            ) : (
+              /* ── Empty State ─────────────────────────────────────────────── */
+              <div className="flex-1 flex flex-col items-center justify-center text-center text-text-muted max-w-md mx-auto py-16">
+                <div className="w-16 h-16 rounded-2xl bg-surface-subtle border border-border/60 flex items-center justify-center mb-4">
+                  <BrainCircuit className="size-8 text-brand" />
+                </div>
+                <h3 className="text-lg font-semibold text-text-primary mb-2">
+                  Awaiting Strategic Directive
+                </h3>
+                <p className="text-xs sm:text-sm leading-relaxed">
+                  Select a suggested business goal or enter your operational
+                  objective above. The Strategic Advisor will conduct a
+                  multi-stage quantitative analysis to produce an actionable
+                  plan.
+                </p>
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* ── Pop-Up Full-Screen View with Background Blurred ──────────────── */}
+        {isGraphExpanded && (
+          <div
+            onClick={() => setIsGraphExpanded(false)}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in"
+          >
+            <Card
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-6xl bg-surface border-border shadow-2xl p-6 relative flex flex-col gap-4 max-h-[90vh]"
+            >
+              <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <BrainCircuit className="size-5 text-brand" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold text-text-primary">
+                        Multi-Agent Investigation Architecture
+                      </h3>
+                      {isRunning && (
+                        <span className="text-[10px] uppercase font-mono font-bold text-brand bg-brand-soft/30 border border-brand/40 px-2 py-0.5 rounded-md animate-pulse">
+                          Live Analysis Active
+                        </span>
+                      )}
                     </div>
+                    <p className="text-xs text-text-muted">
+                      Interactive multi-agent decision intelligence pipeline
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-center text-text-muted max-w-md mx-auto">
-                  <div className="w-16 h-16 rounded-2xl bg-surface-subtle border border-border/60 flex items-center justify-center mb-4">
-                    <BrainCircuit className="size-8 text-border" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-2">Awaiting Goal Directive</h3>
-                  <p className="text-sm leading-relaxed">
-                    Enter an operational goal to wake up the agent pipeline. They will autonomously coordinate to research, critique, and synthesize a comprehensive execution plan.
-                  </p>
-                </div>
-              )}
+                <button
+                  onClick={() => setIsGraphExpanded(false)}
+                  className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-subtle transition-colors cursor-pointer"
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
+
+              {/* Large Popup Graph View */}
+              <div className="rounded-xl border border-border/80 bg-surface-subtle p-2 flex-1 min-h-[460px] sm:min-h-[560px]">
+                <AgentWorkflowCanvas
+                  agentStatuses={agentStatuses}
+                  height="h-[460px] sm:h-[560px]"
+                />
+              </div>
             </Card>
           </div>
-        </div>
+        )}
       </div>
     </AppPage>
   );

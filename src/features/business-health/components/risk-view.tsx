@@ -43,7 +43,7 @@ const COLORS = {
   critical: '#EF4444',
   high: '#F97316',
   medium: '#FBBF24',
-  low: '#34D399',
+  low: '#10B981',
 };
 
 const SEVERITY_LEVELS = ['critical', 'high', 'medium', 'low'] as const;
@@ -577,9 +577,9 @@ export function RiskView() {
                               'p-2 rounded-lg shrink-0 mt-0.5',
                               risk.severity === 'critical'
                                 ? 'bg-danger-soft text-danger'
-                                : risk.severity === 'high'
+                                : risk.severity === 'high' || risk.severity === 'medium' || risk.severity === 'warning'
                                   ? 'bg-warning-soft text-warning'
-                                  : 'bg-surface-subtle text-text-muted',
+                                  : 'bg-success-soft text-success',
                             )}
                           >
                             <AlertTriangle className="size-4" />
@@ -609,9 +609,9 @@ export function RiskView() {
                           variant={
                             risk.severity === 'critical'
                               ? 'critical'
-                              : risk.severity === 'high'
+                              : risk.severity === 'high' || risk.severity === 'medium' || risk.severity === 'warning'
                                 ? 'warning'
-                                : 'neutral'
+                                : 'healthy'
                           }
                           className="text-[10px] uppercase shadow-xs"
                         >
@@ -637,7 +637,9 @@ export function RiskView() {
                                   ? [{ val: 4 }, { val: 6 }, { val: 5 }, { val: 11 }]
                                   : risk.severity === 'high'
                                     ? [{ val: 3 }, { val: 7 }, { val: 5 }, { val: 8 }]
-                                    : [{ val: 2 }, { val: 4 }, { val: 3 }, { val: 5 }]
+                                    : risk.severity === 'medium' || risk.severity === 'warning'
+                                      ? [{ val: 2 }, { val: 4 }, { val: 3 }, { val: 5 }]
+                                      : [{ val: 1 }, { val: 2 }, { val: 1 }, { val: 2 }]
                               }
                             >
                               <Line
@@ -646,7 +648,11 @@ export function RiskView() {
                                 stroke={
                                   risk.severity === 'critical'
                                     ? COLORS.critical
-                                    : COLORS.high
+                                    : risk.severity === 'high'
+                                      ? COLORS.high
+                                      : risk.severity === 'medium' || risk.severity === 'warning'
+                                        ? COLORS.medium
+                                        : COLORS.low
                                 }
                                 strokeWidth={1.5}
                                 dot={false}
@@ -695,7 +701,11 @@ export function RiskView() {
             <Card className="lg:col-span-2 p-6 shadow-2xs bg-surface border-border">
               <Badge
                 variant={
-                  selectedRisk.severity === 'critical' ? 'critical' : 'warning'
+                  selectedRisk.severity === 'critical'
+                    ? 'critical'
+                    : selectedRisk.severity === 'high' || selectedRisk.severity === 'medium' || selectedRisk.severity === 'warning'
+                      ? 'warning'
+                      : 'healthy'
                 }
                 className="mb-4 text-[10px] uppercase font-bold tracking-wider"
               >

@@ -10,4 +10,3 @@
  * - src/features/reports/adapters/reports.adapter.ts
  */
 
-export * from './actions-service';

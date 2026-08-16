@@ -9,7 +9,7 @@ import {
   GitPullRequest,
   FileText,
   Cpu,
-  FlaskConical,
+  Compass,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/lib/i18n/navigation';
@@ -53,10 +53,10 @@ const mainNavItems: readonly NavItemConfig[] = [
     icon: GitPullRequest,
   },
   {
-    key: 'reports',
-    href: '/reports',
-    tourId: 'sidebar-reports',
-    icon: FileText,
+    key: 'advisor',
+    href: '/advisor',
+    tourId: 'sidebar-advisor',
+    icon: Compass,
   },
   {
     key: 'automation',
@@ -65,10 +65,10 @@ const mainNavItems: readonly NavItemConfig[] = [
     icon: Cpu,
   },
   {
-    key: 'playground',
-    href: '/advisor/playground',
-    tourId: 'sidebar-playground',
-    icon: FlaskConical,
+    key: 'reports',
+    href: '/reports',
+    tourId: 'sidebar-reports',
+    icon: FileText,
   },
 ] as const;
 

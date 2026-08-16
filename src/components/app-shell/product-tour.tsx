@@ -19,6 +19,9 @@ import {
   UserCheck,
   Lightbulb,
   ChevronRight,
+  Cpu,
+  Bot,
+  Compass,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/components/motion/use-reduced-motion';
@@ -68,6 +71,26 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     accent: 'from-[#7C3AED] to-[#6366F1]',
   },
   {
+    id: 'advisor',
+    selector: '[data-tour="sidebar-advisor"]',
+    title: 'Executive AI Advisor',
+    desc: 'Access strategic financial audits, runway triage playbooks, and holistic scenario recommendations.',
+    titleTh: 'ที่ปรึกษาทางการเงินและกลยุทธ์ AI',
+    descTh: 'เข้าถึงรายงานการวิเคราะห์เชิงลึก คำแนะนำการจัดการเงินทุน และข้อเสนอแนะเชิงกลยุทธ์จาก AI',
+    icon: Compass,
+    accent: 'from-[#8B5CF6] to-[#EC4899]',
+  },
+  {
+    id: 'automation',
+    selector: '[data-tour="sidebar-automation"]',
+    title: 'Visual Workflow Automations',
+    desc: 'Construct event triggers, condition branches, and AI triage actions in an interactive visual orchestration builder.',
+    titleTh: 'ระบบอัตโนมัติอัจฉริยะ',
+    descTh: 'สร้างเวิร์กโฟลว์เชื่อมต่อเงื่อนไข การวิเคราะห์ของ AI และการดำเนินการอัตโนมัติแบบเรียลไทม์',
+    icon: Cpu,
+    accent: 'from-[#6366F1] to-[#EC4899]',
+  },
+  {
     id: 'reports',
     selector: '[data-tour="sidebar-reports"]',
     title: 'Decision Intelligence Reports',
@@ -76,6 +99,16 @@ const SIDEBAR_TOUR_STEPS: SidebarTourStep[] = [
     descTh: 'สร้าง ตรวจสอบ และส่งออกรายงานสรุปสำหรับผู้บริหารและบันทึกการตัดสินใจเพื่อแชร์กับพาร์ทเนอร์หรือสถาบันการเงิน',
     icon: FileText,
     accent: 'from-[#6366F1] to-[#818CF8]',
+  },
+  {
+    id: 'capybot',
+    selector: '[data-tour="topbar-capybot"]',
+    title: 'Capybot — Your AI Co-Pilot',
+    desc: 'Summon Capybot anytime (Cmd+K) to audit financial anomalies, run instant scenario simulations, and provide strategic advisory.',
+    titleTh: 'Capybot — ผู้ช่วย AI ประจำตัว',
+    descTh: 'เรียกใช้งาน Capybot ได้ตลอดเวลา (Cmd+K) เพื่อตรวจสอบความผิดปกติทางการเงิน จำลองสถานการณ์ และขอคำแนะนำเชิงกลยุทธ์',
+    icon: Bot,
+    accent: 'from-[#8B5CF6] to-[#F59E0B]',
   },
   {
     id: 'account-menu',
@@ -239,15 +272,24 @@ export function ProductTour() {
 
   // Calculate tooltip positioning and arrow offset
   const layout = useMemo(() => {
+    const windowW = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const windowH = typeof window !== 'undefined' ? window.innerHeight : 800;
     const h = cardHeight || POPOVER_EST_HEIGHT;
 
     let tooltipTop = 100;
     let tooltipLeft = 260;
     let arrowTop = 30;
+    let isArrowOnRight = false;
 
     if (targetRect) {
-      tooltipLeft = targetRect.right + TOOLTIP_GAP + ARROW_SIZE;
+      if (targetRect.right + POPOVER_WIDTH + TOOLTIP_GAP > windowW) {
+        // Place tooltip to the left of the target
+        tooltipLeft = Math.max(16, targetRect.left - POPOVER_WIDTH - TOOLTIP_GAP - ARROW_SIZE);
+        isArrowOnRight = true;
+      } else {
+        tooltipLeft = targetRect.right + TOOLTIP_GAP + ARROW_SIZE;
+        isArrowOnRight = false;
+      }
 
       // Center tooltip vertically on target, clamped to viewport
       const targetCenterY = targetRect.top + targetRect.height / 2;
@@ -265,7 +307,7 @@ export function ProductTour() {
       arrowTop = Math.max(30, Math.min(arrowTop, h - 30));
     }
 
-    return { tooltipTop, tooltipLeft, arrowTop };
+    return { tooltipTop, tooltipLeft, arrowTop, isArrowOnRight };
   }, [targetRect, cardHeight]);
 
   if (!active) {
@@ -343,36 +385,68 @@ export function ProductTour() {
           width: `${POPOVER_WIDTH}px`,
         }}
       >
-        {/* ─── Left-Pointing Arrow (emerges from the box) ─── */}
-        {/* Outer border arrow (behind) */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
-            left: `-${ARROW_SIZE + 1}px`,
-            width: 0,
-            height: 0,
-            borderTop: `${ARROW_SIZE + 1}px solid transparent`,
-            borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
-            borderRight: `${ARROW_SIZE + 1}px solid rgba(99,102,241,0.3)`,
-            zIndex: 1,
-          }}
-        />
-        {/* Inner fill arrow (covers the border where it meets the card) */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
-            left: `-${ARROW_SIZE - 2}px`,
-            width: 0,
-            height: 0,
-            borderTop: `${ARROW_SIZE + 1}px solid transparent`,
-            borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
-            borderRight: `${ARROW_SIZE + 1}px solid var(--surface)`,
-            zIndex: 2,
-            filter: 'drop-shadow(-3px 0 3px rgba(99,102,241,0.12))',
-          }}
-        />
+        {/* ─── Pointing Arrow (Left or Right) ─── */}
+        {layout.isArrowOnRight ? (
+          <>
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+                right: `-${ARROW_SIZE + 1}px`,
+                width: 0,
+                height: 0,
+                borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+                borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+                borderLeft: `${ARROW_SIZE + 1}px solid rgba(99,102,241,0.3)`,
+                zIndex: 1,
+              }}
+            />
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+                right: `-${ARROW_SIZE - 2}px`,
+                width: 0,
+                height: 0,
+                borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+                borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+                borderLeft: `${ARROW_SIZE + 1}px solid var(--surface)`,
+                zIndex: 2,
+                filter: 'drop-shadow(3px 0 3px rgba(99,102,241,0.12))',
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+                left: `-${ARROW_SIZE + 1}px`,
+                width: 0,
+                height: 0,
+                borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+                borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+                borderRight: `${ARROW_SIZE + 1}px solid rgba(99,102,241,0.3)`,
+                zIndex: 1,
+              }}
+            />
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: `${layout.arrowTop - ARROW_SIZE - 1}px`,
+                left: `-${ARROW_SIZE - 2}px`,
+                width: 0,
+                height: 0,
+                borderTop: `${ARROW_SIZE + 1}px solid transparent`,
+                borderBottom: `${ARROW_SIZE + 1}px solid transparent`,
+                borderRight: `${ARROW_SIZE + 1}px solid var(--surface)`,
+                zIndex: 2,
+                filter: 'drop-shadow(-3px 0 3px rgba(99,102,241,0.12))',
+              }}
+            />
+          </>
+        )}
 
         {/* ─── Card Body ─── */}
         <div

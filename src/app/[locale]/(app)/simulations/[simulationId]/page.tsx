@@ -145,11 +145,11 @@ export default function SimulationResultPage() {
                 </h2>
               </div>
 
-              {/* Dominant Primary Decision Action (Req 11) */}
+              {/* Dominant Primary Decision Action */}
               <Button asChild variant="primary" size="sm" className="text-xs self-start sm:self-auto">
-                <Link href="/actions">
+                <Link href="/advisor">
                   <CheckCircle2 className="size-3.5" />
-                  <span>Add to Action Plan</span>
+                  <span>Open Strategic Advisor</span>
                 </Link>
               </Button>
             </div>

@@ -160,6 +160,12 @@ All analysis is grounded in real industry benchmarks (APQC, Aberdeen Group, SHRM
   },
 ];
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getNow(): number {
+  return typeof performance !== "undefined" ? performance.now() : Date.now();
+}
+
 // ─── Page Component ────────────────────────────────────────────────────────────
 
 export default function PlaygroundPage() {
@@ -198,7 +204,7 @@ export default function PlaygroundPage() {
     setErrorMsg(null);
     setMetrics({ latency: 0, tokens: 0 });
 
-    const startTime = Date.now();
+    const startTime = getNow();
 
     // Call the Gemini-powered ingest endpoint in "chat" mode by sending a
     // combined system + user prompt as the document text.
@@ -252,7 +258,7 @@ export default function PlaygroundPage() {
                 if (data.agent === "extractor") {
                   setResponseOutput(data.content);
                   const approxTokens = Math.floor(data.content.length / 4);
-                  setMetrics({ latency: Date.now() - startTime, tokens: approxTokens });
+                  setMetrics({ latency: Math.round(getNow() - startTime), tokens: approxTokens });
                 }
               }
             } else if (eventType === "result") {
@@ -266,7 +272,7 @@ export default function PlaygroundPage() {
               }
               setMetrics((prev) => ({
                 ...prev,
-                latency: Date.now() - startTime,
+                latency: Math.round(getNow() - startTime),
               }));
             } else if (eventType === "error") {
               setErrorMsg(data.message || "An error occurred");
@@ -298,7 +304,7 @@ export default function PlaygroundPage() {
     setIsDemoRunning(true);
     demoAbortRef.current = false;
 
-    const startTime = Date.now();
+    const startTime = getNow();
     const text = preset.response;
     const CHUNK = 4;
     const DELAY = 18;
@@ -310,7 +316,7 @@ export default function PlaygroundPage() {
       const slice = text.slice(i, i + CHUNK);
       setResponseOutput((prev) => prev + slice);
       tokenCount += Math.max(1, Math.floor(slice.length / 4));
-      setMetrics({ latency: Date.now() - startTime, tokens: tokenCount });
+      setMetrics({ latency: Math.round(getNow() - startTime), tokens: tokenCount });
       i += CHUNK;
       await new Promise((r) => setTimeout(r, DELAY));
     }
@@ -340,7 +346,7 @@ export default function PlaygroundPage() {
             AI Playground
           </h1>
           <p className="font-sans text-xs sm:text-sm text-text-muted">
-            Interactively test prompts against Wallflower's Gemini AI backend with live streaming.
+            Interactively test prompts against Wallflower&apos;s Gemini AI backend with live streaming.
           </p>
         </div>
       </div>
@@ -375,7 +381,7 @@ export default function PlaygroundPage() {
 
       {/* Demo Presets Strip */}
       <div className="flex items-center gap-2 flex-wrap mb-5">
-        <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold flex-shrink-0">
+        <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold shrink-0">
           Demo presets:
         </span>
         {DEMO_PRESETS.map((p) => (
@@ -386,7 +392,7 @@ export default function PlaygroundPage() {
             disabled={anyLoading}
             className="text-[11px] px-3 py-1.5 rounded-lg bg-brand/10 border border-brand/20
                        text-brand hover:bg-brand/20 hover:border-brand/40
-                       disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium"
+                       disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium cursor-pointer"
           >
             ▶ {p.label}
           </button>
@@ -394,7 +400,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Split Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-5 min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-5 min-h-150">
         {/* Left Pane — Configuration */}
         <div className="flex flex-col gap-4">
           {/* Parameters Card */}
@@ -461,7 +467,7 @@ export default function PlaygroundPage() {
                 id="playground-system-prompt"
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
-                className="w-full min-h-[80px] bg-surface-subtle border border-border/60 rounded-xl p-3 text-sm text-text-secondary focus:outline-none focus:border-brand/50 resize-none font-mono"
+                className="w-full min-h-20 bg-surface-subtle border border-border/60 rounded-xl p-3 text-xs text-text-secondary focus:outline-none focus:border-brand/50 resize-none font-mono"
                 placeholder="You are a helpful assistant..."
               />
             </div>
@@ -474,7 +480,7 @@ export default function PlaygroundPage() {
                 id="playground-user-message"
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
-                className="w-full min-h-[120px] bg-surface-subtle border border-border/60 rounded-xl p-3 text-sm text-text-primary focus:outline-none focus:border-brand/50 resize-none"
+                className="w-full min-h-30 bg-surface-subtle border border-border/60 rounded-xl p-3 text-sm text-text-primary focus:outline-none focus:border-brand/50 resize-none"
                 placeholder="Ask something to generate..."
               />
             </div>
@@ -484,7 +490,7 @@ export default function PlaygroundPage() {
                 id="playground-submit"
                 onClick={handleRunTest}
                 disabled={anyLoading || !userMessage.trim()}
-                className={`flex-1 flex justify-center items-center gap-2 py-3 rounded-xl font-bold transition-all text-sm ${
+                className={`flex-1 flex justify-center items-center gap-2 py-3 rounded-xl font-bold transition-all text-sm cursor-pointer ${
                   anyLoading || !userMessage.trim()
                     ? "bg-surface-subtle text-text-muted cursor-not-allowed border border-border/60"
                     : "bg-brand hover:bg-brand/90 text-white shadow-lg shadow-brand/20"
@@ -502,7 +508,7 @@ export default function PlaygroundPage() {
                 <button
                   id="playground-stop"
                   onClick={stopRequest}
-                  className="px-4 py-3 rounded-xl bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20 transition-all flex items-center justify-center"
+                  className="px-4 py-3 rounded-xl bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20 transition-all flex items-center justify-center cursor-pointer"
                 >
                   <StopCircle className="w-5 h-5" />
                 </button>
@@ -512,9 +518,9 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Right Pane — Output Terminal */}
-        <Card className="flex flex-col overflow-hidden border-border/60 min-h-[500px]">
+        <Card className="flex flex-col overflow-hidden border-border/60 min-h-125">
           {/* Terminal Title Bar */}
-          <div className="h-12 border-b border-border/60 flex items-center px-4 bg-surface-subtle flex-shrink-0">
+          <div className="h-12 border-b border-border/60 flex items-center px-4 bg-surface-subtle shrink-0">
             <div className="flex items-center gap-2 select-none">
               <div className="w-3 h-3 rounded-full bg-danger/50" />
               <div className="w-3 h-3 rounded-full bg-warning/50" />
@@ -545,7 +551,7 @@ export default function PlaygroundPage() {
                 {errorMsg}
               </div>
             ) : responseOutput ? (
-              <div className="whitespace-pre-wrap break-words">
+              <div className="whitespace-pre-wrap wrap-break-word">
                 {responseOutput}
               </div>
             ) : (

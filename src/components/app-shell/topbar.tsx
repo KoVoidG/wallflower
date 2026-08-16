@@ -65,6 +65,7 @@ export function Topbar({ title }: TopbarProps) {
         <button
           type="button"
           onClick={toggleAdvisor}
+          data-tour="topbar-capybot"
           className={cn(
             'inline-flex items-center justify-center rounded-full p-0.5 hover:scale-110 active:scale-95 transition-all duration-150 cursor-pointer',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]',

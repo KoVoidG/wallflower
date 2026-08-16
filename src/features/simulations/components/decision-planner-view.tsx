@@ -62,14 +62,36 @@ export function DecisionPlannerView({}: DecisionPlannerViewProps) {
   }, []);
 
   const handleTabChange = (tab: DecisionPlannerTab) => {
+    if (tab === activeTab) return;
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       localStorage.setItem('decision_planner_active_tab', tab);
       const url = new URL(window.location.href);
       url.searchParams.set('tab', tab);
-      window.history.replaceState({}, '', url.toString());
+      window.history.pushState({ tab }, '', url.toString());
     }
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tabFromUrl = params.get('tab') as DecisionPlannerTab | null;
+      const validTabs: DecisionPlannerTab[] = [
+        'library',
+        'workspace',
+        'bottleneck',
+        'compare',
+      ];
+      if (tabFromUrl && validTabs.includes(tabFromUrl)) {
+        setActiveTab(tabFromUrl);
+      } else {
+        setActiveTab('library');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleOpenScenario = (scen: ScenarioItem) => {
     if (scen.type === 'bottleneck') {

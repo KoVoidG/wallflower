@@ -295,15 +295,15 @@ export function ScenarioLibraryView({
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        {/* Uniform Monochrome (Black & White) Icon Container for ALL Cards */}
-                        <div className="size-9 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:border-[#6366F1]/40 transition-colors shadow-2xs">
-                          <Icon className="size-4.5" />
+                        {/* Uniform Monochrome (Black & White) Icon Container with Hover Jump & Color Transition */}
+                        <div className="size-10 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all duration-200 ease-out shadow-2xs group-hover:shadow-xs">
+                          <Icon className="size-5 transition-colors duration-200" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="font-display text-sm sm:text-base font-bold text-[#0F172A] dark:text-white leading-snug truncate group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors">
                             {scen.name}
                           </h3>
-                          <p className="text-xs font-medium text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors truncate mt-0.5">
                             {scen.strategyTag}
                           </p>
                         </div>
@@ -474,16 +474,16 @@ export function ScenarioLibraryView({
                 <div
                   key={scen.id}
                   onClick={() => onOpenScenario(scen)}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50/70 dark:hover:bg-[#161D2E] transition-colors cursor-pointer relative"
+                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-slate-50/80 dark:hover:bg-[#161D2E] transition-all duration-200 cursor-pointer relative hover:-translate-y-0.5"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    {/* Monochrome Icon Container */}
-                    <div className="size-10 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0">
-                      <Icon className="size-5" />
+                    {/* Monochrome Icon Container with Hover Jump */}
+                    <div className="size-10 rounded-xl bg-slate-100 dark:bg-[#1E2638] text-[#0F172A] dark:text-white border border-slate-200 dark:border-[#2A344A] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:bg-[#6366F1]/10 dark:group-hover:bg-[#6366F1]/20 group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] group-hover:border-[#6366F1]/40 transition-all duration-200 ease-out shadow-2xs group-hover:shadow-xs">
+                      <Icon className="size-5 transition-colors duration-200" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-sm font-bold text-[#0F172A] dark:text-white truncate">
+                        <h4 className="text-sm font-bold text-[#0F172A] dark:text-white group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors truncate">
                           {scen.name}
                         </h4>
                         {/* Top-Right/Inline Type Badge */}
@@ -497,7 +497,7 @@ export function ScenarioLibraryView({
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5">
+                      <p className="text-xs text-[#64748B] dark:text-[#94A3B8] group-hover:text-[#4F46E5] dark:group-hover:text-[#A5B4FC] transition-colors truncate mt-0.5">
                         {scen.strategyTag} · Goal: {scen.goal} ·{' '}
                         {scen.lastSimulated}
                       </p>

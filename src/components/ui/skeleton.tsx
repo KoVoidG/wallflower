@@ -292,36 +292,7 @@ export function AdvisorSkeleton() {
   );
 }
 
-export function ActionPlanSkeleton() {
-  return (
-    <AppPage aria-busy="true" aria-label="Loading Action Plan">
-      <div className="flex justify-between items-center pb-4 border-b border-border/80">
-        <div className="space-y-1">
-          <Skeleton className="h-7 w-36 rounded-md" />
-          <Skeleton className="h-4 w-80 rounded-md" />
-        </div>
-        <Skeleton className="h-9 w-32 rounded-lg" />
-      </div>
-      <div className="flex gap-2 pb-2">
-        <Skeleton className="h-8 w-20 rounded-lg" />
-        <Skeleton className="h-8 w-24 rounded-lg" />
-        <Skeleton className="h-8 w-24 rounded-lg" />
-        <Skeleton className="h-8 w-20 rounded-lg" />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[400px_minmax(0,1fr)] xl:grid-cols-[440px_minmax(0,1fr)] gap-6 items-start">
-        <div className="space-y-3">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-        </div>
-        <div className="hidden lg:block space-y-4">
-          <Skeleton className="h-96 rounded-xl" />
-        </div>
-      </div>
-    </AppPage>
-  );
-}
+
 
 export function DecisionPlannerSkeleton() {
   return (

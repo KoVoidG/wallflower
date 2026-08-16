@@ -319,9 +319,9 @@ export default function CompareSimulationsPage() {
                 </Button>
 
                 <Button asChild variant="primary" size="md" className="text-xs">
-                  <Link href="/actions">
+                  <Link href="/advisor">
                     <CheckCircle2 className="size-3.5" />
-                    <span>Select Option B & Add to Action Plan</span>
+                    <span>Select Option B & Open Strategic Advisor</span>
                   </Link>
                 </Button>
               </div>
