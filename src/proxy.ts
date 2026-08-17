@@ -27,20 +27,28 @@ export function getOptimisticRedirect(
   hasSession: boolean,
   hasBusiness: boolean
 ): ProxyRedirect | null {
-  // Check routes categorization
+  // Auth routes (login, register, etc.)
   const isAuthRoute =
     pathname.includes('/login') ||
     pathname.includes('/register') ||
-    pathname.includes('/forgot-password');
+    pathname.includes('/forgot-password') ||
+    pathname.includes('/reset-password');
 
-  // Marketing / static landing routes
-  const isMarketingRoute =
+  // Public routes accessible without authentication
+  const isPublicRoute =
     pathname === '/' ||
     pathname.includes('/features') ||
-    pathname.includes('/about');
+    pathname.includes('/about') ||
+    pathname.includes('/pricing') ||
+    pathname.includes('/terms') ||
+    pathname.includes('/privacy') ||
+    pathname.includes('/faq') ||
+    pathname.includes('/help-support') ||
+    pathname.includes('/onboarding') ||
+    pathname.includes('/design-system');
 
-  // Dynamic app-specific routes
-  const isAppRoute = !isAuthRoute && !isMarketingRoute;
+  // Dynamic app-specific routes (require auth)
+  const isAppRoute = !isAuthRoute && !isPublicRoute;
 
   // 1. Not authenticated trying to access app routes -> redirect to login
   if (!hasSession && isAppRoute) {
@@ -58,8 +66,8 @@ export function getOptimisticRedirect(
     };
   }
 
-  // 3. Authenticated and onboarded trying to access auth/onboarding routes -> redirect to dashboard
-  if (hasSession && (isAuthRoute || pathname.includes('/onboarding'))) {
+  // 3. Authenticated and onboarded trying to access auth routes -> redirect to dashboard
+  if (hasSession && isAuthRoute) {
     return {
       destination: '/dashboard',
       permanent: false,
@@ -75,12 +83,10 @@ export default function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Dev bypass: treat as authenticated+onboarded, skip all redirects
-  const devBypass =
-    process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true' &&
-    process.env.NODE_ENV === 'development';
-
-  if (devBypass) {
+  // Demo mode: skip all auth redirects when bypass is enabled.
+  // This makes every route publicly accessible (for portfolio/demo deployments).
+  // Remove the bypass or set to 'false' when real authentication is needed.
+  if (process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true') {
     return intlResponse;
   }
 
