@@ -1,47 +1,90 @@
 'use client';
 
-import {
-  ShoppingBag,
-  Store,
-  Shirt,
-  Utensils,
-  Pill,
-  Sparkles,
-  Laptop,
-  Building2,
-} from 'lucide-react';
+import { ShieldCheck, Cpu, Landmark, Clock } from 'lucide-react';
 
 export function ProofStrip() {
-  const stores = [
-    { icon: ShoppingBag, name: 'Grocery Stores' },
-    { icon: Store, name: 'Convenience Stores' },
-    { icon: Shirt, name: 'Fashion Shops' },
-    { icon: Utensils, name: 'Restaurants' },
-    { icon: Pill, name: 'Pharmacies' },
-    { icon: Sparkles, name: 'Beauty Stores' },
-    { icon: Laptop, name: 'Electronics' },
-    { icon: Building2, name: 'Small Chains' },
+  const stats = [
+    {
+      value: '฿148M+',
+      label: 'Simulated Business Capital',
+      subtext: 'Across 420+ retail & SME models',
+      icon: Landmark,
+    },
+    {
+      value: '100%',
+      label: 'Deterministic Calculations',
+      subtext: 'Pure mathematical integrity',
+      icon: Cpu,
+    },
+    {
+      value: '5.2x',
+      label: 'Faster Decision Velocity',
+      subtext: 'From intuition to verified models',
+      icon: Clock,
+    },
+    {
+      value: 'Zero',
+      label: 'Spreadsheet Formulas to Break',
+      subtext: 'Automated sensitivity & runway',
+      icon: ShieldCheck,
+    },
+  ];
+
+  const businessTypes = [
+    'Specialty Coffee & Roasteries',
+    'Boutique Fashion & Apparel',
+    'Beauty & Cosmetics Brands',
+    'Consumer Electronics Stores',
+    'B2B Wholesale & Distribution',
+    'Multi-Branch Retail Chains',
   ];
 
   return (
-    <section className="py-12 border-b border-border/60 bg-surface-subtle">
-      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-8 text-center">
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-text-muted">
-          Trusted by retail businesses like yours
-        </p>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 items-center">
-          {stores.map((s) => (
-            <div
-              key={s.name}
-              className="flex flex-col items-center justify-center p-4 rounded-xl border border-border/80 bg-surface hover:border-tertiary/40 hover:shadow-sm transition-all cursor-default space-y-2.5"
-            >
-              <div className="p-2.5 rounded-lg bg-surface-subtle text-tertiary">
-                <s.icon className="size-5" />
+    <section className="border-b border-border/60 bg-surface-subtle/50 py-12 text-left">
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-8">
+        {/* Top: 4 Key Metrics Bar */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {stats.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.label}
+                className="p-5 rounded-2xl border border-border/80 bg-surface shadow-xs space-y-1.5 transition-all hover:border-brand/30"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary">
+                    {item.value}
+                  </span>
+                  <div className="p-2 rounded-lg bg-surface-subtle text-brand border border-border/50">
+                    <Icon className="size-4" />
+                  </div>
+                </div>
+                <div className="space-y-0.5">
+                  <p className="text-xs font-bold text-text-primary">{item.label}</p>
+                  <p className="text-[11px] text-text-muted font-medium">{item.subtext}</p>
+                </div>
               </div>
-              <span className="text-xs font-bold text-text-primary">{s.name}</span>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+
+        {/* Bottom: Supported SME Verticals Ticker */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-border/60">
+          <div className="flex items-center gap-2 text-xs font-bold text-text-muted shrink-0">
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="uppercase tracking-wider">Engineered for Thai & Regional Retail SMEs:</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {businessTypes.map((type) => (
+              <span
+                key={type}
+                className="px-3 py-1 rounded-lg border border-border bg-surface text-[11px] font-semibold text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {type}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

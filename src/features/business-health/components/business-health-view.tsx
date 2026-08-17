@@ -7,7 +7,6 @@ import { RotateCw, Edit, LineChart, Building2, Package, SlidersHorizontal, Shiel
 import { cn } from '@/lib/utils';
 import { AppPage } from '@/components/ui/layout';
 import { FadeInView } from '@/components/motion';
-import { BusinessHealthSkeleton } from '@/components/ui/skeleton';
 import { FinancialSnapshotView } from './financial-snapshot-view';
 import { OperationsView } from './operations-view';
 import { InventoryView } from './inventory-view';
@@ -31,7 +30,6 @@ export function BusinessHealthView() {
     return 'snapshot';
   });
 
-  const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleTabChange = (tab: BusinessTab) => {
@@ -61,19 +59,10 @@ export function BusinessHealthView() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 250);
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => setIsRefreshing(false), 600);
   };
-
-  if (isLoading) {
-    return <BusinessHealthSkeleton />;
-  }
 
   return (
     <AppPage>

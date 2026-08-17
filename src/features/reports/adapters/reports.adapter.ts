@@ -248,7 +248,7 @@ const MOCK_REPORTS: DetailedReportCard[] = [
 ];
 
 export async function getReportsData(): Promise<DetailedReportCard[]> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 400));
   return MOCK_REPORTS;
 }
 

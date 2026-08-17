@@ -21,11 +21,13 @@ import { AppPage } from '@/components/ui/layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { FadeInView } from '@/components/motion';
 import { AutomationBuilder } from './AutomationBuilder';
 import {
   INITIAL_AUTOMATIONS_DATA,
   type AutomationRule,
 } from '../types/automation.types';
+import type { AutomationOverviewData } from '../adapters/automation.adapter';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   ShieldAlert,
@@ -37,8 +39,14 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Zap,
 };
 
-export function AutomationEngineView() {
-  const [automations, setAutomations] = useState<AutomationRule[]>(INITIAL_AUTOMATIONS_DATA);
+interface AutomationEngineViewProps {
+  initialData?: AutomationOverviewData;
+}
+
+export function AutomationEngineView({ initialData }: AutomationEngineViewProps) {
+  const [automations, setAutomations] = useState<AutomationRule[]>(
+    () => initialData?.rules ?? INITIAL_AUTOMATIONS_DATA
+  );
   const [selectedId, setSelectedId] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
     const params = new URLSearchParams(window.location.search);
@@ -148,36 +156,39 @@ export function AutomationEngineView() {
   // 3. Active Automations Overview
   return (
     <AppPage>
-      <div className="space-y-6 max-w-[1600px] mx-auto pb-12 animate-in fade-in duration-300">
+      <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
         {/* ── Page Header ───────────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-                Automation
-              </h1>
-              <Badge variant="brand" className="text-xs">
-                Active Monitoring
-              </Badge>
+        <FadeInView offset={8}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
+            <div>
+              <div className="flex items-center gap-2.5 mb-1">
+                <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+                  Automation
+                </h1>
+                <Badge variant="brand" className="text-xs">
+                  Active Monitoring
+                </Badge>
+              </div>
+              <p className="font-sans text-xs sm:text-sm text-text-muted">
+                Let Wallflower monitor important business conditions and automatically run workflows when they occur.
+              </p>
             </div>
-            <p className="font-sans text-xs sm:text-sm text-text-muted">
-              Let Wallflower monitor important business conditions and automatically run workflows when they occur.
-            </p>
-          </div>
 
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleCreateNew}
-            className="gap-2 text-xs h-9 rounded-xl shadow-xs cursor-pointer"
-          >
-            <Plus className="size-3.5" />
-            <span>Create Automation</span>
-          </Button>
-        </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleCreateNew}
+              className="gap-2 text-xs h-9 rounded-xl shadow-xs cursor-pointer"
+            >
+              <Plus className="size-3.5" />
+              <span>Create Automation</span>
+            </Button>
+          </div>
+        </FadeInView>
 
         {/* ── Automations List ──────────────────────────────────────────────── */}
-        <div className="space-y-3">
+        <FadeInView offset={12}>
+          <div className="space-y-3">
           {automations.map((item) => {
             const Icon = (item.iconName && ICON_MAP[item.iconName]) || Zap;
 
@@ -319,7 +330,8 @@ export function AutomationEngineView() {
               </Card>
             );
           })}
-        </div>
+          </div>
+        </FadeInView>
 
         {/* ── Delete Confirmation Modal ───────────────────────────────────── */}
         {automationToDelete && (

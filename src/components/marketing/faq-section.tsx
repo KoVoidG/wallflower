@@ -1,84 +1,121 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Expand } from '@/components/motion/expand';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+const FAQS: FaqItem[] = [
+  {
+    question: 'How do I know the financial projections are accurate?',
+    answer:
+      'Unlike generic generative AI tools that hallucinate numbers, Wallflower runs on a 100% deterministic financial mathematical engine. Revenue, gross margin, operating expenses, cash burn, and runway formulas are computed with rigorous algebraic models using your actual historical numbers and elasticity curves. AI is only used to explain the results in plain language, not to do the math.',
+  },
+  {
+    question: 'What kind of business decisions can I simulate in Wallflower?',
+    answer:
+      'You can simulate price elasticity adjustments, employee headcount and payroll changes, supplier discount and bulk inventory terms, seasonal holiday promotions, new equipment purchases (CapEx), and new branch expansion. You can also build multi-variable custom scenarios combining multiple operational changes simultaneously.',
+  },
+  {
+    question: 'What is the Scenario Comparison Matrix?',
+    answer:
+      'The Comparison Matrix lets you evaluate 2 to 4 competing choices side-by-side (e.g. Baseline vs 5% Price Increase vs Hiring a Sales Rep). It compares Net Profit Delta, Revenue Delta, Cash Runway impact, Breakeven timeline, and Downside Risk buffer, ranking options by verified ROI.',
+  },
+  {
+    question: 'How do I get my business data into Wallflower?',
+    answer:
+      'You can connect your point-of-sale (POS), accounting software, LiquiFlow sync, or simply upload a monthly Excel/CSV export. Wallflower normalizes your income and expense categories in under three minutes.',
+  },
+  {
+    question: 'Is my business and financial data secure and private?',
+    answer:
+      'Yes. Your financial records are encrypted at rest with AES-256 and in transit with TLS 1.3. We do not use your private financial records or store data to train public foundation models.',
+  },
+  {
+    question: 'Can I export reports to show my bank or business partners?',
+    answer:
+      'Yes. Pro and Business plans include 1-click exportable Executive Decision Reports in PDF and Excel formats. These reports include formal P&L projections, sensitivity bounds, and a mathematical verification badge designed for bank loan applications and investor reviews.',
+  },
+  {
+    question: 'Do I need accounting or financial modeling experience to use Wallflower?',
+    answer:
+      'No. Wallflower was specifically engineered for busy retail SME owners, store managers, and founders. You simply adjust operational sliders and Capybot explains the financial trade-offs in plain language.',
+  },
+];
 
 export function FaqSection() {
-  const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true });
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
+  const toggleFaq = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
-  const faqs = [
-    {
-      question: 'What is Wallflower?',
-      answer: 'Wallflower is a decision-intelligence engine designed for retail SMEs to simulate business decisions, detect financial risks, and analyze business health before spending real capital.',
-    },
-    {
-      question: 'Who is Wallflower for?',
-      answer: 'Wallflower is built specifically for retail SME owners, store managers, convenience stores, restaurants, pharmacies, and small retail chains looking for financial transparency.',
-    },
-    {
-      question: 'How accurate are the simulations?',
-      answer: 'Simulations use a 100% deterministic mathematical model based on standard SME financial accounting principles and your uploaded data baseline.',
-    },
-    {
-      question: 'Does AI do the financial calculations?',
-      answer: 'No. Deterministic math handles all calculations for total accuracy, while AI provides executive narrative summaries and strategic recommendations.',
-    },
-    {
-      question: 'Can I use Wallflower without accounting software?',
-      answer: 'Yes! You can upload simple monthly snapshots, CSV spreadsheets, or enter key business numbers manually in a few minutes.',
-    },
-  ];
-
   return (
-    <section id="faq" className="py-20 border-b border-border/60 bg-background text-left">
-      <div className="mx-auto w-full max-w-[1000px] px-5 sm:px-8 lg:px-12 space-y-10">
-        <div className="text-center space-y-3">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
-            Frequently asked questions
+    <section id="faq" className="py-20 sm:py-28 border-b border-border/60 bg-surface-subtle/30 text-center">
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12">
+        {/* Section Header (Centered) */}
+        <div className="max-w-3xl mx-auto space-y-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand mx-auto">
+            <HelpCircle className="size-3.5" />
+            <span>COMMONLY ASKED QUESTIONS</span>
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">
+            Frequently Asked Questions
           </h2>
+          <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed max-w-2xl mx-auto">
+            Everything you need to know about Wallflower&apos;s deterministic math, simulations, security, and export capabilities.
+          </p>
         </div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, index) => {
-            const isOpen = !!openItems[index];
-
+        {/* FAQ Accordion List (Centered Max Width Container) */}
+        <div className="max-w-3xl mx-auto space-y-3.5 text-left">
+          {FAQS.map((faq, index) => {
+            const isOpen = openIndex === index;
             return (
               <div
                 key={faq.question}
-                className={cn(
-                  'rounded-2xl border-2 border-border-strong bg-surface overflow-hidden shadow-2xs transition-all duration-200',
-                  isOpen && 'border-emerald-500/50 bg-emerald-500/5'
-                )}
+                className={`rounded-2xl border transition-all ${
+                  isOpen
+                    ? 'border-brand/40 bg-surface shadow-md ring-1 ring-brand/20'
+                    : 'border-border-strong bg-surface hover:border-border-strong shadow-xs'
+                }`}
               >
                 <button
                   type="button"
-                  onClick={() => toggleItem(index)}
-                  className="flex w-full items-center justify-between gap-4 p-4.5 text-left font-bold text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
-                  aria-expanded={isOpen}
+                  onClick={() => toggleFaq(index)}
+                  className="w-full flex items-center justify-between p-5 text-left font-display text-sm sm:text-base font-bold text-text-primary gap-4 cursor-pointer"
                 >
-                  <span className="text-xs sm:text-sm font-bold text-text-primary">{faq.question}</span>
-                  <ChevronDown
-                    className={cn(
-                      'size-4 shrink-0 text-text-muted transition-transform duration-200',
-                      isOpen && 'rotate-180 text-emerald-500'
-                    )}
-                  />
+                  <span>{faq.question}</span>
+                  <div
+                    className={`size-7 rounded-lg flex items-center justify-center shrink-0 border transition-all ${
+                      isOpen
+                        ? 'bg-brand text-white border-brand rotate-180'
+                        : 'bg-surface-subtle border-border text-text-muted'
+                    }`}
+                  >
+                    <ChevronDown className="size-4" />
+                  </div>
                 </button>
 
-                <Expand open={isOpen}>
-                  <div className="border-t border-border/60 bg-surface-subtle px-5 py-4 text-xs sm:text-sm text-text-secondary leading-relaxed font-medium">
-                    {faq.answer}
-                  </div>
-                </Expand>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-text-secondary font-medium leading-relaxed border-t border-border/40 mt-1">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}

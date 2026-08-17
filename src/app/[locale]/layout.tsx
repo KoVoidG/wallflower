@@ -1,9 +1,22 @@
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import '../globals.css';
 import '../print.css';
+
+export const metadata: Metadata = {
+  icons: {
+    icon: [
+      { url: '/wallflower-logo 1.png', sizes: 'any', type: 'image/png' },
+      { url: '/wallflower-logo 1.png', sizes: '192x192', type: 'image/png' },
+      { url: '/wallflower-logo 1.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/wallflower-logo 1.png',
+    apple: '/wallflower-logo 1.png',
+  },
+};
 
 const inter = { variable: 'font-inter' };
 const spaceGrotesk = { variable: 'font-space-grotesk' };

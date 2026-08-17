@@ -206,6 +206,14 @@ export async function getAdvisorRecommendation(): Promise<AIRecommendation> {
   return MOCK_RECOMMENDATION;
 }
 
+export async function getAdvisorInitialData(): Promise<{ suggestedPrompts: SuggestedPrompt[] }> {
+  // Simulate realistic network delay matching dashboard and simulations
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  return {
+    suggestedPrompts: MOCK_PROMPTS,
+  };
+}
+
 export async function getSuggestedPrompts(): Promise<SuggestedPrompt[]> {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return MOCK_PROMPTS;

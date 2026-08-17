@@ -557,4 +557,40 @@ html[lang="th"] button {
   letter-spacing: normal;
 }
 
+/* ── Infinite Marquee Keyframes ────────────────────────────────────────── */
+@keyframes marquee-slide-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-slide-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide-left 32s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide-right 32s linear infinite;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
 

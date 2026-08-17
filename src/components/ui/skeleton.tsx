@@ -269,23 +269,181 @@ export function SimulationResultsSkeleton() {
 export function AdvisorSkeleton() {
   return (
     <AppPage aria-busy="true" aria-label="Loading AI Advisor">
-      <div className="flex justify-between items-center pb-4 border-b border-border/80">
-        <div className="space-y-1">
-          <Skeleton className="h-7 w-36 rounded-md" />
-          <Skeleton className="h-4 w-72 rounded-md" />
+      <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
+        {/* Header Skeleton */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-border/80">
+          <div className="space-y-1.5">
+            <Skeleton className="h-8 w-44 rounded-md" />
+            <Skeleton className="h-4 w-72 rounded-md" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-9 w-36 rounded-xl" />
+            <Skeleton className="h-9 w-32 rounded-xl" />
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Skeleton className="h-8 w-24 rounded-lg" />
-          <Skeleton className="h-8 w-32 rounded-lg" />
+
+        {/* Top Row: Goal Input & Workflow Graph Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* Card 1: Goal Input Skeleton */}
+          <div className="p-5 rounded-2xl border border-border bg-surface flex flex-col justify-between min-h-[380px] space-y-4">
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-48 rounded" />
+              <Skeleton className="h-28 w-full rounded-xl" />
+              <div className="space-y-2 pt-2">
+                <Skeleton className="h-3 w-28 rounded" />
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="h-7 w-32 rounded-lg" />
+                  <Skeleton className="h-7 w-28 rounded-lg" />
+                  <Skeleton className="h-7 w-36 rounded-lg" />
+                  <Skeleton className="h-7 w-32 rounded-lg" />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center pt-3 border-t border-border/40">
+              <Skeleton className="h-4 w-32 rounded" />
+              <Skeleton className="h-9 w-36 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Card 2: Workflow Canvas Skeleton */}
+          <div className="p-5 rounded-2xl border border-border bg-surface flex flex-col justify-between min-h-[380px] space-y-4">
+            <div className="flex justify-between items-center border-b border-border/40 pb-3">
+              <Skeleton className="h-4 w-40 rounded" />
+              <Skeleton className="h-4 w-20 rounded" />
+            </div>
+            <div className="grid grid-cols-2 gap-3 py-4">
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+            </div>
+            <div className="flex justify-between items-center pt-2">
+              <Skeleton className="h-4 w-24 rounded" />
+              <Skeleton className="h-7 w-20 rounded-lg" />
+            </div>
+          </div>
         </div>
+
+        {/* Bottom Section: Strategic Action Plan Skeleton */}
+        <AdvisorPlanSkeleton />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-        <div className="min-w-0 space-y-6">
-          <Skeleton className="h-56 rounded-2xl" />
-          <Skeleton className="h-20 rounded-xl" />
+    </AppPage>
+  );
+}
+
+export function AdvisorPlanSkeleton() {
+  return (
+    <div className="p-6 sm:p-8 rounded-2xl border border-border bg-surface space-y-6">
+      <div className="border-b border-border/60 pb-4 flex justify-between items-center">
+        <div className="space-y-1.5">
+          <Skeleton className="h-4 w-28 rounded-full" />
+          <Skeleton className="h-6 w-48 rounded-md" />
         </div>
-        <div className="hidden lg:block lg:w-[320px] xl:w-[340px] shrink-0 space-y-4">
-          <Skeleton className="h-80 rounded-xl" />
+        <Skeleton className="h-4 w-36 rounded" />
+      </div>
+
+      {/* Finding Box Skeleton */}
+      <Skeleton className="h-20 w-full rounded-xl" />
+
+      {/* 4 Impact Metric Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-20 rounded-xl" />
+      </div>
+
+      {/* Action Items List Skeleton */}
+      <div className="space-y-3 pt-2">
+        <Skeleton className="h-4 w-32 rounded" />
+        <Skeleton className="h-16 w-full rounded-xl" />
+        <Skeleton className="h-16 w-full rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+export function AutomationSkeleton() {
+  return (
+    <AppPage aria-busy="true" aria-label="Loading automation engine">
+      <div className="space-y-6 max-w-[1600px] mx-auto pb-12">
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <Skeleton className="h-7 sm:h-8 w-40 rounded-md" />
+              <Skeleton className="h-5 w-28 rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-72 sm:w-96 rounded-md" />
+          </div>
+
+          <Skeleton className="h-9 w-36 rounded-xl shrink-0" />
+        </div>
+
+        {/* Automation Rules List (5 cards matching active automations overview) */}
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 sm:p-5 rounded-2xl border border-border bg-surface shadow-2xs"
+            >
+              <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                {/* Left Column: Icon + Category/Status + Title + Description */}
+                <div className="flex items-start gap-3.5 min-w-[320px] max-w-[440px]">
+                  <Skeleton className="size-10 rounded-xl shrink-0 mt-0.5" />
+
+                  <div className="space-y-1.5 flex-1">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-3 w-28 rounded" />
+                      <Skeleton className="h-4 w-16 rounded-full" />
+                    </div>
+                    <Skeleton className="h-4 sm:h-5 w-3/4 max-w-[240px] rounded-md" />
+                    <Skeleton className="h-3.5 w-full max-w-[320px] rounded" />
+                  </div>
+                </div>
+
+                {/* Right Column: 5 Metrics + Action Icons */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 xl:flex items-center gap-4 xl:gap-8 pt-3 xl:pt-0 border-t xl:border-t-0 border-border/60">
+                  {/* Trigger */}
+                  <div className="min-w-[120px] space-y-1">
+                    <Skeleton className="h-2.5 w-12 rounded" />
+                    <Skeleton className="h-4 w-24 rounded" />
+                  </div>
+
+                  {/* Last Check */}
+                  <div className="min-w-[100px] space-y-1">
+                    <Skeleton className="h-2.5 w-16 rounded" />
+                    <Skeleton className="h-4 w-16 rounded" />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="min-w-[70px] space-y-1">
+                    <Skeleton className="h-2.5 w-12 rounded" />
+                    <Skeleton className="h-4 w-14 rounded" />
+                  </div>
+
+                  {/* Runs */}
+                  <div className="min-w-[60px] space-y-1">
+                    <Skeleton className="h-2.5 w-10 rounded" />
+                    <Skeleton className="h-4 w-8 rounded" />
+                  </div>
+
+                  {/* Success Rate */}
+                  <div className="min-w-[90px] space-y-1">
+                    <Skeleton className="h-2.5 w-20 rounded" />
+                    <Skeleton className="h-4 w-12 rounded" />
+                  </div>
+
+                  {/* Action Icons */}
+                  <div className="hidden xl:flex items-center gap-2.5 shrink-0 pl-2">
+                    <Skeleton className="size-6 rounded-md" />
+                    <Skeleton className="size-6 rounded-md" />
+                    <Skeleton className="size-4 rounded" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </AppPage>

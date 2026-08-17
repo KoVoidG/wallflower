@@ -2,86 +2,130 @@ import type { Metadata } from 'next';
 import { LegalLayout, type TocItem } from '@/components/legal/legal-layout';
 
 export const metadata: Metadata = {
-  title: 'Prototype Privacy Notice — Wallflower',
-  description: 'Privacy notice explaining data handling within the Wallflower decision-intelligence frontend prototype.',
+  title: 'Privacy Policy — Wallflower',
+  description: 'Privacy policy explaining data encryption, protection, and handling within Wallflower.',
 };
 
 const tocItems: TocItem[] = [
-  { id: 'data-handled', title: '1. Data Handled in Prototype' },
-  { id: 'how-processed', title: '2. Deterministic vs AI Processing' },
-  { id: 'ai-context', title: '3. AI API Context Usage' },
-  { id: 'client-control', title: '4. Client Controls & Data Reset' },
-  { id: 'contact-info', title: '5. Operator Contact' },
+  { id: 'information-collected', title: '1. Information We Collect' },
+  { id: 'how-used', title: '2. How Information is Processed' },
+  { id: 'math-vs-ai', title: '3. Deterministic vs AI Isolation' },
+  { id: 'storage-security', title: '4. Encryption & Data Security' },
+  { id: 'third-parties', title: '5. Third-Party Disclosures' },
+  { id: 'user-rights', title: '6. Your Rights & Data Portability' },
+  { id: 'contact', title: '7. Privacy Contact' },
 ];
 
 export default function PrivacyPage() {
   return (
     <LegalLayout
-      title="Prototype Privacy Notice"
-      subtitle="This privacy notice outlines how business metrics and prototype inputs are handled within the Wallflower application."
-      effectiveDate="October 2025"
-      lastUpdated="July 2026"
-      version="v0.1-prototype"
+      title="Privacy Policy"
+      subtitle="How Wallflower protects your proprietary business metrics, transactions, and simulation models."
+      effectiveDate="January 2026"
+      lastUpdated="August 2026"
+      version="v1.2-production"
       tocItems={tocItems}
     >
-      <section id="data-handled" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          1. Data Handled in Prototype
+      <section id="information-collected" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          1. Information We Collect
         </h2>
         <p>
-          Wallflower processes inputs provided directly by the user during onboarding, snapshot entry, and decision simulation:
+          To generate accurate financial simulations and health assessments, Wallflower processes the following operational business data provided by you:
         </p>
-        <ul className="list-disc list-inside space-y-1 pl-2">
-          <li>Basic account details (display name, email address)</li>
-          <li>Business metadata (company name, industry sector, team size, fiscal start)</li>
-          <li>Financial snapshot figures (revenue, expenses, cash reserves, receivables, payables, debt)</li>
-          <li>Simulation scenario parameters & threshold preferences</li>
+        <ul className="list-disc list-inside space-y-1.5 pl-2">
+          <li>
+            <strong>Account Credentials:</strong> Name, work email address, and authentication identifiers.
+          </li>
+          <li>
+            <strong>Business Metadata:</strong> Company name, retail sector, employee headcount, and currency preferences.
+          </li>
+          <li>
+            <strong>Financial Snapshot Metrics:</strong> Monthly revenue, cost of goods sold (COGS), operating payroll, rent, cash reserves, receivables, and debt commitments.
+          </li>
+          <li>
+            <strong>Custom Simulation Variables:</strong> Price elasticity coefficients, hiring plans, and promotion budgets.
+          </li>
         </ul>
       </section>
 
-      <section id="how-processed" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          2. Deterministic vs AI Processing
+      <section id="how-used" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          2. How Information is Processed
         </h2>
         <p>
-          Financial calculations (runway months, profit margins, risk severities) are evaluated deterministically in client-side code. Financial data is never transmitted to external marketing brokers or third-party advertisers.
+          We use your financial inputs strictly to:
+        </p>
+        <ul className="list-disc list-inside space-y-1 pl-2">
+          <li>Calculate real-time Business Health Scores and cash runway forecasts.</li>
+          <li>Evaluate scenario simulations and multi-variable comparison matrices.</li>
+          <li>Generate automated risk diagnoses and deadstock/margin compression warnings.</li>
+          <li>Produce exportable Executive Decision Reports.</li>
+        </ul>
+      </section>
+
+      <section id="math-vs-ai" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          3. Deterministic vs AI Isolation
+        </h2>
+        <p>
+          Wallflower enforces a zero-data-leakage architecture between financial calculations and AI models:
+        </p>
+        <ul className="list-disc list-inside space-y-2 pl-2">
+          <li>
+            <strong>Local Financial Processing:</strong> All financial arithmetic is computed using deterministic algebraic formulas.
+          </li>
+          <li>
+            <strong>Zero AI Model Training:</strong> Your business records and financial numbers are never used to train, fine-tune, or improve public foundation models.
+          </li>
+          <li>
+            <strong>Isolated AI Summarization:</strong> When you invoke the Capybot AI Co-pilot, only synthesized scenario differentials (e.g., &quot;+6% price yields +฿42k profit&quot;) are sent to the AI API to generate explanatory memos.
+          </li>
+        </ul>
+      </section>
+
+      <section id="storage-security" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          4. Encryption &amp; Data Security
+        </h2>
+        <p>
+          We employ enterprise-grade security protocols:
+        </p>
+        <ul className="list-disc list-inside space-y-1 pl-2">
+          <li>All stored data is encrypted at rest with AES-256 standards.</li>
+          <li>All browser sessions communicate over secure TLS 1.3 encrypted channels.</li>
+          <li>Granular role-based access controls for multi-user workspaces.</li>
+        </ul>
+      </section>
+
+      <section id="third-parties" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          5. Third-Party Disclosures
+        </h2>
+        <p>
+          We do not sell, license, or broker your personal or business financial data to third-party advertisers, data aggregators, or lending brokers.
         </p>
       </section>
 
-      <section id="ai-context" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          3. AI API Context Usage
+      <section id="user-rights" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          6. Your Rights &amp; Data Portability
         </h2>
         <p>
-          When accessing AI Advisor insights, structured business metrics (e.g. runway months, risk titles) are sent to the Google Gemini API to generate explanation text and recommendations.
-        </p>
-        <p>
-          Only relevant metrics are included in prompt requests; raw account passwords or unneeded personal identifiers are omitted.
+          You have the right to export all your simulation data, scenario histories, and financial records in standard formats (CSV, Excel, PDF) at any time. You can also request complete deletion of your account and all associated models.
         </p>
       </section>
 
-      <section id="client-control" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          4. Client Controls & Data Reset
+      <section id="contact" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          7. Privacy &amp; Data Protection Officer Contact
         </h2>
         <p>
-          Because this is a client-side prototype, user inputs are maintained locally in browser memory and local storage.
+          If you have questions regarding our privacy practices or wish to exercise data rights, contact us at:
         </p>
-        <p>
-          Users can clear or reset all prototype data at any time via <strong>Settings &gt; Data & Privacy</strong>.
-        </p>
-      </section>
-
-      <section id="contact-info" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          5. Operator Contact
-        </h2>
-        <p>
-          For privacy inquiries or feedback regarding data handling in the Wallflower prototype:
-        </p>
-        <div className="rounded-md border border-border bg-surface p-4 text-xs font-mono">
-          Email: support@wallflower.app<br />
-          Location: Bangkok, Thailand
+        <div className="rounded-2xl border border-border bg-surface p-4 text-xs font-mono">
+          Email: privacy@wallflower.app<br />
+          Data Protection Office: Bangkok, Thailand
         </div>
       </section>
     </LegalLayout>

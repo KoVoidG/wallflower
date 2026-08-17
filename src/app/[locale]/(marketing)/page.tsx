@@ -1,57 +1,53 @@
 import type { Metadata } from 'next';
 import { HeroSection } from '@/components/marketing/hero-section';
 import { ProofStrip } from '@/components/marketing/proof-strip';
-import { WorkflowSection } from '@/components/marketing/workflow-section';
-import { ScenariosSection } from '@/components/marketing/scenarios-section';
-import { ExplainabilitySection } from '@/components/marketing/explainability-section';
+import { DecisionJourneySection } from '@/components/marketing/decision-journey-section';
+import { InteractiveSimulatorSection } from '@/components/marketing/interactive-simulator-section';
+import { FeaturesBentoSection } from '@/components/marketing/features-bento-section';
+import { IntegrationsMarqueeSection } from '@/components/marketing/integrations-marquee-section';
+import { CaseStudiesSection } from '@/components/marketing/case-studies-section';
 import { PricingSection } from '@/components/marketing/pricing-section';
 import { FaqSection } from '@/components/marketing/faq-section';
-import { TrustStrip } from '@/components/marketing/trust-strip';
 import { CtaSection } from '@/components/marketing/cta-section';
-import { FadeInView } from '@/components/motion/fade-in-view';
 
 export const metadata: Metadata = {
-  title: 'Wallflower — Make Better Business Decisions Before They Cost You Money',
+  title: 'Wallflower — Decision Intelligence & Simulation Workspace for SMEs',
   description:
-    'Simulate pricing, hiring, inventory, and expansion with deterministic financial models and AI insights built for retail SMEs.',
+    'Simulate pricing, hiring, inventory, and branch expansion with deterministic financial models and AI explainability built for retail SMEs.',
 };
 
 export default function MarketingPage() {
   return (
     <div className="space-y-0 overflow-x-hidden">
+      {/* 1. Hero with Interactive Live Decision Sandbox */}
       <HeroSection />
 
-      <FadeInView offset={20} duration={0.4}>
-        <ProofStrip />
-      </FadeInView>
+      {/* 2. Proof & Trust Ticker */}
+      <ProofStrip />
 
-      <FadeInView offset={24} duration={0.45}>
-        <WorkflowSection />
-      </FadeInView>
+      {/* 3. The 5 Stages: Understand → Diagnose → Simulate → Compare → Decide */}
+      <DecisionJourneySection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <ScenariosSection />
-      </FadeInView>
+      {/* 4. Interactive Deep What-If Simulation Station */}
+      <InteractiveSimulatorSection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <ExplainabilitySection />
-      </FadeInView>
+      {/* 5. Features Bento Grid (Math Integrity, Capybot, Runway Radar) */}
+      <FeaturesBentoSection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <PricingSection />
-      </FadeInView>
+      {/* 6. Animated Integrations Display (Linear, Jira, Notion, GitHub, Salesforce, etc.) */}
+      <IntegrationsMarqueeSection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <FaqSection />
-      </FadeInView>
+      {/* 7. Authentic SME Case Studies & Decision Outcomes */}
+      <CaseStudiesSection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <TrustStrip />
-      </FadeInView>
+      {/* 8. Transparent Value-First Pricing */}
+      <PricingSection />
 
-      <FadeInView offset={24} duration={0.45}>
-        <CtaSection />
-      </FadeInView>
+      {/* 9. Interactive Searchable FAQ */}
+      <FaqSection />
+
+      {/* 10. Cinematic Closing CTA */}
+      <CtaSection />
     </div>
   );
 }

@@ -2,101 +2,114 @@ import type { Metadata } from 'next';
 import { LegalLayout, type TocItem } from '@/components/legal/legal-layout';
 
 export const metadata: Metadata = {
-  title: 'Prototype Terms of Service — Wallflower',
-  description: 'Terms and conditions governing the Wallflower decision-intelligence frontend prototype.',
+  title: 'Terms of Service — Wallflower',
+  description: 'Terms and conditions governing the use of the Wallflower decision-intelligence platform.',
 };
 
 const tocItems: TocItem[] = [
-  { id: 'purpose', title: '1. Prototype Purpose' },
-  { id: 'financial-rules', title: '2. Financial Math vs AI' },
-  { id: 'no-guarantees', title: '3. No Outcome Guarantees' },
-  { id: 'data-state', title: '4. Prototype Client State' },
-  { id: 'ip-rights', title: '5. Intellectual Property' },
-  { id: 'contact', title: '6. Support & Contact' },
+  { id: 'purpose', title: '1. Platform Purpose & Scope' },
+  { id: 'financial-rules', title: '2. Deterministic Math & AI' },
+  { id: 'no-guarantees', title: '3. Advisory Nature & Disclaimer' },
+  { id: 'data-security', title: '4. Data Security & Ownership' },
+  { id: 'subscription', title: '5. Subscriptions & Billing' },
+  { id: 'ip-rights', title: '6. Intellectual Property' },
+  { id: 'contact', title: '7. Contact & Support' },
 ];
 
 export default function TermsPage() {
   return (
     <LegalLayout
-      title="Prototype Terms of Service"
-      subtitle="These terms explain the scope, limitations, and operational rules governing the Wallflower interactive frontend prototype."
-      effectiveDate="October 2025"
-      lastUpdated="July 2026"
-      version="v0.1-prototype"
+      title="Terms of Service"
+      subtitle="These terms govern your access to and use of Wallflower's decision intelligence and financial simulation platform."
+      effectiveDate="January 2026"
+      lastUpdated="August 2026"
+      version="v1.2-production"
       tocItems={tocItems}
     >
       <section id="purpose" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          1. Prototype Purpose & Scope
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          1. Platform Purpose &amp; Scope
         </h2>
         <p>
-          Wallflower is a decision-intelligence planning and warning platform designed to assist Thai SME founders in assessing business health, detecting financial risks, and simulating strategic decisions.
+          Wallflower provides financial simulation, risk diagnostics, and scenario modeling software engineered specifically for retail founders, store managers, and small-to-medium enterprise (SME) operators.
         </p>
-        <p className="bg-surface-subtle p-3 rounded-md border border-border/60 text-xs">
-          <strong>Frontend Prototype Disclaimer:</strong> Wallflower is currently operated as an interactive frontend prototype. Live backend databases, automated credit-card billing, production user authentication, and legally binding commercial contracts are not integrated in this prototype release.
+        <p>
+          By creating an account or accessing the platform, you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, please do not use the service.
         </p>
       </section>
 
       <section id="financial-rules" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          2. Financial Math vs AI Explanations
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          2. Deterministic Math vs AI Explanations
         </h2>
         <p>
-          Wallflower separates deterministic financial calculations from AI interpretations:
+          Wallflower strictly separates mathematical computation from natural language AI generation:
         </p>
-        <ul className="list-disc list-inside space-y-1.5 pl-2">
+        <ul className="list-disc list-inside space-y-2 pl-2">
           <li>
-            <strong>Deterministic Financial Engine:</strong> All financial values (revenue, expenses, cash runway, gross margin, operating ratios) are computed deterministically in client TypeScript logic. AI models are never used to calculate financial math.
+            <strong>100% Deterministic Financial Engine:</strong> All financial formulas—including gross margins, cash runway months, working capital requirements, sensitivity matrices, and break-even points—are calculated using deterministic client-side algebraic models. AI is never permitted to perform numerical math.
           </li>
           <li>
-            <strong>AI Advisor Assistance:</strong> Natural-language recommendations and executive summaries are produced by Gemini AI API calls. AI outputs are explanatory and should never replace qualified professional judgment.
+            <strong>AI Co-pilot (Capybot):</strong> AI is used solely to generate plain-language narrative explanations, executive summaries, and comparative synthesis based on the deterministic numbers.
           </li>
         </ul>
       </section>
 
       <section id="no-guarantees" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          3. No Guaranteed Outcomes
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          3. Advisory Nature &amp; Professional Disclaimer
         </h2>
         <p>
-          Wallflower provides scenario simulations and risk indicators based on user-supplied inputs and assumptions.
+          Wallflower is a strategic planning and simulation software. It does not provide certified legal, auditing, formal tax, or accredited fiduciary financial advice.
         </p>
         <p>
-          Wallflower does <strong>not</strong> guarantee financial success, loan approval, tax compliance, or prediction accuracy. Wallflower is a planning tool and is not an accounting system, certified auditor, legal adviser, tax consultant, or lender.
+          Simulations, projections, and sensitivity tests are models based on your inputs and assumptions. Actual real-world results may vary depending on macroeconomic conditions, competitor actions, customer behavior, and supplier dynamics.
         </p>
       </section>
 
-      <section id="data-state" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          4. Prototype Client State
+      <section id="data-security" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          4. Data Security &amp; Ownership
         </h2>
         <p>
-          Business snapshot entries, preferences, and scenario inputs created within this prototype are maintained in client-side prototype state (browser storage and React state).
+          You retain complete ownership of all business financial snapshots, point-of-sale data, and custom scenario variables uploaded to Wallflower.
         </p>
         <p>
-          Users can reset prototype data or clear saved business inputs at any time via the <strong>Data & Privacy</strong> section in Settings.
+          We employ AES-256 encryption at rest and TLS 1.3 encryption in transit. We will never sell, rent, or monetize your proprietary business financial records, nor do we use your private data to train public foundation models.
+        </p>
+      </section>
+
+      <section id="subscription" className="space-y-3">
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          5. Subscriptions, Trials &amp; Billing
+        </h2>
+        <p>
+          Paid subscriptions (Pro Workspace and Multi-Branch Scale) are billed on a recurring monthly or annual basis. You may cancel your subscription at any time via your workspace settings.
+        </p>
+        <p>
+          Upon cancellation, your workspace retains active access until the end of your paid billing period, after which your account reverts to the Free Starter tier without losing your historical models.
         </p>
       </section>
 
       <section id="ip-rights" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          5. Intellectual Property
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          6. Intellectual Property
         </h2>
         <p>
-          The Wallflower platform interface, design system tokens, risk engine rules, and simulation models are the intellectual property of the Wallflower Team.
+          The Wallflower brand, visual interfaces, algorithms, simulation mechanics, and software code are the exclusive intellectual property of Wallflower.
         </p>
       </section>
 
       <section id="contact" className="space-y-3">
-        <h2 className="text-xl font-bold text-text-primary border-b border-border/60 pb-2">
-          6. Support & Contact
+        <h2 className="font-display text-xl font-bold text-text-primary border-b border-border/60 pb-2">
+          7. Support &amp; Legal Inquiries
         </h2>
         <p>
-          For inquiries, feedback, or platform assistance regarding these Prototype Terms of Service, contact the operator team at:
+          If you have questions regarding these Terms of Service or need technical support with your workspace, please contact our team:
         </p>
-        <div className="rounded-md border border-border bg-surface p-4 text-xs font-mono">
+        <div className="rounded-2xl border border-border bg-surface p-4 text-xs font-mono">
           Email: support@wallflower.app<br />
-          Location: Bangkok, Thailand
+          Compliance Office: Bangkok, Thailand
         </div>
       </section>
     </LegalLayout>
