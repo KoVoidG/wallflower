@@ -35,7 +35,10 @@ export function Logo({
 
   return (
     <div
-      className={cn('inline-flex items-center gap-3 select-none shrink-0', className)}
+      className={cn(
+        'inline-flex items-center gap-3 select-none shrink-0',
+        className,
+      )}
       {...props}
     >
       {/* Direct PNG Logo without circular containers or borders */}
@@ -54,7 +57,7 @@ export function Logo({
         <span
           className={cn(
             'font-display font-bold tracking-tight text-[#0F172A] dark:text-white leading-none text-xl sm:text-2xl',
-            wordmarkClassName
+            wordmarkClassName,
           )}
         >
           Wallflower

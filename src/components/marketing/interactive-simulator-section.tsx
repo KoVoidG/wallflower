@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  SlidersHorizontal,
   RotateCcw,
   Sparkles,
   ShieldCheck,
@@ -11,9 +11,8 @@ import {
   Users,
   Truck,
   DollarSign,
-  ArrowRight,
 } from 'lucide-react';
-import { Link } from '@/lib/i18n/navigation';
+import { Noise } from '@/components/ui/noise';
 
 export function InteractiveSimulatorSection() {
   // 4 Interactive Levers (Initial Baseline Defaults)
@@ -89,54 +88,58 @@ export function InteractiveSimulatorSection() {
   const marketingPct = Math.max(0, Math.min(100, (marketingBudget / 60000) * 100));
 
   return (
-    <section id="simulator" className="py-20 sm:py-28 border-b border-border/60 bg-background text-left">
-      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12">
+    <section id="simulator" className="py-28 sm:py-40 bg-[#0A0F24] text-left relative overflow-hidden">
+      <Noise />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[1200px] pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-purple-500/20 blur-[150px] rounded-full mix-blend-screen" />
+      </div>
+
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-16 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand">
-              <SlidersHorizontal className="size-3.5" />
-              <span>INTERACTIVE DECISION ENGINE</span>
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">
-              Test your next business move in real time.
+          <div className="max-w-4xl space-y-6">
+            <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+              Change the plan.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">
+                See what happens.
+              </span>
             </h2>
-            <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed">
-              Adjust realistic operating levers below and see how Wallflower recalculates monthly profit, gross margin, and cash runway simultaneously.
+            <p className="text-lg sm:text-xl text-indigo-200/70 font-medium leading-relaxed">
+              Adjust realistic operating levers below and watch Wallflower instantaneously recalculate monthly profit, gross margin, and cash runway using deterministic models.
             </p>
           </div>
 
           <button
             type="button"
             onClick={handleReset}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-surface text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors shadow-xs shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-white/10 bg-white/5 text-sm font-bold text-indigo-200/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
-            <RotateCcw className="size-3.5 text-text-muted" />
+            <RotateCcw className="size-4" />
             <span>Reset Sliders</span>
           </button>
         </div>
 
         {/* The Interactive Control Board (2-Column Grid) */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           {/* Left Column: 4 In-App Styled Sliders (6 cols) */}
-          <div className="lg:col-span-6 p-6 sm:p-8 rounded-3xl border-2 border-border-strong bg-surface shadow-xl space-y-6">
-            <div className="flex items-center justify-between border-b border-border/60 pb-3">
-              <span className="font-display text-sm font-bold text-text-primary">
+          <div className="lg:col-span-6 p-8 sm:p-10 rounded-[2rem] border-2 border-white/10 bg-[#070A17]/80 backdrop-blur-2xl shadow-2xl space-y-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
+            <div className="flex items-center justify-between pb-4 border-b border-white/5">
+              <span className="font-display text-lg font-bold text-white">
                 Operational Levers
               </span>
-              <span className="text-[11px] font-semibold text-text-muted">
+              <span className="text-xs font-semibold text-indigo-200/50 uppercase tracking-widest">
                 Adjust any variable
               </span>
             </div>
 
             {/* Slider 1: Price Change */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between text-xs gap-3">
-                <span className="font-bold text-text-primary flex items-center gap-1.5">
-                  <Percent className="size-3.5 text-brand" />
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm gap-3">
+                <span className="font-bold text-white flex items-center gap-2">
+                  <Percent className="size-4 text-purple-400" />
                   <span>Selling Price Adjustment</span>
                 </span>
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shrink-0 tabular-nums text-brand dark:text-[#A5B4FC]">
+                <span className="font-mono text-sm font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0 tabular-nums text-purple-300">
                   {priceChange >= 0 ? `+${priceChange}%` : `${priceChange}%`}
                 </span>
               </div>
@@ -147,27 +150,27 @@ export function InteractiveSimulatorSection() {
                 step="1"
                 value={priceChange}
                 onChange={(e) => setPriceChange(Number(e.target.value))}
-                className="custom-slider w-full h-2 rounded-lg cursor-pointer"
+                className="custom-slider w-full h-3 rounded-lg cursor-pointer transition-all"
                 style={{
-                  background: `linear-gradient(to right, #6366F1 0%, #8B5CF6 ${pricePct}%, var(--slider-track-empty, #E2E8F0) ${pricePct}%, var(--slider-track-empty, #E2E8F0) 100%)`,
+                  background: `linear-gradient(to right, #6366F1 0%, #8B5CF6 ${pricePct}%, rgba(255,255,255,0.1) ${pricePct}%, rgba(255,255,255,0.1) 100%)`,
                 }}
               />
-              <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium tabular-nums">
+              <div className="flex justify-between text-xs text-indigo-200/50 font-medium tabular-nums">
                 <span>-10% Discount</span>
-                <span>Baseline (0%)</span>
+                <span>Baseline</span>
                 <span>+20% Premium</span>
               </div>
             </div>
 
             {/* Slider 2: Additional Headcount */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between text-xs gap-3">
-                <span className="font-bold text-text-primary flex items-center gap-1.5">
-                  <Users className="size-3.5 text-indigo-400" />
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm gap-3">
+                <span className="font-bold text-white flex items-center gap-2">
+                  <Users className="size-4 text-blue-400" />
                   <span>Add Floor / Sales Staff</span>
                 </span>
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shrink-0 tabular-nums text-indigo-600 dark:text-indigo-400">
-                  +{extraStaff} staff (+฿{(extraStaff * 19000).toLocaleString()}/mo)
+                <span className="font-mono text-sm font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0 tabular-nums text-blue-300">
+                  +{extraStaff} staff
                 </span>
               </div>
               <input
@@ -177,29 +180,26 @@ export function InteractiveSimulatorSection() {
                 step="1"
                 value={extraStaff}
                 onChange={(e) => setExtraStaff(Number(e.target.value))}
-                className="custom-slider w-full h-2 rounded-lg cursor-pointer"
+                className="custom-slider w-full h-3 rounded-lg cursor-pointer transition-all"
                 style={{
-                  background: `linear-gradient(to right, #6366F1 0%, #8B5CF6 ${staffPct}%, var(--slider-track-empty, #E2E8F0) ${staffPct}%, var(--slider-track-empty, #E2E8F0) 100%)`,
+                  background: `linear-gradient(to right, #3B82F6 0%, #60A5FA ${staffPct}%, rgba(255,255,255,0.1) ${staffPct}%, rgba(255,255,255,0.1) 100%)`,
                 }}
               />
-              <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium tabular-nums">
+              <div className="flex justify-between text-xs text-indigo-200/50 font-medium tabular-nums">
                 <span>0 (Current)</span>
-                <span>+1 Associate</span>
-                <span>+2 Staff</span>
-                <span>+3 Staff</span>
                 <span>+4 Staff</span>
               </div>
             </div>
 
             {/* Slider 3: Supplier COGS Discount */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between text-xs gap-3">
-                <span className="font-bold text-text-primary flex items-center gap-1.5">
-                  <Truck className="size-3.5 text-emerald-500" />
-                  <span>Supplier Cost Negotiation</span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm gap-3">
+                <span className="font-bold text-white flex items-center gap-2">
+                  <Truck className="size-4 text-emerald-400" />
+                  <span>Supplier Negotiation</span>
                 </span>
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shrink-0 tabular-nums text-emerald-600 dark:text-emerald-400">
-                  {supplierDiscount > 0 ? `-${supplierDiscount}% COGS Discount` : '0% Standard COGS'}
+                <span className="font-mono text-sm font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0 tabular-nums text-emerald-300">
+                  {supplierDiscount > 0 ? `-${supplierDiscount}% COGS` : '0%'}
                 </span>
               </div>
               <input
@@ -209,28 +209,26 @@ export function InteractiveSimulatorSection() {
                 step="1"
                 value={supplierDiscount}
                 onChange={(e) => setSupplierDiscount(Number(e.target.value))}
-                className="custom-slider w-full h-2 rounded-lg cursor-pointer"
+                className="custom-slider w-full h-3 rounded-lg cursor-pointer transition-all"
                 style={{
-                  background: `linear-gradient(to right, #6366F1 0%, #8B5CF6 ${supplierPct}%, var(--slider-track-empty, #E2E8F0) ${supplierPct}%, var(--slider-track-empty, #E2E8F0) 100%)`,
+                  background: `linear-gradient(to right, #10B981 0%, #34D399 ${supplierPct}%, rgba(255,255,255,0.1) ${supplierPct}%, rgba(255,255,255,0.1) 100%)`,
                 }}
               />
-              <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium tabular-nums">
+              <div className="flex justify-between text-xs text-indigo-200/50 font-medium tabular-nums">
                 <span>0% Standard</span>
-                <span>-5% Volume</span>
-                <span>-10% Bulk</span>
                 <span>-15% Tier 1</span>
               </div>
             </div>
 
             {/* Slider 4: Marketing Budget */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between text-xs gap-3">
-                <span className="font-bold text-text-primary flex items-center gap-1.5">
-                  <DollarSign className="size-3.5 text-amber-500" />
-                  <span>Monthly Marketing Spend</span>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm gap-3">
+                <span className="font-bold text-white flex items-center gap-2">
+                  <DollarSign className="size-4 text-amber-400" />
+                  <span>Marketing Spend</span>
                 </span>
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-[#2A344A] shrink-0 tabular-nums text-amber-600 dark:text-amber-400">
-                  ฿{marketingBudget.toLocaleString()}/mo
+                <span className="font-mono text-sm font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0 tabular-nums text-amber-300">
+                  ฿{(marketingBudget / 1000).toFixed(0)}k/mo
                 </span>
               </div>
               <input
@@ -240,120 +238,140 @@ export function InteractiveSimulatorSection() {
                 step="5000"
                 value={marketingBudget}
                 onChange={(e) => setMarketingBudget(Number(e.target.value))}
-                className="custom-slider w-full h-2 rounded-lg cursor-pointer"
+                className="custom-slider w-full h-3 rounded-lg cursor-pointer transition-all"
                 style={{
-                  background: `linear-gradient(to right, #6366F1 0%, #8B5CF6 ${marketingPct}%, var(--slider-track-empty, #E2E8F0) ${marketingPct}%, var(--slider-track-empty, #E2E8F0) 100%)`,
+                  background: `linear-gradient(to right, #F59E0B 0%, #FBBF24 ${marketingPct}%, rgba(255,255,255,0.1) ${marketingPct}%, rgba(255,255,255,0.1) 100%)`,
                 }}
               />
-              <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium tabular-nums">
+              <div className="flex justify-between text-xs text-indigo-200/50 font-medium tabular-nums">
                 <span>฿0</span>
-                <span>฿15k (Baseline)</span>
-                <span>฿35k Growth</span>
                 <span>฿60k Surge</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Live Calculated Simulation Output (6 cols) */}
-          <div className="lg:col-span-6 space-y-4">
-            {/* Top Primary Outcome Banner */}
-            <div className="p-6 sm:p-7 rounded-3xl border-2 border-border-strong bg-surface shadow-xl space-y-6 text-left">
-              <div className="flex items-center justify-between border-b border-border/60 pb-3">
+          <div className="lg:col-span-6 flex flex-col h-full">
+            <div className="p-8 sm:p-10 rounded-[2rem] border-2 border-white/10 bg-[#070A17]/80 backdrop-blur-2xl shadow-2xl space-y-8 text-left relative overflow-hidden flex-1 flex flex-col shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
+              
+              <div className="flex items-center justify-between pb-4 border-b border-white/5 relative z-10">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-ai" />
-                  <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-                    Simulated Financial Impact
+                  <Sparkles className="size-5 text-purple-400" />
+                  <span className="font-display text-lg font-bold text-white tracking-wider">
+                    Simulated Output
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-text-muted">
-                  <ShieldCheck className="size-3.5 text-emerald-500" /> Verified Math
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                  <ShieldCheck className="size-4" /> Deterministic Math
                 </span>
               </div>
 
-              {/* 3 Large KPI Dials */}
-              <div className="grid grid-cols-3 gap-3">
+              {/* Large KPI Display */}
+              <div className="grid grid-cols-2 gap-6 relative z-10 flex-1">
                 {/* Dial 1: Net Profit */}
-                <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-                    Net Profit
+                <div className="p-6 rounded-3xl border border-white/5 bg-[#0B1024] flex flex-col justify-center">
+                  <span className="text-xs font-bold uppercase tracking-widest text-indigo-200/50 block mb-2">
+                    Net Profit / mo
                   </span>
-                  <div className="font-mono text-lg sm:text-xl font-extrabold text-text-primary truncate">
-                    ฿{simulatedNetProfit.toLocaleString()}
+                  <div className="font-mono text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white truncate relative">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={simulatedNetProfit}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        ฿{simulatedNetProfit.toLocaleString()}
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
-                  <span
-                    className={`text-[11px] font-bold flex items-center gap-1 ${
-                      profitDelta >= 0
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-rose-600 dark:text-rose-400'
-                    }`}
-                  >
-                    <TrendingUp className="size-3" />
-                    <span>
-                      {profitDelta >= 0 ? `+${profitDeltaPct}%` : `${profitDeltaPct}%`}
+                  <div className="mt-4">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={profitDelta}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                          profitDelta >= 0
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                        }`}
+                      >
+                        <TrendingUp className={`size-3.5 ${profitDelta < 0 && 'rotate-180'}`} />
+                        <span>
+                          {profitDelta >= 0 ? `+${profitDeltaPct}%` : `${profitDeltaPct}%`} vs Baseline
+                        </span>
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                <div className="space-y-6 flex flex-col justify-between">
+                  {/* Dial 2: Runway */}
+                  <div className="p-5 rounded-2xl border border-white/5 bg-[#0B1024] flex-1 flex flex-col justify-center">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-200/50 block mb-1">
+                      Cash Runway
                     </span>
-                  </span>
-                </div>
-
-                {/* Dial 2: Runway */}
-                <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-                    Runway
-                  </span>
-                  <div className="font-mono text-lg sm:text-xl font-extrabold text-text-primary truncate">
-                    5.1 mos
+                    <div className="font-mono text-xl sm:text-2xl font-extrabold text-white truncate">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={simulatedRunway}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                        >
+                          {simulatedRunway}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
-                  <span className="text-[11px] font-semibold text-text-secondary">
-                    {simulatedRunway}
-                  </span>
-                </div>
 
-                {/* Dial 3: Health Score */}
-                <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-                    Health Score
-                  </span>
-                  <div className="font-mono text-lg sm:text-xl font-extrabold text-brand truncate">
-                    {healthScore}
-                    <span className="text-xs font-normal text-text-muted">/100</span>
+                  {/* Dial 3: Health Score */}
+                  <div className="p-5 rounded-2xl border border-white/5 bg-[#0B1024] flex-1 flex flex-col justify-center">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-200/50 block mb-1">
+                      Health Score
+                    </span>
+                    <div className="font-mono text-xl sm:text-2xl font-extrabold text-indigo-400 truncate">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={healthScore}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                        >
+                          {healthScore} <span className="text-sm font-normal text-indigo-200/50">/100</span>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
-                  <span className="text-[11px] font-semibold text-text-secondary">
-                    {healthScore >= 80 ? 'Optimal' : healthScore >= 65 ? 'Moderate' : 'Risk Warning'}
-                  </span>
                 </div>
               </div>
 
               {/* Capybot Dynamic Simulation Synthesis */}
-              <div className="p-4 rounded-2xl border border-brand/30 bg-brand-soft/40 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="size-3.5 text-brand" />
-                  <span className="font-display text-xs font-bold text-text-primary">
-                    Capybot Simulation Synthesis
-                  </span>
-                </div>
-                <p className="text-xs text-text-secondary font-medium leading-relaxed">
-                  {profitDelta >= 0
-                    ? `This combination generates +฿${profitDelta.toLocaleString()}/mo in incremental net income. Gross margin shifts to ${simulatedGrossMargin}%.`
-                    : `Warning: This configuration reduces monthly net income by -฿${Math.abs(
-                        profitDelta
-                      ).toLocaleString()}. Requires ${(
-                        Math.abs(profitDelta) / 450
-                      ).toFixed(0)} more transactions/mo to break even.`}
-                </p>
-              </div>
-
-              {/* Bottom CTA Row */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <span className="text-xs font-medium text-text-secondary">
-                  Want to model custom SKUs or multi-branch data?
-                </span>
-                <Link
-                  href="/register"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold shadow-md shadow-purple-500/25 hover:opacity-95 transition-all cursor-pointer"
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={`${profitDelta}`}
+                  initial={{ opacity: 0.5, backgroundColor: 'rgba(139, 92, 246, 0.05)' }}
+                  animate={{ opacity: 1, backgroundColor: 'rgba(139, 92, 246, 0.1)' }}
+                  className="p-5 rounded-2xl border border-purple-500/20 space-y-2 relative z-10"
                 >
-                  <span>Open Full Simulator</span>
-                  <ArrowRight className="size-3.5" />
-                </Link>
-              </div>
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="size-4 text-purple-400" />
+                    <span className="font-display text-sm font-bold text-white">
+                      AI Explanation
+                    </span>
+                  </div>
+                  <p className="text-sm text-indigo-100/90 font-medium leading-relaxed">
+                    {profitDelta >= 0
+                      ? `This scenario generates +฿${profitDelta.toLocaleString()}/mo in incremental net income. Gross margin shifts to ${simulatedGrossMargin}%.`
+                      : `Warning: This configuration reduces monthly net income by -฿${Math.abs(
+                          profitDelta
+                        ).toLocaleString()}. Requires ${(
+                          Math.abs(profitDelta) / 450
+                        ).toFixed(0)} more transactions/mo to break even.`}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>

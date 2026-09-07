@@ -5,31 +5,33 @@ import { ArrowRight, Sparkles, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export function CtaSection() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden bg-background text-left">
+    <section className="relative py-24 sm:py-32 overflow-hidden bg-[#0A0F24] text-left">
       {/* Background Radial Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-[500px] bg-gradient-to-r from-brand/20 via-purple-500/20 to-indigo-600/20 blur-3xl pointer-events-none -z-10 rounded-full" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-[500px] bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-indigo-600/20 blur-[120px] pointer-events-none -z-10 rounded-full" />
 
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-12">
-        <div className="relative rounded-3xl sm:rounded-[36px] border-2 border-brand/40 bg-surface/95 backdrop-blur-2xl p-8 sm:p-12 lg:p-16 shadow-2xl space-y-8 text-center overflow-hidden">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-12 relative z-10">
+        <div className="relative rounded-3xl sm:rounded-[36px] border border-white/10 bg-[#070A17]/80 backdrop-blur-2xl p-8 sm:p-12 lg:p-16 shadow-2xl space-y-8 text-center overflow-hidden">
           {/* Subtle Grid Accent */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
 
           {/* Top Pill */}
-          <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-4 py-1.5 text-xs font-bold text-brand shadow-xs">
-            <Sparkles className="size-3.5 text-ai animate-pulse" />
+          <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-bold text-indigo-400 shadow-xs">
+            <Sparkles className="size-3.5 animate-pulse" />
             <span>INSTANT SETUP • NO CREDIT CARD NEEDED</span>
           </div>
 
           {/* Main Headline */}
           <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight leading-[1.1]">
-              Make your next business decision with{' '}
-              <span className="bg-gradient-to-r from-brand via-purple-500 to-indigo-400 bg-clip-text text-transparent">
-                mathematical certainty
+            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
+              Make the right{' '}
+              <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-300 bg-clip-text text-transparent">
+                call
               </span>
               .
             </h2>
-            <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-indigo-200/70 font-medium leading-relaxed max-w-2xl mx-auto">
               Join retail SME owners who test pricing, payroll, promotions, and inventory orders in Wallflower before spending real capital.
             </p>
           </div>
@@ -46,19 +48,19 @@ export function CtaSection() {
               </Link>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-3 text-xs font-bold text-text-muted">
+            <div className="flex flex-wrap items-center justify-center gap-6 pt-3 text-xs font-bold text-indigo-200/50">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-500" />
+                <CheckCircle2 className="size-4 text-emerald-400" />
                 <span>3-Minute Onboarding</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="size-4 text-emerald-500" />
+                <ShieldCheck className="size-4 text-emerald-400" />
                 <span>100% Deterministic Math</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-500" />
+                <CheckCircle2 className="size-4 text-emerald-400" />
                 <span>Cancel Anytime</span>
               </div>
             </div>

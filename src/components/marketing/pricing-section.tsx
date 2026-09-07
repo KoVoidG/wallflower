@@ -75,26 +75,28 @@ export function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="py-20 sm:py-28 border-b border-border/60 bg-background text-left">
-      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-14 text-center">
+    <section id="pricing" className="py-24 sm:py-32 bg-[#FAFAFC] text-left relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-indigo-50/50 via-transparent to-transparent pointer-events-none" />
+
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-14 text-center relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand">
-            <Sparkles className="size-3.5 text-ai" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1 text-xs font-bold text-indigo-700">
+            <Sparkles className="size-3.5 text-indigo-500" />
             <span>TRANSPARENT, VALUE-FIRST PRICING</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">
-            Predictable pricing that pays for itself in one decision.
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight leading-[1.1]">
+            Clear pricing for clearer decisions.
           </h2>
-          <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed">
+          <p className="text-base sm:text-lg text-zinc-600 font-medium leading-relaxed">
             Avoid one bad hire or one pricing mistake, and Wallflower has paid for decades of subscriptions.
           </p>
 
           {/* Annual / Monthly Toggle Switch */}
-          <div className="pt-4 flex items-center justify-center gap-3">
+          <div className="pt-8 flex items-center justify-center gap-4">
             <span
-              className={`text-xs font-bold transition-colors cursor-pointer ${
-                !isAnnual ? 'text-text-primary' : 'text-text-muted'
+              className={`text-sm font-bold transition-colors cursor-pointer ${
+                !isAnnual ? 'text-zinc-900' : 'text-zinc-500'
               }`}
               onClick={() => setIsAnnual(false)}
             >
@@ -104,24 +106,25 @@ export function PricingSection() {
             <button
               type="button"
               onClick={() => setIsAnnual(!isAnnual)}
-              className="relative w-12 h-6 rounded-full bg-surface border-2 border-border p-0.5 transition-colors cursor-pointer"
+              className="relative w-14 h-7 rounded-full bg-zinc-200 border-2 border-transparent p-0.5 transition-colors cursor-pointer data-[state=checked]:bg-indigo-600"
+              data-state={isAnnual ? 'checked' : 'unchecked'}
               aria-label="Toggle annual billing discount"
             >
               <div
-                className={`size-4 rounded-full bg-brand transition-transform ${
-                  isAnnual ? 'translate-x-6' : 'translate-x-0'
+                className={`size-5 rounded-full bg-white shadow-sm transition-transform ${
+                  isAnnual ? 'translate-x-7' : 'translate-x-0'
                 }`}
               />
             </button>
 
             <span
-              className={`text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                isAnnual ? 'text-text-primary' : 'text-text-muted'
+              className={`text-sm font-bold flex items-center gap-2 transition-colors cursor-pointer ${
+                isAnnual ? 'text-zinc-900' : 'text-zinc-500'
               }`}
               onClick={() => setIsAnnual(true)}
             >
               <span>Annual Billing</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-700 border border-emerald-200">
                 SAVE 20%
               </span>
             </span>
@@ -129,7 +132,7 @@ export function PricingSection() {
         </div>
 
         {/* 3 Pricing Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left items-stretch max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left items-stretch max-w-6xl mx-auto pt-6">
           {tiers.map((tier) => {
             const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
             return (
@@ -137,13 +140,13 @@ export function PricingSection() {
                 key={tier.id}
                 className={`relative flex flex-col justify-between rounded-3xl p-7 sm:p-8 transition-all duration-300 ${
                   tier.isPopular
-                    ? 'border-2 border-brand bg-brand-soft/30 shadow-2xl shadow-brand/10 ring-1 ring-brand/30 lg:-translate-y-2'
-                    : 'border-2 border-border-strong bg-surface shadow-xl hover:border-border-strong hover:shadow-2xl'
+                    ? 'border-2 border-indigo-500 bg-indigo-50/50 shadow-2xl lg:-translate-y-2'
+                    : 'border border-black/5 bg-white shadow-xl hover:shadow-2xl'
                 }`}
               >
                 {/* Popular Badge */}
                 {tier.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[10px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
                     {tier.badge}
                   </div>
                 )}
@@ -151,48 +154,43 @@ export function PricingSection() {
                 <div className="space-y-6">
                   {/* Card Header */}
                   <div>
-                    <h3 className="font-display text-xl font-bold text-text-primary">
+                    <h3 className="font-display text-xl font-bold text-zinc-900">
                       {tier.name}
                     </h3>
-                    <p className="text-xs text-text-secondary font-medium mt-1.5 leading-relaxed min-h-[36px]">
+                    <p className="text-xs text-zinc-600 font-medium mt-1.5 leading-relaxed min-h-[36px]">
                       {tier.desc}
                     </p>
                   </div>
 
                   {/* Price Block */}
-                  <div className="flex items-baseline gap-1.5 border-b border-border/60 pb-5">
-                    <span className="font-metric text-4xl sm:text-5xl font-extrabold text-text-primary">
+                  <div className="flex items-baseline gap-1.5 pb-5">
+                    <span className="font-display text-5xl font-extrabold text-zinc-900">
                       {price}
                     </span>
-                    <span className="text-xs font-bold text-text-muted">
+                    <span className="text-sm font-bold text-zinc-500">
                       {tier.period}
                     </span>
-                    {isAnnual && tier.id !== 'free' && (
-                      <span className="text-[10px] font-bold text-emerald-500 ml-1">
-                        (Billed annually)
-                      </span>
-                    )}
                   </div>
 
                   {/* Features List */}
-                  <ul className="space-y-3 text-xs font-medium text-text-secondary">
+                  <ul className="space-y-3 text-xs font-medium text-zinc-700">
                     {tier.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2.5">
                         <Check className="size-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="text-text-primary leading-snug">{feature}</span>
+                        <span className="leading-snug">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
                 {/* Bottom CTA Button */}
-                <div className="mt-8 pt-5 border-t border-border/60">
+                <div className="mt-8 pt-5">
                   <Link
                     href={tier.ctaHref}
-                    className={`flex w-full items-center justify-center py-3.5 rounded-2xl text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                    className={`flex w-full items-center justify-center py-3.5 rounded-2xl text-sm font-bold transition-all shadow-sm cursor-pointer ${
                       tier.isPopular
-                        ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-95 shadow-md shadow-indigo-500/25'
-                        : 'border border-border-strong bg-surface text-text-primary hover:bg-surface-hover'
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-95 shadow-lg shadow-indigo-600/20'
+                        : 'border border-black/10 bg-zinc-50 text-zinc-900 hover:bg-zinc-100'
                     }`}
                   >
                     {tier.ctaText}
@@ -204,7 +202,7 @@ export function PricingSection() {
         </div>
 
         {/* Trust Badges Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-text-muted pt-4">
+        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-zinc-500 pt-8">
           <div className="flex items-center gap-2">
             <ShieldCheck className="size-4 text-emerald-500" />
             <span>14-day free trial on Pro plans</span>
@@ -216,7 +214,7 @@ export function PricingSection() {
           </div>
           <span>•</span>
           <div className="flex items-center gap-2">
-            <Zap className="size-4 text-brand" />
+            <Zap className="size-4 text-indigo-500" />
             <span>No credit card required for setup</span>
           </div>
         </div>

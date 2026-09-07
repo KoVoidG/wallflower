@@ -55,18 +55,18 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-20 sm:py-28 border-b border-border/60 bg-surface-subtle/30 text-center">
+    <section id="faq" className="py-24 sm:py-32 bg-[#FAFAFC] text-center">
       <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-12">
         {/* Section Header (Centered) */}
         <div className="max-w-3xl mx-auto space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1 text-xs font-bold text-indigo-700 mx-auto">
             <HelpCircle className="size-3.5" />
             <span>COMMONLY ASKED QUESTIONS</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">
+          <h2 className="font-display text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight leading-[1.1]">
             Frequently Asked Questions
           </h2>
-          <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg text-zinc-600 font-medium leading-relaxed max-w-2xl mx-auto">
             Everything you need to know about Wallflower&apos;s deterministic math, simulations, security, and export capabilities.
           </p>
         </div>
@@ -80,21 +80,21 @@ export function FaqSection() {
                 key={faq.question}
                 className={`rounded-2xl border transition-all ${
                   isOpen
-                    ? 'border-brand/40 bg-surface shadow-md ring-1 ring-brand/20'
-                    : 'border-border-strong bg-surface hover:border-border-strong shadow-xs'
+                    ? 'border-indigo-300 bg-white shadow-md ring-1 ring-indigo-200'
+                    : 'border-black/5 bg-white hover:border-black/10 shadow-sm hover:shadow-md'
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => toggleFaq(index)}
-                  className="w-full flex items-center justify-between p-5 text-left font-display text-sm sm:text-base font-bold text-text-primary gap-4 cursor-pointer"
+                  className="w-full flex items-center justify-between p-5 text-left font-display text-base font-bold text-zinc-900 gap-4 cursor-pointer"
                 >
                   <span>{faq.question}</span>
                   <div
                     className={`size-7 rounded-lg flex items-center justify-center shrink-0 border transition-all ${
                       isOpen
-                        ? 'bg-brand text-white border-brand rotate-180'
-                        : 'bg-surface-subtle border-border text-text-muted'
+                        ? 'bg-indigo-600 text-white border-indigo-600 rotate-180'
+                        : 'bg-zinc-50 border-black/10 text-zinc-500'
                     }`}
                   >
                     <ChevronDown className="size-4" />
@@ -110,7 +110,7 @@ export function FaqSection() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-text-secondary font-medium leading-relaxed border-t border-border/40 mt-1">
+                      <div className="px-5 pb-5 pt-1 text-sm text-zinc-600 font-medium leading-relaxed border-t border-black/5 mt-1">
                         {faq.answer}
                       </div>
                     </motion.div>

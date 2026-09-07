@@ -26,8 +26,10 @@ export function MarketingFooter() {
   };
 
   return (
-    <footer className="border-t border-border/60 bg-surface-subtle/50 pt-16 pb-12 text-left">
-      <div className="w-full max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 space-y-12">
+    <footer className="bg-[#0A0F24] pt-16 pb-12 text-left relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+      
+      <div className="w-full max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 space-y-12 relative z-10">
         {/* Top: 4 Columns Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand Col (2 cols on md+) */}
@@ -45,28 +47,28 @@ export function MarketingFooter() {
             >
               <Logo size="md" />
             </Link>
-            <p className="text-xs text-text-secondary font-medium leading-relaxed max-w-[320px]">
+            <p className="text-xs text-indigo-200/50 font-medium leading-relaxed max-w-[320px]">
               Wallflower is the business decision workspace. Simulate price changes, staffing, promotions, and inventory orders with deterministic financial precision.
             </p>
 
             {/* Live Operational Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-surface text-[11px] font-bold text-text-secondary shadow-xs">
-              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/5 bg-white/5 text-[11px] font-bold text-indigo-200/70 shadow-sm mt-2">
+              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>All Simulation Engines Operational</span>
             </div>
           </div>
 
           {/* Col 2: Decision Product */}
-          <div className="space-y-3">
-            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-text-primary">
+          <div className="space-y-4">
+            <h4 className="font-display text-xs font-bold uppercase tracking-widest text-white">
               Product
             </h4>
-            <ul className="space-y-2 text-xs font-semibold text-text-secondary">
+            <ul className="space-y-3 text-xs font-semibold text-indigo-200/50">
               <li>
                 <button
                   type="button"
                   onClick={() => scrollToSection('journey')}
-                  className="hover:text-brand transition-colors cursor-pointer text-left"
+                  className="hover:text-indigo-400 transition-colors cursor-pointer text-left"
                 >
                   Decision Lifecycle
                 </button>
@@ -75,7 +77,7 @@ export function MarketingFooter() {
                 <button
                   type="button"
                   onClick={() => scrollToSection('simulator')}
-                  className="hover:text-brand transition-colors cursor-pointer text-left"
+                  className="hover:text-indigo-400 transition-colors cursor-pointer text-left"
                 >
                   Interactive Simulator
                 </button>
@@ -84,7 +86,7 @@ export function MarketingFooter() {
                 <button
                   type="button"
                   onClick={() => scrollToSection('features')}
-                  className="hover:text-brand transition-colors cursor-pointer text-left"
+                  className="hover:text-indigo-400 transition-colors cursor-pointer text-left"
                 >
                   Health &amp; Risk Radar
                 </button>
@@ -93,7 +95,7 @@ export function MarketingFooter() {
                 <button
                   type="button"
                   onClick={() => scrollToSection('pricing')}
-                  className="hover:text-brand transition-colors cursor-pointer text-left"
+                  className="hover:text-indigo-400 transition-colors cursor-pointer text-left"
                 >
                   Pricing Plans
                 </button>
@@ -102,39 +104,39 @@ export function MarketingFooter() {
           </div>
 
           {/* Col 3: SME Solutions */}
-          <div className="space-y-3">
-            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-text-primary">
+          <div className="space-y-4">
+            <h4 className="font-display text-xs font-bold uppercase tracking-widest text-white">
               SME Solutions
             </h4>
-            <ul className="space-y-2 text-xs font-semibold text-text-secondary">
+            <ul className="space-y-3 text-xs font-semibold text-indigo-200/50">
               <li>
-                <span className="text-text-muted cursor-default">Specialty Retail</span>
+                <span className="cursor-default">Specialty Retail</span>
               </li>
               <li>
-                <span className="text-text-muted cursor-default">F&amp;B &amp; Cafes</span>
+                <span className="cursor-default">F&amp;B &amp; Cafes</span>
               </li>
               <li>
-                <span className="text-text-muted cursor-default">Apparel &amp; Boutiques</span>
+                <span className="cursor-default">Apparel &amp; Boutiques</span>
               </li>
               <li>
-                <span className="text-text-muted cursor-default">Wholesale &amp; B2B</span>
+                <span className="cursor-default">Wholesale &amp; B2B</span>
               </li>
             </ul>
           </div>
 
           {/* Col 4: Trust & Legal */}
-          <div className="space-y-3">
-            <h4 className="font-display text-xs font-bold uppercase tracking-wider text-text-primary">
+          <div className="space-y-4">
+            <h4 className="font-display text-xs font-bold uppercase tracking-widest text-white">
               Trust &amp; Security
             </h4>
-            <ul className="space-y-2 text-xs font-semibold text-text-secondary">
+            <ul className="space-y-3 text-xs font-semibold text-indigo-200/50">
               <li>
-                <Link href="/privacy" className="hover:text-brand transition-colors">
+                <Link href="/privacy" className="hover:text-indigo-400 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-brand transition-colors">
+                <Link href="/terms" className="hover:text-indigo-400 transition-colors">
                   Terms of Service
                 </Link>
               </li>
@@ -142,12 +144,12 @@ export function MarketingFooter() {
                 <button
                   type="button"
                   onClick={() => scrollToSection('faq')}
-                  className="hover:text-brand transition-colors cursor-pointer text-left"
+                  className="hover:text-indigo-400 transition-colors cursor-pointer text-left"
                 >
                   FAQ &amp; Documentation
                 </button>
               </li>
-              <li className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+              <li className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-bold mt-2">
                 <ShieldCheck className="size-3.5" />
                 <span>AES-256 Encrypted</span>
               </li>
@@ -156,7 +158,7 @@ export function MarketingFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-text-muted">
+        <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-indigo-200/40">
           <p>
             © {new Date().getFullYear()} Wallflower Decision Intelligence. All rights reserved.
           </p>

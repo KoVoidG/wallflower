@@ -1,568 +1,325 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Activity,
-  AlertTriangle,
-  Sliders,
-  Columns3,
-  FileCheck2,
-  Sparkles,
-  ShieldAlert,
-  ArrowRight,
-  Download,
-  Users,
-  Percent,
+  Activity, AlertTriangle, Sliders, Columns3, FileCheck2,
+  DollarSign, Users, Package, ArrowRight
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface Stage {
-  id: string;
-  stepNumber: string;
-  title: string;
-  shortDesc: string;
-  icon: typeof Activity;
-  badge: string;
-  headline: string;
-  detailedText: string;
-  keyTakeaway: string;
-}
-
-const STAGES: Stage[] = [
+const STAGES = [
   {
     id: 'understand',
     stepNumber: '01',
-    title: 'Understand',
-    shortDesc: 'Instant holistic view of operational health & cash runway',
+    title: 'Understand the Business',
     icon: Activity,
-    badge: 'STAGE 1: BASELINE VISIBILITY',
+    badgeColor: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
     headline: 'Know your exact business baseline before touching any variable.',
-    detailedText:
-      'Wallflower connects your sales, inventory, and cost records to produce a real-time Business Health Score (0–100), net margin breakdown, and true cash runway. No more digging through multiple spreadsheets.',
-    keyTakeaway: 'Current Health: 84/100 (Good) • Cash Runway: 5.1 Months • Revenue: ฿1,280,000/mo',
+    detailedText: 'Wallflower connects your sales, inventory, and cost records to produce a real-time Business Health Score, net margin breakdown, and true cash runway. No more digging through fragmented spreadsheets.',
   },
   {
     id: 'diagnose',
     stepNumber: '02',
-    title: 'Diagnose',
-    shortDesc: 'Automated detection of hidden risks and margin leaks',
+    title: 'Diagnose & Detect Risks',
     icon: AlertTriangle,
-    badge: 'STAGE 2: PROACTIVE DIAGNOSIS',
+    badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
     headline: 'Uncover margin compression and liquidity bottlenecks before they hurt.',
-    detailedText:
-      'Our risk diagnosis engine continuously audits your working capital, supplier dependencies, and inventory turnover. It flags deadstock build-up, supplier cost creep, and upcoming cash cliffs 60–90 days ahead.',
-    keyTakeaway: 'Detected 2 high-priority risks: Deadstock in Category B (-฿45k) & Cash Runway Warning at Month 4.',
+    detailedText: 'Our risk diagnosis engine continuously audits your working capital and inventory turnover. It flags deadstock build-up and upcoming cash cliffs 60–90 days ahead.',
   },
   {
     id: 'simulate',
     stepNumber: '03',
-    title: 'Simulate',
-    shortDesc: 'Test pricing, hiring, promotions & inventory in a safe sandbox',
+    title: 'Simulate Scenarios',
     icon: Sliders,
-    badge: 'STAGE 3: WHAT-IF PLAYGROUND',
-    headline: 'Stress-test business choices without risking a single Baht.',
-    detailedText:
-      'Adjust selling prices, hire floor staff, test wholesale supplier discounts, or launch a holiday promo. Wallflower recalculates your gross margin, customer elasticity, break-even volume, and cash burn instantaneously.',
-    keyTakeaway: 'Tested Scenario: +5% Price Optimization yields +฿163,000/mo profit (+18.3%) with negligible demand loss.',
+    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    headline: 'Stress-test business choices without risking a single dollar.',
+    detailedText: 'Adjust selling prices, hire floor staff, or launch a promo. Wallflower recalculates your gross margin, customer elasticity, break-even volume, and cash burn instantaneously.',
   },
   {
     id: 'compare',
     stepNumber: '04',
-    title: 'Compare',
-    shortDesc: 'Side-by-side multi-scenario matrix with Best & Worst cases',
+    title: 'Compare Outcomes',
     icon: Columns3,
-    badge: 'STAGE 4: SCENARIO MATRIX',
+    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
     headline: 'Weigh competing options side-by-side with clear risk buffers.',
-    detailedText:
-      'Never execute a decision based on single-point hope. Compare Conservative, Expected, and Aggressive outcomes side-by-side. Inspect downside buffers and payback timelines so you can pick the safest path to growth.',
-    keyTakeaway: 'Pricing Adjustment ranked #1 for ROI (42% ROI, 0-day payback) vs Hiring (14% ROI, 4.2 mo payback).',
+    detailedText: 'Never execute a decision based on single-point hope. Compare Conservative, Expected, and Aggressive outcomes side-by-side. Inspect downside buffers and payback timelines.',
   },
   {
     id: 'decide',
     stepNumber: '05',
-    title: 'Decide',
-    shortDesc: 'Capybot plain-English memo & exportable bank-ready reports',
+    title: 'Decide With Confidence',
     icon: FileCheck2,
-    badge: 'STAGE 5: CONFIDENT ACTION',
-    headline: 'Actionable executive summaries and verified reports ready to share.',
-    detailedText:
-      'Capybot synthesizes the mathematical results into plain-language business recommendations. Generate verified, bank-ready PDF Decision Reports for partners, lenders, or team alignment in one click.',
-    keyTakeaway: 'One-click executive decision memo generated with full assumption transparency and audit trail.',
+    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    headline: 'Actionable executive summaries and verified reports.',
+    detailedText: 'Capybot synthesizes the mathematical results into plain-language business recommendations. Generate verified, bank-ready PDF Decision Reports in one click.',
   },
 ];
 
-export function DecisionJourneySection() {
-  const [activeStageId, setActiveStageId] = useState<string>(STAGES[0].id);
-  const activeStage = STAGES.find((s) => s.id === activeStageId) || STAGES[0];
-
+function ProductCanvas({ activeIndex }: { activeIndex: number }) {
   return (
-    <section id="journey" className="py-20 sm:py-28 border-b border-border/60 bg-background text-left">
-      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 space-y-16">
-        {/* Section Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand">
-            <Sparkles className="size-3.5 text-ai" />
-            <span>THE WALLFLOWER DECISION LIFECYCLE</span>
-          </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight leading-tight">
-            From raw business data to confident decisions in{' '}
-            <span className="text-brand">five clear stages</span>.
-          </h2>
-          <p className="text-base sm:text-lg text-text-secondary font-medium leading-relaxed">
-            Wallflower isn&apos;t just another passive dashboard. It is a decision workflow designed to guide you from diagnosis to simulation, comparison, and verified execution.
-          </p>
-        </div>
+    <div className="w-full h-full relative bg-[#070A17] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col">
+      {/* Fake Window Header */}
+      <div className="h-12 border-b border-white/5 flex items-center px-4 gap-2 bg-[#0B1024]">
+        <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+        <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+        <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+        <div className="ml-4 text-xs font-medium text-indigo-200/50">Wallflower // Workflow</div>
+      </div>
 
-        {/* 5-Step Horizontal Tab Navigator */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 border-b border-border/60 pb-6">
-          {STAGES.map((stage) => {
-            const isSelected = stage.id === activeStageId;
-            const Icon = stage.icon;
-            return (
-              <button
-                key={stage.id}
-                type="button"
-                onClick={() => setActiveStageId(stage.id)}
-                className={`p-3.5 sm:p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer relative ${
-                  isSelected
-                    ? 'border-brand bg-brand-soft/80 shadow-md ring-1 ring-brand/30'
-                    : 'border-border/70 bg-surface-subtle/50 hover:bg-surface-hover text-text-secondary hover:border-border-strong'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span
-                    className={`font-mono text-xs font-extrabold ${
-                      isSelected ? 'text-brand' : 'text-text-muted'
-                    }`}
-                  >
-                    {stage.stepNumber}
-                  </span>
-                  <div
-                    className={`size-7 rounded-lg flex items-center justify-center ${
-                      isSelected
-                        ? 'bg-brand text-white shadow-xs'
-                        : 'bg-surface text-text-muted border border-border/60'
-                    }`}
-                  >
-                    <Icon className="size-3.5" />
+      <div className="flex-1 p-8 relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          
+          {/* Stage 1: Understand (Metrics Populate) */}
+          {activeIndex === 0 && (
+            <motion.div key="step0" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="h-full flex flex-col justify-center gap-6">
+              <div className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Activity className="w-5 h-5 text-indigo-400"/> Live Business Baseline</div>
+              <div className="grid grid-cols-2 gap-6">
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="p-6 rounded-2xl border border-white/5 bg-[#0B1024]">
+                  <div className="flex items-center gap-2 text-indigo-200/50 text-sm mb-2"><DollarSign className="size-4" /> Revenue (TTM)</div>
+                  <div className="text-4xl font-display font-bold text-white">$1.24M</div>
+                </motion.div>
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="p-6 rounded-2xl border border-white/5 bg-[#0B1024]">
+                  <div className="flex items-center gap-2 text-indigo-200/50 text-sm mb-2"><Activity className="size-4" /> Cash Runway</div>
+                  <div className="text-4xl font-display font-bold text-white">12.4 <span className="text-xl text-indigo-200/50">mo</span></div>
+                </motion.div>
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="p-6 rounded-2xl border border-white/5 bg-[#0B1024]">
+                  <div className="flex items-center gap-2 text-indigo-200/50 text-sm mb-2"><Package className="size-4" /> Inventory Value</div>
+                  <div className="text-4xl font-display font-bold text-white">$145K</div>
+                </motion.div>
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="p-6 rounded-2xl border border-white/5 bg-[#0B1024]">
+                  <div className="flex items-center gap-2 text-indigo-200/50 text-sm mb-2"><Users className="size-4" /> Labor Cost</div>
+                  <div className="text-4xl font-display font-bold text-white">32%</div>
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Stage 2: Diagnose (Risk Appears) */}
+          {activeIndex === 1 && (
+            <motion.div key="step1" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="h-full flex flex-col justify-center gap-8">
+              <div className="p-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 flex flex-col items-start gap-4 shadow-[0_0_40px_-10px_rgba(244,63,94,0.3)]">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-rose-500 rounded-xl">
+                    <AlertTriangle className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-rose-400">Margin Compression Risk</div>
+                    <div className="text-rose-200/70 font-medium">Detected in operating metrics</div>
+                  </div>
+                </div>
+                <div className="w-full bg-[#070A17] p-5 rounded-xl border border-rose-500/20 mt-2">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-white font-bold">Labor Cost Ratio</span>
+                    <span className="text-rose-400 font-bold font-mono">Rising</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden relative">
+                      <motion.div 
+                        initial={{ width: '32%' }} 
+                        animate={{ width: '45%' }} 
+                        transition={{ duration: 1, delay: 0.5 }} 
+                        className="h-full bg-rose-500 rounded-full" 
+                      />
+                      <div className="absolute top-0 bottom-0 left-[35%] w-0.5 bg-white/50" />
+                    </div>
+                    <motion.span 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      transition={{ delay: 1.5 }} 
+                      className="text-rose-400 font-bold"
+                    >
+                      Threshold crossed
+                    </motion.span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Stage 3: Simulate (Assumption changes) */}
+          {activeIndex === 2 && (
+            <motion.div key="step2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="h-full flex flex-col justify-center gap-6">
+              <div className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Sliders className="w-5 h-5 text-purple-400"/> Change Assumptions</div>
+              
+              <div className="p-8 rounded-2xl border border-white/5 bg-[#0B1024] space-y-8 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xl font-bold text-white">Marketing Spend (Q3)</span>
+                    <motion.div 
+                      initial={{ scale: 1 }}
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="px-4 py-1.5 rounded-lg bg-purple-500 text-white font-mono font-bold text-xl shadow-lg shadow-purple-500/30"
+                    >
+                      +$15,000
+                    </motion.div>
+                  </div>
+                  
+                  {/* Slider animation */}
+                  <div className="h-4 bg-white/5 rounded-full relative">
+                    <motion.div 
+                      className="absolute top-0 left-0 h-full bg-purple-500 rounded-full"
+                      initial={{ width: '20%' }}
+                      animate={{ width: '70%' }}
+                      transition={{ duration: 1, ease: "easeInOut" }}
+                    />
+                    <motion.div 
+                      className="absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 border-purple-500"
+                      initial={{ left: '20%' }}
+                      animate={{ left: '70%' }}
+                      transition={{ duration: 1, ease: "easeInOut" }}
+                      style={{ marginLeft: '-16px' }}
+                    />
                   </div>
                 </div>
 
-                <h3
-                  className={`font-display text-sm font-bold truncate ${
-                    isSelected ? 'text-text-primary' : 'text-text-secondary'
-                  }`}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2 }}
+                  className="relative z-10 flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl mt-8"
                 >
-                  {stage.title}
-                </h3>
-                <p className="text-[11px] text-text-muted font-medium line-clamp-2 mt-1 hidden sm:block">
-                  {stage.shortDesc}
-                </p>
-
-                {isSelected && (
-                  <motion.div
-                    layoutId="activeJourneyTabIndicator"
-                    className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-8 h-1 bg-brand rounded-full hidden sm:block"
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Stage Content Grid (Split 2-Column Showcase) */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStage.id}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -14 }}
-            transition={{ duration: 0.25 }}
-            className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center"
-          >
-            {/* Left Column: Stage Editorial Explanation (5 cols) */}
-            <div className="lg:col-span-5 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-soft border border-brand-border text-brand">
-                <span>{activeStage.badge}</span>
+                  <Activity className="size-5 text-emerald-400 animate-pulse" />
+                  <div>
+                    <div className="text-emerald-400 font-bold">Recalculating Elasticity & Conversions...</div>
+                    <div className="text-emerald-200/60 text-sm">Engine adjusting 14 dependent variables.</div>
+                  </div>
+                </motion.div>
               </div>
+            </motion.div>
+          )}
 
-              <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight leading-snug">
-                {activeStage.headline}
-              </h3>
+          {/* Stage 4: Compare (Outcomes Separate) */}
+          {activeIndex === 3 && (
+            <motion.div key="step3" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="h-full flex flex-col justify-center gap-6">
+              <div className="text-sm font-bold text-white mb-2 flex items-center gap-2"><Columns3 className="w-5 h-5 text-blue-400"/> Outcome Divergence</div>
+              
+              <div className="grid grid-cols-2 gap-6 h-64">
+                {/* Scenario A */}
+                <div className="relative p-6 rounded-2xl border border-white/5 bg-[#0B1024] flex flex-col">
+                  <div className="text-indigo-200/50 font-bold uppercase tracking-widest text-xs mb-4">Baseline (No Change)</div>
+                  
+                  <div className="flex-1 flex items-end gap-2 px-2">
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "60%" }} className="w-full bg-indigo-500/30 rounded-t-lg" />
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "62%" }} className="w-full bg-indigo-500/50 rounded-t-lg" />
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "58%" }} className="w-full bg-indigo-500/80 rounded-t-lg" />
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-white/5">
+                    <div className="text-2xl font-bold text-white">$42K <span className="text-sm font-normal text-indigo-200/50">profit</span></div>
+                  </div>
+                </div>
 
-              <p className="text-sm sm:text-base text-text-secondary font-medium leading-relaxed">
-                {activeStage.detailedText}
-              </p>
-
-              {/* Highlight takeaway pill */}
-              <div className="p-4 rounded-2xl bg-surface-subtle border border-border/80 space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-                  Stage Output & Insight
-                </span>
-                <p className="text-xs font-bold text-text-primary leading-relaxed">
-                  {activeStage.keyTakeaway}
-                </p>
+                {/* Scenario B */}
+                <div className="relative p-6 rounded-2xl border border-blue-500/30 bg-blue-500/10 flex flex-col shadow-[0_0_30px_-10px_rgba(59,130,246,0.2)]">
+                  <div className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl uppercase">Selected</div>
+                  <div className="text-blue-300 font-bold uppercase tracking-widest text-xs mb-4">+$15K Marketing</div>
+                  
+                  <div className="flex-1 flex items-end gap-2 px-2">
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "65%" }} transition={{ delay: 0.2 }} className="w-full bg-blue-400/50 rounded-t-lg" />
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "80%" }} transition={{ delay: 0.3 }} className="w-full bg-blue-400/80 rounded-t-lg" />
+                    <motion.div initial={{ height: "0%" }} animate={{ height: "95%" }} transition={{ delay: 0.4 }} className="w-full bg-emerald-400 rounded-t-lg shadow-[0_0_15px_rgba(52,211,153,0.5)]" />
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-blue-500/20">
+                    <div className="text-2xl font-bold text-emerald-400">$68K <span className="text-sm font-normal text-blue-200/60">profit</span></div>
+                  </div>
+                </div>
               </div>
+            </motion.div>
+          )}
 
-              {/* Next Step Jump button */}
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentIndex = STAGES.findIndex((s) => s.id === activeStageId);
-                    const nextIndex = (currentIndex + 1) % STAGES.length;
-                    setActiveStageId(STAGES[nextIndex].id);
-                  }}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-brand hover:text-brand-hover cursor-pointer"
-                >
-                  <span>
-                    Explore Stage {STAGES[(STAGES.findIndex((s) => s.id === activeStageId) + 1) % STAGES.length].stepNumber}:{' '}
-                    {STAGES[(STAGES.findIndex((s) => s.id === activeStageId) + 1) % STAGES.length].title}
-                  </span>
-                  <ArrowRight className="size-3.5" />
-                </button>
+          {/* Stage 5: Decide */}
+          {activeIndex === 4 && (
+            <motion.div key="step4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="h-full flex flex-col justify-center gap-6">
+              <div className="p-8 rounded-3xl bg-indigo-600 shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+                <div className="relative z-10">
+                  <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center mx-auto mb-6 shadow-xl">
+                    <FileCheck2 className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="font-display text-3xl font-bold text-white mb-4">The Decision is Clear</h3>
+                  <p className="text-lg text-indigo-100 font-medium max-w-sm mx-auto leading-relaxed mb-8">
+                    Allocating $15k to Q3 marketing will increase net profit by $26k, while maintaining a safe 11-month cash buffer.
+                  </p>
+                  <button className="px-8 py-4 bg-white text-indigo-950 rounded-full font-bold text-base flex items-center gap-2 hover:bg-zinc-100 transition-colors mx-auto shadow-xl">
+                    Download Verified Plan <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-            </div>
+            </motion.div>
+          )}
 
-            {/* Right Column: Authentic Recreated UI Showcase Card (7 cols) */}
-            <div className="lg:col-span-7 w-full">
-              {activeStage.id === 'understand' && <UnderstandStageMockup />}
-              {activeStage.id === 'diagnose' && <DiagnoseStageMockup />}
-              {activeStage.id === 'simulate' && <SimulateStageMockup />}
-              {activeStage.id === 'compare' && <CompareStageMockup />}
-              {activeStage.id === 'decide' && <DecideStageMockup />}
-            </div>
-          </motion.div>
         </AnimatePresence>
       </div>
+    </div>
+  );
+}
+
+export function DecisionJourneySection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <section id="journey" className="relative py-24 sm:py-32 bg-[#0A0F24] text-left">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 relative z-10">
+        
+        {/* Header */}
+        <div className="max-w-4xl space-y-6 mb-20">
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
+            From business data to decisions.
+          </h2>
+          <p className="text-base sm:text-lg text-indigo-200/70 font-medium leading-relaxed max-w-3xl">
+            Wallflower is not a passive dashboard. It is a deterministic decision operating system engineered to take you from initial health diagnosis to safe simulation, multi-option comparison, and verified execution.
+          </p>
+        </div>
+
+        {/* Cinematic Scroll Layout: 40% Text / 60% Visual */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          {/* Left: Scrollable Text Steps (col-span-5 -> 40%) */}
+          <div className="flex flex-col relative z-10 w-full lg:col-span-5">
+            {STAGES.map((stage, index) => {
+              const Icon = stage.icon;
+              const isActive = index === activeIndex;
+
+              return (
+                <motion.div
+                  key={stage.id}
+                  className="min-h-[50vh] lg:min-h-[70vh] flex flex-col justify-center py-10"
+                  onViewportEnter={() => setActiveIndex(index)}
+                  viewport={{ margin: "-45% 0px -45% 0px" }}
+                >
+                  <div className={cn("transition-all duration-500", isActive ? "opacity-100 scale-100" : "opacity-30 scale-95")}>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className={cn("inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-extrabold border", stage.badgeColor)}>
+                        <Icon className="size-3.5" />
+                        <span>{stage.stepNumber}</span>
+                      </div>
+                      <span className="text-lg font-bold text-indigo-200/50 uppercase tracking-widest">{stage.title}</span>
+                    </div>
+                    <h3 className="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+                      {stage.headline}
+                    </h3>
+                    <p className="text-base sm:text-lg text-indigo-200/70 leading-relaxed">
+                      {stage.detailedText}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Right: Sticky Product Canvas (col-span-7 -> 60%) */}
+          <div className="hidden lg:block sticky top-[15vh] h-[70vh] w-full lg:col-span-7">
+            <ProductCanvas activeIndex={activeIndex} />
+          </div>
+
+        </div>
+      </div>
     </section>
-  );
-}
-
-// ── Stage 1 Recreated UI: Business Health & Financial Snapshot ───────────────
-function UnderstandStageMockup() {
-  return (
-    <div className="p-6 rounded-3xl border-2 border-border-strong bg-surface shadow-2xl space-y-5 text-left">
-      <div className="flex items-center justify-between border-b border-border/60 pb-3">
-        <div className="flex items-center gap-2">
-          <div className="size-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-            Overview • Business Health Snapshot
-          </span>
-        </div>
-        <span className="text-[10px] font-bold text-text-muted">Live Verified Baseline</span>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-            Health Score
-          </span>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-extrabold text-emerald-500">84</span>
-            <span className="text-xs font-bold text-text-muted">/100</span>
-          </div>
-          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md inline-block">
-            Good (Top 18% SME)
-          </span>
-        </div>
-
-        <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-            Monthly Revenue
-          </span>
-          <span className="font-metric text-xl font-extrabold text-text-primary block">
-            ฿1,280,000
-          </span>
-          <span className="text-[10px] font-bold text-emerald-500">+12.5% vs last month</span>
-        </div>
-
-        <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block">
-            Cash Runway
-          </span>
-          <span className="font-metric text-xl font-extrabold text-text-primary block">
-            5.1 Months
-          </span>
-          <span className="text-[10px] font-bold text-emerald-500">Safe Buffer (Above 3.0 min)</span>
-        </div>
-      </div>
-
-      {/* Sub metrics breakdown */}
-      <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-3">
-        <span className="text-xs font-bold text-text-primary block">
-          Working Capital & Margin Breakdown
-        </span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold">
-          <div className="p-2.5 rounded-xl bg-surface border border-border/60">
-            <span className="text-[10px] text-text-muted block">Gross Margin</span>
-            <span className="font-bold text-text-primary">32.4%</span>
-          </div>
-          <div className="p-2.5 rounded-xl bg-surface border border-border/60">
-            <span className="text-[10px] text-text-muted block">Net Margin</span>
-            <span className="font-bold text-emerald-500">12.7%</span>
-          </div>
-          <div className="p-2.5 rounded-xl bg-surface border border-border/60">
-            <span className="text-[10px] text-text-muted block">Inv. Turnover</span>
-            <span className="font-bold text-text-primary">4.2x / yr</span>
-          </div>
-          <div className="p-2.5 rounded-xl bg-surface border border-border/60">
-            <span className="text-[10px] text-text-muted block">Monthly Burn</span>
-            <span className="font-bold text-text-primary">฿264,000</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Stage 2 Recreated UI: Risk Detection Radar ───────────────────────────────
-function DiagnoseStageMockup() {
-  return (
-    <div className="p-6 rounded-3xl border-2 border-border-strong bg-surface shadow-2xl space-y-4 text-left">
-      <div className="flex items-center justify-between border-b border-border/60 pb-3">
-        <div className="flex items-center gap-2">
-          <ShieldAlert className="size-4 text-rose-500" />
-          <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-            Risk Radar • Automated Diagnostics
-          </span>
-        </div>
-        <span className="text-[10px] font-bold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-md">
-          2 Warnings Detected
-        </span>
-      </div>
-
-      <div className="space-y-3">
-        {/* Risk 1: High Priority */}
-        <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/5 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="size-4 text-rose-500" />
-              <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
-                Cash Runway Cliff in Month 4
-              </span>
-            </div>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 bg-rose-500/10 px-2 py-0.5 rounded">
-              High Severity
-            </span>
-          </div>
-          <p className="text-xs text-text-secondary font-medium leading-relaxed">
-            If supplier cost increases by 4.5% as announced without price adjustments, your runway will drop from 5.1 to 2.4 months.
-          </p>
-          <span className="text-[11px] font-bold text-brand hover:underline cursor-pointer inline-block">
-            Simulate Price Pass-through →
-          </span>
-        </div>
-
-        {/* Risk 2: Medium Priority */}
-        <div className="p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="size-4 text-amber-500" />
-              <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-                Dead Inventory Accumulation (Category B)
-              </span>
-            </div>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded">
-              Medium Severity
-            </span>
-          </div>
-          <p className="text-xs text-text-secondary font-medium leading-relaxed">
-            ฿45,000 worth of stock has remained stationary for &gt;75 days, locking up working capital buffer.
-          </p>
-          <span className="text-[11px] font-bold text-brand hover:underline cursor-pointer inline-block">
-            Simulate Flash Clearance Promo →
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Stage 3 Recreated UI: Scenario Simulator Playground ──────────────────────
-function SimulateStageMockup() {
-  return (
-    <div className="p-6 rounded-3xl border-2 border-border-strong bg-surface shadow-2xl space-y-5 text-left">
-      <div className="flex items-center justify-between border-b border-border/60 pb-3">
-        <div className="flex items-center gap-2">
-          <Sliders className="size-4 text-brand" />
-          <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-            Scenario Simulator • Custom Sandbox
-          </span>
-        </div>
-        <span className="text-[10px] font-bold text-brand bg-brand-soft px-2 py-0.5 rounded-md">
-          Deterministic Calculation
-        </span>
-      </div>
-
-      <div className="space-y-4">
-        {/* Variable 1 */}
-        <div className="p-3.5 rounded-2xl border border-border bg-surface-subtle space-y-2">
-          <div className="flex justify-between text-xs font-bold">
-            <span className="text-text-secondary flex items-center gap-1.5">
-              <Percent className="size-3.5 text-brand" /> Price Adjustment
-            </span>
-            <span className="text-brand font-mono">+5.0% Across Top SKUs</span>
-          </div>
-          <div className="h-2 rounded-full bg-border relative overflow-hidden">
-            <div className="h-full bg-brand rounded-full w-[65%]" />
-          </div>
-        </div>
-
-        {/* Variable 2 */}
-        <div className="p-3.5 rounded-2xl border border-border bg-surface-subtle space-y-2">
-          <div className="flex justify-between text-xs font-bold">
-            <span className="text-text-secondary flex items-center gap-1.5">
-              <Users className="size-3.5 text-indigo-400" /> Additional Headcount
-            </span>
-            <span className="text-text-primary font-mono">+1 Associate (฿18k/mo)</span>
-          </div>
-          <div className="h-2 rounded-full bg-border relative overflow-hidden">
-            <div className="h-full bg-indigo-500 rounded-full w-[30%]" />
-          </div>
-        </div>
-      </div>
-
-      {/* Instant Result Box */}
-      <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 space-y-2">
-        <div className="flex justify-between items-baseline">
-          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
-            Projected Monthly Profit Delta
-          </span>
-          <span className="font-metric text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
-            +฿145,000 / mo (+16.4%)
-          </span>
-        </div>
-        <p className="text-[11px] text-text-secondary font-medium">
-          Price increase easily absorbs the new payroll cost while expanding overall customer service capacity by 15%.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ── Stage 4 Recreated UI: Scenario Comparison Matrix ────────────────────────
-function CompareStageMockup() {
-  return (
-    <div className="p-6 rounded-3xl border-2 border-border-strong bg-surface shadow-2xl space-y-4 text-left">
-      <div className="flex items-center justify-between border-b border-border/60 pb-3">
-        <div className="flex items-center gap-2">
-          <Columns3 className="size-4 text-brand" />
-          <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-            Scenario Matrix • Side-by-Side Evaluation
-          </span>
-        </div>
-        <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
-          3 Scenarios Ranked
-        </span>
-      </div>
-
-      <div className="space-y-2.5">
-        {/* Scenario A: Recommended */}
-        <div className="p-4 rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 space-y-2 relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500" />
-              <span className="text-xs font-extrabold text-text-primary">
-                Option A: +5% Price Optimization
-              </span>
-            </div>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded">
-              ★ Rank #1 (Best ROI)
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs font-bold">
-            <div>
-              <span className="text-[10px] text-text-muted block">Profit Delta</span>
-              <span className="text-emerald-600 dark:text-emerald-400">+฿163,000/mo</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-text-muted block">Runway Impact</span>
-              <span className="text-emerald-600 dark:text-emerald-400">+0.9 Months</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-text-muted block">Downside Risk</span>
-              <span className="text-emerald-600 dark:text-emerald-400">Low (0.3% Churn)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Scenario B: Feasible */}
-        <div className="p-4 rounded-2xl border border-border bg-surface-subtle space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-brand" />
-              <span className="text-xs font-bold text-text-primary">
-                Option B: Hire 1 Sales Rep + Promo
-              </span>
-            </div>
-            <span className="text-[10px] font-bold text-brand bg-brand-soft px-2 py-0.5 rounded">
-              Rank #2 (Feasible)
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs font-semibold">
-            <div>
-              <span className="text-[10px] text-text-muted block">Profit Delta</span>
-              <span className="text-text-primary">+฿52,000/mo</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-text-muted block">Runway Impact</span>
-              <span className="text-amber-500">-0.2 Months</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-text-muted block">Payback Period</span>
-              <span className="text-text-primary">3.5 Months</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Stage 5 Recreated UI: Executive Report & AI Memo ─────────────────────────
-function DecideStageMockup() {
-  return (
-    <div className="p-6 rounded-3xl border-2 border-border-strong bg-surface shadow-2xl space-y-4 text-left">
-      <div className="flex items-center justify-between border-b border-border/60 pb-3">
-        <div className="flex items-center gap-2">
-          <FileCheck2 className="size-4 text-brand" />
-          <span className="font-display text-xs font-bold text-text-primary uppercase tracking-wider">
-            Decision Report • Bank & Executive Ready
-          </span>
-        </div>
-        <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
-          Cryptographically Verified Math
-        </span>
-      </div>
-
-      <div className="p-4 rounded-2xl border border-brand/30 bg-brand-soft/60 space-y-2">
-        <div className="flex items-center gap-2 text-xs font-bold text-brand">
-          <Sparkles className="size-3.5 text-ai" />
-          <span>Capybot Executive Recommendation Memo</span>
-        </div>
-        <p className="text-xs text-text-secondary font-medium leading-relaxed">
-          &quot;Proceed with Option A (+5% price adjustment). The simulation confirms 100% margin recovery against recent supplier increases while keeping break-even customer volume 24% below current peak levels.&quot;
-        </p>
-      </div>
-
-      <div className="p-4 rounded-2xl border border-border bg-surface-subtle flex items-center justify-between">
-        <div className="space-y-0.5">
-          <span className="font-display text-xs font-bold text-text-primary block">
-            Executive_Decision_Report_Q3_2026.pdf
-          </span>
-          <span className="text-[10px] text-text-muted">
-            Includes P&L Projections, Sensitivity Matrix, & Audit Trail (4 pages)
-          </span>
-        </div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border-strong text-xs font-bold text-text-primary hover:bg-surface-hover transition-colors shadow-xs cursor-pointer"
-        >
-          <Download className="size-3.5 text-brand" />
-          <span>Export</span>
-        </button>
-      </div>
-    </div>
   );
 }
